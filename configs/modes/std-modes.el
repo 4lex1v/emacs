@@ -3,17 +3,18 @@
 ;; are stored in other separate files
 
 ;; DIRED
-(setq delete-by-moving-to-trash t)
+;; (setq delete-by-moving-to-trash t)
 
 ;; IDO
-(ido-mode 0)
-(ido-everywhere 0)
-(setq ido-use-faces nil)
-(setq ido-enable-flex-matching t)
+;; (ido-mode 0)
+;; (ido-everywhere 0)
+;; (setq ido-use-faces nil)
+;; (setq ido-enable-flex-matching t)
 
 ;; SMEX
 ;; Extends std M-x functionality providing some history, better command
 ;; search capabilities + can show commands only for the current major mode
+;; Still using for mode-private commands M-X
 (smex-initialize)
 
 ;; AUTO-COMPLETE
