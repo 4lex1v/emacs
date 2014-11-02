@@ -11,9 +11,10 @@
   (tool-bar-mode   -1)
   (scroll-bar-mode -1))
 
-;; Set emacs UI to fullscreen
+;; Maximize emacs window
+;; change 'maximized to 'fullboth to make fullscreen
 (defun 4lex1v/set-fullscreen ()
-  (set-frame-parameter nil 'fullscreen 'fullboth))
+  (set-frame-parameter nil 'fullscreen 'maximized))
 
 (defun 4lex1v/monaco-font ()
   (set-frame-font "Monaco for Powerline-18"))
@@ -33,3 +34,4 @@
 
 (setq-default tab-width 2)
 (global-linum-mode t)
+(set-default 'cursor-type 'bar)
