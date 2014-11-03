@@ -28,6 +28,9 @@
 
 	 ;; YASnippet
 	 yasnippet
+
+	 smartparens-config
+	 
 	 ;; Others
 	 ace-jump-mode
 	 auto-complete-config))
