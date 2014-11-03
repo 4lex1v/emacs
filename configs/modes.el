@@ -26,6 +26,8 @@
 	 helm-projectile
 	 helm-descbinds
 
+	 ;; YASnippet
+	 yasnippet
 	 ;; Others
 	 ace-jump-mode
 	 auto-complete-config))

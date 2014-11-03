@@ -2,6 +2,9 @@
 ;; Other pluging which requires more detailed configs (e.g scala, haskell, yasnippet, etc...) 
 ;; are stored in other separate files
 
+;; YASnippet
+(setq yas-snippet-dirs '("~/.emacs.d/snippets")) ;; personal snippets
+
 ;; DIRED
 ;; (setq delete-by-moving-to-trash t)
 

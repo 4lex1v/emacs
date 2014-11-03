@@ -2,6 +2,7 @@
 
 (add-hook 'scala-mode-hook 
   '(lambda ()
+		 (yas-minor-mode)
 		 (hs-minor-mode)
 		 (ensime-scala-mode-hook)))
 															
