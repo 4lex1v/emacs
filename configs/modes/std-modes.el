@@ -4,6 +4,7 @@
 
 ;; YASnippet
 (setq yas-snippet-dirs '("~/.emacs.d/snippets")) ;; personal snippets
+(yas-reload-all) ;; we need to reload yas after adding custom dir
 
 ;; DIRED
 ;; (setq delete-by-moving-to-trash t)
