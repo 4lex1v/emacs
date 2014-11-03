@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: case class with compaion object
+# key: cco
+# --
+case class $1($2)
+object $1 {$0}
