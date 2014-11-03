@@ -24,3 +24,6 @@
 
 (setq ring-bell-function 'ignore)
 (fset 'yes-or-no-p 'y-or-n-p)
+
+;; default scratch mode
+(setq initial-major-mode 'scala-mode)
