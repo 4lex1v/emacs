@@ -12,6 +12,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (4lex1v/enable-plugins
  '(
+	 org-install 
+	 
 	 ;; Scala lang
 	 scala-mode2
 	 sbt-mode
@@ -34,4 +36,3 @@
 	 ;; Others
 	 ace-jump-mode
 	 auto-complete-config))
-				 

@@ -6,6 +6,10 @@
 				list-of-files))
 
 ;;;;;;;;;;;;;;
-(load-functions '("shell"))
+(load-functions
+ '(
+	 "shell"
+	 "org"
+	 ))
 
 					

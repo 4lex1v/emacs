@@ -28,5 +28,6 @@
 
 (setq ring-bell-function 'ignore)
 (fset 'yes-or-no-p 'y-or-n-p)
-
+(setq-default major-mode 'org-mode)
+							
 (setq tramp-default-method "ssh")
