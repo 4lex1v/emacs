@@ -30,8 +30,9 @@
 (4lex1v/monaco-font)
 (4lex1v/config-paren-mode)
 
-(load-theme 'monokai t)
+(load-theme 'dichromacy t)
 
 (setq-default tab-width 2)
 (global-linum-mode t)
+(global-hl-line-mode 1)
 (set-default 'cursor-type 'bar)

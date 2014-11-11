@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: sbt project
+# key: proj
+# --
+lazy val $1 = project
+  .in("$1")$0

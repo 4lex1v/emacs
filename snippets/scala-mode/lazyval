@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: lazy val
+# key: lv
+# --
+lazy val $1$2 = $0

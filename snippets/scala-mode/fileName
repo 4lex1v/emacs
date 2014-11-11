@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: file name
+# key: fn
+# --
+`(buffer-file-name)`

@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: implicit class
+# key: implc
+# --
+implicit class $1(${2: arg}: $3) {
+  $0
+}

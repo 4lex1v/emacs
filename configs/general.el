@@ -15,15 +15,18 @@
 (defun 4lex1v/enable-narrowing ()
 	(put 'narrow-to-region 'disabled nil)
 	(put 'narrow-to-page 'disabled nil))
+
+(defun 4lex1v/configure-scratch ()
+	(setq initial-major-mode 'scala-mode))	
 	
 ;;;;;;;;;;;;;;;;;
 (4lex1v/quite-start)
 (4lex1v/no-backup-and-autosave)
 (4lex1v/enable-reopen-last-session)
 (4lex1v/enable-narrowing)
+(4lex1v/configure-scratch)
 
 (setq ring-bell-function 'ignore)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; default scratch mode
-(setq initial-major-mode 'scala-mode)
+(setq tramp-default-method "ssh")

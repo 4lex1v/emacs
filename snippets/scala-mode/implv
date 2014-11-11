@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: implicit val
+# key: implv
+# --
+implicit val $1$2 = $0
