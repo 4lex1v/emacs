@@ -13,8 +13,8 @@
 (4lex1v/load-custom-configs)
 (4lex1v/configure-package-system)
 
-(load "functions.el")		;; loads all custom defined functions 
 (load "general.el")			;; general emacs configs
 (load "ui.el")					;; load custom UI configs
 (load "modes.el")				;; configs for installed modes & plugins, but doesn't contains key bindings
+(load "functions.el")		;; loads all custom defined functions 
 (load "keys.el")				;; general keybindings & different mode specific
