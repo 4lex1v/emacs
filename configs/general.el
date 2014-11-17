@@ -1,5 +1,9 @@
 ;; General Emacs configuration
 
+(defun 4lex1v/emacs-user-info ()
+  (setq user-mail-address "4lex1v@gmail.com"
+        user-full-name "Alexander Ivanov"))
+
 (defun 4lex1v/no-backup-and-autosave ()
   (setq make-backup-files nil)
   (setq auto-save-default nil))
@@ -20,6 +24,7 @@
 	(setq initial-major-mode 'scala-mode))	
 	
 ;;;;;;;;;;;;;;;;;
+(4lex1v/emacs-user-info)
 (4lex1v/quite-start)
 (4lex1v/no-backup-and-autosave)
 (4lex1v/enable-reopen-last-session)
