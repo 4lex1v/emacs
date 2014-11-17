@@ -2,5 +2,4 @@
 # name: sbt project
 # key: proj
 # --
-lazy val $1 = project
-  .in("$1")$0
+lazy val $1 = project$3.in(file("$2$1"))$0
