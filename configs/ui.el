@@ -1,40 +1,36 @@
 ;; UI Configs
 
-(defun 4lex1v/load-custom-themes ()
-	(defun custom-load-theme (name) 
-		(add-to-list 
-		 'custom-theme-load-path
-		 (concat "~/.emacs.d/themes/" name)))
-  (custom-load-theme "monokai"))
+;; THEMES CONFIGURATION
+;; Defines a folder for all custom themes
+(defconst custom-themes-folder (concat user-emacs-directory "themes/"))
+(defconst custom-themes (directory-files custom-themes-folder nil "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
 
-(defun 4lex1v/configure-window ()
-  (tool-bar-mode   -1)
-  (scroll-bar-mode -1))
+;; Loads custom theme by name
+(defun 4lex1v/load-theme (theme-name)
+  (add-to-list 'custom-theme-load-path (concat custom-themes-folder theme-name "/")))
 
-;; Maximize emacs window
-;; change 'maximized to 'fullboth to make fullscreen
-(defun 4lex1v/set-fullscreen ()
-  (set-frame-parameter nil 'fullscreen 'maximized))
+(defun 4lex1v/configure-theme (current-theme)
+  (load-theme current-theme t))
 
-(defun 4lex1v/monaco-font ()
-  (set-frame-font "Monaco for Powerline-18"))
+(defun 4lex1v/configure-font (name size)
+  (set-frame-font (format "%s-%d" name size)))
 
-(defun 4lex1v/config-paren-mode ()
-  (show-paren-mode t)
-  (setq show-paren-delay 0.0))
+;; BOOTSTRAP UI CONFIG
+(defun 4lex1v/prepare-ui-configuration ()
+  (mapc '4lex1v/load-theme custom-themes))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-(4lex1v/load-custom-themes)
-(4lex1v/configure-window)
-(4lex1v/set-fullscreen)
-(4lex1v/monaco-font)
-(4lex1v/config-paren-mode)
-
-(load-theme 'dichromacy t)
-
-(setq-default tab-width 2)
-(global-linum-mode t)
-(global-hl-line-mode 1)
-(set-default 'cursor-type 'bar)
+;; UI CONFIGURATION
+(4lex1v/prepare-ui-configuration)
+(tool-bar-mode          -1)
+(scroll-bar-mode        -1)
+(show-paren-mode        t)
+(set-frame-parameter    nil 'fullscreen 'maximized)
+(setq show-paren-delay  0.0)
+(global-hl-line-mode    t)
+(global-linum-mode      t)
+(setq-default           tab-width 2
+                        cursor-type 'bar)
+(4lex1v/configure-font  "Monaco for Powerline" 16)
+(4lex1v/configure-theme 'monokai)
 
 (provide 'ui)
