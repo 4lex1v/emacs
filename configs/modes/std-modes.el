@@ -19,12 +19,12 @@
 ;; Extends std M-x functionality providing some history, better command
 ;; search capabilities + can show commands only for the current major mode
 ;; Still using for mode-private commands M-X
-(smex-initialize)
+;; (smex-initialize)
 
 ;; AUTO-COMPLETE
 ;; (add-to-list 'load-path "~/.emacs.d/elpa/auto-complete-20140726.303")
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-20140726.303/ac-dict")
-(ac-config-default)
+;; (ac-config-default)
 
 ;; SMARTPARENS
 (setq sp-highlight-pair-overlay nil)
