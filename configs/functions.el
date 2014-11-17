@@ -8,6 +8,7 @@
 ;;;;;;;;;;;;;;
 (load-functions
  '(
+   "emacs" ;; generic functions
 	 "shell"
 	 "org"
 	 ))
