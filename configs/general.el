@@ -1,42 +1,27 @@
 ;; General Emacs configuration
 
-(defun 4lex1v/emacs-user-info ()
-  (setq user-mail-address "4lex1v@gmail.com"
-        user-full-name "Alexander Ivanov"))
+(defun 4lex1v/configure-user (name email)
+  (setq user-full-name name
+        user-mail-address email))
 
-(defun 4lex1v/no-backup-and-autosave ()
-  (setq make-backup-files nil)
-  (setq auto-save-default nil))
-
-(defun 4lex1v/quite-start ()
-  (setq inhibit-startup-message t)
-  (setq initial-scratch-message nil))
-
-(defun 4lex1v/enable-reopen-last-session ()
-	(setq desktop-save t) ;; always save, never ask permition
-	(desktop-save-mode 1))
-
-(defun 4lex1v/enable-narrowing ()
-	(put 'narrow-to-region 'disabled nil)
-	(put 'narrow-to-page 'disabled nil))
-
-(defun 4lex1v/configure-scratch ()
-	(setq initial-major-mode 'scala-mode))	
-	
 ;;;;;;;;;;;;;;;;;
-(4lex1v/emacs-user-info)
-(4lex1v/quite-start)
-(4lex1v/no-backup-and-autosave)
-(4lex1v/enable-reopen-last-session)
-(4lex1v/enable-narrowing)
-(4lex1v/configure-scratch)
+(4lex1v/configure-user         "Alexander Ivanov" "4lex1v@gmail.com")
+(desktop-save-mode              1)
+(fset 'yes-or-no-p             'y-or-n-p)
+(put  'narrow-to-region        'disabled nil)
+(put  'narrow-to-page          'disabled nil)
 
-(setq-default indent-tabs-mode nil)
-(setq ring-bell-function 'ignore)
-(fset 'yes-or-no-p 'y-or-n-p)
-(setq-default major-mode 'org-mode)
-(set-default 'truncate-lines t)
-							
-(setq tramp-default-method "ssh")
+(setq-default indent-tabs-mode  nil
+              major-mode       'org-mode
+              truncate-lines    t)
+
+(setq ring-bell-function       'ignore
+      initial-major-mode       'scala-mode
+      tramp-default-method     "ssh"
+      make-backup-files         nil
+      auto-save-default         nil
+      inhibit-startup-message   t
+      initial-scratch-message   nil
+      desktop-save              t)
 
 (provide 'general)
