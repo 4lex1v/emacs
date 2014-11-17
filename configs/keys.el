@@ -3,6 +3,7 @@
 (global-set-key (kbd "M-j")     'join-line)
 (global-set-key (kbd "C-c m")   'execute-extended-command)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-c l")   'view-mode)
 
 ;; PROJECTILE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (global-set-key (kbd "M-1") 'projectile-find-file)
