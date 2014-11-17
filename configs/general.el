@@ -26,8 +26,10 @@
 (4lex1v/enable-narrowing)
 (4lex1v/configure-scratch)
 
+(setq-default indent-tabs-mode nil)
 (setq ring-bell-function 'ignore)
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq-default major-mode 'org-mode)
+(set-default 'truncate-lines t)
 							
 (setq tramp-default-method "ssh")
