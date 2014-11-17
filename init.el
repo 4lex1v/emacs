@@ -1,20 +1,11 @@
 ;;;;;;;;; EMACS SETTINGS ;;;;;;;;;;
 
-(defun 4lex1v/load-custom-configs () 
-	(add-to-list 'load-path "~/.emacs.d/configs"))
+;; Load configuration files  
+(add-to-list 'load-path (expand-file-name "configs" user-emacs-directory))
 
-(defun 4lex1v/configure-package-system ()
-  (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/")))
-  
-;;;;;;;;;;;;;
-(4lex1v/load-custom-configs)
-(4lex1v/configure-package-system)
-
-(load "general.el")			;; general emacs configs
-(load "ui.el")					;; load custom UI configs
-(load "modes.el")				;; configs for installed modes & plugins, but doesn't contains key bindings
-(load "functions.el")		;; loads all custom defined functions 
-(load "keys.el")				;; general keybindings & different mode specific
+(require 'packages)  ;; init package system
+(require 'general)	 ;; general emacs configs
+(require 'ui)				 ;; load custom UI configs
+(require 'modes)		 ;; configs for installed modes & plugins, but doesn't contains key bindings
+(require 'functions) ;; loads all custom defined functions 
+(require 'keys)			 ;; general keybindings & different mode specific

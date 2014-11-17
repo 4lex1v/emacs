@@ -36,3 +36,5 @@
 	 ;; Others
 	 ace-jump-mode
 	 auto-complete-config))
+
+(provide 'modes)

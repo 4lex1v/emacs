@@ -40,3 +40,5 @@
 ;; HIDESHOW ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c [") 'hs-hide-block)
 (global-set-key (kbd "C-c ]") 'hs-show-block)
+
+(provide 'keys)

@@ -33,3 +33,5 @@
 (set-default 'truncate-lines t)
 							
 (setq tramp-default-method "ssh")
+
+(provide 'general)

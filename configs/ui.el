@@ -36,3 +36,5 @@
 (global-linum-mode t)
 (global-hl-line-mode 1)
 (set-default 'cursor-type 'bar)
+
+(provide 'ui)
