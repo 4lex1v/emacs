@@ -30,7 +30,7 @@
 (global-linum-mode      t)
 (setq-default           tab-width 2
                         cursor-type 'bar)
-(4lex1v/configure-font  "Monaco for Powerline" 16)
-(4lex1v/configure-theme 'monokai)
+(4lex1v/configure-font  "Monaco for Powerline" 18)
+(4lex1v/configure-theme 'solarized-dark)
 
 (provide 'ui)
