@@ -31,6 +31,6 @@
 (setq-default           tab-width 2
                         cursor-type 'bar)
 (4lex1v/configure-font  "Monaco for Powerline" 18)
-(4lex1v/configure-theme 'solarized-dark)
+(4lex1v/configure-theme 'monokai)
 
 (provide 'ui)
