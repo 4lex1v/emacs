@@ -5,6 +5,10 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-c l")   'view-mode)
 
+;; SCALA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; For some reason std indent-new-comment-line doesn't work with scala comments
+(define-key scala-mode-map (kbd "C-j") 'scala-functions:new-comment-line)
+
 ;; PROJECTILE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (global-set-key (kbd "M-1") 'projectile-find-file)
 
