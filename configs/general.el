@@ -1,5 +1,7 @@
 ;; General Emacs configuration
 
+(defconst configs-dir (expand-file-name (concat user-emacs-directory "configs/")))
+
 (defun 4lex1v/configure-user (name email)
   (setq user-full-name name
         user-mail-address email))
@@ -15,13 +17,14 @@
               major-mode       'org-mode
               truncate-lines    t)
 
-(setq ring-bell-function       'ignore
-      initial-major-mode       'scala-mode
-      tramp-default-method     "ssh"
-      make-backup-files         nil
-      auto-save-default         nil
-      inhibit-startup-message   t
-      initial-scratch-message   nil
-      desktop-save              t)
+(setq ring-bell-function         'ignore
+      initial-major-mode         'scala-mode
+      tramp-default-method       "ssh"
+      make-backup-files           nil
+      auto-save-default           nil
+      inhibit-startup-message     t
+      initial-scratch-message     nil
+      desktop-save                t
+      kill-do-not-save-duplicates t)
 
 (provide 'general)
