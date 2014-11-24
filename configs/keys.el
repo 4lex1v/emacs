@@ -9,6 +9,10 @@
 ;; For some reason std indent-new-comment-line doesn't work with scala comments
 (define-key scala-mode-map (kbd "RET") 'scala-functions:new-comment-line)
 
+;; ENSIME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define-key scala-mode-map (kbd "C-c e") 'ensime-print-errors-at-point)
+(define-key scala-mode-map (kdb "C-c t") 'ensime-print-type-at-point)
+
 ;; PROJECTILE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (global-set-key (kbd "M-1") 'projectile-find-file)
 
