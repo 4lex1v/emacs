@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: objecti FileName
+# key: objfn
+# --
+object `(file-name-nondirectory (file-name-sans-extension buffer-file-name))` {
+  $0
+}

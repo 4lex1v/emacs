@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: scala package
+# key: spack
+# --
+package `(mapconcat 'identity
+           (butlast
+            (split-string
+             (car (last (split-string buffer-file-name "scala/")))
+             "/"))
+           ".")`
+
+$0
