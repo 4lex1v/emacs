@@ -4,6 +4,7 @@
 
 ;; YASnippet
 (setq yas-snippet-dirs '("~/.emacs.d/snippets")) ;; personal snippets
+(yas-global-mode 1)
 (yas-reload-all) ;; we need to reload yas after adding custom dir
 
 ;; SMARTPARENS
