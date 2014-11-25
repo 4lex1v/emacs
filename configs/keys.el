@@ -11,7 +11,7 @@
 
 ;; ENSIME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-key scala-mode-map (kbd "C-c e") 'ensime-print-errors-at-point)
-(define-key scala-mode-map (kdb "C-c t") 'ensime-print-type-at-point)
+(define-key scala-mode-map (kbd "C-c t") 'ensime-print-type-at-point)
 
 ;; PROJECTILE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (global-set-key (kbd "M-1") 'projectile-find-file)
