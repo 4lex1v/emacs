@@ -4,14 +4,18 @@
 (global-set-key (kbd "C-c m")   'execute-extended-command)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-c l")   'view-mode)
+(global-set-key (kbd "C-a")     'back-to-indentation)
+(global-set-key (kbd "M-m")     'beginning-of-line)
 
 ;; SCALA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; For some reason std indent-new-comment-line doesn't work with scala comments
 (define-key scala-mode-map (kbd "RET") 'scala-functions:new-comment-line)
+(define-key scala-mode-map (kbd "M-j") 'scala-indent:join-line)
 
 ;; ENSIME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-key scala-mode-map (kbd "C-c e") 'ensime-print-errors-at-point)
 (define-key scala-mode-map (kbd "C-c t") 'ensime-print-type-at-point)
+(define-key scala-mode-map (kbd "C-c i") 'ensime-import-type-at-point)
 
 ;; PROJECTILE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (global-set-key (kbd "M-1") 'projectile-find-file)
