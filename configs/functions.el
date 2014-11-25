@@ -9,8 +9,9 @@
 (load-functions
  '(
    "emacs" ;; generic functions
-	 "shell"
-	 "org"
+   "shell"
+   "scala"
+   "org"
 	 ))
 
 (provide 'functions)					
