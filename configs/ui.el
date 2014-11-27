@@ -31,6 +31,7 @@
 (setq-default           tab-width 2
                         cursor-type 'bar)
 (setq linum-format "%3d ") 
+(hlinum-activate)
 (4lex1v/configure-font  "Monaco for Powerline" 18)
 (4lex1v/configure-theme 'monokai)
 

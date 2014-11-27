@@ -14,6 +14,7 @@
 (require 'ensime)
 (require 'haskell-mode)
 (require 'smartparens-config)
+(require 'hlinum)
 (require 'ace-jump-mode)
 (require 'auto-complete-config)
 
