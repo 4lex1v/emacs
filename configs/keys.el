@@ -9,7 +9,7 @@
 
 ;; SCALA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; For some reason std indent-new-comment-line doesn't work with scala comments
-(define-key scala-mode-map (kbd "RET") 'scala-functions:newline-or-indent)
+(define-key scala-mode-map (kbd "RET") 'scala-functions:newline-or-comment)
 (define-key scala-mode-map (kbd "M-j") 'scala-indent:join-line)
 
 ;; ENSIME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
