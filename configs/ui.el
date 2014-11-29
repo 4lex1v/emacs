@@ -33,6 +33,6 @@
 (setq linum-format "%3d ") 
 (hlinum-activate)
 (4lex1v/configure-font  "Monaco for Powerline" 18)
-(4lex1v/configure-theme 'monokai)
+(4lex1v/configure-theme 'sirthias)
 
 (provide 'ui)
