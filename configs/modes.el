@@ -5,6 +5,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'org-install)
 (require 'projectile)
+(require 'ibuffer-projectile)
 (require 'helm-config)
 (require 'helm-projectile)
 (require 'helm-descbinds)
