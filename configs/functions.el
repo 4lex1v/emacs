@@ -1,17 +1,6 @@
 ;; Configuration file for custom defined functions
+(defconst custom-functions (directory-files "~/.emacs.d/configs/functions/" t ".el"))
 
-(defun load-functions (list-of-files)
-	(mapc (lambda (file)
-					(load (concat "~/.emacs.d/configs/functions/" file ".el")))
-				list-of-files))
-
-;;;;;;;;;;;;;;
-(load-functions
- '(
-   "emacs" ;; generic functions
-   "shell"
-   "scala"
-   "org"
-	 ))
+(mapc 'load custom-functions) 
 
 (provide 'functions)					
