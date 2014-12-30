@@ -13,9 +13,13 @@
 (define-key scala-mode-map (kbd "M-j") 'scala-indent:join-line)
 
 ;; ENSIME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(define-key scala-mode-map (kbd "C-c e") 'ensime-print-errors-at-point)
-(define-key scala-mode-map (kbd "C-c t") 'ensime-print-type-at-point)
-(define-key scala-mode-map (kbd "C-c i") 'ensime-import-type-at-point)
+(define-key ensime-mode-map (kbd "C-c b") 'sbt-ext:open-build-file)
+(define-key scala-mode-map  (kbd "C-c e") 'ensime-print-errors-at-point)
+(define-key scala-mode-map  (kbd "C-c t") 'ensime-print-type-at-point)
+(define-key scala-mode-map  (kbd "C-c i") 'ensime-import-type-at-point)
+
+;; SHELL ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define-key shell-mode-map (kbd "C-c k") 'shell-clear)
 
 ;; PROJECTILE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (global-set-key (kbd "M-1") 'projectile-find-file)
