@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: akka dependency
+# key: akkaDep
+# --
+"com.typesafe.akka" %% "akka-$1" % "$2"$0
