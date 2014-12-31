@@ -18,6 +18,7 @@
 (require 'hlinum)
 (require 'ace-jump-mode)
 (require 'auto-complete-config)
+(require 'web-mode)
 
 (mapc 'load custom-config-files)
 
