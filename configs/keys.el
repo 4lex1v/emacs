@@ -1,11 +1,16 @@
 ;; GENERAL ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "RET")     'newline-and-indent)
-(global-set-key (kbd "M-j")     'join-line)
-(global-set-key (kbd "C-c m")   'execute-extended-command)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-c l")   'view-mode)
-(global-set-key (kbd "C-a")     'back-to-indentation)
-(global-set-key (kbd "M-m")     'beginning-of-line)
+(global-set-key (kbd "RET")         'newline-and-indent)
+(global-set-key (kbd "M-j")         'join-line)
+(global-set-key (kbd "C-c m")       'execute-extended-command)
+(global-set-key (kbd "C-x C-b")     'ibuffer)
+(global-set-key (kbd "C-c l")       'view-mode)
+(global-set-key (kbd "C-a")         'back-to-indentation)
+(global-set-key (kbd "M-m")         'beginning-of-line)
+(global-set-key (kbd "S-C-<left>")  'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<down>")  'shrink-window)
+(global-set-key (kbd "S-C-<up>")    'enlarge-window)
+
 
 ;; SCALA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; For some reason std indent-new-comment-line doesn't work with scala comments
