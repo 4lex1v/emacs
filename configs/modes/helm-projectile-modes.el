@@ -14,3 +14,4 @@
 
 (helm-mode 1)
 (helm-projectile-on)
+(helm-autoresize-mode)
