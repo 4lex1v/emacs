@@ -21,7 +21,16 @@
     ;; Set default font for new frames
     (add-to-list 'default-frame-alist
                  (cons 'font (format "%s-%d" name size)))))
+
+(defun 4lex1v/configure-frame-size (size-param)
   
+  ;; Set frame size for current frame
+  (set-frame-parameter nil 'fullscreen size-param)
+
+  ;; Set Default frame size param
+  (add-to-list 'default-frame-alist
+               (cons 'fullscreen size-param)))
+
 ;; BOOTSTRAP UI CONFIG
 (defun 4lex1v/prepare-ui-configuration ()
   (mapc '4lex1v/load-theme custom-themes))
@@ -31,7 +40,6 @@
 (tool-bar-mode          -1)
 (scroll-bar-mode        -1)
 (show-paren-mode        t)
-(set-frame-parameter    nil 'fullscreen 'maximized)
 (setq show-paren-delay  0.0)
 (global-hl-line-mode    t)
 (global-linum-mode      t)
@@ -39,7 +47,8 @@
                         cursor-type 'bar)
 (setq linum-format "%3d ") 
 (hlinum-activate)
-(4lex1v/configure-font  "Monaco for Powerline" 14)
-(4lex1v/configure-theme 'sirthias)
+(4lex1v/configure-font       "Monaco for Powerline" 14)
+(4lex1v/configure-frame-size 'maximized)
+(4lex1v/configure-theme      'sirthias)
 
 (provide 'ui)
