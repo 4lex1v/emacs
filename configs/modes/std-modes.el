@@ -9,3 +9,6 @@
 
 ;; SMARTPARENS
 (setq sp-highlight-pair-overlay nil)
+
+;; Turn on HS mode
+(add-hook 'less-css-mode-hook 'hs-minor-mode)
