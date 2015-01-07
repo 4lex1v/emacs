@@ -13,8 +13,15 @@
   (load-theme current-theme t))
 
 (defun 4lex1v/configure-font (name size)
-  (set-frame-font (format "%s-%d" name size)))
+  (let ((frame-font (format "%s-%d" name size)))
+    
+    ;; Set font for current frame 
+    (set-frame-font frame-font) 
 
+    ;; Set default font for new frames
+    (add-to-list 'default-frame-alist
+                 (cons 'font (format "%s-%d" name size)))))
+  
 ;; BOOTSTRAP UI CONFIG
 (defun 4lex1v/prepare-ui-configuration ()
   (mapc '4lex1v/load-theme custom-themes))
