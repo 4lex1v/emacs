@@ -1,12 +1,16 @@
 ;; Scala-mode configuration
 
+(defun 4lex1v/ensime-project? ()
+  (interactive)
+  (let* ((root-dir (projectile-project-root))
+         (ensime-project-file (concat root-dir ".ensime")))
+    (file-exists-p ensime-project-file)))
+
 ;; Load ensime mode for scala only if there is an ensime
 ;; project file .ensime defined in the root directory
 (defun 4lex1v/smart-ensime-loading ()
-  (let* ((root-dir            (projectile-project-root))
-         (ensime-project-file (concat root-dir ".ensime"))
-         (ensime-project?     (file-exists-p ensime-project-file)))
-    (if ensime-project? (ensime-scala-mode-hook))))
+  (if (4lex1v/ensime-project?)
+      (ensime-scala-mode-hook)))
 
 ;; Indent new line between braces with smartparens mode
 (defun 4lex1v/indent-in-braces (&rest _ignored)
