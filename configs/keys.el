@@ -11,6 +11,7 @@
 (global-set-key (kbd "S-C-<down>")  'shrink-window)
 (global-set-key (kbd "S-C-<up>")    'enlarge-window)
 (global-set-key (kbd "C-S-d")       'duplicate-line)
+(global-set-key (kbd "C-x f")       'other-frame)
 
 ;; SCALA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; For some reason std indent-new-comment-line doesn't work with scala comments
@@ -50,6 +51,9 @@
 (define-key helm-map (kbd "M-o")   'helm-previous-source)
 
 (global-set-key (kbd "C-=") 'er/expand-region)
+
+;; MAGIT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-c s") 'magit-status)
 
 ;; SMEX ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (global-set-key (kbd "M-X") 'smex-major-mode-commands)
