@@ -31,4 +31,5 @@
 ;; Smartparen configuration for scala-mode
 (sp-local-pair 'scala-mode "{" nil
                :post-handlers '((4lex1v/indent-in-braces "RET")))
+(sp-local-pair 'scala-mode "/**" "*/")
 (setq scala-indent:use-javadoc-style t)

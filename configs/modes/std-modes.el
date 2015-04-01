@@ -12,3 +12,4 @@
 
 ;; Turn on HS mode
 (add-hook 'less-css-mode-hook 'hs-minor-mode)
+(add-hook 'js-mode-hook 'hs-minor-mode)

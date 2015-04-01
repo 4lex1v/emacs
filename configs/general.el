@@ -14,8 +14,7 @@
 (put  'narrow-to-page          'disabled nil)
 
 (setq-default indent-tabs-mode  nil
-              major-mode       'org-mode
-              truncate-lines    t)
+              major-mode       'org-mode)
 
 (setq ring-bell-function         'ignore
       initial-major-mode         'scala-mode
