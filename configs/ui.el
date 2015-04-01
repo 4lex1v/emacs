@@ -42,7 +42,7 @@
 (show-paren-mode        t)
 (setq show-paren-delay  0.0)
 (global-hl-line-mode    t)
-(global-linum-mode      t)
+(global-linum-mode      nil)
 (setq-default           tab-width 2
                         cursor-type 'bar)
 (setq linum-format "%3d ") 

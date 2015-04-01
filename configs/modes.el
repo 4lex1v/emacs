@@ -19,6 +19,7 @@
 (require 'ace-jump-mode)
 (require 'auto-complete-config)
 (require 'web-mode)
+(require 'neotree)
 
 (mapc 'load custom-config-files)
 

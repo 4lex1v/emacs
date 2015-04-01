@@ -62,7 +62,7 @@
 (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
 
 ;; NEOTREE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (global-set-key [f8] 'neotree-toggle)
+(global-set-key [f8] '4lex1v/neotree-projectile-toggle)
 
 ;; HIDESHOW ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c [") 'hs-hide-block)
