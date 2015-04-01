@@ -47,7 +47,7 @@
                         cursor-type 'bar)
 (setq linum-format "%3d ") 
 (hlinum-activate)
-(4lex1v/configure-font       "Monaco for Powerline" 14)
+(4lex1v/configure-font       "Monaco for Powerline" 16)
 (4lex1v/configure-frame-size 'maximized)
 (4lex1v/configure-theme      'sirthias)
 
