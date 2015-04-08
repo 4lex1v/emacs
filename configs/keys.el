@@ -12,6 +12,7 @@
 (global-set-key (kbd "S-C-<up>")    'enlarge-window)
 (global-set-key (kbd "C-S-d")       'duplicate-line)
 (global-set-key (kbd "C-x f")       'other-frame)
+(global-set-key (kbd "C-c r")       'revert-buffer)
 
 ;; SCALA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; For some reason std indent-new-comment-line doesn't work with scala comments
