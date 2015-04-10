@@ -2,12 +2,10 @@
 
 ;; THEMES CONFIGURATION
 ;; Defines a folder for all custom themes
-(defconst custom-themes-folder (concat user-emacs-directory "themes/"))
-(defconst custom-themes (directory-files custom-themes-folder nil "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
 
 ;; Loads custom theme by name
 (defun 4lex1v/load-theme (theme-name)
-  (add-to-list 'custom-theme-load-path (concat custom-themes-folder theme-name "/")))
+  (add-to-list 'custom-theme-load-path (concat themes-dir "/" theme-name "/")))
 
 (defun 4lex1v/configure-theme (current-theme)
   (load-theme current-theme t))
@@ -35,6 +33,10 @@
 (defun 4lex1v/prepare-ui-configuration ()
   (mapc '4lex1v/load-theme custom-themes))
 
+(defun 4lex1v/transparent-ui (v1 v2)
+	(set-frame-parameter (selected-frame) 'alpha (cons v1 v2))
+	(add-to-list 'default-frame-alist (cons 'alpha (cons v1 v2))))
+
 ;; UI CONFIGURATION
 (4lex1v/prepare-ui-configuration)
 (tool-bar-mode          -1)
@@ -51,7 +53,6 @@
 (4lex1v/configure-frame-size 'maximized)
 (4lex1v/configure-theme      'sirthias)
 
-(set-frame-parameter (selected-frame) 'alpha '(92 100))
-(add-to-list 'default-frame-alist '(alpha 85 50))
+(4lex1v/transparent-ui 92 100)
 
 (provide 'ui)
