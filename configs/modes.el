@@ -17,9 +17,9 @@
 (require 'smartparens-config)
 (require 'hlinum)
 (require 'ace-jump-mode)
-(require 'auto-complete-config)
 (require 'web-mode)
 (require 'neotree)
+(require 'company)
 
 (mapc 'load custom-config-files)
 
