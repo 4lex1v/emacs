@@ -1,26 +1,25 @@
 ;; Config for plugins and modes
-
-(defconst custom-config-files (directory-files "~/.emacs.d/configs/modes/" t ".el"))
 						
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'org-install)
-(require 'projectile)
-(require 'ibuffer-projectile)
-(require 'helm-config)
-(require 'helm-projectile)
-(require 'helm-descbinds)
-(require 'yasnippet)
-(require 'scala-mode2)
-(require 'sbt-mode)
-(require 'ensime)
-(require 'haskell-mode)
-(require 'smartparens-config)
-(require 'hlinum)
-(require 'ace-jump-mode)
-(require 'web-mode)
-(require 'neotree)
-(require 'company)
+;; Basic workflow packages
+(use-package projectile)
+(use-package ibuffer-projectile)
+(use-package helm-config)
+(use-package helm-projectile)
+(use-package helm-descbinds)
+(use-package neotree)
+(use-package ace-jump-mode)
 
-(mapc 'load custom-config-files)
+(use-package org-install        :defer t)
+(use-package yasnippet          :defer t)
+(use-package scala-mode2        :defer t)
+(use-package sbt-mode           :defer t)
+(use-package ensime             :defer t)
+(use-package haskell-mode       :defer t)
+(use-package smartparens-config :defer t)
+(use-package hlinum             :defer t)
+(use-package web-mode           :defer t)
+(use-package company            :defer t)
+
+;; (mapc 'load custom-config-files)
 
 (provide 'modes)
