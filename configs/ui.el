@@ -51,4 +51,7 @@
 (4lex1v/configure-frame-size 'maximized)
 (4lex1v/configure-theme      'sirthias)
 
+(set-frame-parameter (selected-frame) 'alpha '(92 100))
+(add-to-list 'default-frame-alist '(alpha 85 50))
+
 (provide 'ui)
