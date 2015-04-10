@@ -10,7 +10,6 @@
 
 ;; Load configs
 (add-to-list 'load-path configs-dir)
-(add-to-list 'load-path "~/.emacs.d/modes.el")
 
 (require 'packages)         ;; init package system
 (require 'benchmark-init)   ;; benchmark emacs loading time
