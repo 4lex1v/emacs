@@ -1,7 +1,5 @@
-;; UI Configs
-
-;; THEMES CONFIGURATION
-;; Defines a folder for all custom themes
+(defconst themes-dir    (expand-file-name "themes"  user-emacs-directory))
+(defconst custom-themes (directory-files themes-dir nil "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
 
 ;; Loads custom theme by name
 (defun 4lex1v/load-theme (theme-name)
