@@ -1,12 +1,20 @@
 (use-package projectile
+  :commands projectile-global-mode
 
-  :config
-  ;; Turn on projectile in all buffers
+  :defer 5
+
+  :init 
   (projectile-global-mode)
 
+  :bind-keymap ("C-c p" . projectile-command-map)
+
+  :config
   (setq projectile-enable-caching              nil
-        projectile-completion-system          'helm
         projectile-require-project-root        t)
 
-  ;; Dependencies
-  (use-package ibuffer-projectile))
+  (use-package helm-config)
+  (use-package ibuffer-projectile)
+  (use-package helm-projectile
+    :config
+    (setq projectile-completion-system 'helm)
+    (helm-projectile-on)))

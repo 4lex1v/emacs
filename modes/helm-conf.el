@@ -34,7 +34,4 @@
   (bind-key "C-o"   'helm-next-source               helm-map)
   (bind-key "M-o"   'helm-previous-source           helm-map)
 
-  (use-package helm-descbinds)
-  (use-package helm-projectile
-    :demand t
-    :config (helm-projectile-on)))
+  (use-package helm-descbinds))

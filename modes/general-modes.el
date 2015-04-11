@@ -1,11 +1,6 @@
 (use-package ace-jump-mode)
-(use-package magit
-  :config
-  (setq magit-last-seen-setup-instructions "1.4.0"))
 
-(use-package scala-mode2
-  :defer t
-  :mode ("\\.scala\\'" . scala-mode))
+(use-package scala-mode2 :defer t)
 
 (use-package sbt-mode           :defer t)
 (use-package ensime             :defer t)

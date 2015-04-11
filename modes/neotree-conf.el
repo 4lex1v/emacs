@@ -1,4 +1,5 @@
 (use-package neotree
+  :defer t
   :config
 
   (defun 4lex1v/neotree-projectile-toggle ()
