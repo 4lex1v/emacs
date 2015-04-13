@@ -90,13 +90,14 @@
 (use-package neotree
   :demand t
   :commands neotree
+  :bind ("<f8>" . 4lex1v/neotree-projectile-toggle)
   :init
   ;; Toogle neotree buffer for current projectile root
   (defun 4lex1v/neotree-projectile-toggle ()
+    (interactive)
     (if (neo-global--window-exists-p)
         (neotree-hide)
-      (neotree-projectile-action)))
-  (bind-key "<f8>" '4lex1v/neotree-projectile-toggle))
+      (neotree-projectile-action))))
 
 (use-package ace-jump-mode
   :bind ("C-c SPC" . ace-jump-char-mode))
