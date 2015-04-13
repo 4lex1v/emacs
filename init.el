@@ -59,7 +59,6 @@
 
   (use-package helm-descbinds)
   (helm-descbinds-mode))
-
 (use-package projectile
   :demand t
   :bind-keymap ("C-c p" . projectile-command-map)
@@ -83,8 +82,6 @@
     :config
     (setq projectile-completion-system 'helm)
     (helm-projectile-on)))
-
-
 (use-package neotree
   :demand t
   :bind ("<f8>" . 4lex1v/neotree-projectile-toggle)
@@ -94,10 +91,8 @@
     (if (neo-global--window-exists-p)
         (neotree-hide)
       (neotree-projectile-action))))
-
 (use-package ace-jump-mode
   :bind ("C-c SPC" . ace-jump-char-mode))
-
 (use-package haskell-mode
   :defer t
   :config
@@ -110,36 +105,30 @@
               (turn-on-haskell-doc-mode)
               (turn-on-haskell-unicode-input-method)
               (interactive-haskell-mode))))
-
 (use-package yasnippet
   :defer t
   :config
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
   (yas-global-mode 1)
   (yas-reload-all))
-
 (use-package smartparens-config
   :defer t
   :config
   (setq sp-highlight-pair-overlay nil))
-
-(use-package hlinum             :defer t)
-
+(use-package hlinum
+  :defer t)
 (use-package company
   :config
   (global-company-mode))
-
 (use-package magit
   :defer t
   :diminish magit-auto-revert-mode
   :bind ("C-c s" . magit-status)
   :init
   (setq magit-last-seen-setup-instructions "1.4.0"))
-  
 (use-package scala-mode
   :defer t
   :config
-
   ;; Insert * if in the middle of the comment
   (defun scala-functions:newline-or-comment ()
     (indent-new-comment-line)
@@ -181,27 +170,23 @@
             (find-file sbt-build-file)
           (error "build.sbt is not defined"))))
 
-    (bind-key "C-c b" 'sbt-ext:open-build-file scala-mode-map)))
-
-(use-package ensime
-  :defer t
-  :config
-  (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
-  (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
-  (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)
+    (bind-key "C-c b" 'sbt-ext:open-build-file scala-mode-map))
   
-
-  (setq ensime-default-buffer-prefix "ENSIME-"))
-
+  (use-package ensime
+    :defer t
+    :config
+    (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
+    (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
+    (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)
+    
+    (setq ensime-default-buffer-prefix "ENSIME-")))
 (use-package web-mode
   :defer t
   :mode "\\.html?\\'")
-
 (use-package org-mode
-  :defer 5
+  :defer t
   :config
   (setq org-directory "~/Notes"))
-
 (use-package shell-mode
   :defer t
   :config
@@ -210,7 +195,6 @@
     (let ((comint-buffer-maximum-size 0))
       (comint-truncate-buffer)))
   (bind-key "C-c k" 'shell-clear shell-mode-map))
-
 (use-package help+
   :defer t
   :config
@@ -218,5 +202,5 @@
   (use-package help-mode+))
 
 (add-hook 'less-css-mode-hook 'hs-minor-mode)
-(add-hook 'js-mode-hook 'hs-minor-mode)
+(add-hook 'js-mode-hook       'hs-minor-mode)
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
