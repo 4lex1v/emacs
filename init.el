@@ -147,8 +147,24 @@
   (unbind-key "C-c m")
   (setq magit-last-seen-setup-instructions "1.4.0"))
 
-(use-package scala-mode
-  :defer t
+(use-package scala-mode2
+  :commands scala-mode
+  :init
+  ;; Load ensime mode for scala only if there is an ensime
+  ;; project file .ensime defined in the root directory
+  (defun 4lex1v/ensime-project-p ()
+    (interactive)
+    (let* ((root-dir (projectile-project-root))
+           (ensime-project-file (concat root-dir ".ensime")))
+      (file-exists-p ensime-project-file)))
+
+  (defun sbt-ext:open-build-file ()
+    (interactive)
+    (let ((sbt-build-file (concat (projectile-project-root) "build.sbt")))
+      (if (file-exists-p sbt-build-file)
+          (find-file sbt-build-file)
+        (error "build.sbt is not defined"))))
+
   :config
   ;; Insert * if in the middle of the comment
   (defun scala-functions:newline-or-comment ()
@@ -163,38 +179,35 @@
     (forward-line -1)
     (indent-according-to-mode))
 
+  (add-hook 'scala-mode-hook
+            #'(lambda ()
+                (if (4lex1v/ensime-project-p)
+                    (ensime-mode 1))))
+
+  (bind-key "C-c b" 'sbt-ext:open-build-file scala-mode-map)
   (bind-key "RET" 'scala-functions:newline-or-comment scala-mode-map)
   (bind-key "M-j" 'scala-indent:join-line             scala-mode-map)
   
   (setq scala-indent:use-javadoc-style t
         popup-complete-enabled-modes '(scala-mode))
 
-  (require 'smartparens-config)
-  (sp-local-pair 'scala-mode "{" nil
-                 :post-handlers '((4lex1v/indent-in-braces "RET")))
-  (sp-local-pair 'scala-mode "/**" "*/")
+  ;; (require 'smartparens-config)
+  ;; (sp-local-pair 'scala-mode "{" nil
+  ;;                :post-handlers '((4lex1v/indent-in-braces "RET")))
+  ;; (sp-local-pair 'scala-mode "/**" "*/")
 
-  (use-package sbt-mode
-    :bind ("C-a" . comint-bol)
-    :config
-    ;; Open build.sbt in the root directory 
-    (defun sbt-ext:open-build-file ()
-      (interactive)
-      (let ((sbt-build-file (concat (projectile-project-root) "build.sbt")))
-        (if (file-exists-p sbt-build-file)
-            (find-file sbt-build-file)
-          (error "build.sbt is not defined"))))
-
-    (bind-key "C-c b" 'sbt-ext:open-build-file scala-mode-map))
+  (use-package sbt-mode :commands sbt-start)
   
   (use-package ensime
-    :defer t
+    :commands ensime-mode
+    :init
+    (setq ensime-default-buffer-prefix "ENSIME-")
     :config
     (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
     (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
-    (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)
-    
-    (setq ensime-default-buffer-prefix "ENSIME-")))
+    (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)))
+
+
 
 (use-package web-mode
   :defer t
