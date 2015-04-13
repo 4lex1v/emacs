@@ -111,16 +111,18 @@
               (interactive-haskell-mode))))
 
 (use-package yasnippet
-  :defer t
-  :config
+  :commands yas-minor-mode
+  :init
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-  (yas-global-mode 1)
-  (yas-reload-all))
-
-(use-package smartparens-config
-  :defer t
   :config
-  (setq sp-highlight-pair-overlay nil))
+  (hook-into-modes #'yas-minor-mode 'scala-mode-hook))
+
+(use-package smartparens
+  :commands (smartparens-config smartparens-mode)
+  :init 
+  (setq sp-highlight-pair-overlay nil)
+  :config
+  (hook-into-modes #'smartparens-config 'scala-mode-hook))
 
 (use-package hlinum
   :defer t)
@@ -162,12 +164,6 @@
   (sp-local-pair 'scala-mode "{" nil
                  :post-handlers '((4lex1v/indent-in-braces "RET")))
   (sp-local-pair 'scala-mode "/**" "*/")
-
-  (add-hook 'scala-mode-hook
-            '(lambda ()
-               (yas-minor-mode)
-               (hs-minor-mode)
-               (smartparens-mode)))
 
   (use-package sbt-mode
     :bind ("C-a" . comint-bol)
@@ -215,6 +211,17 @@
   (use-package help-fns+)
   (use-package help-mode+))
 
-(add-hook 'less-css-mode-hook 'hs-minor-mode)
-(add-hook 'js-mode-hook       'hs-minor-mode)
+(use-package hideshow
+  :defer t
+  :commands hs-minor-mode
+  :diminish hs-minor-mode
+  :bind (("C-c [" . hs-hide-block)
+         ("C-c ]" . hs-show-block))
+  :config
+  (hook-into-modes #'hs-minor-mode
+                   'less-css-mode-hook
+                   'js-mode-hook
+                   'scala-mode-hook
+                   'elisp-mode-hook))
+  
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))

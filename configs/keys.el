@@ -15,8 +15,8 @@
 
 (bind-key "C-c C-d"     '4lex1v/delete-current-file)
 
+(bind-key "<f9>"        'list-packages)
+
 ;; HIDESHOW ;;;;;;;;;;;;;;;;;;;;;
-(bind-key "C-c [" 'hs-hide-block)
-(bind-key "C-c ]" 'hs-show-block)
 
 (provide 'keys)
