@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: actor
+# key: actor
+# --
+class $1 extends Actor {
+  def receive: Receive = {
+    case $2 => $3
+  }
+}
