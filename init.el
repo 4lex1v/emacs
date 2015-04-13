@@ -60,8 +60,12 @@
   (bind-key "M-o"   'helm-previous-source           helm-map)
 
   (use-package helm-descbinds
-    :commands helm-descbinds-mode
-    :bind ("C-c h d" . helm-descbinds)))
+    :bind ("C-c h d" . helm-descbinds))
+
+  (use-package helm-company
+    :config
+    (bind-key "C-:" 'helm-company company-mode-map)
+    (bind-key "C-:" 'helm-company company-active-map)))
 
 (use-package projectile
   :demand t
@@ -125,6 +129,7 @@
   (yas-reload-all))
 
 (use-package smartparens-config
+  :diminish smartparens-mode
   :config
   (setq smartparens-strict-mode t
         sp-autoinsert-if-followed-by-word t
