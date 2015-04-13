@@ -24,12 +24,9 @@
 
 ;; Here comes the packages
 (use-package helm-config
-  :diminish helm-mode
-  :commands helm-mode
-  :init
-  (helm-autoresize-mode)
+  :demand t
+  :bind* ("C-c h o"   . helm-occur)
   :bind (("C-c h"   . helm-command-prefix)
-         ("C-c O"   . helm-occur)
          ("M-y"     . helm-show-kill-ring)
          ("C-x b"   . helm-mini)
          ("C-x C-f" . helm-find-files)
@@ -37,6 +34,13 @@
          ("M-x"     . helm-M-x))
 
   :config
+  (use-package helm-mode
+    :diminish helm-mode
+    :init
+    (helm-mode 1))
+    
+  (helm-autoresize-mode)
+
   (when (executable-find "curl")
     (setq helm-google-suggest-use-curl-p t))
 
@@ -62,10 +66,10 @@
 (use-package projectile
   :demand t
   :bind-keymap ("C-c p" . projectile-command-map)
-  :config
+  :init
   (projectile-global-mode)
-
-  (setq projectile-enable-caching              nil
+  :config
+  (setq projectile-enable-caching              t
         projectile-require-project-root        t)
 
   (use-package ibuffer-projectile
@@ -85,13 +89,14 @@
 
 (use-package neotree
   :demand t
-  :bind ("<f8>" . 4lex1v/neotree-projectile-toggle)
+  :commands neotree
   :init
   ;; Toogle neotree buffer for current projectile root
   (defun 4lex1v/neotree-projectile-toggle ()
     (if (neo-global--window-exists-p)
         (neotree-hide)
-      (neotree-projectile-action))))
+      (neotree-projectile-action)))
+  (bind-key "<f8>" '4lex1v/neotree-projectile-toggle))
 
 (use-package ace-jump-mode
   :bind ("C-c SPC" . ace-jump-char-mode))
@@ -110,11 +115,13 @@
               (interactive-haskell-mode))))
 
 (use-package yasnippet
+  :diminish yas-minor-mode
   :commands yas-minor-mode
   :init
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
   :config
-  (hook-into-modes #'yas-minor-mode 'scala-mode-hook))
+  (hook-into-modes #'yas-minor-mode 'scala-mode-hook)
+  (yas-reload-all))
 
 (use-package smartparens
   :commands (smartparens-config smartparens-mode)
@@ -133,8 +140,10 @@
 (use-package magit
   :defer t
   :diminish magit-auto-revert-mode
-  :bind ("C-c s" . magit-status)
+  :bind (("C-c m s" . magit-status)
+         ("C-c m b" . magit-branch-manager))
   :init
+  (unbind-key "C-c m")
   (setq magit-last-seen-setup-instructions "1.4.0"))
 
 (use-package scala-mode
