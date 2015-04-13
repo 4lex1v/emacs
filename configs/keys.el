@@ -15,5 +15,7 @@
 (bind-key "C-c C-d"     '4lex1v/delete-current-file)
 (bind-key "<f9>"        'list-packages)
 (bind-key "C-x \\"      'align-regexp)
+(bind-key "C-+"         'text-scale-increase)
+(bind-key "C--"         'text-scale-decrease)
 
 (provide                'keys)
