@@ -124,13 +124,14 @@
   (hook-into-modes #'yas-minor-mode 'scala-mode-hook)
   (yas-reload-all))
 
-(use-package smartparens
-  :commands (smartparens-config smartparens-mode)
-  :init 
-  (setq sp-highlight-pair-overlay nil)
+(use-package smartparens-config
   :config
-  (hook-into-modes #'smartparens-config 'scala-mode-hook))
-
+  (setq smartparens-strict-mode t
+        sp-autoinsert-if-followed-by-word t
+        sp-autoskip-closing-pair 'always
+        sp-hybrid-kill-entire-symbol nil)
+  (hook-into-modes #'smartparens-mode 'scala-mode-hook))
+ 
 (use-package hlinum
   :defer t)
 
@@ -167,7 +168,8 @@
 
   :config
   ;; Insert * if in the middle of the comment
-  (defun scala-functions:newline-or-comment ()
+  (defun newline-or-comment ()
+    (interactive)
     (indent-new-comment-line)
     (scala-indent:insert-asterisk-on-multiline-comment))
 
@@ -185,17 +187,14 @@
                     (ensime-mode 1))))
 
   (bind-key "C-c b" 'sbt-ext:open-build-file scala-mode-map)
-  (bind-key "RET" 'scala-functions:newline-or-comment scala-mode-map)
-  (bind-key "M-j" 'scala-indent:join-line             scala-mode-map)
+  (bind-key "<C-return>"   'newline-or-comment      scala-mode-map)
+  (bind-key "M-j"   'scala-indent:join-line  scala-mode-map)
   
   (setq scala-indent:use-javadoc-style t
         popup-complete-enabled-modes '(scala-mode))
 
-  ;; (require 'smartparens-config)
-  ;; (sp-local-pair 'scala-mode "{" nil
-  ;;                :post-handlers '((4lex1v/indent-in-braces "RET")))
-  ;; (sp-local-pair 'scala-mode "/**" "*/")
-
+  (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
+  
   (use-package sbt-mode :commands sbt-start)
   
   (use-package ensime
@@ -206,8 +205,6 @@
     (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
     (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
     (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)))
-
-
 
 (use-package web-mode
   :defer t
@@ -245,5 +242,8 @@
                    'js-mode-hook
                    'scala-mode-hook
                    'elisp-mode-hook))
+
+(use-package er/expand-region
+  :bind ("C-=" . er/expand-region))
   
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
