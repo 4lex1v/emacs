@@ -79,4 +79,13 @@
     (delete-file file-path)
     (kill-buffer current-buffer)))
 
+;;----------------------------------------------------------------------------
+;; Byte compile Emacs directory
+;; Taken from: http://emacsredux.com/blog/2013/06/25/boost-performance-by-leveraging-byte-compilation/
+;;----------------------------------------------------------------------------
+(defun 4lex1v/byte-compile-init-dir ()
+  "Byte-compile all your dotfiles."
+  (interactive)
+  (byte-recompile-directory user-emacs-directory 0))
+
 (provide 'functions)
