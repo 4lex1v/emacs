@@ -12,11 +12,8 @@
 (bind-key "C-S-d"       'duplicate-line)
 (bind-key "M-`"         'other-frame)
 (bind-key "C-c r"       'revert-buffer)
-
 (bind-key "C-c C-d"     '4lex1v/delete-current-file)
-
 (bind-key "<f9>"        'list-packages)
+(bind-key "C-x \\"      'align-regexp)
 
-;; HIDESHOW ;;;;;;;;;;;;;;;;;;;;;
-
-(provide 'keys)
+(provide                'keys)

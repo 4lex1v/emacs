@@ -24,12 +24,10 @@
 
 ;; Here comes the packages
 (use-package helm-config
-  :demand t
   :diminish helm-mode
+  :commands helm-mode
   :init
-  (helm-mode 1)
   (helm-autoresize-mode)
-
   :bind (("C-c h"   . helm-command-prefix)
          ("C-c O"   . helm-occur)
          ("M-y"     . helm-show-kill-ring)
@@ -57,8 +55,9 @@
   (bind-key "C-o"   'helm-next-source               helm-map)
   (bind-key "M-o"   'helm-previous-source           helm-map)
 
-  (use-package helm-descbinds)
-  (helm-descbinds-mode))
+  (use-package helm-descbinds
+    :commands helm-descbinds-mode
+    :bind ("C-c h d" . helm-descbinds)))
 
 (use-package projectile
   :demand t
