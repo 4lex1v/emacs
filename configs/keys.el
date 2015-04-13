@@ -1,4 +1,3 @@
-;; Keybindings for standard packages and modes
 (bind-key "RET"         'newline-and-indent)
 (bind-key "M-j"         'join-line)
 (bind-key "C-c m"       'execute-extended-command)
@@ -11,9 +10,13 @@
 (bind-key "S-C-<down>"  'shrink-window)
 (bind-key "S-C-<up>"    'enlarge-window)
 (bind-key "C-S-d"       'duplicate-line)
-(bind-key "C-x f"       'other-frame)
+(bind-key "M-`"         'other-frame)
 (bind-key "C-c r"       'revert-buffer)
+
+(bind-key "C-c C-d"     '4lex1v/delete-current-file)
 
 ;; HIDESHOW ;;;;;;;;;;;;;;;;;;;;;
 (bind-key "C-c [" 'hs-hide-block)
 (bind-key "C-c ]" 'hs-show-block)
+
+(provide 'keys)

@@ -6,7 +6,8 @@
   (add-to-list 'custom-theme-load-path (concat themes-dir "/" theme-name "/")))
 
 (defun 4lex1v/configure-theme (current-theme)
-  (load-theme current-theme t))
+  (if (equal (window-system) 'mac)
+      (load-theme current-theme t)))
 
 (defun 4lex1v/configure-font (name size)
   (let ((frame-font (format "%s-%d" name size)))
@@ -46,11 +47,12 @@
 (setq-default           tab-width 2
                         cursor-type 'bar)
 (setq linum-format "%3d ") 
-(hlinum-activate)
 (4lex1v/configure-font       "Monaco for Powerline" 16)
 (4lex1v/configure-frame-size 'maximized)
 (4lex1v/configure-theme      'sirthias)
+(4lex1v/transparent-ui  92 100)
 
-(4lex1v/transparent-ui 92 100)
+;;(hlinum-activate)
+
 
 (provide 'ui)

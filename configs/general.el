@@ -15,13 +15,14 @@
               major-mode       'org-mode)
 
 (setq ring-bell-function         'ignore
-      initial-major-mode         'scala-mode
+      initial-major-mode         'text-mode
       tramp-default-method       "ssh"
       make-backup-files           nil
       auto-save-default           nil
       inhibit-startup-message     t
       initial-scratch-message     nil
 ;;      desktop-save                t
-      kill-do-not-save-duplicates t)
+      kill-do-not-save-duplicates t
+      ad-redefinition-action     'accept)
 
 (provide 'general)
