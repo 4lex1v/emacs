@@ -88,4 +88,11 @@
   (interactive)
   (byte-recompile-directory user-emacs-directory 0))
 
+;;----------------------------------------------------------------------------
+;; Alternative to add-hook
+;; Taken from: https://github.com/jwiegley/dot-emacs/blob/master/init.el
+;;----------------------------------------------------------------------------
+(defsubst hook-into-modes (func &rest modes)
+  (dolist (mode-hook modes) (add-hook mode-hook func)))
+
 (provide 'functions)
