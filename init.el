@@ -60,12 +60,7 @@
   (bind-key "M-o"   'helm-previous-source           helm-map)
 
   (use-package helm-descbinds
-    :bind ("C-c h d" . helm-descbinds))
-
-  (use-package helm-company
-    :config
-    (bind-key "C-:" 'helm-company company-mode-map)
-    (bind-key "C-:" 'helm-company company-active-map)))
+    :bind ("C-c h d" . helm-descbinds)))
 
 (use-package projectile
   :demand t
@@ -143,8 +138,14 @@
   :defer t)
 
 (use-package company
+  :diminish company-mode
   :config
-  (global-company-mode))
+  (global-company-mode)
+
+  (use-package helm-company
+    :config
+    (bind-key "C-:" 'helm-company company-mode-map)
+    (bind-key "C-:" 'helm-company company-active-map)))
 
 (use-package magit
   :defer t
@@ -156,7 +157,7 @@
   (setq magit-last-seen-setup-instructions "1.4.0"))
 
 (use-package scala-mode2
-  :commands scala-mode
+   :commands scala-mode
   :init
   ;; Load ensime mode for scala only if there is an ensime
   ;; project file .ensime defined in the root directory
