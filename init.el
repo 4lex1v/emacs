@@ -128,6 +128,8 @@
   (hook-into-modes #'yas-minor-mode 'scala-mode-hook)
   (yas-reload-all))
 
+(use-package multiple-cursors)
+
 (use-package smartparens-config
   :diminish smartparens-mode
   :config
@@ -135,7 +137,7 @@
         sp-autoinsert-if-followed-by-word t
         sp-autoskip-closing-pair 'always
         sp-hybrid-kill-entire-symbol nil)
-  (hook-into-modes #'smartparens-mode 'scala-mode-hook))
+  (hook-into-modes #'smartparens-mode 'scala-mode-hook 'emacs-lisp-mode-hook))
  
 (use-package hlinum
   :defer t)
@@ -246,7 +248,7 @@
                    'less-css-mode-hook
                    'js-mode-hook
                    'scala-mode-hook
-                   'elisp-mode-hook))
+                   'emacs-lisp-mode-hook))
 
 (use-package er/expand-region
   :bind ("C-=" . er/expand-region))
