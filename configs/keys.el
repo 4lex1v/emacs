@@ -13,8 +13,10 @@
 (bind-key "M-`"         'other-frame)
 (bind-key "C-c r"       'revert-buffer)
 (bind-key "C-c C-d"     '4lex1v/delete-current-file)
-(bind-key "<f9>"        'list-packages)
 (bind-key "C-x \\"      'align-regexp)
+
+(bind-key "<f9>"        'list-packages)
+(bind-key "<f10>"       'customize-themes)
 
 (bind-key "C-+"         'text-scale-increase)
 (bind-key "C--"         'text-scale-decrease)
