@@ -212,7 +212,8 @@
     :config
     (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
     (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
-    (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)))
+    (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)
+    (bind-key "C-M-." 'ensime-edit-definition-other-window scala-mode-map)))
 
 (use-package web-mode
   :defer t
