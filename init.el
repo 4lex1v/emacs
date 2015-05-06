@@ -217,7 +217,9 @@
 
 (use-package web-mode
   :defer t
-  :mode "\\.html?\\'")
+  :mode "\\.html?\\'"
+  :config
+  (use-package company-web-html))
 
 (use-package org-mode
   :defer t
