@@ -51,6 +51,7 @@
 (4lex1v/configure-frame-size 'maximized)
 (4lex1v/configure-theme      'sirthias)
 (4lex1v/transparent-ui  92 100)
+(set-face-attribute 'mode-line nil  :height 140)
 
 ;;(hlinum-activate)
 
