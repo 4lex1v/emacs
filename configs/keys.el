@@ -1,6 +1,6 @@
 (bind-key "RET"         'newline-and-indent)
 (bind-key "M-j"         'join-line)
-(bind-key "C-j"         'join-line)
+(bind-key "C-j"         (lambda () (interactive) (delete-indentation t)))
 (bind-key "C-c m"       'execute-extended-command)
 (bind-key "C-x C-b"     'ibuffer)
 (bind-key "C-c l"       'view-mode)
