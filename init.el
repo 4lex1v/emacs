@@ -58,6 +58,7 @@
   (bind-key "C-z"   'helm-select-action             helm-map) ; list actions using C-z
   (bind-key "C-o"   'helm-next-source               helm-map)
   (bind-key "M-o"   'helm-previous-source           helm-map)
+  (bind-key "C-x o" 'helm-buffer-switch-other-window helm-map)
 
   (use-package helm-descbinds
     :bind ("C-c h d" . helm-descbinds)))
@@ -99,7 +100,10 @@
       (neotree-projectile-action))))
 
 (use-package ace-jump-mode
-  :bind ("C-c SPC" . ace-jump-char-mode))
+  :bind (("C-c SPC" . ace-jump-char-mode)
+         ("C-c j c" . ace-jump-char-mode)
+         ("C-c j w" . ace-jump-word-mode)
+         ("C-c j l" . ace-jump-line-mode)))
 
 (use-package haskell-mode
   :defer t
@@ -133,7 +137,7 @@
         sp-autoskip-closing-pair 'always
         sp-hybrid-kill-entire-symbol nil)
   (hook-into-modes #'smartparens-mode 'scala-mode-hook 'emacs-lisp-mode-hook))
- 
+
 (use-package hlinum
   :defer t)
 
@@ -157,7 +161,7 @@
   (setq magit-last-seen-setup-instructions "1.4.0"))
 
 (use-package scala-mode2
-   :commands scala-mode
+  :commands scala-mode
   :init
   ;; Load ensime mode for scala only if there is an ensime
   ;; project file .ensime defined in the root directory
@@ -200,6 +204,7 @@
   
   (setq scala-indent:use-javadoc-style t
         popup-complete-enabled-modes '(scala-mode))
+
 
   (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
   
