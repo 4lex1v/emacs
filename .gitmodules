@@ -8,12 +8,12 @@
 	url = https://github.com/rdallasgray/pallet.git
 	branch = master
 
+[submodule "core/use-package"]
+	path = core/use-package
+	url = https://github.com/jwiegley/use-package.git
+	branch = master
+
 [submodule "themes/sirthias"]
 	path = themes/sirthias
 	url = https://github.com/4lex1v/sirthias-theme.git
-	branch = master
-
-[submodule "libs/use-package"]
-	path = libs/use-package
-	url = https://github.com/jwiegley/use-package.git
 	branch = master
