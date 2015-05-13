@@ -44,7 +44,7 @@
     :diminish helm-mode
     :init
     (helm-mode 1))
-    
+  
   (helm-autoresize-mode)
 
   (when (executable-find "curl")
@@ -271,5 +271,5 @@
                    'emacs-lisp-mode-hook))
 
 (use-package er/expand-region :bind ("C-=" . er/expand-region))
-  
+
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
