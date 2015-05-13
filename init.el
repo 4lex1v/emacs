@@ -25,7 +25,7 @@
 ;; Here comes the packages
 (use-package helm-config
   :demand t
-  :bind* ("C-c h o"   . helm-occur)
+  :bind* ("C-c h o" . helm-occur)
   :bind (("C-c h"   . helm-command-prefix)
          ("M-y"     . helm-show-kill-ring)
          ("C-x b"   . helm-mini)
@@ -166,7 +166,6 @@
   ;; Load ensime mode for scala only if there is an ensime
   ;; project file .ensime defined in the root directory
   (defun 4lex1v/ensime-project-p ()
-    (interactive)
     (let* ((root-dir (projectile-project-root))
            (ensime-project-file (concat root-dir ".ensime")))
       (file-exists-p ensime-project-file)))
@@ -198,13 +197,12 @@
                 (if (4lex1v/ensime-project-p)
                     (ensime-mode 1))))
 
-  (bind-key "C-c b" 'sbt-ext:open-build-file scala-mode-map)
-  (bind-key "<C-return>"   'newline-or-comment      scala-mode-map)
-  (bind-key "M-j"   'scala-indent:join-line  scala-mode-map)
+  (bind-key "C-c b"      'sbt-ext:open-build-file scala-mode-map)
+  (bind-key "<C-return>" 'newline-or-comment      scala-mode-map)
+  (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
   
   (setq scala-indent:use-javadoc-style t
         popup-complete-enabled-modes '(scala-mode))
-
 
   (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
   
@@ -214,6 +212,15 @@
     :commands ensime-mode
     :init
     (setq ensime-default-buffer-prefix "ENSIME-")
+
+    (defun 4lex1v/start-ensime ()
+      (interactive)
+      (if (4lex1v/ensime-project-p)
+          (let ((port-file (concat (projectile-project-root) ".ensime_cache/port")))
+            (if (file-exists-p port-file) (delete-file port-file))
+            (ensime))
+        (message "Not an ENSIME project")))
+
     :config
     (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
     (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
