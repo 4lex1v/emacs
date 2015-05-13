@@ -270,7 +270,6 @@
                    'scala-mode-hook
                    'emacs-lisp-mode-hook))
 
-(use-package er/expand-region
-  :bind ("C-=" . er/expand-region))
+(use-package er/expand-region :bind ("C-=" . er/expand-region))
   
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))

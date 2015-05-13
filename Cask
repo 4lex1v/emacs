@@ -1,3 +1,4 @@
+(source "melpa" "http://melpa.milkbox.net/packages/")
 (source gnu)
 (source melpa)
 
@@ -7,6 +8,7 @@
 (depends-on "company")
 (depends-on "diminish")
 (depends-on "ensime")
+(depends-on "expand-region")
 (depends-on "helm")
 (depends-on "helm-company")
 (depends-on "helm-projectile")
