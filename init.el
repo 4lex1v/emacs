@@ -1,18 +1,24 @@
 ;; Preloaded libraries
-(defconst preloaded '("use-package"))
+(defconst preloaded '("use-package" "cask" "pallet"))
 
 (eval-and-compile
   (mapc #'(lambda (path)
-        (let ((full-path (concat "libs/" path)))
-          (add-to-list 'load-path (expand-file-name full-path user-emacs-directory))))
+            (let ((full-path (concat "core/" path)))
+              (add-to-list 'load-path (expand-file-name full-path user-emacs-directory))))
         preloaded)
   (require 'use-package))
 
-(use-package package
+(use-package cask
   :config
-  ;; (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-  (package-initialize nil))
+  (cask-initialize)
+  (add-to-list 'auto-mode-alist '("\\Cask\\'" . emacs-lisp-mode))
+
+	(use-package package
+		:config
+		(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+		(package-initialize nil))
+
+  (use-package pallet :config (pallet-mode)))
 
 (add-to-list 'load-path (expand-file-name "configs" user-emacs-directory))
 
@@ -53,15 +59,14 @@
         helm-ff-file-name-history-use-recentf  t)
 
   ;; Place under :bind when key-maps would be supported
-  (bind-key "<tab>" 'helm-execute-persistent-action helm-map) ; rebihnd tab to do persistent action
-  (bind-key "C-i"   'helm-execute-persistent-action helm-map) ; make TAB works in terminal
-  (bind-key "C-z"   'helm-select-action             helm-map) ; list actions using C-z
-  (bind-key "C-o"   'helm-next-source               helm-map)
-  (bind-key "M-o"   'helm-previous-source           helm-map)
+  (bind-key "<tab>" 'helm-execute-persistent-action  helm-map) ; rebihnd tab to do persistent action
+  (bind-key "C-i"   'helm-execute-persistent-action  helm-map) ; make TAB works in terminal
+  (bind-key "C-z"   'helm-select-action              helm-map) ; list actions using C-z
+  (bind-key "C-o"   'helm-next-source                helm-map)
+  (bind-key "M-o"   'helm-previous-source            helm-map)
   (bind-key "C-x o" 'helm-buffer-switch-other-window helm-map)
 
-  (use-package helm-descbinds
-    :bind ("C-c h d" . helm-descbinds)))
+  (use-package helm-descbinds :bind ("C-c h d" . helm-descbinds)))
 
 (use-package projectile
   :demand t
@@ -69,6 +74,7 @@
   :init
   (projectile-global-mode)
   :config
+  (push ".cask" projectile-globally-ignored-directories)
   (setq projectile-enable-caching              t
         projectile-require-project-root        t)
 
@@ -254,8 +260,6 @@
   (use-package help-mode+))
 
 (use-package hideshow
-  :defer t
-  :commands hs-minor-mode
   :diminish hs-minor-mode
   :bind (("C-c [" . hs-hide-block)
          ("C-c ]" . hs-show-block))
