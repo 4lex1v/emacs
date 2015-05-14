@@ -50,7 +50,12 @@
 (4lex1v/configure-font       "Monaco for Powerline" 16)
 (4lex1v/configure-frame-size 'maximized)
 ;;(4lex1v/configure-theme      'sirthias)
+
 (4lex1v/configure-theme      'solarized)
+(setq solarized-contrast     'high
+      solarized-visibility   'high
+      solarized-termcolors   256) 
+
 (4lex1v/transparent-ui  92 100)
 (set-face-attribute 'mode-line nil  :height 140)
 

@@ -13,12 +13,8 @@
   (cask-initialize)
   (add-to-list 'auto-mode-alist '("\\Cask\\'" . emacs-lisp-mode))
 
-	(use-package package
-		:config
-		(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-		(package-initialize nil))
-
-  (use-package pallet :config (pallet-mode)))
+	(use-package package :config (package-initialize nil))
+  (use-package pallet  :config (pallet-mode)))
 
 (add-to-list 'load-path (expand-file-name "configs" user-emacs-directory))
 
@@ -261,15 +257,23 @@
 
 (use-package hideshow
   :diminish hs-minor-mode
-  :bind (("C-c [" . hs-hide-block)
-         ("C-c ]" . hs-show-block))
+  :bind (("M-[" . hs-hide-block)
+         ("M-]" . hs-show-block))
   :config
   (hook-into-modes #'hs-minor-mode
                    'less-css-mode-hook
                    'js-mode-hook
                    'scala-mode-hook
-                   'emacs-lisp-mode-hook))
+                   'emacs-lisp-mode-hook)
+  
+  (push '(scala-mode "{" "}" "/[*/]" nil nil) hs-special-modes-alist)
+
+  (use-package hideshowvis
+    :init (hideshowvis-symbols)
+    :config (hideshowvis-enable)))
 
 (use-package er/expand-region :bind ("C-=" . er/expand-region))
 
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
+
+(setq frame-background-mode 'dark)

@@ -1,4 +1,3 @@
-(source "melpa" "http://melpa.milkbox.net/packages/")
 (source gnu)
 (source melpa)
 
@@ -12,6 +11,7 @@
 (depends-on "helm")
 (depends-on "helm-company")
 (depends-on "helm-projectile")
+(depends-on "hideshowvis")
 (depends-on "ibuffer-projectile")
 (depends-on "magit")
 (depends-on "multiple-cursors")
