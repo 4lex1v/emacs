@@ -199,6 +199,8 @@
                 (if (4lex1v/ensime-project-p)
                     (ensime-mode 1))))
 
+  (add-hook 'scala-mode-hook 'hs-minor-mode)
+
   (bind-key "C-c b"      'sbt-ext:open-build-file scala-mode-map)
   (bind-key "<C-return>" 'newline-or-comment      scala-mode-map)
   (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
@@ -255,17 +257,13 @@
   (use-package help-fns+)
   (use-package help-mode+))
 
+(use-package emacs-list-mode :init (add-hook 'emacs-list-mode-hook 'hs-minor-mode))
+
 (use-package hideshow
   :diminish hs-minor-mode
   :bind (("M-[" . hs-hide-block)
          ("M-]" . hs-show-block))
   :config
-  (hook-into-modes #'hs-minor-mode
-                   'less-css-mode-hook
-                   'js-mode-hook
-                   'scala-mode-hook
-                   'emacs-lisp-mode-hook)
-  
   (push '(scala-mode "{" "}" "/[*/]" nil nil) hs-special-modes-alist)
 
   (use-package hideshowvis
