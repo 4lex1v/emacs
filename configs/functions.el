@@ -95,4 +95,11 @@
 (defsubst hook-into-modes (func &rest modes)
   (dolist (mode-hook modes) (add-hook mode-hook func)))
 
+(defun create-eshell (_name)
+  "Create an eshell buffer named NAME."
+  (interactive "sName: ")
+  (setq name _name)
+  (eshell)
+  (rename-buffer name))
+
 (provide 'functions)

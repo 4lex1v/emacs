@@ -1,5 +1,7 @@
 ;; General Emacs configuration
 
+(require 'ansi-color)
+
 ;; User credentials
 (setq user-full-name    "Aleksandr Ivanov"
       user-mail-address "4lex1v@gmail.com")
@@ -23,6 +25,7 @@
       initial-scratch-message     nil
 ;;      desktop-save                t
       kill-do-not-save-duplicates t
-      ad-redefinition-action     'accept)
+      ad-redefinition-action     'accept
+      next-line-add-newlines      t)
 
 (provide 'general)

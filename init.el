@@ -34,7 +34,6 @@
          ("C-x C-f" . helm-find-files)
          ("M-1"     . helm-projectile)
          ("M-x"     . helm-M-x))
-
   :config
   (use-package helm-mode
     :diminish helm-mode
@@ -109,8 +108,23 @@
 
 (use-package haskell-mode
   :defer t
+  :init (add-to-list 'completion-ignored-extensions ".hi")
   :config
-  (add-to-list 'completion-ignored-extensions ".hi")
+
+  (bind-key "C-`"     'haskell-interactive-bring      haskell-mode-map)
+  (bind-key "C-c C-l" 'haskell-process-load-or-reload haskell-mode-map)
+
+  (use-package haskell-interactive-mode :init (hook-into-modes #'haskell-mode-hook 'haskell-interactive-mode))
+  (use-package haskell-process)
+  
+  (hook-into-modes #'haskell-mode-hook 'haskell-unicode)
+
+  (custom-set-variables
+   '(haskell-process-suggest-remove-import-lines t)
+   '(haskell-process-auto-import-loaded-modules t)
+   '(haskell-process-log t)
+   '(haskell-process-type 'cabal-repl))
+
   (add-hook 'haskell-mode-hook
             (lambda ()
               (turn-on-haskell-indent)
@@ -138,7 +152,11 @@
         sp-autoinsert-if-followed-by-word t
         sp-autoskip-closing-pair 'always
         sp-hybrid-kill-entire-symbol nil)
-  (hook-into-modes #'smartparens-mode 'scala-mode-hook 'emacs-lisp-mode-hook))
+
+  (hook-into-modes #'smartparens-mode
+                   'scala-mode-hook
+                   'emacs-lisp-mode-hook
+                   'haskell-mode-hook))
 
 (use-package hlinum
   :defer t)
@@ -272,6 +290,12 @@
 
 (use-package er/expand-region :bind ("C-=" . er/expand-region))
 
-(add-hook 'dired-load-hook (lambda () (load "dired-x")))
+(use-package guide-key
+  :diminish guide-key-mode
+  :init (setq guide-key/idle-delay 0.3
+              guide-key/guide-key-sequence t
+              guide-key/recursive-key-sequence-flag t)
+  :config
+  (guide-key-mode))
 
-(setq frame-background-mode 'dark)
+(add-hook 'dired-load-hook (lambda () (load "dired-x")))
