@@ -56,7 +56,7 @@
       solarized-visibility   'high
       solarized-termcolors   256) 
 
-(4lex1v/transparent-ui  92 100)
+(4lex1v/transparent-ui  100 100)
 (set-face-attribute 'mode-line nil  :height 140)
 
 ;;(hlinum-activate)

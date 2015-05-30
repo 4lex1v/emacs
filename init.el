@@ -59,7 +59,7 @@
   (bind-key "C-z"   'helm-select-action              helm-map) ; list actions using C-z
   (bind-key "C-o"   'helm-next-source                helm-map)
   (bind-key "M-o"   'helm-previous-source            helm-map)
-  (bind-key "C-x o" 'helm-buffer-switch-other-window helm-map)
+  (bind-key "C-j" 'helm-buffer-switch-other-window helm-map)
 
   (use-package helm-descbinds :bind ("C-c h d" . helm-descbinds)))
 
@@ -298,4 +298,14 @@
   :config
   (guide-key-mode))
 
+(use-package js2-mode
+  :mode (("\\.js$" . js2-mode)
+         ("\\.json$" . j2-more)
+         ("Jakefile$" . js2-mode))
+  :interpreter ("node" . js2-mode)
+  :config
+  (add-hook 'js2-mode-hook 'hs-minor-mode)
+  (setq-default js2-basic-offset 2))
+
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
+
