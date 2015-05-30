@@ -102,4 +102,23 @@
   (eshell)
   (rename-buffer name))
 
+(defun 4lex1v/multiWindow-p ()
+  (> (count-windows) 1))
+
+(defun 4lex1v/closeBuffer (&optional arg)
+  "Close currently opened file (i.e assosiated buffer) and
+if the arg is not nil and it's not the single window, close it as well"
+  (interactive "P")
+  (kill-buffer (current-buffer))
+  (if (and (not (equal arg 'nil))
+           (4lex1v/multiWindow-p))
+      (delete-window)))
+
+(defun 4lex1v/closeOtherBuffer ()
+  (interactive)
+  (if (4lex1v/multiWindow-p)
+      (progn
+        (other-window 1)
+        (4lex1v/closeBuffer t))))
+
 (provide 'functions)

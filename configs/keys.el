@@ -27,15 +27,7 @@
 
 (unbind-key "C-c m")
 
-(defun 4lex1v/closeBuffer (&optional arg)
-  "Close currently opened file (i.e assosiated buffer) and
-if the arg is not nil and it's not the single window, close it as well"
-  (interactive "P")
-  (kill-buffer (current-buffer))
-  (if (and (not (equal arg 'nil))
-           (> (count-windows) 1))
-      (delete-window)))
-
 (bind-key "C-q" '4lex1v/closeBuffer)
+(bind-key "M-q" '4lex1v/closeOtherBuffer)
 
 (provide                'keys)

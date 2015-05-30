@@ -2,6 +2,7 @@
 (source melpa)
 
 (depends-on "ace-jump-mode")
+(depends-on "ace-window")
 (depends-on "async")
 (depends-on "bind-key")
 (depends-on "color-theme-solarized")
