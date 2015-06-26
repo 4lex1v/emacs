@@ -223,6 +223,7 @@
   (bind-key "<C-return>" 'newline-or-comment      scala-mode-map)
   (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
   
+
   (setq scala-indent:use-javadoc-style t
         popup-complete-enabled-modes '(scala-mode))
 
@@ -247,7 +248,8 @@
     (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
     (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
     (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)
-    (bind-key "C-M-." 'ensime-edit-definition-other-window scala-mode-map)))
+    (bind-key "C-M-." 'ensime-edit-definition-other-window scala-mode-map)
+    (unbind-key "M-p" ensime-mode-map)))
 
 (use-package web-mode
   :defer t
