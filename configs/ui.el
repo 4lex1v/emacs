@@ -59,6 +59,12 @@
 (4lex1v/transparent-ui  100 100)
 (set-face-attribute 'mode-line nil  :height 140)
 
+(if (display-graphic-p)
+    (setq mac-option-key-is-meta nil
+          mac-command-key-is-meta t
+          mac-command-modifier 'meta
+          mac-option-modifier nil))
+
 ;;(hlinum-activate)
 
 
