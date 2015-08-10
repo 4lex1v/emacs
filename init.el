@@ -256,6 +256,38 @@
   :config
   (use-package company-web-html))
 
+;; OCaml language configuration
+
+(use-package opam
+  :init (opam-init))
+
+(use-package tuareg
+  :defer t
+  :config
+
+  (use-package utop
+    :defer t
+    :init
+    (autoload 'utop-minor-mode "utop" "Minor mode for utop" t)
+    (add-hook 'tuareg-mode-hook 'utop-minor-mode))
+
+  (use-package merlin
+    :defer t
+    :init
+    (add-hook 'tuareg-mode-hook 'merlin-mode)
+    (use-package company)
+    (add-to-list 'company-backends 'merlin-company-backend)
+
+    :config
+    (setq merlin-use-auto-complete-mode 'easy
+          merlin-command 'opam))
+
+  (use-package ocp-indent
+    :init
+    (setq tuareg-use-smie nil)))
+
+
+
 (use-package org-mode
   :defer t
   :config
@@ -313,4 +345,3 @@
   :bind ("M-p" . ace-window))
 
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
-
