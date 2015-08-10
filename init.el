@@ -173,7 +173,6 @@
 
 (use-package magit
   :defer t
-  :diminish magit-auto-revert-mode
   :bind (("C-c m s" . magit-status)
          ("C-c m b" . magit-branch-manager))
   :init
