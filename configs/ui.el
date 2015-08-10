@@ -49,9 +49,10 @@
 (setq linum-format "%3d ") 
 (4lex1v/configure-font       "Monaco for Powerline" 16)
 (4lex1v/configure-frame-size 'maximized)
-;;(4lex1v/configure-theme      'sirthias)
 
-(4lex1v/configure-theme      'solarized)
+(4lex1v/configure-theme      'sirthias)
+;; (4lex1v/configure-theme      'solarized)
+
 (setq solarized-contrast     'high
       solarized-visibility   'high
       solarized-termcolors   256) 
