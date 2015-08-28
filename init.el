@@ -166,10 +166,11 @@
   :config
   (global-company-mode)
 
-  (use-package helm-company
-    :config
-    (bind-key "C-:" 'helm-company company-mode-map)
-    (bind-key "C-:" 'helm-company company-active-map)))
+  ;; (use-package helm-company
+  ;;   :config
+  ;;   (bind-key "C-:" 'helm-company company-mode-map)
+  ;;   (bind-key "C-:" 'helm-company company-active-map))
+  )
 
 (use-package magit
   :defer t

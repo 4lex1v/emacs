@@ -14,7 +14,8 @@
 (fset 'yes-or-no-p             'y-or-n-p)
 
 (setq-default indent-tabs-mode  nil
-              major-mode       'org-mode)
+              major-mode       'org-mode
+              gc-cons-threshold 10000000)
 
 (setq ring-bell-function         'ignore
       initial-major-mode         'text-mode
