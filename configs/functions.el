@@ -121,4 +121,12 @@ if the arg is not nil and it's not the single window, close it as well"
         (other-window 1)
         (4lex1v/closeBuffer t))))
 
+(defun 4lex1v/forProjectileProject (func)
+  (if (projectile-project-p)
+      (func)
+      (error "Not a projectile project!")))
+
+(defun 4lex1v/withRootFile (filePath)
+  )
+
 (provide 'functions)

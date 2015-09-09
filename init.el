@@ -239,10 +239,30 @@
     (defun 4lex1v/start-ensime ()
       (interactive)
       (if (4lex1v/ensime-project-p)
-          (let ((port-file (concat (projectile-project-root) ".ensime_cache/port")))
+          (let ((port-file (concat (projectile-project-root) ".ensime_cache/port"))
+                (config-file (concat (projectile-project-root) ".ensime")))
             (if (file-exists-p port-file) (delete-file port-file))
-            (ensime))
+            (ensime--1 config-file))
         (message "Not an ENSIME project")))
+
+    (defun 4lex1v/ensime-cleanup ()
+      (interactive)
+      (if (4lex1v/ensime-project-p)
+          (let ((ensime-file (concat (projectile-project-root) ".ensime"))
+                (ensime-cache-folder (concat (projectile-project-root) ".ensime_cache")))
+            ;; Drop ensime cache folder
+            (if (file-exists-p ensime-cache-folder) (delete-directory ensime-cache-folder t))
+            (if (file-exists-p ensime-file) (delete-file ensime-file)))))
+
+    (defun 4lex1v/fresh-ensime ()
+      (interactive)
+      (4lex1v/ensime-cleanup)
+      (kill-buffer (sbt-command "gen-ensime")))
+
+    (defun 4lex1v/fresh-ensime-start ()
+      (interactive)
+      (4lex1v/fresh-ensime)
+      (4lex1v/start-ensime))
 
     :config
     (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
@@ -309,7 +329,7 @@
   (use-package help-fns+)
   (use-package help-mode+))
 
-(use-package emacs-list-mode :init (add-hook 'emacs-list-mode-hook 'hs-minor-mode))
+(use-package emacs-lisp-mode :init (add-hook 'emacs-list-mode-hook 'hs-minor-mode))
 
 (use-package hideshow
   :diminish hs-minor-mode
