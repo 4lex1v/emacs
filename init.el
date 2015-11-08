@@ -3,8 +3,11 @@
 
 (eval-and-compile
   (mapc #'(lambda (path)
-            (let ((full-path (concat "core/" path)))
-              (add-to-list 'load-path (expand-file-name full-path user-emacs-directory))))
+            (let* ((rel-path (concat "core/" path))
+                   (full-path (expand-file-name rel-path user-emacs-directory)))
+              (message
+               (format "Adding laod path: %s" rel-path))
+              (add-to-list 'load-path full-path)))
         preloaded)
   (require 'use-package))
 
@@ -51,7 +54,8 @@
         helm-move-to-line-cycle-in-source      t ; move to end or beginning of source when reaching top or bottom of source.
         helm-ff-search-library-in-sexp         t ; search for library in `require' and `declare-function' sexp.
         helm-scroll-amount                     8 ; scroll 8 lines other window using M-<next>/M-<prior>
-        helm-ff-file-name-history-use-recentf  t)
+        helm-ff-file-name-history-use-recentf  t
+        helm-ag-insert-at-point                'symbol)
 
   ;; Place under :bind when key-maps would be supported
   (bind-key "<tab>" 'helm-execute-persistent-action  helm-map) ; rebihnd tab to do persistent action

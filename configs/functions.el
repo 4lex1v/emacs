@@ -126,7 +126,4 @@ if the arg is not nil and it's not the single window, close it as well"
       (func)
       (error "Not a projectile project!")))
 
-(defun 4lex1v/withRootFile (filePath)
-  )
-
 (provide 'functions)

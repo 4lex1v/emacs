@@ -56,9 +56,12 @@
 (setq linum-format "%3d ") 
 
 (4lex1v/configure-font       "Monaco for Powerline" 16)
-(4lex1v/configure-frame-size 'maximized)
 
-(4lex1v/configure-theme      'sirthias)
+;; Shouldn't be automatic upon loading, but assigned to the key-binding
+;; (4lex1v/configure-frame-size 'maximized)
+
+(4lex1v/configure-theme      'zenburn)
+;;(4lex1v/configure-theme      'sirthias)
 ;; (4lex1v/configure-theme      'solarized)
 
 (setq solarized-contrast     'high
