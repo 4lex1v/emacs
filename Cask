@@ -47,6 +47,7 @@
 (depends-on "scala-mode2")
 (depends-on "smartparens")
 (depends-on "sml-mode")
+(depends-on "sublime-themes")
 (depends-on "toxi-theme")
 (depends-on "tuareg")
 (depends-on "utop")
