@@ -282,7 +282,6 @@
   (use-package company-web-html))
 
 ;; OCaml language configuration
-
 (use-package opam
   :init (opam-init))
 
@@ -311,8 +310,6 @@
     :init
     (setq tuareg-use-smie nil)))
 
-
-
 (use-package org-mode
   :defer t
   :config
@@ -340,7 +337,8 @@
   :bind (("M-[" . hs-hide-block)
          ("M-]" . hs-show-block))
   :config
-  (push '(scala-mode "{" "}" "/[*/]" nil nil) hs-special-modes-alist)
+  (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
+  ;;(push '(scala-mode "{" "}" "/[*/]" nil nil) hs-special-modes-alist)
 
   (use-package hideshowvis
     :init (hideshowvis-symbols)
@@ -368,5 +366,3 @@
 (use-package ace-window
   :defer t
   :bind ("M-p" . ace-window))
-
-(add-hook 'dired-load-hook (lambda () (load "dired-x")))
