@@ -51,25 +51,19 @@
 
 (setq-default           tab-width 2
                         cursor-type 'bar
-                        frame-title-format " %@%b% -")
+                        frame-title-format " %@%b% -"
+                        linum-format "%3i ")
 
-(setq linum-format "%3d ") 
+(4lex1v/configure-font       "Monaco for Powerline" 20)
 
-(4lex1v/configure-font       "Monaco for Powerline" 16)
-
-;; Shouldn't be automatic upon loading, but assigned to the key-binding
-;; (4lex1v/configure-frame-size 'maximized)
-
-(4lex1v/configure-theme      'zenburn)
-;;(4lex1v/configure-theme      'sirthias)
-;; (4lex1v/configure-theme      'solarized)
+(4lex1v/configure-theme      'sirthias)
 
 (setq solarized-contrast     'high
       solarized-visibility   'high
       solarized-termcolors   256) 
 
 (4lex1v/transparent-ui 95 95)
-(set-face-attribute 'mode-line nil  :height 140)
+(set-face-attribute 'mode-line nil  :height 180)
 
 (if (not (display-graphic-p))
     (menu-bar-mode -1))
