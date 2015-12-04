@@ -58,6 +58,7 @@
   :init
   (use-package helm-config :config (message "Helm-config loaded"))
   (use-package helm-mode :config (helm-mode 1) (message "Helm-mode loaded"))
+  (use-package helm-ag)
   
   (setq helm-quick-update                      t ; do not display invisible candidates
         helm-split-window-in-side-p            t ; open helm buffer inside current window, not occupy whole other window
@@ -329,35 +330,29 @@
 
 ;; ;;(use-package emacs-lisp-mode :init (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode))
 
-;; (use-package hideshow
-;;   :diminish hs-minor-mode
-;;   :bind (("M-[" . hs-hide-block)
-;;          ("M-]" . hs-show-block))
-;;   :config
-;;   (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)) 
+(use-package hideshow
+  :diminish hs-minor-mode
+  :bind (("M-[" . hs-hide-block)
+         ("M-]" . hs-show-block))
+  :init
+  (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
+
+  :config
+  (use-package hideshowvis
+    :config
+    (hideshowvis-symbols)
+    (hideshowvis-enable))) 
   
-;; (use-package hideshowvis
-;;   :init (hideshowvis-symbols)
-;;   :config (hideshowvis-enable))
 
 ;; (use-package er/expand-region :bind ("C-=" . er/expand-region))
 
-;; (use-package guide-key
-;;   :diminish guide-key-mode
-;;   :init (setq guide-key/idle-delay 0.3
-;;               guide-key/guide-key-sequence t
-;;               guide-key/recursive-key-sequence-flag t)
-;;   :config
-;;   (guide-key-mode))
-
-;; (use-package js2-mode
-;;   :mode (("\\.js$" . js2-mode)
-;;          ("\\.json$" . j2-more)
-;;          ("Jakefile$" . js2-mode))
-;;   :interpreter ("node" . js2-mode)
-;;   :config
-;;   (add-hook 'js2-mode-hook 'hs-minor-mode)
-;;   (setq-default js2-basic-offset 2))
+(use-package guide-key
+  :diminish guide-key-mode
+  :init (setq guide-key/idle-delay 0.3
+              guide-key/guide-key-sequence t
+              guide-key/recursive-key-sequence-flag t)
+  :config
+  (guide-key-mode))
 
 ;; (use-package ace-window
 ;;   :defer t
