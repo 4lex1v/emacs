@@ -96,10 +96,95 @@
   :defer t
   :load-path "packages/magit/lisp"
   :bind (("C-c m s" . magit-status)
-         ("C-c m b" . magit-show-refs-popup))
+         ("C-c m b" . magit-show-refs-popup)
+         ("C-c m m" . magit-dispatch-popup))
   :init
   (unbind-key "C-c m")
-  (setq magit-last-seen-setup-instructions "1.4.0"))
+  (setq magit-last-seen-setup-instructions "2.1.0"))
+
+(use-package scala-mode2
+  :commands scala-mode
+  :init
+  ;; Load ensime mode for scala only if there is an ensime
+  ;; project file .ensime defined in the root directory
+  (defun 4lex1v/ensime-project-p ()
+    (let* ((root-dir (projectile-project-root))
+           (ensime-project-file (concat root-dir ".ensime")))
+      (file-exists-p ensime-project-file)))
+
+  (defun sbt-ext:open-build-file ()
+    (interactive)
+    (let ((sbt-build-file (concat (projectile-project-root) "build.sbt")))
+      (if (file-exists-p sbt-build-file)
+          (find-file sbt-build-file)
+        (error "build.sbt is not defined"))))
+
+  ;; Insert * if in the middle of the comment
+  (defun newline-or-comment ()
+    (interactive)
+    (indent-new-comment-line)
+    (scala-indent:insert-asterisk-on-multiline-comment))
+
+  ;; Indent new line between braces with smartparens mode
+  (defun 4lex1v/indent-in-braces (&rest _ignored)
+    "Open a new brace or bracket expression, with relevant newlines and indent. "
+    (newline)
+    (indent-according-to-mode)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  :config  
+  (add-hook 'scala-mode-hook
+            #'(lambda ()
+                (if (4lex1v/ensime-project-p)
+                    (ensime-mode 1))))
+
+  (add-hook 'scala-mode-hook 'hs-minor-mode)
+
+  (bind-key "C-c b"      'sbt-ext:open-build-file scala-mode-map)
+  (bind-key "<C-return>" 'newline-or-comment      scala-mode-map)
+  (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
+
+  (setq scala-indent:use-javadoc-style t
+        popup-complete-enabled-modes '(scala-mode))
+
+  (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
+  
+  (use-package sbt-mode :commands sbt-start)
+  
+  (use-package ensime
+    :load-path "packages/ensime"
+    :commands ensime-mode
+    :init
+    (setq ensime-default-buffer-prefix "ENSIME-")
+
+    (defun 4lex1v/start-ensime ()
+      (interactive)
+      (if (4lex1v/ensime-project-p)
+          (let ((port-file (concat (projectile-project-root) ".ensime_cache/port"))
+                (config-file (concat (projectile-project-root) ".ensime")))
+            (if (file-exists-p port-file) (delete-file port-file))
+            (ensime--1 config-file))
+        (message "Not an ENSIME project")))
+
+    (defun 4lex1v/ensime-cleanup ()
+      (interactive)
+      (if (4lex1v/ensime-project-p)
+          (let ((ensime-file (concat (projectile-project-root) ".ensime"))
+                (ensime-cache-folder (concat (projectile-project-root) ".ensime_cache")))
+            ;; Drop ensime cache folder
+            (if (file-exists-p ensime-cache-folder) (delete-directory ensime-cache-folder t))
+            (if (file-exists-p ensime-file) (delete-file ensime-file)))))
+
+    :config
+    (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
+    (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
+    (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)
+    (bind-key "C-M-." 'ensime-edit-definition-other-window scala-mode-map)
+    (unbind-key "M-p" ensime-mode-map)
+    (message "Ensime mode loaded"))
+
+  (message "Scala-mode loaded"))
 
 ;; (use-package neotree
 ;;   :demand t
@@ -177,97 +262,6 @@
 ;;   :diminish company-mode
 ;;   :config
 ;;   (global-company-mode))
-
-;; (use-package scala-mode2
-;;   :commands scala-mode
-;;   :init
-;;   ;; Load ensime mode for scala only if there is an ensime
-;;   ;; project file .ensime defined in the root directory
-;;   (defun 4lex1v/ensime-project-p ()
-;;     (let* ((root-dir (projectile-project-root))
-;;            (ensime-project-file (concat root-dir ".ensime")))
-;;       (file-exists-p ensime-project-file)))
-
-;;   (defun sbt-ext:open-build-file ()
-;;     (interactive)
-;;     (let ((sbt-build-file (concat (projectile-project-root) "build.sbt")))
-;;       (if (file-exists-p sbt-build-file)
-;;           (find-file sbt-build-file)
-;;         (error "build.sbt is not defined"))))
-
-;;   :config
-;;   ;; Insert * if in the middle of the comment
-;;   (defun newline-or-comment ()
-;;     (interactive)
-;;     (indent-new-comment-line)
-;;     (scala-indent:insert-asterisk-on-multiline-comment))
-
-;;   ;; Indent new line between braces with smartparens mode
-;;   (defun 4lex1v/indent-in-braces (&rest _ignored)
-;;     "Open a new brace or bracket expression, with relevant newlines and indent. "
-;;     (newline)
-;;     (indent-according-to-mode)
-;;     (forward-line -1)
-;;     (indent-according-to-mode))
-
-;;   (add-hook 'scala-mode-hook
-;;             #'(lambda ()
-;;                 (if (4lex1v/ensime-project-p)
-;;                     (ensime-mode 1))))
-
-;;   (add-hook 'scala-mode-hook 'hs-minor-mode)
-
-;;   (bind-key "C-c b"      'sbt-ext:open-build-file scala-mode-map)
-;;   (bind-key "<C-return>" 'newline-or-comment      scala-mode-map)
-;;   (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
-  
-
-;;   (setq scala-indent:use-javadoc-style t
-;;         popup-complete-enabled-modes '(scala-mode))
-
-;;   (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
-  
-;;   (use-package sbt-mode :commands sbt-start)
-  
-;;   (use-package ensime
-;;     :commands ensime-mode
-;;     :init
-;;     (setq ensime-default-buffer-prefix "ENSIME-")
-
-;;     (defun 4lex1v/start-ensime ()
-;;       (interactive)
-;;       (if (4lex1v/ensime-project-p)
-;;           (let ((port-file (concat (projectile-project-root) ".ensime_cache/port"))
-;;                 (config-file (concat (projectile-project-root) ".ensime")))
-;;             (if (file-exists-p port-file) (delete-file port-file))
-;;             (ensime--1 config-file))
-;;         (message "Not an ENSIME project")))
-
-;;     (defun 4lex1v/ensime-cleanup ()
-;;       (interactive)
-;;       (if (4lex1v/ensime-project-p)
-;;           (let ((ensime-file (concat (projectile-project-root) ".ensime"))
-;;                 (ensime-cache-folder (concat (projectile-project-root) ".ensime_cache")))
-;;             ;; Drop ensime cache folder
-;;             (if (file-exists-p ensime-cache-folder) (delete-directory ensime-cache-folder t))
-;;             (if (file-exists-p ensime-file) (delete-file ensime-file)))))
-
-;;     (defun 4lex1v/fresh-ensime ()
-;;       (interactive)
-;;       (4lex1v/ensime-cleanup)
-;;       (kill-buffer (sbt-command "gen-ensime")))
-
-;;     (defun 4lex1v/fresh-ensime-start ()
-;;       (interactive)
-;;       (4lex1v/fresh-ensime)
-;;       (4lex1v/start-ensime))
-
-;;     :config
-;;     (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
-;;     (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
-;;     (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)
-;;     (bind-key "C-M-." 'ensime-edit-definition-other-window scala-mode-map)
-;;     (unbind-key "M-p" ensime-mode-map)))
 
 ;; (use-package web-mode
 ;;   :defer t

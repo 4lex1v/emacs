@@ -2,17 +2,14 @@
 	path = core/cask
 	url = https://github.com/cask/cask.git
 	branch = master
-
 [submodule "core/pallet"]
 	path = core/pallet
 	url = https://github.com/rdallasgray/pallet.git
 	branch = master
-
 [submodule "core/use-package"]
 	path = core/use-package
 	url = https://github.com/jwiegley/use-package.git
 	branch = master
-
 [submodule "themes/sirthias"]
 	path = themes/sirthias
 	url = https://github.com/4lex1v/sirthias-theme.git
@@ -32,3 +29,8 @@
 [submodule "packages/dash"]
 	path = packages/dash
 	url = https://github.com/magnars/dash.el
+  branch = master
+[submodule "packages/ensime"]
+	path = packages/ensime
+	url = git@github.com:ensime/ensime-emacs.git
+  branch = master
