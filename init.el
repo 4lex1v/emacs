@@ -14,104 +14,104 @@
 
 (use-package cask
   :load-path "core/cask"
-  :config
-  (cask-initialize)
 
-  (use-package package
-    :config
-    (package-initialize nil)
-    (message "Package manager loaded"))
+  :config (progn
+            (cask-initialize)
 
-  (use-package pallet
-    :load-path "core/pallet"
-    :config
-    (pallet-mode)
-    (message "Pallet package loaded"))
+            (use-package package
+              :defer t
 
-  (message "Cask package loaded"))
+              :config (package-initialize nil))
+
+            (use-package pallet
+              :defer t
+
+              :load-path "core/pallet"
+
+              :config (pallet-mode))))
 
 (use-package projectile
   :demand t
   :load-path "packages/projectile"
   :bind-keymap ("C-c p" . projectile-command-map)
 
-  :init
-  (setq projectile-enable-caching              t
-        projectile-require-project-root        t)
+  :init (setq projectile-enable-caching              t
+              projectile-require-project-root        t
+              projectile-use-git-grep                t)
 
-  :config
-  (projectile-global-mode)
-  (push ".cask" projectile-globally-ignored-directories)
-
-  (message "Projectile package loaded"))
+  :config (progn
+            (projectile-global-mode)
+            (push ".cask" projectile-globally-ignored-directories)
+            (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name))))))
 
 (use-package helm
   :demand t
   :diminish helm-mode
   :load-path "packages/helm"
+
   :bind* ("C-c h o" . helm-occur)
   :bind (("C-c h"   . helm-command-prefix)
          ("M-y"     . helm-show-kill-ring)
          ("C-x b"   . helm-mini)
+         ("<f7>"    . helm-mini)
          ("C-x C-f" . helm-find-files)         
          ("M-x"     . helm-M-x))
-  :init
-  (use-package helm-config :config (message "Helm-config loaded"))
-  (use-package helm-mode :config (helm-mode 1) (message "Helm-mode loaded"))
-  (use-package helm-ag)
-  
-  (setq helm-quick-update                      t ; do not display invisible candidates
-        helm-split-window-in-side-p            t ; open helm buffer inside current window, not occupy whole other window
-        helm-buffers-fuzzy-matching            t ; fuzzy matching buffer names when non--nil
-        helm-move-to-line-cycle-in-source      t ; move to end or beginning of source when reaching top or bottom of source.
-        helm-ff-search-library-in-sexp         t ; search for library in `require' and `declare-function' sexp.
-        helm-scroll-amount                     8 ; scroll 8 lines other window using M-<next>/M-<prior>
-        helm-ff-file-name-history-use-recentf  t
-        helm-ag-insert-at-point                'symbol)
 
-  :config
-  (helm-autoresize-mode)
-  
-  ;;  Place under :bind when key-maps would be supported
-  (bind-key "<tab>" 'helm-execute-persistent-action  helm-map) ; rebihnd tab to do persistent action
-  (bind-key "C-i"   'helm-execute-persistent-action  helm-map) ; make TAB works in terminal
-  (bind-key "C-z"   'helm-select-action              helm-map) ; list actions using C-z
-  (bind-key "C-o"   'helm-next-source                helm-map)
-  (bind-key "M-o"   'helm-previous-source            helm-map)
-  (bind-key "C-j"   'helm-buffer-switch-other-window helm-map)
+  :init (progn
+          (use-package helm-config)
+          (use-package helm-mode :config (helm-mode 1))
+          (use-package helm-ag)
+          
+          (setq helm-quick-update                      t ; do not display invisible candidates
+                helm-split-window-in-side-p            t ; open helm buffer inside current window, not occupy whole other window
+                helm-buffers-fuzzy-matching            t ; fuzzy matching buffer names when non--nil
+                helm-move-to-line-cycle-in-source      t ; move to end or beginning of source when reaching top or bottom of source.
+                helm-ff-search-library-in-sexp         t ; search for library in `require' and `declare-function' sexp.
+                helm-scroll-amount                     8 ; scroll 8 lines other window using M-<next>/M-<prior>
+                helm-ff-file-name-history-use-recentf  t
+                helm-ag-insert-at-point                'symbol))
 
-  (use-package helm-descbinds
-    :bind ("C-c h d" . helm-descbinds))
+  :config (progn
+            (helm-autoresize-mode)
+            
+            ;;  Place under :bind when key-maps would be supported
+            (bind-key "<tab>" 'helm-execute-persistent-action  helm-map) ; rebihnd tab to do persistent action
+            (bind-key "C-i"   'helm-execute-persistent-action  helm-map) ; make TAB works in terminal
+            (bind-key "C-z"   'helm-select-action              helm-map) ; list actions using C-z
+            (bind-key "C-o"   'helm-next-source                helm-map)
+            (bind-key "M-o"   'helm-previous-source            helm-map)
+            (bind-key "C-j"   'helm-buffer-switch-other-window helm-map)
 
-  (use-package helm-projectile
-    :demand t
-    :load-path "packages/projectile"
-    :bind ("M-1" . helm-projectile)
-    :config
-    (setq projectile-completion-system 'helm)
-    (helm-projectile-on)
-    (message "Helm-projectile loaded"))
+            (use-package helm-descbinds :bind ("C-c h d" . helm-descbinds))
 
-  (message "Helm loaded"))
+            (use-package helm-projectile
+              :demand t
+              :load-path "packages/projectile"
+              :bind ("M-1" . helm-projectile)
+
+              :config (progn
+                        (setq projectile-completion-system 'helm)
+                        (helm-projectile-on)))))
 
 (use-package magit
   :defer t
   :load-path "packages/magit/lisp"
+
   :bind (("C-c m s" . magit-status)
          ("C-c m b" . magit-show-refs-popup)
          ("C-c m m" . magit-dispatch-popup))
-  :init
-  (unbind-key "C-c m")
-  (setq magit-last-seen-setup-instructions "2.1.0"))
+  :init (progn
+          (unbind-key "C-c m")
+          (setq magit-last-seen-setup-instructions "2.1.0")))
 
 (use-package smartparens
   :diminish smartparens-mode
+
   :init
   (use-package smartparens-config
-    :init
-    (setq sp-autoinsert-if-followed-by-word t
-        sp-autoskip-closing-pair 'always
-        sp-hybrid-kill-entire-symbol nil))
+    :init (setq sp-autoinsert-if-followed-by-word t
+                sp-autoskip-closing-pair 'always
+                sp-hybrid-kill-entire-symbol nil))
 
   :config
   (hook-into-modes #'smartparens-mode
@@ -122,18 +122,18 @@
 (use-package company
   :diminish company-mode
   :load-path "packages/company"
-  :config
-  (global-company-mode))
+  :config (global-company-mode))
 
 (use-package yasnippet
   :diminish yas-minor-mode
   :load-path "packages/yasnippet"
   :commands yas-minor-mode
-  :init
-  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-  :config
-  (hook-into-modes #'yas-minor-mode 'scala-mode-hook)
-  (yas-reload-all))
+
+  :init (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+
+  :config (progn
+            (hook-into-modes #'yas-minor-mode 'scala-mode-hook)
+            (yas-reload-all)))
 
 
 (use-package scala-mode2
@@ -336,12 +336,12 @@
          ("M-]" . hs-show-block))
   :init
   (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
-
+  (use-package hideshowvis)
+  
   :config
-  (use-package hideshowvis
-    :config
-    (hideshowvis-symbols)
-    (hideshowvis-enable))) 
+  (hideshowvis-symbols)
+  (hideshowvis-enable)) 
+
   
 
 ;; (use-package er/expand-region :bind ("C-=" . er/expand-region))

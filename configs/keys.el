@@ -18,7 +18,7 @@
 
 (bind-key "<f9>"        'list-packages)
 (bind-key "<f10>"       'customize-themes)
-(bind-key "<f7>"        (lambda () (interactive) (4lex1v/configure-frame-size 'maximized)))
+;;(bind-key "<f7>"        (lambda () (interactive) (4lex1v/configure-frame-size 'maximized)))
 
 (bind-key "C-+"         'text-scale-increase)
 (bind-key "C--"         'text-scale-decrease)
