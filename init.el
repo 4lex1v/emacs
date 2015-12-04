@@ -47,6 +47,7 @@
 
 (use-package helm
   :demand t
+  :diminish helm-mode
   :load-path "packages/helm"
   :bind* ("C-c h o" . helm-occur)
   :bind (("C-c h"   . helm-command-prefix)
@@ -101,6 +102,38 @@
   :init
   (unbind-key "C-c m")
   (setq magit-last-seen-setup-instructions "2.1.0"))
+
+(use-package smartparens
+  :diminish smartparens-mode
+  :init
+  (use-package smartparens-config
+    :init
+    (setq sp-autoinsert-if-followed-by-word t
+        sp-autoskip-closing-pair 'always
+        sp-hybrid-kill-entire-symbol nil))
+
+  :config
+  (hook-into-modes #'smartparens-mode
+                   'scala-mode-hook
+                   'emacs-lisp-mode-hook
+                   'haskell-mode-hook))
+
+(use-package company
+  :diminish company-mode
+  :load-path "packages/company"
+  :config
+  (global-company-mode))
+
+(use-package yasnippet
+  :diminish yas-minor-mode
+  :load-path "packages/yasnippet"
+  :commands yas-minor-mode
+  :init
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  :config
+  (hook-into-modes #'yas-minor-mode 'scala-mode-hook)
+  (yas-reload-all))
+
 
 (use-package scala-mode2
   :commands scala-mode
@@ -232,36 +265,12 @@
 ;;               (turn-on-haskell-unicode-input-method)
 ;;               (interactive-haskell-mode))))
 
-;; (use-package yasnippet
-;;   :diminish yas-minor-mode
-;;   :commands yas-minor-mode
-;;   :init
-;;   (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-;;   :config
-;;   (hook-into-modes #'yas-minor-mode 'scala-mode-hook)
-;;   (yas-reload-all))
 
 ;; (use-package multiple-cursors)
 
-;; (use-package smartparens-config
-;;   :diminish smartparens-mode
-;;   :config
-;;   (setq sp-autoinsert-if-followed-by-word t
-;;         sp-autoskip-closing-pair 'always
-;;         sp-hybrid-kill-entire-symbol nil)
-
-;;   (hook-into-modes #'smartparens-mode
-;;                    'scala-mode-hook
-;;                    'emacs-lisp-mode-hook
-;;                    'haskell-mode-hook))
 
 ;; (use-package hlinum
 ;;   :defer t)
-
-;; (use-package company
-;;   :diminish company-mode
-;;   :config
-;;   (global-company-mode))
 
 ;; (use-package web-mode
 ;;   :defer t
