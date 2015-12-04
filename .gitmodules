@@ -17,3 +17,18 @@
 	path = themes/sirthias
 	url = https://github.com/4lex1v/sirthias-theme.git
 	branch = master
+[submodule "packages/projectile"]
+	path = packages/projectile
+	url = git@github.com:bbatsov/projectile.git
+	branch = master
+[submodule "packages/helm"]
+	path = packages/helm
+	url = git@github.com:emacs-helm/helm.git
+	branch = master
+[submodule "packages/magit"]
+	path = packages/magit
+	url = git@github.com:magit/magit.git
+	branch = master
+[submodule "packages/dash"]
+	path = packages/dash
+	url = https://github.com/magnars/dash.el
