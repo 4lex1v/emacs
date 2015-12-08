@@ -41,7 +41,6 @@
 
   :config (progn
             (projectile-global-mode)
-            (push ".cask" projectile-globally-ignored-directories)
             (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name))))))
 
 (use-package helm
