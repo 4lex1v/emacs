@@ -14,24 +14,19 @@
 
 (use-package cask
   :load-path "core/cask"
-
   :config (progn
             (cask-initialize)
 
             (use-package package
               :defer t
-
               :config (package-initialize nil))
 
             (use-package pallet
               :defer t
-
               :load-path "core/pallet"
-
               :config (pallet-mode))))
 
 (use-package projectile
-  :demand t
   :load-path "packages/projectile"
   :bind-keymap ("C-c p" . projectile-command-map)
 
@@ -44,7 +39,6 @@
             (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name))))))
 
 (use-package helm
-  :demand t
   :diminish helm-mode
   :load-path "packages/helm"
 
@@ -93,7 +87,6 @@
                         (helm-projectile-on)))))
 
 (use-package magit
-  :defer t
   :load-path "packages/magit/lisp"
 
   :bind (("C-c m s" . magit-status)
@@ -108,14 +101,12 @@
 (use-package smartparens
   :diminish smartparens-mode
 
-  :init
-  (use-package smartparens-config
-    :init (setq sp-autoinsert-if-followed-by-word t
-                sp-autoskip-closing-pair 'always
-                sp-hybrid-kill-entire-symbol nil))
+  :init (use-package smartparens-config
+          :init (setq sp-autoinsert-if-followed-by-word t
+                      sp-autoskip-closing-pair 'always
+                      sp-hybrid-kill-entire-symbol nil))
 
-  :config
-  (hook-into-modes #'smartparens-mode
+  :config (hook-into-modes #'smartparens-mode
                    'scala-mode-hook
                    'emacs-lisp-mode-hook
                    'haskell-mode-hook))
@@ -176,6 +167,9 @@
     (indent-according-to-mode)
     (forward-line -1)
     (indent-according-to-mode))
+  
+  (setq scala-indent:use-javadoc-style t
+        popup-complete-enabled-modes '(scala-mode))
 
   :config  
   (add-hook 'scala-mode-hook
@@ -188,9 +182,6 @@
   (bind-key "C-c b"      'sbt-ext:open-build-file scala-mode-map)
   (bind-key "<C-return>" 'newline-or-comment      scala-mode-map)
   (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
-
-  (setq scala-indent:use-javadoc-style t
-        popup-complete-enabled-modes '(scala-mode))
 
   (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
   
@@ -234,11 +225,7 @@
                        (company-semantic
                         company-keywords
                         company-dabbrev-code
-                        company-yasnippet)))))
-
-    (message "Ensime mode loaded"))
-
-  (message "Scala-mode loaded"))
+                        company-yasnippet)))))))
 
 ;; (use-package neotree
 ;;   :demand t
@@ -360,9 +347,7 @@
   
   :config
   (hideshowvis-symbols)
-  (hideshowvis-enable)) 
-
-  
+  (hideshowvis-enable))   
 
 ;; (use-package er/expand-region :bind ("C-=" . er/expand-region))
 
