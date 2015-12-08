@@ -98,8 +98,10 @@
   :load-path "packages/magit/lisp"
 
   :bind (("C-c m s" . magit-status)
-         ("C-c m b" . magit-show-refs-popup)
+         ("C-c m b" . magit-blame)
+         ("C-c m r" . magit-show-refs-popup)
          ("C-c m m" . magit-dispatch-popup))
+
   :init (progn
           (unbind-key "C-c m")
           (setq magit-last-seen-setup-instructions "2.1.0")))
