@@ -124,7 +124,15 @@
 (use-package company
   :diminish company-mode
   :load-path "packages/company"
-  :config (global-company-mode))
+
+  :init (setq
+         company-dabbrev-ignore-case nil
+         company-dabbrev-code-ignore-case nil
+         company-dabbrev-downcase nil
+         company-idle-delay 0
+         company-minimum-prefix-length 4)
+
+  :config (hook-into-modes #'global-company-mode 'scala-mode-hook))
 
 (use-package yasnippet
   :diminish yas-minor-mode
@@ -140,6 +148,7 @@
 
 (use-package scala-mode2
   :commands scala-mode
+
   :init
   ;; Load ensime mode for scala only if there is an ensime
   ;; project file .ensime defined in the root directory
@@ -218,6 +227,16 @@
     (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)
     (bind-key "C-M-." 'ensime-edit-definition-other-window scala-mode-map)
     (unbind-key "M-p" ensime-mode-map)
+
+    (add-hook 'ensime-mode-hook
+              (lambda ()
+                (set (make-local-variable 'company-backends)
+                     '(ensime-company
+                       (company-semantic
+                        company-keywords
+                        company-dabbrev-code
+                        company-yasnippet)))))
+
     (message "Ensime mode loaded"))
 
   (message "Scala-mode loaded"))
