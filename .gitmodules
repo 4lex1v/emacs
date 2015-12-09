@@ -42,3 +42,6 @@
 	path = packages/yasnippet
 	url = git@github.com:capitaomorte/yasnippet.git
   branch = master
+[submodule "themes/solarized-emacs"]
+	path = themes/solarized-emacs
+	url = https://github.com/bbatsov/solarized-emacs.git
