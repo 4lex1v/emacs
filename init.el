@@ -7,24 +7,59 @@
 
   (require 'use-package)
 
-  (use-package ui)
-  (use-package general)
+  ;;(use-package ui)
   (use-package functions)
-  (use-package keys))
+  (use-package general)
+  (use-package keys)
 
-(use-package cask
-  :load-path "core/cask"
-  :config (progn
-            (cask-initialize)
+  (use-package cask
+    :load-path "core/cask"
 
-            (use-package package
-              :defer t
-              :config (package-initialize nil))
+    :init (progn 
+            (use-package package :defer t :config (package-initialize nil))
+            (use-package pallet :defer t :load-path "core/pallet" :config (pallet-mode)))
 
-            (use-package pallet
-              :defer t
-              :load-path "core/pallet"
-              :config (pallet-mode))))
+    :config (cask-initialize)))
+
+(use-package ui
+  :init (progn 
+          (setq-default
+           tab-width 2
+           cursor-type 'bar
+           frame-title-format " %@%b% -"
+           linum-format "%3i ")
+          
+          (tool-bar-mode   -1)
+          (scroll-bar-mode -1)
+
+          (if (not (display-graphic-p))
+              (menu-bar-mode -1))
+
+          (global-hl-line-mode t)
+          (global-linum-mode   nil)
+          (column-number-mode  t)
+
+          (setq show-paren-delay 0.0)
+          (show-paren-mode t))
+
+  :config (progn 
+            ;;(4lex1v:ui/transparent-ui 95 95)
+            (4lex1v:ui/configure-font "Monaco for Powerline" 20)
+            (set-face-attribute 'mode-line nil  :height 180)))
+
+(use-package solarized
+  :load-path "themes/solarized-emacs"
+  
+  :init (setq solarized-contrast     'high
+              solarized-visibility   'high
+              solarized-termcolors   256
+              solarized-distinct-fringe-background nil
+              solarized-use-variable-pitch nil
+              solarized-use-less-bold      nil
+              solarized-use-more-italic    nil
+              x-underline-at-descent-line  t)
+
+  :config (load-theme 'solarized-dark t))
 
 (use-package projectile
   :load-path "packages/projectile"
@@ -100,27 +135,32 @@
 
 (use-package smartparens
   :diminish smartparens-mode
+  :load-path "packages/smartparens"
+
+  :bind (("C-M-a" . sp-beginning-of-sexp)
+         ("C-M-e" . sp-end-of-sexp)
+         ("C-M-f" . sp-forward-sexp)
+         ("C-M-b" . sp-backward-sexp))
 
   :init (use-package smartparens-config
           :init (setq sp-autoinsert-if-followed-by-word t
-                      sp-autoskip-closing-pair 'always
+                      sp-autoskip-closing-pair 'always-end
                       sp-hybrid-kill-entire-symbol nil))
 
   :config (hook-into-modes #'smartparens-mode
-                   'scala-mode-hook
-                   'emacs-lisp-mode-hook
-                   'haskell-mode-hook))
+                           'scala-mode-hook
+                           'emacs-lisp-mode-hook
+                           'haskell-mode-hook))
 
 (use-package company
   :diminish company-mode
   :load-path "packages/company"
 
-  :init (setq
-         company-dabbrev-ignore-case nil
-         company-dabbrev-code-ignore-case nil
-         company-dabbrev-downcase nil
-         company-idle-delay 0
-         company-minimum-prefix-length 4)
+  :init (setq company-dabbrev-ignore-case nil
+              company-dabbrev-code-ignore-case nil
+              company-dabbrev-downcase nil
+              company-idle-delay 0
+              company-minimum-prefix-length 4)
 
   :config (hook-into-modes #'global-company-mode 'scala-mode-hook))
 
@@ -211,6 +251,11 @@
             (if (file-exists-p ensime-cache-folder) (delete-directory ensime-cache-folder t))
             (if (file-exists-p ensime-file) (delete-file ensime-file)))))
 
+    (defun configure-backends (backends)
+      (lambda ()
+        
+        (add-to-list 'company-backends 'ensime-company)))
+
     :config
     (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
     (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
@@ -227,64 +272,16 @@
                         company-dabbrev-code
                         company-yasnippet)))))))
 
-;; (use-package neotree
-;;   :demand t
-;;   :commands neotree
-;;   :bind ("<f8>" . 4lex1v/neotree-projectile-toggle)
-;;   :init
-;;   ;; Toogle neotree buffer for current projectile root
-;;   (defun 4lex1v/neotree-projectile-toggle ()
-;;     (interactive)
-;;     (if (neo-global--window-exists-p)
-;;         (neotree-hide)
-;;       (neotree-projectile-action))))
-
 ;; (use-package ace-jump-mode
 ;;   :bind (("C-c SPC" . ace-jump-char-mode)
 ;;          ("C-c j c" . ace-jump-char-mode)
 ;;          ("C-c j w" . ace-jump-word-mode)
 ;;          ("C-c j l" . ace-jump-line-mode)))
 
-;; (use-package haskell-mode
-;;   :defer t
-;;   :init (add-to-list 'completion-ignored-extensions ".hi")
-;;   :config
-
-;;   (bind-key "C-`"     'haskell-interactive-bring      haskell-mode-map)
-;;   (bind-key "C-c C-l" 'haskell-process-load-or-reload haskell-mode-map)
-
-;;   (use-package haskell-interactive-mode :init (hook-into-modes #'haskell-mode-hook 'haskell-interactive-mode))
-;;   (use-package haskell-process)
-  
-;;   (hook-into-modes #'haskell-mode-hook 'haskell-unicode)
-
-;;   (custom-set-variables
-;;    '(haskell-process-suggest-remove-import-lines t)
-;;    '(haskell-process-auto-import-loaded-modules t)
-;;    '(haskell-process-log t)
-;;    '(haskell-process-type 'cabal-repl))
-
-;;   (add-hook 'haskell-mode-hook
-;;             (lambda ()
-;;               (turn-on-haskell-indent)
-;;               (turn-on-font-lock)
-;;               (turn-on-eldoc-mode)
-;;               (turn-on-haskell-doc-mode)
-;;               (turn-on-haskell-unicode-input-method)
-;;               (interactive-haskell-mode))))
-
-
 ;; (use-package multiple-cursors)
-
 
 ;; (use-package hlinum
 ;;   :defer t)
-
-;; (use-package web-mode
-;;   :defer t
-;;   :mode "\\.html?\\'"
-;;   :config
-;;   (use-package company-web-html))
 
 ;; ;; OCaml language configuration
 ;; (use-package opam
@@ -315,50 +312,38 @@
 ;;     :init
 ;;     (setq tuareg-use-smie nil)))
 
-;; (use-package org-mode
-;;   :defer t
-;;   :config
-;;   (setq org-directory "~/Notes"))
+(use-package shell-mode
+  :defer t
 
-;; (use-package shell-mode
-;;   :defer t
-;;   :config
-;;   (defun shell-clear ()
-;;     (interactive)
-;;     (let ((comint-buffer-maximum-size 0))
-;;       (comint-truncate-buffer)))
-;;   (bind-key "C-c k" 'shell-clear shell-mode-map))
+  :init
+  (defun shell-clear ()
+    (interactive)
+    (let ((comint-buffer-maximum-size 0))
+      (comint-truncate-buffer)))
 
-;; (use-package help+
-;;   :defer t
-;;   :config
-;;   (use-package help-fns+)
-;;   (use-package help-mode+))
-
-;; ;;(use-package emacs-lisp-mode :init (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode))
+  :config (bind-key "C-c k" 'shell-clear shell-mode-map))
 
 (use-package hideshow
   :diminish hs-minor-mode
   :bind (("M-[" . hs-hide-block)
          ("M-]" . hs-show-block))
-  :init
-  (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
-  (use-package hideshowvis)
+
+  :init (progn 
+          (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
+          (use-package hideshowvis))
   
-  :config
-  (hideshowvis-symbols)
-  (hideshowvis-enable))   
+  :config (progn 
+            (hideshowvis-symbols)
+            (hideshowvis-enable)
+            (hook-into-modes 'hs-minor-mode 'emacs-lisp-mode-hook)))
 
 ;; (use-package er/expand-region :bind ("C-=" . er/expand-region))
 
 (use-package guide-key
   :diminish guide-key-mode
+
   :init (setq guide-key/idle-delay 0.3
               guide-key/guide-key-sequence t
               guide-key/recursive-key-sequence-flag t)
-  :config
-  (guide-key-mode))
 
-;; (use-package ace-window
-;;   :defer t
-;;   :bind ("M-p" . ace-window))
+  :config (guide-key-mode))

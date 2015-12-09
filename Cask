@@ -9,5 +9,4 @@
 (depends-on "s")
 (depends-on "sbt-mode")
 (depends-on "scala-mode2")
-(depends-on "smartparens")
 (depends-on "guide-key")

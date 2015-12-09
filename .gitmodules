@@ -45,3 +45,8 @@
 [submodule "themes/solarized-emacs"]
 	path = themes/solarized-emacs
 	url = https://github.com/bbatsov/solarized-emacs.git
+  branch = master
+[submodule "packages/smartparens"]
+	path = packages/smartparens
+	url = git@github.com:Fuco1/smartparens.git
+  branch = master
