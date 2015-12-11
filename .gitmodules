@@ -52,3 +52,6 @@
 	path = packages/scala/ensime
 	url = git@github.com:ensime/ensime-emacs.git
 	branch = master
+[submodule "core/helm-ag"]
+	path = core/helm-ag
+	url = git@github.com:syohex/emacs-helm-ag.git
