@@ -2,41 +2,36 @@
 	path = themes/sirthias
 	url = https://github.com/4lex1v/sirthias-theme.git
 	branch = master
+[submodule "themes/solarized-emacs"]
+	path = themes/solarized-emacs
+	url = https://github.com/bbatsov/solarized-emacs.git
+	branch = master
 
 [submodule "core/use-package"]
 	path = core/use-package
 	url = https://github.com/jwiegley/use-package.git
 	branch = master
-
-[submodule "packages/projectile"]
+[submodule "core/projectile"]
 	path = core/projectile
 	url = git@github.com:bbatsov/projectile.git
 	branch = master
-[submodule "packages/helm"]
+[submodule "core/helm"]
 	path = core/helm
 	url = git@github.com:emacs-helm/helm.git
 	branch = master
-[submodule "packages/magit"]
+[submodule "core/magit"]
 	path = core/magit
 	url = git@github.com:magit/magit.git
 	branch = master
-[submodule "packages/ensime"]
-	path = packages/ensime
-	url = git@github.com:ensime/ensime-emacs.git
-  branch = master
-[submodule "packages/company"]
+[submodule "core/company"]
 	path = core/company
 	url = git@github.com:company-mode/company-mode.git
-  branch = master
-[submodule "packages/yasnippet"]
+	branch = master
+[submodule "core/yasnippet"]
 	path = core/yasnippet
 	url = git@github.com:capitaomorte/yasnippet.git
-  branch = master
-[submodule "themes/solarized-emacs"]
-	path = themes/solarized-emacs
-	url = https://github.com/bbatsov/solarized-emacs.git
-  branch = master
-[submodule "packages/smartparens"]
+	branch = master
+[submodule "core/smartparens"]
 	path = core/smartparens
 	url = git@github.com:Fuco1/smartparens.git
-  branch = master
+	branch = master
