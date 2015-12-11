@@ -92,4 +92,4 @@ if the arg is not nil and it's not the single window, close it as well"
     (error "Not a projectile project!")))
 
 
-(provide 'core-defuns)
+(provide 'bootstrap)

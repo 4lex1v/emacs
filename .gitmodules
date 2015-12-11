@@ -35,6 +35,10 @@
 	path = core/smartparens
 	url = git@github.com:Fuco1/smartparens.git
 	branch = master
+[submodule "core/popup"]
+	path = core/popup
+	url = git@github.com:auto-complete/popup-el.git
+  branch = master
 
 [submodule "packages/scala/scala-mode"]
 	path = packages/scala/scala-mode

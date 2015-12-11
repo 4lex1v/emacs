@@ -224,7 +224,7 @@
 (use-package scala
   :load-path "packages/scala"
   :config (use-package scala-mode2
-            :mode ("\\.scala\\'" . scala-mode)
+            :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode)
             :bind (:map scala-mode-map
                         ("C-c b"      . sbt-ext:open-build-file)
                         ("<C-return>" . newline-or-comment)
@@ -247,6 +247,9 @@
 
                       (use-package sbt-mode
                         :commands sbt-start)
+
+                      ;; Required by ENSIME
+                      (use-package popup :load-path "core/popup")
 
                       (use-package ensime
                         :commands ensime-mode
