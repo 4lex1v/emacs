@@ -14,7 +14,7 @@
 
 ;; UI config goes first, if any subsequent config fails
 ;; at least we can have a pretty UI to work with emacs...
-(use-package core-defuns
+(use-package bootstrap
   :demand t
   :bind (("RET"         . newline-and-indent)
          ("M-j"         . join-line)
