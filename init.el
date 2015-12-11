@@ -1,73 +1,112 @@
 ;; Preloaded libraries
 (message "Loading emacs...")
 
-(eval-and-compile
-  (mapc #'(lambda (path) (add-to-list 'load-path (expand-file-name path user-emacs-directory)))
-        '("core/use-package" "configs"))
+;; Change back after config has been loaded
+(setq gc-cons-threshold 10000000)
 
-  (require 'use-package)
+;; Add bootstrap libs to the load path 
+(add-to-list 'load-path (concat user-emacs-directory "core/boot"))
+(add-to-list 'load-path (concat user-emacs-directory "core/use-package"))
 
-  ;;(use-package ui)
-  (use-package functions)
-  (use-package general)
-  (use-package keys)
+(require 'use-package)
+(setq use-package-verbose t
+      use-package-minimum-reported-time 0.01)
 
-  (use-package cask
-    :load-path "core/cask"
+;; UI config goes first, if any subsequent config fails
+;; at least we can have a pretty UI to work with emacs...
+(use-package core-defuns
+  :demand t
+  :bind (("RET"         . newline-and-indent)
+         ("M-j"         . join-line)
+         ("C-c m"       . execute-extended-command)
+         ("C-x C-b"     . ibuffer)
+         ("C-c l"       . view-mode)
+         ("C-a"         . back-to-indentation)
+         ("M-m"         . beginning-of-line)
+         ("S-C-<left>"  . shrink-window-horizontally)
+         ("S-C-<right>" . enlarge-window-horizontally)
+         ("S-C-<down>"  . shrink-window)
+         ("S-C-<up>"    . enlarge-window)
+         ("C-S-d"       . duplicate-line)
+         ("M-`"         . other-frame)
+         ("C-c r"       . revert-buffer)
+         ("C-c C-d"     . 4lex1v/delete-current-file)
+         ("C-x \\"      . align-regexp)
 
-    :init (progn 
-            (use-package package :defer t :config (package-initialize nil))
-            (use-package pallet :defer t :load-path "core/pallet" :config (pallet-mode)))
+         ("<f9>"        . list-packages)
+         ("<f10>"       . customize-themes)
+         
+         ("C-+"         . text-scale-increase)
+         ("C--"         . text-scale-decrease)
+         
+         ("C-q"         . 4lex1v/closeBuffer)
+         ("M-q"         . 4lex1v/closeOtherBuffer))
 
-    :config (cask-initialize)))
-
-(use-package ui
   :init (progn 
-          (setq-default
-           tab-width 2
-           cursor-type 'bar
-           frame-title-format " %@%b% -"
-           linum-format "%3i ")
-          
           (tool-bar-mode   -1)
           (scroll-bar-mode -1)
+          (menu-bar-mode   -1)
 
-          (if (not (display-graphic-p))
-              (menu-bar-mode -1))
+          (setq-default tab-width 2
+                        cursor-type 'bar
+                        frame-title-format " %@%b% -"
+                        linum-format "%3d "
+                        indent-tabs-mode  nil) ;; Try dynamic?
 
+          (setq user-full-name             "Aleksandr Ivanov"
+                user-mail-address          "4lex1v@gmail.com"
+                show-paren-delay            0.0
+                ring-bell-function         'ignore
+                initial-major-mode         'emacs-lisp-mode
+                tramp-default-method       "ssh"
+                make-backup-files           nil
+                auto-save-default           nil
+                inhibit-startup-message     t
+                initial-scratch-message     nil
+                kill-do-not-save-duplicates t
+                ad-redefinition-action     'accept
+                next-line-add-newlines      t)
+
+          ;; Find a better alternative to basic linum mode
           (global-hl-line-mode t)
           (global-linum-mode   nil)
-          (column-number-mode  t)
 
-          (setq show-paren-delay 0.0)
-          (show-paren-mode t))
+          (column-number-mode  t)
+          (show-paren-mode     t)
+
+          (put 'narrow-to-region 'disabled nil)
+          (put 'narrow-to-page 'disabled nil)
+
+          (fset 'yes-or-no-p   'y-or-n-p))
 
   :config (progn 
             ;;(4lex1v:ui/transparent-ui 95 95)
-            (4lex1v:ui/configure-font "Monaco for Powerline" 20)
+            (4lex1v/configure-font "Monaco for Powerline" 20)
+            (4lex1v/configure-frame-size 'maximized)
             (set-face-attribute 'mode-line nil  :height 180)))
 
 (use-package solarized
+  :demand t
   :load-path "themes/solarized-emacs"
   
-  :init (setq solarized-contrast     'high
-              solarized-visibility   'high
-              solarized-termcolors   256
-              solarized-distinct-fringe-background nil
-              solarized-use-variable-pitch nil
-              solarized-use-less-bold      nil
-              solarized-use-more-italic    nil
-              x-underline-at-descent-line  t)
+  :init (setq solarized-contrast                   'high
+              solarized-visibility                 'high
+              solarized-termcolors                  256
+              solarized-distinct-fringe-background  nil
+              solarized-use-variable-pitch          nil
+              solarized-use-less-bold               nil
+              solarized-use-more-italic             nil
+              x-underline-at-descent-line           t)
 
-  :config (load-theme 'solarized-dark t))
+  :config (load-theme 'solarized-light t))
 
 (use-package projectile
-  :load-path "packages/projectile"
+  :load-path "core/projectile"
   :bind-keymap ("C-c p" . projectile-command-map)
 
-  :init (setq projectile-enable-caching              t
-              projectile-require-project-root        t
-              projectile-use-git-grep                t)
+  :init (setq projectile-enable-caching       t
+              projectile-require-project-root t
+              projectile-use-git-grep         t)
 
   :config (progn
             (projectile-global-mode)
@@ -75,7 +114,7 @@
 
 (use-package helm
   :diminish helm-mode
-  :load-path "packages/helm"
+  :load-path "core/helm"
 
   :bind* ("C-c h o" . helm-occur)
   :bind (("C-c h"   . helm-command-prefix)
@@ -85,32 +124,29 @@
          ("C-x C-f" . helm-find-files)         
          ("M-x"     . helm-M-x))
 
+  :bind (:map helm-map
+              ("<tab>" . helm-execute-persistent-action)
+              ("C-i"   . helm-execute-persistent-action)
+              ("C-z"   . helm-select-action)
+              ("C-o"   . helm-next-source)
+              ("M-o"   . helm-previous-source)
+              ("C-j"   . helm-buffer-switch-other-window))
+  
   :init (progn
-          (use-package helm-config)
-          (use-package helm-mode :config (helm-mode 1))
-          (use-package helm-ag)
-          
-          (setq helm-quick-update                      t ; do not display invisible candidates
-                helm-split-window-in-side-p            t ; open helm buffer inside current window, not occupy whole other window
-                helm-buffers-fuzzy-matching            t ; fuzzy matching buffer names when non--nil
-                helm-move-to-line-cycle-in-source      t ; move to end or beginning of source when reaching top or bottom of source.
-                helm-ff-search-library-in-sexp         t ; search for library in `require' and `declare-function' sexp.
-                helm-scroll-amount                     8 ; scroll 8 lines other window using M-<next>/M-<prior>
+          (setq helm-quick-update                      t
+                helm-split-window-in-side-p            t
+                helm-buffers-fuzzy-matching            t
+                helm-move-to-line-cycle-in-source      t
+                helm-ff-search-library-in-sexp         t
+                helm-scroll-amount                     8
                 helm-ff-file-name-history-use-recentf  t
-                helm-ag-insert-at-point                'symbol))
+                helm-ag-insert-at-point                'symbol)
 
+          (use-package helm-config)
+          (use-package helm-mode :config (helm-mode 1)))
+  
   :config (progn
             (helm-autoresize-mode)
-            
-            ;;  Place under :bind when key-maps would be supported
-            (bind-key "<tab>" 'helm-execute-persistent-action  helm-map) ; rebihnd tab to do persistent action
-            (bind-key "C-i"   'helm-execute-persistent-action  helm-map) ; make TAB works in terminal
-            (bind-key "C-z"   'helm-select-action              helm-map) ; list actions using C-z
-            (bind-key "C-o"   'helm-next-source                helm-map)
-            (bind-key "M-o"   'helm-previous-source            helm-map)
-            (bind-key "C-j"   'helm-buffer-switch-other-window helm-map)
-
-            (use-package helm-descbinds :bind ("C-c h d" . helm-descbinds))
 
             (use-package helm-projectile
               :demand t
@@ -119,10 +155,17 @@
 
               :config (progn
                         (setq projectile-completion-system 'helm)
-                        (helm-projectile-on)))))
+                        (helm-projectile-on)))
+
+            (use-package helm-descbinds
+              :commands helm-descbinds
+              :bind ("C-c h d" . helm-descbinds))
+
+            (use-package helm-ag
+              :commands helm-projectile-ag)))
 
 (use-package magit
-  :load-path "packages/magit/lisp"
+  :load-path "core/magit/lisp"
 
   :bind (("C-c m s" . magit-status)
          ("C-c m b" . magit-blame)
@@ -131,219 +174,174 @@
 
   :init (progn
           (unbind-key "C-c m")
-          (setq magit-last-seen-setup-instructions "2.1.0")))
+          (setq magit-last-seen-setup-instructions "2.3.2")))
 
 (use-package smartparens
   :diminish smartparens-mode
-  :load-path "packages/smartparens"
+  :load-path "core/smartparens"
+  :commands smartparens-mode
 
   :bind (("C-M-a" . sp-beginning-of-sexp)
          ("C-M-e" . sp-end-of-sexp)
          ("C-M-f" . sp-forward-sexp)
          ("C-M-b" . sp-backward-sexp))
 
-  :init (use-package smartparens-config
-          :init (setq sp-autoinsert-if-followed-by-word t
-                      sp-autoskip-closing-pair 'always-end
-                      sp-hybrid-kill-entire-symbol nil))
+  :init (progn
+          (use-package smartparens-config
+            :init (setq sp-autoinsert-if-followed-by-word t
+                        sp-autoskip-closing-pair 'always-end
+                        sp-hybrid-kill-entire-symbol nil))
 
-  :config (hook-into-modes #'smartparens-mode
-                           'scala-mode-hook
-                           'emacs-lisp-mode-hook
-                           'haskell-mode-hook))
+          (4lex1v/hook-into-modes #'smartparens-mode
+                                  'scala-mode-hook
+                                  'emacs-lisp-mode-hook)))
 
 (use-package company
   :diminish company-mode
-  :load-path "packages/company"
+  :load-path "core/company"
+  :commands global-company-mode
 
-  :init (setq company-dabbrev-ignore-case nil
+  :init (progn
+          (setq company-dabbrev-ignore-case nil
               company-dabbrev-code-ignore-case nil
               company-dabbrev-downcase nil
               company-idle-delay 0
               company-minimum-prefix-length 4)
 
-  :config (hook-into-modes #'global-company-mode 'scala-mode-hook))
+          (4lex1v/hook-into-modes #'global-company-mode 'scala-mode-hook)))
 
 (use-package yasnippet
   :diminish yas-minor-mode
-  :load-path "packages/yasnippet"
+  :load-path "core/yasnippet"
   :commands yas-minor-mode
 
-  :init (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  :init (progn
+          (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+          (4lex1v/hook-into-modes #'yas-minor-mode 'scala-mode-hook))
 
-  :config (progn
-            (hook-into-modes #'yas-minor-mode 'scala-mode-hook)
-            (yas-reload-all)))
+  :config (yas-reload-all))
 
+(use-package scala
+  :load-path "packages/scala"
+  :config (use-package scala-mode2
+            :mode ("\\.scala\\'" . scala-mode)
+            :bind (:map scala-mode-map
+                        ("C-c b"      . sbt-ext:open-build-file)
+                        ("<C-return>" . newline-or-comment)
+                        ("M-j"        . scala-indent:join-line))
 
-(use-package scala-mode2
-  :commands scala-mode
+            :init (progn
+                    (setq scala-indent:use-javadoc-style t
+                          popup-complete-enabled-modes '(scala-mode))
 
-  :init
-  ;; Load ensime mode for scala only if there is an ensime
-  ;; project file .ensime defined in the root directory
-  (defun 4lex1v/ensime-project-p ()
-    (let* ((root-dir (projectile-project-root))
-           (ensime-project-file (concat root-dir ".ensime")))
-      (file-exists-p ensime-project-file)))
+                    ;; FIXME :: for some reason if i omit this requirement,
+                    ;;          key bindings throw an error that map not found
+                    (use-package scala-mode2-map)
 
-  (defun sbt-ext:open-build-file ()
-    (interactive)
-    (let ((sbt-build-file (concat (projectile-project-root) "build.sbt")))
-      (if (file-exists-p sbt-build-file)
-          (find-file sbt-build-file)
-        (error "build.sbt is not defined"))))
+                    (4lex1v/hook-into-modes
+                     #'(lambda () (if (4lex1v/ensime-project-p) (ensime-mode 1)))
+                     'scala-mode-hook))
 
-  ;; Insert * if in the middle of the comment
-  (defun newline-or-comment ()
-    (interactive)
-    (indent-new-comment-line)
-    (scala-indent:insert-asterisk-on-multiline-comment))
+            :config (progn
+                      (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
 
-  ;; Indent new line between braces with smartparens mode
-  (defun 4lex1v/indent-in-braces (&rest _ignored)
-    "Open a new brace or bracket expression, with relevant newlines and indent. "
-    (newline)
-    (indent-according-to-mode)
-    (forward-line -1)
-    (indent-according-to-mode))
-  
-  (setq scala-indent:use-javadoc-style t
-        popup-complete-enabled-modes '(scala-mode))
+                      (use-package sbt-mode
+                        :commands sbt-start)
 
-  :config  
-  (add-hook 'scala-mode-hook
-            #'(lambda ()
-                (if (4lex1v/ensime-project-p)
-                    (ensime-mode 1))))
+                      (use-package ensime
+                        :commands ensime-mode
+                        :bind (:map scala-mode-map
+                                    ("C-c e" . ensime-print-errors-at-point)
+                                    ("C-c t" . ensime-print-type-at-point)
+                                    ("C-c i" . ensime-import-type-at-point)
+                                    ("C-M-." . ensime-edit-definition-other-window))
 
-  (add-hook 'scala-mode-hook 'hs-minor-mode)
+                        :init (progn
+                                (setq ensime-default-buffer-prefix "ENSIME-")
+                                (4lex1v/hook-into-modes #'(lambda ()
+                                                            (set (make-local-variable 'company-backends)
+                                                                 '(ensime-company
+                                                                   (company-semantic
+                                                                    company-keywords
+                                                                    company-dabbrev-code
+                                                                    company-yasnippet))))
+                                                        'ensime-mode-hook))
+                        :config (unbind-key "M-p" ensime-mode-map)))))
 
-  (bind-key "C-c b"      'sbt-ext:open-build-file scala-mode-map)
-  (bind-key "<C-return>" 'newline-or-comment      scala-mode-map)
-  (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
+;; ;; (use-package ace-jump-mode
+;; ;;   :bind (("C-c SPC" . ace-jump-char-mode)
+;; ;;          ("C-c j c" . ace-jump-char-mode)
+;; ;;          ("C-c j w" . ace-jump-word-mode)
+;; ;;          ("C-c j l" . ace-jump-line-mode)))
 
-  (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
-  
-  (use-package sbt-mode :commands sbt-start)
-  
-  (use-package ensime
-    :load-path "packages/ensime"
-    :commands ensime-mode
-    :init
-    (setq ensime-default-buffer-prefix "ENSIME-")
+;; ;; (use-package multiple-cursors)
 
-    (defun 4lex1v/start-ensime ()
-      (interactive)
-      (if (4lex1v/ensime-project-p)
-          (let ((port-file (concat (projectile-project-root) ".ensime_cache/port"))
-                (config-file (concat (projectile-project-root) ".ensime")))
-            (if (file-exists-p port-file) (delete-file port-file))
-            (ensime--1 config-file))
-        (message "Not an ENSIME project")))
+;; ;; (use-package hlinum
+;; ;;   :defer t)
 
-    (defun 4lex1v/ensime-cleanup ()
-      (interactive)
-      (if (4lex1v/ensime-project-p)
-          (let ((ensime-file (concat (projectile-project-root) ".ensime"))
-                (ensime-cache-folder (concat (projectile-project-root) ".ensime_cache")))
-            ;; Drop ensime cache folder
-            (if (file-exists-p ensime-cache-folder) (delete-directory ensime-cache-folder t))
-            (if (file-exists-p ensime-file) (delete-file ensime-file)))))
+;; ;; ;; OCaml language configuration
+;; ;; (use-package opam
+;; ;;   :init (opam-init))
 
-    (defun configure-backends (backends)
-      (lambda ()
-        
-        (add-to-list 'company-backends 'ensime-company)))
+;; ;; (use-package tuareg
+;; ;;   :defer t
+;; ;;   :config
 
-    :config
-    (bind-key "C-c e" 'ensime-print-errors-at-point scala-mode-map)
-    (bind-key "C-c t" 'ensime-print-type-at-point   scala-mode-map)
-    (bind-key "C-c i" 'ensime-import-type-at-point  scala-mode-map)
-    (bind-key "C-M-." 'ensime-edit-definition-other-window scala-mode-map)
-    (unbind-key "M-p" ensime-mode-map)
+;; ;;   (use-package utop
+;; ;;     :defer t
+;; ;;     :init
+;; ;;     (autoload 'utop-minor-mode "utop" "Minor mode for utop" t)
+;; ;;     (add-hook 'tuareg-mode-hook 'utop-minor-mode))
 
-    (add-hook 'ensime-mode-hook
-              (lambda ()
-                (set (make-local-variable 'company-backends)
-                     '(ensime-company
-                       (company-semantic
-                        company-keywords
-                        company-dabbrev-code
-                        company-yasnippet)))))))
+;; ;;   (use-package merlin
+;; ;;     :defer t
+;; ;;     :init
+;; ;;     (add-hook 'tuareg-mode-hook 'merlin-mode)
+;; ;;     (use-package company)
+;; ;;     (add-to-list 'company-backends 'merlin-company-backend)
 
-;; (use-package ace-jump-mode
-;;   :bind (("C-c SPC" . ace-jump-char-mode)
-;;          ("C-c j c" . ace-jump-char-mode)
-;;          ("C-c j w" . ace-jump-word-mode)
-;;          ("C-c j l" . ace-jump-line-mode)))
+;; ;;     :config
+;; ;;     (setq merlin-use-auto-complete-mode 'easy
+;; ;;           merlin-command 'opam))
 
-;; (use-package multiple-cursors)
+;; ;;   (use-package ocp-indent
+;; ;;     :init
+;; ;;     (setq tuareg-use-smie nil)))
 
-;; (use-package hlinum
-;;   :defer t)
-
-;; ;; OCaml language configuration
-;; (use-package opam
-;;   :init (opam-init))
-
-;; (use-package tuareg
+;; (use-package shell-mode
 ;;   :defer t
-;;   :config
 
-;;   (use-package utop
-;;     :defer t
-;;     :init
-;;     (autoload 'utop-minor-mode "utop" "Minor mode for utop" t)
-;;     (add-hook 'tuareg-mode-hook 'utop-minor-mode))
+;;   :init
+;;   (defun shell-clear ()
+;;     (interactive)
+;;     (let ((comint-buffer-maximum-size 0))
+;;       (comint-truncate-buffer)))
 
-;;   (use-package merlin
-;;     :defer t
-;;     :init
-;;     (add-hook 'tuareg-mode-hook 'merlin-mode)
-;;     (use-package company)
-;;     (add-to-list 'company-backends 'merlin-company-backend)
+;;   :config (bind-key "C-c k" 'shell-clear shell-mode-map))
 
-;;     :config
-;;     (setq merlin-use-auto-complete-mode 'easy
-;;           merlin-command 'opam))
+;; (use-package hideshow
+;;   :diminish hs-minor-mode
+;;   :bind (("M-[" . hs-hide-block)
+;;          ("M-]" . hs-show-block))
 
-;;   (use-package ocp-indent
-;;     :init
-;;     (setq tuareg-use-smie nil)))
-
-(use-package shell-mode
-  :defer t
-
-  :init
-  (defun shell-clear ()
-    (interactive)
-    (let ((comint-buffer-maximum-size 0))
-      (comint-truncate-buffer)))
-
-  :config (bind-key "C-c k" 'shell-clear shell-mode-map))
-
-(use-package hideshow
-  :diminish hs-minor-mode
-  :bind (("M-[" . hs-hide-block)
-         ("M-]" . hs-show-block))
-
-  :init (progn 
-          (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
-          (use-package hideshowvis))
+;;   :init (progn 
+;;           (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
+;;           (use-package hideshowvis))
   
-  :config (progn 
-            (hideshowvis-symbols)
-            (hideshowvis-enable)
-            (hook-into-modes 'hs-minor-mode 'emacs-lisp-mode-hook)))
+;;   :config (progn 
+;;             (hideshowvis-symbols)
+;;             (hideshowvis-enable)
+;;             (hook-into-modes 'hs-minor-mode 'emacs-lisp-mode-hook)))
 
-;; (use-package er/expand-region :bind ("C-=" . er/expand-region))
+;; ;; (use-package er/expand-region :bind ("C-=" . er/expand-region))
 
-(use-package guide-key
-  :diminish guide-key-mode
+;; (use-package guide-key
+;;   :diminish guide-key-mode
 
-  :init (setq guide-key/idle-delay 0.3
-              guide-key/guide-key-sequence t
-              guide-key/recursive-key-sequence-flag t)
+;;   :init (setq guide-key/idle-delay 0.3
+;;               guide-key/guide-key-sequence t
+;;               guide-key/recursive-key-sequence-flag t)
 
-  :config (guide-key-mode))
+;;   :config (guide-key-mode))
+
+(setq gc-cons-threshold 1000000)
