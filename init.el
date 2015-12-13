@@ -232,6 +232,7 @@
          ("M-]" . hs-show-block))
 
   :init (progn
+          (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
           (let ((modes '(emacs-lisp-mode-hook scala-mode-hook)))
             (apply #'4lex1v/hook-into-modes 'hs-minor-mode modes)
             (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes)))
