@@ -107,7 +107,7 @@
   :diminish helm-mode
   :load-path "core/helm/helm-core"
 
-  :bind* ("C-c h o" . helm-occur)
+  :bind* ("C-c h o" . helm-occur) ;; NOTE :: Replace with Swoop?
   :bind (("C-c h"   . helm-command-prefix)
          ("C-h a"   . helm-apropos)
          ("M-y"     . helm-show-kill-ring)
@@ -160,6 +160,7 @@
                           ("M-i" . helm-swoop-from-isearch)
                           ("M-I" . helm-multi-swoop-all-from-isearch))
 
+              ;; FIXME :: For whatever reason map is void
               ;; :bind (:map helm-swoop-map
               ;;             ("M-i" . helm-multi-swoop-all-from-helm-swoop)
               ;;             ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop))
@@ -170,8 +171,6 @@
                           helm-swoop-move-to-line-cycle t
                           helm-swoop-use-line-number-face t))
 
-            
-
             (use-package helm-ag
               :load-path "core/helm/helm-ag"
               :commands helm-projectile-ag)))
@@ -179,6 +178,7 @@
 (use-package projectile
   :load-path "core/projectile"
   :bind-keymap ("C-c p" . projectile-command-map)
+  :bind ("M-1" . helm-projectile)
 
   :init (setq projectile-enable-caching       t
               projectile-require-project-root t
@@ -189,7 +189,7 @@
 
             (use-package helm-projectile
               :demand t
-              :bind ("M-1" . helm-projectile)
+              
 
               :config (progn
                         (setq projectile-completion-system 'helm)
@@ -199,6 +199,7 @@
 
 (use-package magit
   :load-path "core/magit/lisp"
+  :commands (magit-status magit-dispatch-popup magit-show-refs-popup)
 
   :bind (("C-c m s" . magit-status)
          ("C-c m b" . magit-blame)
@@ -236,10 +237,10 @@
 
   :init (progn
           (setq company-dabbrev-ignore-case nil
-              company-dabbrev-code-ignore-case nil
-              company-dabbrev-downcase nil
-              company-idle-delay 0
-              company-minimum-prefix-length 4)
+                company-dabbrev-code-ignore-case nil
+                company-dabbrev-downcase nil
+                company-idle-delay 0
+                company-minimum-prefix-length 4)
 
           (4lex1v/hook-into-modes #'global-company-mode
                                   'scala-mode-hook
