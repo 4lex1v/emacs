@@ -105,7 +105,7 @@
 
 (use-package helm
   :diminish helm-mode
-  :load-path "core/helm"
+  :load-path "core/helm/helm-core"
 
   :bind* ("C-c h o" . helm-occur)
   :bind (("C-c h"   . helm-command-prefix)
@@ -142,15 +142,6 @@
   :config (progn
             (helm-autoresize-mode)
 
-            (use-package helm-projectile
-              :demand t
-              :load-path "packages/projectile"
-              :bind ("M-1" . helm-projectile)
-
-              :config (progn
-                        (setq projectile-completion-system 'helm)
-                        (helm-projectile-on)))
-
             (use-package helm-descbinds
               :commands helm-descbinds
               :bind ("C-c h d" . helm-descbinds))
@@ -169,6 +160,15 @@
 
   :config (progn
             (projectile-global-mode)
+
+            (use-package helm-projectile
+              :demand t
+              :bind ("M-1" . helm-projectile)
+
+              :config (progn
+                        (setq projectile-completion-system 'helm)
+                        (helm-projectile-on)))
+            
             (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name))))))
 
 (use-package magit
