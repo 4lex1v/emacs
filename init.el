@@ -103,24 +103,13 @@
 
   :config (load-theme 'solarized-light t))
 
-(use-package projectile
-  :load-path "core/projectile"
-  :bind-keymap ("C-c p" . projectile-command-map)
-
-  :init (setq projectile-enable-caching       t
-              projectile-require-project-root t
-              projectile-use-git-grep         t)
-
-  :config (progn
-            (projectile-global-mode)
-            (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name))))))
-
 (use-package helm
   :diminish helm-mode
   :load-path "core/helm"
 
   :bind* ("C-c h o" . helm-occur)
   :bind (("C-c h"   . helm-command-prefix)
+         ("C-h a"   . helm-apropos)
          ("M-y"     . helm-show-kill-ring)
          ("C-x b"   . helm-mini)
          ("<f7>"    . helm-mini)
@@ -136,12 +125,14 @@
               ("C-j"   . helm-buffer-switch-other-window))
   
   :init (progn
-          (setq helm-quick-update                      t
+          (setq helm-idle-delay                        0.0
+                helm-input-idle-delay                  0.01
+                helm-quick-update                      t
                 helm-split-window-in-side-p            t
                 helm-buffers-fuzzy-matching            t
                 helm-move-to-line-cycle-in-source      t
-                helm-ff-search-library-in-sexp         t
                 helm-scroll-amount                     8
+                helm-ff-search-library-in-sexp         t
                 helm-ff-file-name-history-use-recentf  t
                 helm-ag-insert-at-point                'symbol)
 
@@ -167,6 +158,18 @@
             (use-package helm-ag
               :load-path "core/helm-ag"
               :commands helm-projectile-ag)))
+
+(use-package projectile
+  :load-path "core/projectile"
+  :bind-keymap ("C-c p" . projectile-command-map)
+
+  :init (setq projectile-enable-caching       t
+              projectile-require-project-root t
+              projectile-use-git-grep         t)
+
+  :config (progn
+            (projectile-global-mode)
+            (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name))))))
 
 (use-package magit
   :load-path "core/magit/lisp"
