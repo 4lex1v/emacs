@@ -16,7 +16,7 @@
 	url = git@github.com:bbatsov/projectile.git
 	branch = master
 [submodule "core/helm"]
-	path = core/helm
+	path = core/helm/helm-core/
 	url = git@github.com:emacs-helm/helm.git
 	branch = master
 [submodule "core/magit"]
@@ -53,5 +53,11 @@
 	url = git@github.com:ensime/ensime-emacs.git
 	branch = master
 [submodule "core/helm-ag"]
-	path = core/helm-ag
+	path = core/helm/helm-ag
 	url = git@github.com:syohex/emacs-helm-ag.git
+[submodule "core/helm/core/helm/helm-swoop"]
+	path = core/helm/helm-swoop
+	url = git@github.com:ShingoFukuyama/helm-swoop.git
+[submodule "core/helm/helm-descbinds"]
+	path = core/helm/helm-descbinds
+	url = git@github.com:emacs-helm/helm-descbinds.git

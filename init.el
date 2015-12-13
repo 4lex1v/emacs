@@ -143,11 +143,12 @@
             (helm-autoresize-mode)
 
             (use-package helm-descbinds
+              :load-path "core/helm/helm-descbinds"
               :commands helm-descbinds
-              :bind ("C-c h d" . helm-descbinds))
+              :init (fset 'describe-bindings 'helm-descbinds))
 
             (use-package helm-ag
-              :load-path "core/helm-ag"
+              :load-path "core/helm/helm-ag"
               :commands helm-projectile-ag)))
 
 (use-package projectile
