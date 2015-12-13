@@ -106,6 +106,7 @@
 (use-package helm
   :diminish helm-mode
   :load-path "core/helm/helm-core"
+  :commands helm-mode
 
   :bind* ("C-c h o" . helm-occur) ;; NOTE :: Replace with Swoop?
   :bind (("C-c h"   . helm-command-prefix)
@@ -137,7 +138,7 @@
                 helm-ag-insert-at-point                'symbol)
 
           (use-package helm-config)
-          (use-package helm-mode :config (helm-mode 1)))
+          (use-package helm-mode))
   
   :config (progn
             (helm-autoresize-mode)
@@ -274,10 +275,11 @@
             (hideshowvis-symbols)
             (hideshowvis-enable)))
 
-
 (use-package scala
   :load-path "packages/scala"
+  :defer 2
   :config (use-package scala-mode2
+            :commands scala-mode
             :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode)
             :bind (:map scala-mode-map
                         ("C-c b"      . sbt-ext:open-build-file)
