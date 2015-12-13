@@ -216,10 +216,57 @@
   :load-path "core/smartparens"
   :commands smartparens-mode
 
-  :bind (("C-M-a" . sp-beginning-of-sexp)
-         ("C-M-e" . sp-end-of-sexp)
-         ("C-M-f" . sp-forward-sexp)
-         ("C-M-b" . sp-backward-sexp))
+  :bind (:map sp-keymap
+              ("C-c s r n"        . sp-narrow-to-sexp)
+              ("C-M-f"            . sp-forward-sexp)
+              ("C-M-b"            . sp-backward-sexp)
+              ("C-M-d"            . sp-down-sexp)
+              ("C-M-a"            . sp-backward-down-sexp)
+              ("C-S-a"            . sp-beginning-of-sexp)
+              ("C-S-d"            . sp-end-of-sexp)
+
+              ("C-M-e"            . sp-up-sexp)
+              ("C-M-u"            . sp-backward-up-sexp)
+              ("C-M-t"            . sp-transpose-sexp)
+
+              ("C-M-n"            . sp-next-sexp)
+              ("C-M-p"            . sp-previous-sexp)
+
+              ("C-M-k"            . sp-kill-sexp)
+              ("C-M-w"            . sp-copy-sexp)
+
+              ("M-<delete>"       . sp-unwrap-sexp)
+              ("M-<backspace>"    . sp-backward-unwrap-sexp)
+
+              ("C-<right>"        . sp-forward-slurp-sexp)
+              ("C-<left>"         . sp-forward-barf-sexp)
+              ("C-M-<left>"       . sp-backward-slurp-sexp)
+              ("C-M-<right>"      . sp-backward-barf-sexp)
+
+              ("M-D"              . sp-splice-sexp)
+              ("C-M-<delete>"     . sp-splice-sexp-killing-forward)
+              ("C-M-<backspace>"  . sp-splice-sexp-killing-backward)
+              ("C-S-<backspace>"  . sp-splice-sexp-killing-around)
+
+              ("C-]"              . sp-select-next-thing-exchange)
+              ("C-<left_bracket>" . sp-select-previous-thing)
+              ("C-M-]"            . sp-select-next-thing)
+
+              ("M-F"              . sp-forward-symbol)
+              ("M-B"              . sp-backward-symbol)
+
+              ("C-c s t"          . sp-prefix-tag-object)
+              ("C-c s p"          . sp-prefix-pair-object)
+              ("C-c s c"          . sp-convolute-sexp)
+              ("C-c s a"          . sp-absorb-sexp)
+              ("C-c s e"          . sp-emit-sexp)
+              ("C-c s p"          . sp-add-to-previous-sexp)
+              ("C-c s n"          . sp-add-to-next-sexp)
+              ("C-c s j"          . sp-join-sexp)
+              ("C-c s s"          . sp-split-sexp))
+
+  :bind (:map emacs-lisp-mode-map
+              (")" . sp-up-sexp))
 
   :init (progn
           (use-package smartparens-config
@@ -229,7 +276,9 @@
 
           (4lex1v/hook-into-modes #'smartparens-mode
                                   'scala-mode-hook
-                                  'emacs-lisp-mode-hook)))
+                                  'emacs-lisp-mode-hook)
+
+          ))
 
 (use-package company
   :diminish company-mode
