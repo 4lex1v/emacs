@@ -147,6 +147,31 @@
               :commands helm-descbinds
               :init (fset 'describe-bindings 'helm-descbinds))
 
+            (use-package helm-swoop
+              :load-path "core/helm/helm-swoop"
+              :commands helm-swoop
+
+              :bind (("M-i"     . helm-swoop)
+                     ("M-I"     . helm-swoop-back-to-last-point)
+                     ("C-c M-i" . helm-multi-swoop)
+                     ("C-x M-i" . helm-multi-swoop-all))
+
+              :bind (:map isearch-mode-map
+                          ("M-i" . helm-swoop-from-isearch)
+                          ("M-I" . helm-multi-swoop-all-from-isearch))
+
+              ;; :bind (:map helm-swoop-map
+              ;;             ("M-i" . helm-multi-swoop-all-from-helm-swoop)
+              ;;             ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop))
+
+              :init (setq helm-multi-swoop-edit-save t
+                          helm-swoop-split-with-multiple-windows nil
+                          helm-swoop-split-direction 'split-window-vertically
+                          helm-swoop-move-to-line-cycle t
+                          helm-swoop-use-line-number-face t))
+
+            
+
             (use-package helm-ag
               :load-path "core/helm/helm-ag"
               :commands helm-projectile-ag)))
