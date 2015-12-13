@@ -276,9 +276,7 @@
 
           (4lex1v/hook-into-modes #'smartparens-mode
                                   'scala-mode-hook
-                                  'emacs-lisp-mode-hook)
-
-          ))
+                                  'emacs-lisp-mode-hook)))
 
 (use-package company
   :diminish company-mode
@@ -375,67 +373,5 @@
                                                                     company-yasnippet))))
                                                         'ensime-mode-hook))
                         :config (unbind-key "M-p" ensime-mode-map)))))
-
-;; ;; (use-package ace-jump-mode
-;; ;;   :bind (("C-c SPC" . ace-jump-char-mode)
-;; ;;          ("C-c j c" . ace-jump-char-mode)
-;; ;;          ("C-c j w" . ace-jump-word-mode)
-;; ;;          ("C-c j l" . ace-jump-line-mode)))
-
-;; ;; (use-package multiple-cursors)
-
-;; ;; (use-package hlinum
-;; ;;   :defer t)
-
-;; ;; ;; OCaml language configuration
-;; ;; (use-package opam
-;; ;;   :init (opam-init))
-
-;; ;; (use-package tuareg
-;; ;;   :defer t
-;; ;;   :config
-
-;; ;;   (use-package utop
-;; ;;     :defer t
-;; ;;     :init
-;; ;;     (autoload 'utop-minor-mode "utop" "Minor mode for utop" t)
-;; ;;     (add-hook 'tuareg-mode-hook 'utop-minor-mode))
-
-;; ;;   (use-package merlin
-;; ;;     :defer t
-;; ;;     :init
-;; ;;     (add-hook 'tuareg-mode-hook 'merlin-mode)
-;; ;;     (use-package company)
-;; ;;     (add-to-list 'company-backends 'merlin-company-backend)
-
-;; ;;     :config
-;; ;;     (setq merlin-use-auto-complete-mode 'easy
-;; ;;           merlin-command 'opam))
-
-;; ;;   (use-package ocp-indent
-;; ;;     :init
-;; ;;     (setq tuareg-use-smie nil)))
-
-;; (use-package shell-mode
-;;   :defer t
-
-;;   :init
-;;   (defun shell-clear ()
-;;     (interactive)
-;;     (let ((comint-buffer-maximum-size 0))
-;;       (comint-truncate-buffer)))
-
-;;   :config (bind-key "C-c k" 'shell-clear shell-mode-map))
-
-;; ;; (use-package er/expand-region :bind ("C-=" . er/expand-region))
-
-;; (use-package guide-key
-;;   :diminish guide-key-mode
-
-;;   :init (setq guide-key/idle-delay 0.3
-;;               guide-key/guide-key-sequence t
-;;               guide-key/recursive-key-sequence-flag t)
-
-;;   :config (guide-key-mode))
 
 (setq gc-cons-threshold 1000000)
