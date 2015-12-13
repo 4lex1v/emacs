@@ -43,9 +43,12 @@
          ("M-q"         . 4lex1v/closeOtherBuffer))
 
   :init (progn 
-          (tool-bar-mode   -1)
-          (scroll-bar-mode -1)
-          (menu-bar-mode   -1)
+          
+          (when window-system
+            (tooltip-mode -1)
+            (tool-bar-mode -1)
+            (menu-bar-mode 1)
+            (scroll-bar-mode -1))
 
           (setq-default tab-width 2
                         cursor-type 'bar
