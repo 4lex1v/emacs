@@ -208,7 +208,9 @@
               company-idle-delay 0
               company-minimum-prefix-length 4)
 
-          (4lex1v/hook-into-modes #'global-company-mode 'scala-mode-hook)))
+          (4lex1v/hook-into-modes #'global-company-mode
+                                  'scala-mode-hook
+                                  'emacs-lisp-mode-hook)))
 
 (use-package yasnippet
   :diminish yas-minor-mode
