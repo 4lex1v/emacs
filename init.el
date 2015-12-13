@@ -162,6 +162,7 @@
               :bind ("C-c h d" . helm-descbinds))
 
             (use-package helm-ag
+              :load-path "core/helm-ag"
               :commands helm-projectile-ag)))
 
 (use-package magit
