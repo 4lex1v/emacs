@@ -221,6 +221,23 @@
 
   :config (yas-reload-all))
 
+(use-package hideshowvis
+  :diminish hs-minor-mode
+  :commands hideshowvis-enable
+
+  :bind (("M-[" . hs-hide-block)
+         ("M-]" . hs-show-block))
+
+  :init (progn
+          (let ((modes '(emacs-lisp-mode-hook scala-mode-hook)))
+            (apply #'4lex1v/hook-into-modes 'hs-minor-mode modes)
+            (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes)))
+  
+  :config (progn
+            (hideshowvis-symbols)
+            (hideshowvis-enable)))
+
+
 (use-package scala
   :load-path "packages/scala"
   :config (use-package scala-mode2
@@ -321,20 +338,6 @@
 ;;       (comint-truncate-buffer)))
 
 ;;   :config (bind-key "C-c k" 'shell-clear shell-mode-map))
-
-;; (use-package hideshow
-;;   :diminish hs-minor-mode
-;;   :bind (("M-[" . hs-hide-block)
-;;          ("M-]" . hs-show-block))
-
-;;   :init (progn 
-;;           (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
-;;           (use-package hideshowvis))
-  
-;;   :config (progn 
-;;             (hideshowvis-symbols)
-;;             (hideshowvis-enable)
-;;             (hook-into-modes 'hs-minor-mode 'emacs-lisp-mode-hook)))
 
 ;; ;; (use-package er/expand-region :bind ("C-=" . er/expand-region))
 
