@@ -53,8 +53,8 @@
           (setq-default tab-width 2
                         cursor-type 'bar
                         frame-title-format " %@%b% -"
-                        linum-format "%3d "
-                        indent-tabs-mode  nil) ;; Try dynamic?
+                        linum-format "%3d "  ;; Try dynamic?
+                        indent-tabs-mode  nil)
 
           (setq user-full-name             "Aleksandr Ivanov"
                 user-mail-address          "4lex1v@gmail.com"
