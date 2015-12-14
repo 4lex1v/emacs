@@ -374,4 +374,8 @@
                                                         'ensime-mode-hook))
                         :config (unbind-key "M-p" ensime-mode-map)))))
 
+(use-package emacs-lisp-mode
+  :bind (("M-." . find-function-at-point)
+         ("M-," . find-variable-at-point)))
+
 (setq gc-cons-threshold 1000000)
