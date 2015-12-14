@@ -83,7 +83,6 @@
 
   :config (progn 
             ;;(4lex1v:ui/transparent-ui 95 95)
-            (4lex1v/configure-font "Monaco for Powerline" 20)
             (4lex1v/configure-frame-size 'maximized)
             (set-face-attribute 'mode-line nil  :height 180)))
 
@@ -102,6 +101,20 @@
               x-underline-at-descent-line           t)
 
   :config (load-theme 'solarized-light t))
+
+(use-package osx
+  :if (eq system-type 'darwin)
+  :config (progn
+            (menu-bar-mode 1)
+
+            (setq browse-url-browser-function 'browse-url-default-macosx-browser
+                  delete-by-moving-to-trash    t
+                  mac-option-key-is-meta       nil
+                  mac-command-key-is-meta      t
+                  mac-command-modifier        'meta
+                  mac-option-modifier          nil)
+
+            (4lex1v/configure-font "Monaco for Powerline" 20)))
 
 (use-package helm
   :diminish helm-mode
