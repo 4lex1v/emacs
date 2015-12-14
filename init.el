@@ -33,7 +33,7 @@
          ("C-c C-d"     . 4lex1v/delete-current-file)
          ("C-x \\"      . align-regexp)
 
-         ("<f9>"        . list-packages)
+         ("<f9>"        . open-init-file)
          ("<f10>"       . customize-themes)
          
          ("C-+"         . text-scale-increase)
@@ -43,7 +43,6 @@
          ("M-q"         . 4lex1v/closeOtherBuffer))
 
   :init (progn 
-                    
           (tooltip-mode -1)
           (tool-bar-mode -1)
           (menu-bar-mode 1)

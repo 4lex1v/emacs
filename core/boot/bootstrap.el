@@ -91,5 +91,14 @@ if the arg is not nil and it's not the single window, close it as well"
       (func)
     (error "Not a projectile project!")))
 
+(defmacro fn (body)
+  "Generates interactive parameterless lambda function"
+  `(lambda ()
+     (interactive)
+     ,body))
+
+(defun open-init-file ()
+  (interactive)
+  (find-file user-init-file))
 
 (provide 'bootstrap)
