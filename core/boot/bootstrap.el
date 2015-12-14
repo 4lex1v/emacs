@@ -70,23 +70,23 @@
 (defun 4lex1v/multi-window-p ()
   (> (count-windows) 1))
 
-(defun 4lex1v/closeBuffer (&optional arg)
-  "Close currently opened file (i.e assosiated buffer) and
-if the arg is not nil and it's not the single window, close it as well"
+(defun 4lex1v/close-buffer (&optional arg)
+  "Close active buffer if a single window environment or close buffer with corresponding window
+in multi-window environment. In order to leave the window opened provided an optional arg `leave-window'"
   (interactive "P")
   (kill-buffer (current-buffer))
   (if (and (not (equal arg 'nil))
-           (4lex1v/multiWindow-p))
+           (4lex1v/multi-window-p))
       (delete-window)))
 
-(defun 4lex1v/closeOtherBuffer ()
+(defun 4lex1v/close-other-buffer ()
   (interactive)
-  (if (4lex1v/multiWindow-p)
+  (if (4lex1v/multi-window-p)
       (progn
         (other-window 1)
-        (4lex1v/closeBuffer t))))
+        (4lex1v/close-buffer t))))
 
-(defun 4lex1v/forProjectileProject (func)
+(defun 4lex1v/with-projectile-project (func)
   (if (projectile-project-p)
       (func)
     (error "Not a projectile project!")))

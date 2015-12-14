@@ -39,8 +39,8 @@
          ("C-+"         . text-scale-increase)
          ("C--"         . text-scale-decrease)
          
-         ("C-q"         . 4lex1v/closeBuffer)
-         ("M-q"         . 4lex1v/closeOtherBuffer))
+         ("C-q"         . 4lex1v/close-buffer)
+         ("M-q"         . 4lex1v/close-other-buffer))
 
   :init (progn 
           (tooltip-mode -1)
