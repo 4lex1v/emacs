@@ -43,13 +43,12 @@
          ("M-q"         . 4lex1v/closeOtherBuffer))
 
   :init (progn 
+                    
+          (tooltip-mode -1)
+          (tool-bar-mode -1)
+          (menu-bar-mode 1)
+          (scroll-bar-mode -1)
           
-          (when window-system
-            (tooltip-mode -1)
-            (tool-bar-mode -1)
-            (menu-bar-mode 1)
-            (scroll-bar-mode -1))
-
           (setq-default tab-width 2
                         cursor-type 'bar
                         frame-title-format " %@%b% -"
@@ -68,7 +67,7 @@
                 initial-scratch-message     nil
                 kill-do-not-save-duplicates t
                 ad-redefinition-action     'accept
-                next-line-add-newlines      t)
+                next-line-add-newlines      nil)
 
           ;; Find a better alternative to basic linum mode
           (global-hl-line-mode t)
