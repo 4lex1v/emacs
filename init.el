@@ -90,6 +90,7 @@
 
 (use-package solarized
   :demand t
+  :if window-system
   :load-path "themes/solarized-emacs"
   
   :init (setq solarized-contrast                   'high
