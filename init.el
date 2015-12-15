@@ -18,7 +18,6 @@
   :demand t
   :bind (("RET"         . newline-and-indent)
          ("M-j"         . join-line)
-         ("C-c m"       . execute-extended-command)
          ("C-x C-b"     . ibuffer)
          ("C-c l"       . view-mode)
          ("C-a"         . back-to-indentation)
