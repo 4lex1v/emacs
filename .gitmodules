@@ -61,3 +61,6 @@
 [submodule "core/helm/helm-descbinds"]
 	path = core/helm/helm-descbinds
 	url = git@github.com:emacs-helm/helm-descbinds.git
+[submodule "core/f"]
+	path = core/f
+	url = git@github.com:rejeep/f.el.git
