@@ -113,7 +113,7 @@
                   mac-command-modifier        'meta
                   mac-option-modifier          nil)
 
-            (4lex1v/configure-font "Monaco for Powerline" 20)))
+            (4lex1v/configure-font "Monaco" 20)))
 
 (use-package helm
   :diminish helm-mode
