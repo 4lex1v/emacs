@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Add Scalatest WordSpec Class
+# key: spec
+# --
+final class ${1:`(f-base buffer-file-name)`}Spec extends WordSpec with Matchers {
+  "$2" should {
+    "$3" in {
+      $0
+    }
+  }
+}
