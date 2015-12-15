@@ -82,6 +82,7 @@ in multi-window environment. In order to leave the window opened provided an opt
 (defun 4lex1v:w/close-other-window ()
   "In a multi window environment close other (i.e not active) window. If there're more
 then two windows around, provide an index number which window to close"
+  (interactive)
   (if (4lex1v/multi-window-p)
       (progn
         (other-window 1)
