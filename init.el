@@ -290,6 +290,8 @@
   :load-path "core/company"
   :commands global-company-mode
 
+  :bind (("M-&" . company-complete))
+
   :init (progn
           (setq company-dabbrev-ignore-case nil
                 company-dabbrev-code-ignore-case nil
