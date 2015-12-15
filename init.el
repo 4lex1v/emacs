@@ -40,7 +40,7 @@
          ("C--"         . text-scale-decrease)
          
          ("C-q"         . 4lex1v/close-buffer)
-         ("M-q"         . 4lex1v/close-other-buffer))
+         ("M-q"         . 4lex1v:w/close-other-window))
 
   :init (progn 
           (tooltip-mode -1)
