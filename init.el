@@ -372,20 +372,17 @@
 
                         :config (unbind-key "M-p" ensime-mode-map)))))
 
-(use-package elisp
-  :demand t
-  :load-path "packages/elisp"
-
+(use-package emacs-lisp-mode
   :bind (("M-." . find-function-at-point)
          ("M-," . find-variable-at-point))
 
   :init (progn
-
           (use-package eldoc
             :diminish eldoc-mode
             :init (4lex1v/hook-into-modes #'turn-on-eldoc-mode 'emacs-lisp-mode-hook))
 
           (use-package macrostep
+            :load-path "packages/elisp/macrostep"
             :commands macrostep-expand
             :bind (("C-c e" . macrostep-expand)))))
 
