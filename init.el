@@ -22,7 +22,7 @@
          ("C-c l"       . view-mode)
          ("C-a"         . back-to-indentation)
          ("M-m"         . beginning-of-line)
-         ("C-S-d"       . duplicate-line)
+         ("C-S-d"       . 4lex1v/duplicate-line)
          ("M-`"         . other-frame)
          ("C-c r"       . revert-buffer)
          ("C-c C-d"     . 4lex1v/delete-current-file)
@@ -230,7 +230,6 @@
               ("C-M-d"            . sp-down-sexp)
               ("C-M-a"            . sp-backward-down-sexp)
               ("C-S-a"            . sp-beginning-of-sexp)
-              ("C-S-d"            . sp-end-of-sexp)
 
               ("C-M-e"            . sp-up-sexp)
               ("C-M-u"            . sp-backward-up-sexp)
@@ -245,9 +244,9 @@
               ("M-<delete>"       . sp-unwrap-sexp)
               ("M-<backspace>"    . sp-backward-unwrap-sexp)
 
-              ("C-<right>"        . sp-forward-slurp-sexp)
-              ("C-<left>"         . sp-forward-barf-sexp)
-              ("C-M-<left>"       . sp-backward-slurp-sexp)
+              ("M-<left>"         . sp-forward-slurp-sexp)
+              ("C-M-<left>"       . sp-forward-barf-sexp)
+              ("M-<right>"      . sp-backward-slurp-sexp)
               ("C-M-<right>"      . sp-backward-barf-sexp)
 
               ("M-D"              . sp-splice-sexp)
