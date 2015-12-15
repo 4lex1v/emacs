@@ -336,7 +336,7 @@
 
 (use-package scala
   :load-path "packages/scala"
-  :defer 2
+  :defer 1 ;; Don't like this behaviour, Scala support should be loaded dynamically
   :config (use-package scala-mode2
             :commands scala-mode
             :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode)
@@ -351,11 +351,7 @@
 
                     ;; FIXME :: for some reason if i omit this requirement,
                     ;;          key bindings throw an error that map not found
-                    (use-package scala-mode2-map)
-
-                    (4lex1v/hook-into-modes
-                     #'(lambda () (if (4lex1v/ensime-project-p) (ensime-mode 1)))
-                     'scala-mode-hook))
+                    (use-package scala-mode2-map))
 
             :config (progn
                       (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
@@ -367,23 +363,16 @@
                       (use-package popup :load-path "core/popup")
 
                       (use-package ensime
-                        :commands ensime-mode
+                        :commands ensime
+
                         :bind (:map scala-mode-map
                                     ("C-c e" . ensime-print-errors-at-point)
                                     ("C-c t" . ensime-print-type-at-point)
                                     ("C-c i" . ensime-import-type-at-point)
                                     ("C-M-." . ensime-edit-definition-other-window))
 
-                        :init (progn
-                                (setq ensime-default-buffer-prefix "ENSIME-")
-                                (4lex1v/hook-into-modes #'(lambda ()
-                                                            (set (make-local-variable 'company-backends)
-                                                                 '(ensime-company
-                                                                   (company-semantic
-                                                                    company-keywords
-                                                                    company-dabbrev-code
-                                                                    company-yasnippet))))
-                                                        'ensime-mode-hook))
+                        :init (setq ensime-default-buffer-prefix "ENSIME-")
+
                         :config (unbind-key "M-p" ensime-mode-map)))))
 
 (use-package emacs-lisp-mode
