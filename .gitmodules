@@ -64,3 +64,6 @@
 [submodule "core/f"]
 	path = core/f
 	url = git@github.com:rejeep/f.el.git
+[submodule "packages/elisp/macrostep"]
+	path = packages/elisp/macrostep
+	url = git@github.com:joddie/macrostep.git
