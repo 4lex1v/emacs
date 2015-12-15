@@ -224,23 +224,13 @@
   :commands smartparens-mode
 
   :bind (:map sp-keymap
-              ("C-c s r n"        . sp-narrow-to-sexp)
-              ("C-M-f"            . sp-forward-sexp)
-              ("C-M-b"            . sp-backward-sexp)
-              ("C-M-d"            . sp-down-sexp)
-              ("C-M-a"            . sp-backward-down-sexp)
-              ("C-S-a"            . sp-beginning-of-sexp)
-
-              ("C-M-e"            . sp-up-sexp)
-              ("C-M-u"            . sp-backward-up-sexp)
-              ("C-M-t"            . sp-transpose-sexp)
-
-              ("C-M-n"            . sp-next-sexp)
-              ("C-M-p"            . sp-previous-sexp)
+              ("M-F"              . sp-forward-symbol)
+              ("M-B"              . sp-backward-symbol)
 
               ("C-M-k"            . sp-kill-sexp)
               ("C-M-w"            . sp-copy-sexp)
-
+              ("C-M-t"            . sp-transpose-sexp)
+              
               ("M-<delete>"       . sp-unwrap-sexp)
               ("M-<backspace>"    . sp-backward-unwrap-sexp)
 
@@ -254,12 +244,8 @@
               ("C-M-<backspace>"  . sp-splice-sexp-killing-backward)
               ("C-S-<backspace>"  . sp-splice-sexp-killing-around)
 
-              ("C-]"              . sp-select-next-thing-exchange)
-              ("C-<left_bracket>" . sp-select-previous-thing)
+              ("C-M-["            . sp-select-previous-thing)
               ("C-M-]"            . sp-select-next-thing)
-
-              ("M-F"              . sp-forward-symbol)
-              ("M-B"              . sp-backward-symbol)
 
               ("C-c s t"          . sp-prefix-tag-object)
               ("C-c s p"          . sp-prefix-pair-object)
