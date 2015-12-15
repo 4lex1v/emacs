@@ -272,9 +272,6 @@
               ("C-c s j"          . sp-join-sexp)
               ("C-c s s"          . sp-split-sexp))
 
-  :bind (:map emacs-lisp-mode-map
-              (")" . sp-up-sexp))
-
   :init (progn
           (use-package smartparens-config
             :init (setq sp-autoinsert-if-followed-by-word t
