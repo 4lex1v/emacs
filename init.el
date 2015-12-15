@@ -96,6 +96,24 @@
 
   :config (load-theme 'solarized-light t))
 
+;; Should go into `core/boot'?
+(use-package f
+  :defer 2
+  :load-path "core/f")
+
+(use-package ace-control
+  :load-path "core/ace"
+  :init (progn
+
+          (use-package avy
+            :bind (("C-c SPC" . avy-goto-char)
+                   ("C-c j w" . avy-goto-word-1)
+                   ("C-c j l" . avy-goto-line)))
+
+          (use-package ace-window
+            :commands ace-window
+            :bind (("M-p" . ace-window)))))
+
 (use-package osx
   :if (eq system-type 'darwin)
   :config (progn
