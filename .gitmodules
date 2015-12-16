@@ -67,3 +67,9 @@
 [submodule "packages/elisp/macrostep"]
 	path = packages/elisp/macrostep
 	url = git@github.com:joddie/macrostep.git
+[submodule "packages/clojure/packages/clojure/clojure-mode"]
+	path = packages/clojure/clojure-mode
+	url = git@github.com:clojure-emacs/clojure-mode.git
+[submodule "packages/clojure/cider"]
+	path = packages/clojure/cider
+	url = git@github.com:clojure-emacs/cider.git
