@@ -94,11 +94,17 @@ then two windows around, provide an index number which window to close"
       (func)
     (error "Not a projectile project!")))
 
-(defmacro fn (body)
-  "Generates interactive parameterless lambda function"
-  `(lambda ()
+(defmacro func (name &rest body)
+  "Shortcut for basic interactive no-arg functions"
+  `(defun ,name ()
      (interactive)
-     ,body))
+     ,@body))
+
+(defun toggle-comment-on-line ()
+  (interactive)
+  (comment-or-uncomment-region
+   (line-beginning-position)
+   (line-end-position)))
 
 (defun open-init-file ()
   (interactive)

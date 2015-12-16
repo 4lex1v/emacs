@@ -7,6 +7,7 @@
 ;; Add bootstrap libs to the load path 
 (add-to-list 'load-path (concat user-emacs-directory "core/boot"))
 (add-to-list 'load-path (concat user-emacs-directory "core/use-package"))
+(add-to-list 'load-path (concat user-emacs-directory "core/vendor"))
 
 (require 'use-package)
 (setq use-package-verbose t
@@ -283,7 +284,8 @@
 
           (4lex1v/hook-into-modes #'smartparens-mode
                                   'scala-mode-hook
-                                  'emacs-lisp-mode-hook)))
+                                  'emacs-lisp-mode-hook
+                                  'cider-repl-mode-hook)))
 
 (use-package company
   :diminish company-mode
@@ -385,5 +387,49 @@
             :load-path "packages/elisp/macrostep"
             :commands macrostep-expand
             :bind (("C-c e" . macrostep-expand)))))
+
+;; Configuration inspired by -
+;; https://github.com/flyingmachine/emacs-for-clojure/blob/master/customizations/setup-clojure.el
+(use-package clojure
+  :load-path "packages/clojure"
+  :config (progn
+            (use-package clojure-mode
+              :commands clojure-mode
+              :mode (("\\.edn$" . clojure-mode)
+                     ("\\.boot$" . clojure-mode)
+                     ("\\.cljs.*$" . clojure-mode)
+                     ("lein-env" . ruby-mode))
+
+              :bind (("C-c C-v" . cider-start-http-server)
+                     ("C-M-r"   . cider-refresh)
+                     ("C-c u"   . cider-user-ns))
+
+              :init (progn
+                      (use-package clojure-mode-extra-font-locking
+                        :init (font-lock-add-keywords
+                               nil
+                               '(("(\\(facts?\\)"
+                                  (1 font-lock-keyword-face))
+                                 ("(\\(background?\\)"
+                                  (1 font-lock-keyword-face)))))
+
+                      (setq inferior-lisp-program "lein repl"))
+
+              :config (progn
+                        (define-clojure-indent (fact 1))
+                        (define-clojure-indent (facts 1))))
+
+            (use-package cider
+              :commands cider-mode
+              :bind (("C-c u" . cider-user-ns))
+
+              :init (progn
+                      (4lex1v/hook-into-modes #'cider-turn-on-eldoc-mode 'cider-mode-hook)
+
+                      (setq cider-repl-pop-to-buffer-on-connect t ;; go right to the REPL buffer when it's finished connecting
+                            cider-show-error-buffer t ;; When there's a cider error, show its buffer and switch to it
+                            cider-auto-select-error-buffer t
+                            cider-repl-history-file "~/.emacs.d/cider-history"
+                            cider-repl-wrap-history t)))))
 
 (setq gc-cons-threshold 1000000)
