@@ -20,7 +20,6 @@
   :bind (("RET"         . newline-and-indent)
          ("M-j"         . join-line)
          ("C-x C-b"     . ibuffer)
-         ("C-c l"       . view-mode)
          ("C-a"         . back-to-indentation)
          ("M-m"         . beginning-of-line)
          ("C-S-d"       . 4lex1v/duplicate-line)
@@ -36,7 +35,8 @@
          ("C--"         . text-scale-decrease)
          
          ("C-q"         . 4lex1v/close-buffer)
-         ("M-q"         . 4lex1v:w/close-other-window))
+         ("M-q"         . 4lex1v:w/close-other-window)
+         ("C-;"         . toggle-comment-on-line))
 
   :init (progn 
           (tooltip-mode -1)
@@ -78,8 +78,7 @@
 
   :config (progn 
             ;;(4lex1v:ui/transparent-ui 95 95)
-            (4lex1v/configure-frame-size 'maximized)
-            (set-face-attribute 'mode-line nil  :height 180)))
+            (4lex1v/configure-frame-size 'maximized)))
 
 (use-package solarized
   :demand t
@@ -95,7 +94,9 @@
               solarized-use-more-italic             nil
               x-underline-at-descent-line           t)
 
-  :config (load-theme 'solarized-light t))
+  :config (progn
+            (load-theme 'solarized-light t)
+            (set-face-attribute 'mode-line nil :height 180)))
 
 ;; Should go into `core/boot'?
 (use-package f
