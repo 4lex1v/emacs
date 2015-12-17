@@ -107,18 +107,17 @@
   :load-path "core/ace"
   :init (progn
 
+          ;; Improved version of ace-jump-mode
           (use-package avy
             :bind (("C-c SPC" . avy-goto-char)
                    ("C-c j w" . avy-goto-word-1)
                    ("C-c j l" . avy-goto-line)))
 
-          (use-package ace-window
-            :commands ace-window
-            :bind (("M-p" . ace-window)))))
+          (use-package ace-window :bind (("M-p" . ace-window)))))
 
 (use-package osx
   :if (eq system-type 'darwin)
-  :config (progn
+  :init (progn
             (menu-bar-mode 1)
 
             (setq browse-url-browser-function 'browse-url-default-macosx-browser
@@ -336,31 +335,26 @@
 
 (use-package scala
   :load-path "packages/scala"
-  :defer 1 ;; Don't like this behaviour, Scala support should be loaded dynamically
-  :config (use-package scala-mode2
+  :init (progn
+          (use-package scala-mode2
             :commands scala-mode
             :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode)
-            :bind (:map scala-mode-map
-                        ("C-c b"      . sbt-ext:open-build-file)
-                        ("<C-return>" . newline-or-comment)
-                        ("M-j"        . scala-indent:join-line))
 
             :init (progn
                     (setq scala-indent:use-javadoc-style t
                           popup-complete-enabled-modes '(scala-mode))
 
-                    ;; FIXME :: for some reason if i omit this requirement,
-                    ;;          key bindings throw an error that map not found
-                    (use-package scala-mode2-map))
+                    (use-package sbt-mode :commands sbt-start))
 
             :config (progn
-                      (sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
+                      ;; This should be fixed in future versions of use-package
+                      ;; Ref - https://github.com/jwiegley/use-package/issues/269
+                      (bind-key "C-c b"      'sbt-ext:open-build-file scala-mode-map)
+                      (bind-key "<C-return>" 'newline-or-comment scala-mode-map)
+                      (bind-key "M-j"        'scala-indent:join-line   scala-mode-map)
 
-                      (use-package sbt-mode
-                        :commands sbt-start)
-
-                      ;; Required by ENSIME
-                      (use-package popup :load-path "core/popup")
+                      (sp-local-pair 'scala-mode "{" nil
+                                     :post-handlers '((4lex1v/indent-in-braces "RET")))
 
                       (use-package ensime
                         :commands ensime
@@ -371,9 +365,11 @@
                                     ("C-c i" . ensime-import-type-at-point)
                                     ("C-M-." . ensime-edit-definition-other-window))
 
-                        :init (setq ensime-default-buffer-prefix "ENSIME-")
+                        :init (progn
+                                (use-package popup :load-path "core/popup")
+                                (setq ensime-default-buffer-prefix "ENSIME-"))
 
-                        :config (unbind-key "M-p" ensime-mode-map)))))
+                        :config (unbind-key "M-p" ensime-mode-map))))))
 
 (use-package emacs-lisp-mode
   :bind (("M-." . find-function-at-point)
@@ -393,7 +389,7 @@
 ;; https://github.com/flyingmachine/emacs-for-clojure/blob/master/customizations/setup-clojure.el
 (use-package clojure
   :load-path "packages/clojure"
-  :config (progn
+  :init (progn
             (use-package clojure-mode
               :commands clojure-mode
               :mode (("\\.edn$" . clojure-mode)
@@ -405,18 +401,17 @@
                      ("C-M-r"   . cider-refresh)
                      ("C-c u"   . cider-user-ns))
 
-              :init (progn
-                      (use-package clojure-mode-extra-font-locking
-                        :init (font-lock-add-keywords
-                               nil
-                               '(("(\\(facts?\\)"
-                                  (1 font-lock-keyword-face))
-                                 ("(\\(background?\\)"
-                                  (1 font-lock-keyword-face)))))
-
-                      (setq inferior-lisp-program "lein repl"))
+              :init (setq inferior-lisp-program "lein repl")
 
               :config (progn
+                        (use-package clojure-mode-extra-font-locking
+                          :init (font-lock-add-keywords
+                                 nil
+                                 '(("(\\(facts?\\)"
+                                    (1 font-lock-keyword-face))
+                                   ("(\\(background?\\)"
+                                    (1 font-lock-keyword-face)))))
+                        
                         (define-clojure-indent (fact 1))
                         (define-clojure-indent (facts 1))))
 
