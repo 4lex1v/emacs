@@ -372,21 +372,23 @@
 
                         :config (unbind-key "M-p" ensime-mode-map))))))
 
-(use-package emacs-lisp-mode
-  :bind (("M-." . find-function-at-point)
-         ("M-," . find-variable-at-point))
-
+(use-package elisp
+  :load-path "packages/elisp"
   :init (progn
-          (use-package eldoc
-            :diminish eldoc-mode
-            :init (progn
-                    (setq eldoc-idle-delay 0)
-                    (4lex1v/hook-into-modes #'eldoc-mode 'emacs-lisp-mode-hook)))
+          (use-package emacs-lisp-mode
+               :bind (("M-." . find-function-at-point)
+                      ("M-," . find-variable-at-point))
 
-          (use-package macrostep
-            :load-path "packages/elisp/macrostep"
-            :commands macrostep-expand
-            :bind (("C-c e" . macrostep-expand)))))
+               :init (progn
+                       (use-package eldoc
+                         :diminish eldoc-mode
+                         :init (progn
+                                 (setq eldoc-idle-delay 0)
+                                 (4lex1v/hook-into-modes #'eldoc-mode 'emacs-lisp-mode-hook)))
+
+                       (use-package macrostep
+                         :commands macrostep-expand
+                         :bind (("C-c e" . macrostep-expand)))))))
 
 ;; Configuration inspired by -
 ;; https://github.com/flyingmachine/emacs-for-clojure/blob/master/customizations/setup-clojure.el
