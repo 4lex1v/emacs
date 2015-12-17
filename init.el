@@ -392,9 +392,10 @@
   :init (progn
             (use-package clojure-mode
               :commands clojure-mode
-              :mode (("\\.edn$" . clojure-mode)
-                     ("\\.boot$" . clojure-mode)
-                     ("\\.cljs.*$" . clojure-mode)
+              :mode (("\\.clj\\'" . clojure-mode)
+                     ("\\.edn\\'" . clojure-mode)
+                     ("\\.boot\\'" . clojure-mode)
+                     ("\\.cljs.*\\'" . clojure-mode)
                      ("lein-env" . ruby-mode))
 
               :bind (("C-c C-v" . cider-start-http-server)
