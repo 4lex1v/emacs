@@ -379,7 +379,9 @@
   :init (progn
           (use-package eldoc
             :diminish eldoc-mode
-            :init (4lex1v/hook-into-modes #'turn-on-eldoc-mode 'emacs-lisp-mode-hook))
+            :init (progn
+                    (setq eldoc-idle-delay 0)
+                    (4lex1v/hook-into-modes #'eldoc-mode 'emacs-lisp-mode-hook)))
 
           (use-package macrostep
             :load-path "packages/elisp/macrostep"
