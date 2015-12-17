@@ -9,7 +9,7 @@
 (add-to-list 'load-path (concat user-emacs-directory "core/use-package"))
 (add-to-list 'load-path (concat user-emacs-directory "core/vendor"))
 
-(require 'use-package)
+(eval-when-compile (require 'use-package))
 (setq use-package-verbose t
       use-package-minimum-reported-time 0.01)
 
@@ -45,7 +45,8 @@
           (scroll-bar-mode -1)
           
           (setq-default tab-width 2
-                        cursor-type 'bar
+                        cursor-type 'box
+                        cursor-in-non-selected-windows 'bar
                         frame-title-format " %@%b% -"
                         linum-format "%3d "  ;; Try dynamic?
                         indent-tabs-mode  nil)
