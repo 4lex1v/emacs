@@ -114,7 +114,9 @@
                    ("C-c j w" . avy-goto-word-1)
                    ("C-c j l" . avy-goto-line)))
 
-          (use-package ace-window :bind (("M-p" . ace-window)))))
+          (use-package ace-window
+            :bind (("M-p"  . ace-window)
+                   ("<f7>" . ace-window)))))
 
 (use-package osx
   :if (eq system-type 'darwin)
