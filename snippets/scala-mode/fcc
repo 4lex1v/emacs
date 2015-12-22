@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: final case class 
+# key: fcc
+# binding: direct-keybinding
+# --
+final case class ${1:`(f-base buffer-file-name)`}($0)

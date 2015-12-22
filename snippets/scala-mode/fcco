@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: final case class with companion object
+# key: fcco
+# binding: direct-keybinding
+# --
+final case class ${1:`(f-base buffer-file-name)`}($2)
+
+object $1 {
+  $0
+}

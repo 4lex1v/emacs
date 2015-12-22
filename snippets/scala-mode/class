@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Scala class generator
+# key: class
+# binding: direct-keybinding
+# --
+class ${1:`(f-base buffer-file-name)`} {
+  $0
+}
