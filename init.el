@@ -436,4 +436,12 @@
                             cider-repl-history-file "~/.emacs.d/cider-history"
                             cider-repl-wrap-history t)))))
 
+(use-package guide-key
+  :load-path "core/guide-key"
+  :diminish guide-key-mode
+  :init (setq guide-key/idle-delay 0.3
+              guide-key/guide-key-sequence t
+              guide-key/recursive-key-sequence-flag t)
+  :config (guide-key-mode))
+
 (setq gc-cons-threshold 1000000)
