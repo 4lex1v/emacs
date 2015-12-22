@@ -29,6 +29,16 @@ project file .ensime defined in the root directory"
   (forward-line -1)
   (indent-according-to-mode))
 
+(defun 4lex1v/ensime-running-p ()
+  (if (4lex1v/ensime-project-p)
+      (file-exists-p
+       (concat (projectile-project-root)
+               ".ensime_cache/port"))))
+
+(defun 4lex1v/connect-running-ensime ()
+  (if (4lex1v/ensime-running-p)
+      (ensime-mode 1)))
+
 (defun 4lex1v/start-ensime ()
   (interactive)
   (if (4lex1v/ensime-project-p)
