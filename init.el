@@ -97,7 +97,8 @@
 
   :config (progn
             (load-theme 'solarized-light t)
-            (set-face-attribute 'mode-line nil :height 180)))
+            ;; (set-face-attribute 'mode-line nil :height 180)
+            ))
 
 ;; Should go into `core/boot'?
 (use-package f
@@ -130,7 +131,7 @@
                   mac-command-modifier        'meta
                   mac-option-modifier          nil)
 
-            (4lex1v/configure-font "Monaco" 20)))
+            (4lex1v/configure-font "Monaco" 14)))
 
 (use-package helm
   :diminish helm-mode
