@@ -143,10 +143,9 @@
          ("C-h a"   . helm-apropos)
          ("M-y"     . helm-show-kill-ring)
          ("C-x b"   . helm-mini)
-         ("<f7>"    . helm-mini)
          ("C-x C-f" . helm-find-files)         
          ("M-x"     . helm-M-x))
-
+  
   :bind (:map helm-map
               ("<tab>" . helm-execute-persistent-action)
               ("C-i"   . helm-execute-persistent-action)
@@ -154,7 +153,7 @@
               ("C-o"   . helm-next-source)
               ("M-o"   . helm-previous-source)
               ("C-j"   . helm-buffer-switch-other-window))
-  
+
   :init (progn
           (setq helm-idle-delay                        0.0
                 helm-input-idle-delay                  0.01
@@ -259,7 +258,7 @@
 
               ("M-<left>"         . sp-forward-slurp-sexp)
               ("C-M-<left>"       . sp-forward-barf-sexp)
-              ("M-<right>"      . sp-backward-slurp-sexp)
+              ("M-<right>"        . sp-backward-slurp-sexp)
               ("C-M-<right>"      . sp-backward-barf-sexp)
 
               ("M-D"              . sp-splice-sexp)
@@ -330,7 +329,7 @@
   :init (progn
           (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
           (let ((modes '(emacs-lisp-mode-hook scala-mode-hook)))
-            (apply #'4lex1v/hook-into-modes 'hs-minor-mode modes)
+            (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes)
             (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes)))
   
   :config (progn
@@ -347,6 +346,8 @@
             :init (progn
                     (setq scala-indent:use-javadoc-style t
                           popup-complete-enabled-modes '(scala-mode))
+
+                    (4lex1v/hook-into-modes #'4lex1v/connect-running-ensime 'scala-mode-hook)
 
                     (use-package sbt-mode :commands sbt-start))
 
@@ -377,6 +378,7 @@
 
 (use-package elisp
   :load-path "packages/elisp"
+  :bind (("C-c w n" . wrap-with-parens))
   :init (progn
           (use-package emacs-lisp-mode
                :bind (("M-." . find-function-at-point)
@@ -390,6 +392,7 @@
                                  (4lex1v/hook-into-modes #'eldoc-mode 'emacs-lisp-mode-hook)))
 
                        (use-package macrostep
+                         :load-path "packages/elisp/macrostep"
                          :commands macrostep-expand
                          :bind (("C-c e" . macrostep-expand)))))))
 
@@ -429,7 +432,8 @@
               :bind (("C-c u" . cider-user-ns))
 
               :init (progn
-                      (4lex1v/hook-into-modes #'cider-turn-on-eldoc-mode 'cider-mode-hook)
+                      (4lex1v/hook-into-modes #'cider-mode 'clojure-mode-hook)
+                      (4lex1v/hook-into-modes #'eldoc-mode 'cider-mode-hook)
 
                       (setq cider-repl-pop-to-buffer-on-connect t ;; go right to the REPL buffer when it's finished connecting
                             cider-show-error-buffer t ;; When there's a cider error, show its buffer and switch to it
