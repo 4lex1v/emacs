@@ -6,8 +6,8 @@
 
 ;; Add bootstrap libs to the load path 
 (add-to-list 'load-path (concat user-emacs-directory "core/boot"))
-(add-to-list 'load-path (concat user-emacs-directory "core/use-package"))
 (add-to-list 'load-path (concat user-emacs-directory "core/vendor"))
+(add-to-list 'load-path (concat user-emacs-directory "core/use-package"))
 
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t
@@ -288,6 +288,7 @@
           (4lex1v/hook-into-modes #'smartparens-mode
                                   'scala-mode-hook
                                   'emacs-lisp-mode-hook
+                                  'clojure-mode-hook
                                   'cider-repl-mode-hook)))
 
 (use-package company
