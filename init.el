@@ -79,7 +79,8 @@
 
   :config (progn 
             ;;(4lex1v:ui/transparent-ui 95 95)
-            (4lex1v/configure-frame-size 'maximized)))
+            ;;(4lex1v/configure-frame-size 'maximized)
+            ))
 
 (use-package solarized
   :demand t
@@ -116,7 +117,7 @@
                    ("C-c j l" . avy-goto-line)))
 
           (use-package ace-window
-            :bind (("M-p"  . ace-window)
+            :bind (("M-'"  . ace-window)
                    ("<f7>" . ace-window)))))
 
 (use-package osx
