@@ -117,7 +117,7 @@
                    ("C-c j l" . avy-goto-line)))
 
           (use-package ace-window
-            :bind (("M-'"  . ace-window)
+            :bind (("C-'"  . ace-window)
                    ("<f7>" . ace-window)))))
 
 (use-package osx
@@ -351,7 +351,7 @@
 
                     (4lex1v/hook-into-modes #'4lex1v/connect-running-ensime 'scala-mode-hook)
 
-                    (use-package sbt-mode :commands sbt-start))
+                    (use-package sbt-mode :commands (sbt-start sbt-command)))
 
             :config (progn
                       ;; This should be fixed in future versions of use-package
