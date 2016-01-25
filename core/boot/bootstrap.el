@@ -110,4 +110,27 @@ then two windows around, provide an index number which window to close"
   (interactive)
   (find-file user-init-file))
 
+(defun string/starts-with (string prefix)
+  "Return t if STRING starts with prefix."
+  (and (string-match (rx-to-string `(: bos ,prefix) t)
+                     string)
+       t))
+
+(defun docker-machine-connect (name)
+  "Connects to a running machine by its `name'"
+  (interactive "sDocker-machine name: ")
+  (let ((docker-env
+         (mapcar
+          (lambda (line)
+            (split-string-and-unquote
+             (replace-regexp-in-string "\\(export \\|=\\)" " " line)))
+          (-filter
+           (lambda (line) (string/starts-with line "export"))
+           (split-string
+            (shell-command-to-string
+             (concat "docker-machine env " name)) "\n" t)))))
+    (mapc
+     (lambda (params) (apply 'setenv params))
+     docker-env)))
+
 (provide 'bootstrap)

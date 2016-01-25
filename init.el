@@ -45,7 +45,7 @@
           (scroll-bar-mode -1)
           
           (setq-default tab-width 2
-                        cursor-type 'box
+                        cursor-type 'bar
                         cursor-in-non-selected-windows 'bar
                         frame-title-format " %@%b% -"
                         linum-format "%3d "  ;; Try dynamic?
@@ -123,16 +123,16 @@
 (use-package osx
   :if (eq system-type 'darwin)
   :init (progn
-            (menu-bar-mode 1)
+          (menu-bar-mode 1)
 
-            (setq browse-url-browser-function 'browse-url-default-macosx-browser
-                  delete-by-moving-to-trash    t
-                  mac-option-key-is-meta       nil
-                  mac-command-key-is-meta      t
-                  mac-command-modifier        'meta
-                  mac-option-modifier          nil)
+          (setq browse-url-browser-function 'browse-url-default-macosx-browser
+                delete-by-moving-to-trash    t
+                mac-option-key-is-meta       nil
+                mac-command-key-is-meta      t
+                mac-command-modifier        'meta
+                mac-option-modifier          nil)
 
-            (4lex1v/configure-font "Monaco" 14)))
+          (4lex1v/configure-font "Monaco" 14)))
 
 (use-package helm
   :diminish helm-mode
@@ -383,65 +383,76 @@
   :bind (("C-c w n" . wrap-with-parens))
   :init (progn
           (use-package emacs-lisp-mode
-               :bind (("M-." . find-function-at-point)
-                      ("M-," . find-variable-at-point))
+            :bind (("M-." . find-function-at-point)
+                   ("M-," . find-variable-at-point))
 
-               :init (progn
-                       (use-package eldoc
-                         :diminish eldoc-mode
-                         :init (progn
-                                 (setq eldoc-idle-delay 0)
-                                 (4lex1v/hook-into-modes #'eldoc-mode 'emacs-lisp-mode-hook)))
+            :init (progn
+                    (use-package eldoc
+                      :diminish eldoc-mode
+                      :init (progn
+                              (setq eldoc-idle-delay 0)
+                              (4lex1v/hook-into-modes #'eldoc-mode 'emacs-lisp-mode-hook)))
 
-                       (use-package macrostep
-                         :load-path "packages/elisp/macrostep"
-                         :commands macrostep-expand
-                         :bind (("C-c e" . macrostep-expand)))))))
+                    (use-package macrostep
+                      :load-path "packages/elisp/macrostep"
+                      :commands macrostep-expand
+                      :bind (("C-c e" . macrostep-expand)))))))
 
 ;; Configuration inspired by -
 ;; https://github.com/flyingmachine/emacs-for-clojure/blob/master/customizations/setup-clojure.el
 (use-package clojure
   :load-path "packages/clojure"
   :init (progn
-            (use-package clojure-mode
-              :commands clojure-mode
-              :mode (("\\.clj\\'" . clojure-mode)
-                     ("\\.edn\\'" . clojure-mode)
-                     ("\\.boot\\'" . clojure-mode)
-                     ("\\.cljs.*\\'" . clojure-mode)
-                     ("lein-env" . ruby-mode))
+          (use-package clojure-mode
+            :commands clojure-mode
+            :mode (("\\.clj\\'" . clojure-mode)
+                   ("\\.edn\\'" . clojure-mode)
+                   ("\\.boot\\'" . clojure-mode)
+                   ("\\.cljs.*\\'" . clojure-mode)
+                   ("lein-env" . ruby-mode))
 
-              :bind (("C-c C-v" . cider-start-http-server)
-                     ("C-M-r"   . cider-refresh)
-                     ("C-c u"   . cider-user-ns))
+            :bind (("C-c C-v" . cider-start-http-server)
+                   ("C-M-r"   . cider-refresh)
+                   ("C-c u"   . cider-user-ns))
 
-              :init (setq inferior-lisp-program "lein repl")
+            :init (setq inferior-lisp-program "lein repl")
 
-              :config (progn
-                        (use-package clojure-mode-extra-font-locking
-                          :init (font-lock-add-keywords
-                                 nil
-                                 '(("(\\(facts?\\)"
-                                    (1 font-lock-keyword-face))
-                                   ("(\\(background?\\)"
-                                    (1 font-lock-keyword-face)))))
-                        
-                        (define-clojure-indent (fact 1))
-                        (define-clojure-indent (facts 1))))
+            :config (progn
+                      (use-package clojure-mode-extra-font-locking
+                        :init (font-lock-add-keywords
+                               nil
+                               '(("(\\(facts?\\)"
+                                  (1 font-lock-keyword-face))
+                                 ("(\\(background?\\)"
+                                  (1 font-lock-keyword-face)))))
+                      
+                      (define-clojure-indent (fact 1))
+                      (define-clojure-indent (facts 1))))
 
-            (use-package cider
-              :commands cider-mode
-              :bind (("C-c u" . cider-user-ns))
+          (use-package cider
+            :commands cider-mode
+            :bind (("C-c u" . cider-user-ns))
 
-              :init (progn
-                      (4lex1v/hook-into-modes #'cider-mode 'clojure-mode-hook)
-                      (4lex1v/hook-into-modes #'eldoc-mode 'cider-mode-hook)
+            :init (progn
+                    (4lex1v/hook-into-modes #'cider-mode 'clojure-mode-hook)
+                    (4lex1v/hook-into-modes #'eldoc-mode 'cider-mode-hook)
 
-                      (setq cider-repl-pop-to-buffer-on-connect t ;; go right to the REPL buffer when it's finished connecting
-                            cider-show-error-buffer t ;; When there's a cider error, show its buffer and switch to it
-                            cider-auto-select-error-buffer t
-                            cider-repl-history-file "~/.emacs.d/cider-history"
-                            cider-repl-wrap-history t)))))
+                    (setq cider-repl-pop-to-buffer-on-connect t ;; go right to the REPL buffer when it's finished connecting
+                          cider-show-error-buffer t ;; When there's a cider error, show its buffer and switch to it
+                          cider-auto-select-error-buffer t
+                          cider-repl-history-file "~/.emacs.d/cider-history"
+                          cider-repl-wrap-history t)))))
+
+(use-package docker
+  :load-path "core/docker"
+  :commands docker-images
+  :init (progn
+          (setq default-docker-machine-name "universe")
+          (if (eq (shell-command
+                   (concat "docker-machine env "
+                           default-docker-machine-name))
+                  0)
+              (docker-machine-connect default-docker-machine-name))))
 
 (use-package guide-key
   :load-path "core/guide-key"

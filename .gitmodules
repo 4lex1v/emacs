@@ -75,3 +75,6 @@
 [submodule "core/helm/helm-descbinds"]
 	path = core/helm/helm-descbinds
 	url = git@github.com:emacs-helm/helm-descbinds.git
+[submodule "core/docker"]
+	path = core/docker
+	url = git@github.com:Silex/docker.el.git
