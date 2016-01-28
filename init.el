@@ -45,7 +45,7 @@
           (scroll-bar-mode -1)
           
           (setq-default tab-width 2
-                        cursor-type 'bar
+                        cursor-type 'box
                         cursor-in-non-selected-windows 'bar
                         frame-title-format " %@%b% -"
                         linum-format "%3d "  ;; Try dynamic?
