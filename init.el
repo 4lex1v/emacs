@@ -351,14 +351,16 @@
 
                     (4lex1v/hook-into-modes #'4lex1v/connect-running-ensime 'scala-mode-hook)
 
-                    (use-package sbt-mode :commands (sbt-start sbt-command)))
+                    (use-package sbt-mode
+                      :commands (sbt-start sbt-command)))
 
             :config (progn
                       ;; This should be fixed in future versions of use-package
-                      ;; Ref - https://github.com/jwiegley/use-package/issues/269
+                      ;; Track - https://github.com/jwiegley/use-package/issues/304
                       (bind-key "C-c b"      'sbt-ext:open-build-file scala-mode-map)
-                      (bind-key "<C-return>" 'newline-or-comment scala-mode-map)
-                      (bind-key "M-j"        'scala-indent:join-line   scala-mode-map)
+                      (bind-key "<C-return>" 'newline-or-comment      scala-mode-map)
+                      (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
+                      (bind-key "C-c"        'sbt-command             scala-mode-map)
 
                       (sp-local-pair 'scala-mode "{" nil
                                      :post-handlers '((4lex1v/indent-in-braces "RET")))
