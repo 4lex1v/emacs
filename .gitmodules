@@ -78,3 +78,6 @@
 [submodule "themes/spacemacs"]
 	path = themes/spacemacs
 	url = git@github.com:nashamri/spacemacs-theme.git
+[submodule "core/which-key "]
+	path = "core/which-key "
+	url = git@github.com:justbur/emacs-which-key.git
