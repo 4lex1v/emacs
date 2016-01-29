@@ -78,3 +78,6 @@
 [submodule "core/docker"]
 	path = core/docker
 	url = git@github.com:Silex/docker.el.git
+[submodule "themes/spacemacs"]
+	path = themes/spacemacs
+	url = git@github.com:nashamri/spacemacs-theme.git
