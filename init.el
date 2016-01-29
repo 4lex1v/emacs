@@ -43,7 +43,7 @@
           (tool-bar-mode -1)
           (menu-bar-mode -1)
           (scroll-bar-mode -1)
-          
+
           (setq-default tab-width 2
                         cursor-type 'box
                         cursor-in-non-selected-windows 'bar
@@ -83,7 +83,6 @@
             ))
 
 (use-package solarized
-  :demand t
   :if window-system
   :load-path "themes/solarized-emacs"
   
@@ -97,8 +96,15 @@
               x-underline-at-descent-line           t)
 
   :config (progn
-            (load-theme 'solarized-light t)
-            ;; (set-face-attribute 'mode-line nil :height 180)
+            ;; (load-theme 'solarized-light t)
+             ))
+
+(use-package spacemacs-common
+  :demand t
+  :if window-system
+  :load-path "themes/spacemacs"
+  :config (progn
+            (load-theme 'spacemacs-dark t)
             ))
 
 ;; Should go into `core/boot'?
@@ -131,6 +137,12 @@
                 mac-command-key-is-meta      t
                 mac-command-modifier        'meta
                 mac-option-modifier          nil)
+
+          ;; Add local bins to the PATH
+          (let ((dir "/usr/local/bin"))
+            (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+            (add-to-list 'exec-path dir))
+          
 
           (4lex1v/configure-font "Monaco" 14)))
 
@@ -360,7 +372,7 @@
                       (bind-key "C-c b"      'sbt-ext:open-build-file scala-mode-map)
                       (bind-key "<C-return>" 'newline-or-comment      scala-mode-map)
                       (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
-                      (bind-key "C-c"        'sbt-command             scala-mode-map)
+                      (bind-key "C-c c"      'sbt-command             scala-mode-map)
 
                       (sp-local-pair 'scala-mode "{" nil
                                      :post-handlers '((4lex1v/indent-in-braces "RET")))
