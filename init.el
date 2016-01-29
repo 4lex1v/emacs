@@ -468,12 +468,17 @@
                   0)
               (docker-machine-connect default-docker-machine-name))))
 
-(use-package guide-key
-  :load-path "core/guide-key"
-  :diminish guide-key-mode
-  :init (setq guide-key/idle-delay 0.3
-              guide-key/guide-key-sequence t
-              guide-key/recursive-key-sequence-flag t)
-  :config (guide-key-mode))
+;; (use-package guide-key
+;;   :load-path "core/guide-key"
+;;   :diminish guide-key-mode
+;;   :init (setq guide-key/idle-delay 0.3
+;;               guide-key/guide-key-sequence t
+;;               guide-key/recursive-key-sequence-flag t)
+;;   :config (guide-key-mode))
+
+(use-package which-key
+  :load-path "core/which-key"
+  :commands which-key-mode
+  )
 
 (setq gc-cons-threshold 1000000)
