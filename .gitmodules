@@ -60,9 +60,6 @@
 [submodule "packages/clojure/cider"]
 	path = packages/clojure/cider
 	url = git@github.com:clojure-emacs/cider.git
-[submodule "core/guide-key"]
-	path = core/guide-key
-	url = git@github.com:kai2nenobu/guide-key.git
 [submodule "core/helm/helm-core"]
 	path = core/helm/helm-core
 	url = git@github.com:emacs-helm/helm.git
