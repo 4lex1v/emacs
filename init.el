@@ -127,6 +127,7 @@
 (use-package which-key
   :diminish which-key-mode
   :load-path "core/which-key"
+
   :init (setq which-key-idle-delay 0.2
               which-key-popup-type 'side-window
               which-key-sort-order 'which-key-prefix-then-key-order)
@@ -267,6 +268,7 @@
 
   :init (progn
           (unbind-key "C-c m")
+
           (which-key-declare-prefixes
             "C-c m" "magit")
 
