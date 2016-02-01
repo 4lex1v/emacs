@@ -15,6 +15,24 @@
 
 ;; UI config goes first, if any subsequent config fails
 ;; at least we can have a pretty UI to work with emacs...
+(use-package solarized
+  :if window-system
+  :load-path "themes/solarized-emacs"
+  :init (setq solarized-contrast                   'high
+              solarized-visibility                 'high
+              solarized-termcolors                  256
+              solarized-distinct-fringe-background  nil
+              solarized-use-variable-pitch          nil
+              solarized-use-less-bold               nil
+              solarized-use-more-italic             nil
+              x-underline-at-descent-line           t))
+
+;; Just a theme
+(use-package spacemacs-common
+  :demand t
+  :if window-system
+  :load-path "themes/spacemacs")
+
 (use-package bootstrap
   :demand t
   :bind (("RET"         . newline-and-indent)
@@ -78,35 +96,9 @@
           (fset 'yes-or-no-p   'y-or-n-p))
 
   :config (progn 
-            ;; (4lex1v/transparent-ui 95 95)
-            (4lex1v/configure-frame-size 'maximized)
-            ))
-
-(use-package solarized
-  :if window-system
-  :load-path "themes/solarized-emacs"
-  
-  :init (setq solarized-contrast                   'high
-              solarized-visibility                 'high
-              solarized-termcolors                  256
-              solarized-distinct-fringe-background  nil
-              solarized-use-variable-pitch          nil
-              solarized-use-less-bold               nil
-              solarized-use-more-italic             nil
-              x-underline-at-descent-line           t)
-
-  :config (progn
-            ;; (load-theme 'solarized-light t)
-             ))
-
-;; Just a theme
-(use-package spacemacs-common
-  :demand t
-  :if window-system
-  :load-path "themes/spacemacs"
-  :config (progn
             (load-theme 'spacemacs-dark t)
-            ))
+            (4lex1v/configure-frame-size 'maximized)
+            (4lex1v/transparent-ui 100 100)))
 
 (use-package osx
   :if (eq system-type 'darwin)
