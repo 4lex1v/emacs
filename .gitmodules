@@ -81,3 +81,6 @@
 [submodule "core/which-key"]
 	path = core/which-key
 	url = git@github.com:justbur/emacs-which-key.git
+[submodule "packages/web"]
+	path = packages/web
+	url = git@github.com:fxbois/web-mode.git

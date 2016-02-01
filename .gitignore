@@ -1,1 +1,2 @@
-*.elc
+.origin-mode
+.spacemacs-mode

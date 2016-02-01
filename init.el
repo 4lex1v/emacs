@@ -242,9 +242,14 @@
 
 (use-package magit
   :load-path "core/magit/lisp"
-  :commands (magit-status magit-dispatch-popup magit-show-refs-popup)
+  :commands (magit-status
+             magit-dispatch-popup
+             magit-show-refs-popup
+             magit-submodule-popup)
 
   :bind (("C-c m s" . magit-status)
+         ("C-c m p" . magit-push-popup)
+         ("C-c m f" . magit-pull-popup)
          ("C-c m b" . magit-blame)
          ("C-c m r" . magit-show-refs-popup)
          ("C-c m m" . magit-dispatch-popup))
@@ -456,6 +461,19 @@
                           cider-auto-select-error-buffer t
                           cider-repl-history-file "~/.emacs.d/cider-history"
                           cider-repl-wrap-history t)))))
+
+(use-package web-mode
+  :load-path "packages/web"
+  :mode (("\\.html\\'" . web-mode)
+         ("\\.html\\.erb\\'" . web-mode)
+         ("\\.mustache\\'" . web-mode)
+         ("\\.jinja\\'" . web-mode)
+         ("\\.php\\'" . web-mode))
+  :init (setq web-mode-engines-alist '(("\\.jinja\\'"  . "django"))
+              web-mode-enable-auto-pairing t
+              web-mode-enable-css-colorization t
+              web-mode-enable-current-element-highlight t
+              web-mode-enable-current-column-highlight nil))
 
 (use-package docker
   :load-path "core/docker"
