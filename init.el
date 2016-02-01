@@ -78,8 +78,8 @@
           (fset 'yes-or-no-p   'y-or-n-p))
 
   :config (progn 
-            ;;(4lex1v:ui/transparent-ui 95 95)
-            ;;(4lex1v/configure-frame-size 'maximized)
+            ;; (4lex1v/transparent-ui 95 95)
+            (4lex1v/configure-frame-size 'maximized)
             ))
 
 (use-package solarized
@@ -99,6 +99,7 @@
             ;; (load-theme 'solarized-light t)
              ))
 
+;; Just a theme
 (use-package spacemacs-common
   :demand t
   :if window-system
@@ -106,25 +107,6 @@
   :config (progn
             (load-theme 'spacemacs-dark t)
             ))
-
-;; Should go into `core/boot'?
-(use-package f
-  :defer 2
-  :load-path "core/f")
-
-(use-package ace-control
-  :load-path "core/ace"
-  :init (progn
-
-          ;; Improved version of ace-jump-mode
-          (use-package avy
-            :bind (("C-c SPC" . avy-goto-char)
-                   ("C-c j w" . avy-goto-word-1)
-                   ("C-c j l" . avy-goto-line)))
-
-          (use-package ace-window
-            :bind (("C-'"  . ace-window)
-                   ("<f7>" . ace-window)))))
 
 (use-package osx
   :if (eq system-type 'darwin)
@@ -144,7 +126,39 @@
             (add-to-list 'exec-path dir))
           
 
-          (4lex1v/configure-font "Monaco" 14)))
+          (4lex1v/configure-font "Hack" 14)))
+
+(use-package f
+  :defer 2
+  :load-path "core/f")
+
+(use-package which-key
+  :diminish which-key-mode
+  :load-path "core/which-key"
+  :init (setq which-key-idle-delay 0.2
+              which-key-popup-type 'side-window
+              which-key-sort-order 'which-key-prefix-then-key-order)
+
+  :config (progn
+            ;; Activate mode
+            (which-key-setup-side-window-right)
+            (which-key-mode)))
+
+(use-package ace-control
+  :load-path "core/ace"
+  :init (progn
+
+          ;; Improved version of ace-jump-mode
+          (use-package avy
+            :bind (("C-c SPC" . avy-goto-char)
+                   ("C-c j w" . avy-goto-word-1)
+                   ("C-c j l" . avy-goto-line)))
+
+          (use-package ace-window
+            :bind (("C-'"  . ace-window)
+                   ("<f7>" . ace-window))))
+  :config (which-key-declare-prefixes
+            "C-c j" "ace-jump"))
 
 (use-package helm
   :diminish helm-mode
@@ -184,6 +198,9 @@
   
   :config (progn
             (helm-autoresize-mode)
+
+            (which-key-declare-prefixes
+              "C-c h" "helm")
 
             (use-package helm-descbinds
               :load-path "core/helm/helm-descbinds"
@@ -230,9 +247,11 @@
   :config (progn
             (projectile-global-mode)
 
+            (which-key-declare-prefixes
+              "C-c p" "projectile")
+
             (use-package helm-projectile
               :demand t
-              
 
               :config (progn
                         (setq projectile-completion-system 'helm)
@@ -256,6 +275,9 @@
 
   :init (progn
           (unbind-key "C-c m")
+          (which-key-declare-prefixes
+            "C-c m" "magit")
+
           (setq magit-last-seen-setup-instructions "2.3.2")))
 
 (use-package smartparens
@@ -307,7 +329,10 @@
                                   'scala-mode-hook
                                   'emacs-lisp-mode-hook
                                   'clojure-mode-hook
-                                  'cider-repl-mode-hook)))
+                                  'cider-repl-mode-hook))
+
+  :config (which-key-declare-prefixes
+            "C-c s" "smartparens"))
 
 (use-package company
   :diminish company-mode
@@ -346,6 +371,9 @@
          ("M-]" . hs-show-block))
 
   :init (progn
+          (which-key-declare-prefixes
+            "C-c @" "hideshow")
+
           (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
           (let ((modes '(emacs-lisp-mode-hook scala-mode-hook)))
             (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes)
@@ -399,7 +427,7 @@
 
 (use-package elisp
   :load-path "packages/elisp"
-  :bind (("C-c w n" . wrap-with-parens))
+  :bind (("C-c s w" . wrap-with-parens))
   :init (progn
           (use-package emacs-lisp-mode
             :bind (("M-." . find-function-at-point)
@@ -485,10 +513,5 @@
                            default-docker-machine-name))
                   0)
               (docker-machine-connect default-docker-machine-name))))
-
-(use-package which-key
-  :load-path "core/which-key"
-  :init (setq which-key-idle-delay 0.2)
-  :config (which-key-mode))
 
 (setq gc-cons-threshold 1000000)
