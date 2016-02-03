@@ -118,7 +118,9 @@
             (add-to-list 'exec-path dir))
           
 
-          (4lex1v/configure-font "Hack" 14)))
+          (4lex1v/configure-font '("Hack"
+                                   :size 16))
+          ))
 
 (use-package f
   :defer 2
@@ -254,17 +256,13 @@
 
 (use-package magit
   :load-path "core/magit/lisp"
-  :commands (magit-status
-             magit-dispatch-popup
-             magit-show-refs-popup
-             magit-submodule-popup)
-
   :bind (("C-c m s" . magit-status)
          ("C-c m p" . magit-push-popup)
          ("C-c m f" . magit-pull-popup)
          ("C-c m b" . magit-blame)
          ("C-c m r" . magit-show-refs-popup)
-         ("C-c m m" . magit-dispatch-popup))
+         ("C-c m m" . magit-dispatch-popup)
+         ("C-c m o" . magit-submodule-popup))
 
   :init (progn
           (unbind-key "C-c m")

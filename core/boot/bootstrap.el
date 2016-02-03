@@ -1,13 +1,16 @@
 ;; Investigate various elisp compilation options...
 
-(defun 4lex1v/configure-font (name size)
-  (let ((frame-font (format "%s-%d" name size)))
-    ;; Set font for current frame 
-    (set-frame-font frame-font) 
-
+(defun 4lex1v/configure-font (font-config-plist)
+  "TODO :: add documentation"
+  (let* ((font-name (car font-config-plist))
+         (font-size (plist-get (cdr font-config-plist) :size))
+         (frame-font (format "%s-%d" font-name font-size)))
+    
+    ;; Set font for the current frame
+    (set-frame-font frame-font)
+    
     ;; Set default font for new frames
-    (add-to-list 'default-frame-alist   
-                 (cons 'font (format "%s-%d" name size)))))
+    (add-to-list 'default-frame-alist (cons 'font frame-font))))
 
 (defun 4lex1v/configure-frame-size (size-param)
   ;; Set frame size for current frame
