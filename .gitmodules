@@ -84,3 +84,6 @@
 [submodule "packages/web"]
 	path = packages/web
 	url = git@github.com:fxbois/web-mode.git
+[submodule "core/hydra"]
+	path = core/hydra
+	url = https://github.com/abo-abo/hydra.git
