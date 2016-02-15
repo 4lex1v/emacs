@@ -87,3 +87,6 @@
 [submodule "core/hydra"]
 	path = core/hydra
 	url = https://github.com/abo-abo/hydra.git
+[submodule "packages/yaml"]
+	path = packages/yaml
+	url = https://github.com/yoshiki/yaml-mode.git

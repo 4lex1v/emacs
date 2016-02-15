@@ -516,4 +516,16 @@
                   0)
               (docker-machine-connect default-docker-machine-name))))
 
+(use-package centered-cursor-mode
+  :commands global-centered-cursor-mode
+  :init (setq ccm-recenter-at-end-of-file t
+              ccm-ignored-commands '(mouse-drag-region
+                                     mouse-set-point
+                                     widget-button-click
+                                     scroll-bar-toolkit-scroll)))
+
+(use-package yaml-mode
+  :load-path "packages/yaml"
+  :mode ("\\.yml$" . yaml-mode))
+
 (setq gc-cons-threshold 1000000)
