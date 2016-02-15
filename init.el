@@ -30,7 +30,6 @@
 ;; Just a theme
 (use-package spacemacs-common
   :demand t
-  :if window-system
   :load-path "themes/spacemacs")
 
 (use-package bootstrap
