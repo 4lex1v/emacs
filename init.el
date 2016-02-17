@@ -102,7 +102,10 @@
 (use-package osx
   :if (eq system-type 'darwin)
   :init (progn
-          (menu-bar-mode 1)
+
+          ;; Still hide for terminal mode
+          (if (window-system)
+              (menu-bar-mode 1))
 
           (setq browse-url-browser-function 'browse-url-default-macosx-browser
                 delete-by-moving-to-trash    t
@@ -116,9 +119,7 @@
             (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
             (add-to-list 'exec-path dir))
           
-
-          (4lex1v/configure-font '("Hack"
-                                   :size 16))
+          (4lex1v/configure-font '("Hack" :size 16))
           ))
 
 (use-package f
@@ -250,6 +251,14 @@
               :config (progn
                         (setq projectile-completion-system 'helm)
                         (helm-projectile-on)))
+
+            ;; Stored in core/vendor
+            (use-package ibuffer-projectile
+              :init (add-hook 'ibuffer-hook
+                              (lambda ()
+                                (ibuffer-projectile-set-filter-groups)
+                                (unless (eq ibuffer-sorting-mode 'alphabetic)
+                                  (ibuffer-do-sort-by-alphabetic)))))
             
             (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name))))))
 
