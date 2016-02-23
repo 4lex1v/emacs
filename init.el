@@ -126,6 +126,10 @@
   :defer 2
   :load-path "core/f")
 
+(use-package dired+
+  :init (setq dired-use-ls-dired nil
+              diredp-toggle-find-file-reuse-dir nil))
+
 (use-package which-key
   :diminish which-key-mode
   :load-path "core/which-key"
