@@ -268,6 +268,7 @@
 
 (use-package magit
   :load-path "core/magit/lisp"
+  :commands magit-clone
   :bind (("C-c m s" . magit-status)
          ("C-c m p" . magit-push-popup)
          ("C-c m f" . magit-pull-popup)
