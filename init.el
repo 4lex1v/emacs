@@ -548,4 +548,7 @@
   :load-path "packages/yaml"
   :mode ("\\.yml$" . yaml-mode))
 
+(use-package idris-mode
+  :load-path "packages/idris")
+
 (setq gc-cons-threshold 1000000)

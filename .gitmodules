@@ -90,3 +90,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/yaml"]
 	path = packages/yaml
 	url = https://github.com/yoshiki/yaml-mode.git
+[submodule "packages/idris"]
+	path = packages/idris
+	url = git@github.com:idris-hackers/idris-mode.git
