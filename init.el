@@ -366,7 +366,9 @@
           (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
           (4lex1v/hook-into-modes #'yas-minor-mode 'scala-mode-hook))
 
-  :config (yas-reload-all))
+  :config (progn
+            (yas-reload-all)
+            (which-key-declare-prefixes "C-c &" "yasnippet")))
 
 (use-package hideshowvis
   :diminish hs-minor-mode
