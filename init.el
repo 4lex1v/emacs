@@ -95,7 +95,7 @@
           (fset 'yes-or-no-p   'y-or-n-p))
 
   :config (progn 
-            (load-theme 'spacemacs-dark t)
+            (load-theme 'spacemacs-light t) ;; theme
             (4lex1v/configure-frame-size 'maximized)
             (4lex1v/transparent-ui 100 100)))
 
@@ -119,7 +119,7 @@
             (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
             (add-to-list 'exec-path dir))
           
-          (4lex1v/configure-font '("Hack" :size 16))
+          (4lex1v/configure-font '("Hack" :size 18))
           ))
 
 (use-package f
@@ -391,7 +391,7 @@
 (use-package scala
   :load-path "packages/scala"
   :init (progn
-          (use-package scala-mode2
+          (use-package scala-mode
             :commands scala-mode
             :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode)
 
