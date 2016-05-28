@@ -38,7 +38,7 @@
 
 [submodule "packages/scala/scala-mode"]
 	path = packages/scala/scala-mode
-	url = git@github.com:hvesalai/scala-mode2.git
+url=git@github.com:ensime/emacs-scala-mode.git
 	branch = master
 [submodule "packages/scala/sbt-mode"]
 	path = packages/scala/sbt-mode
