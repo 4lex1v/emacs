@@ -417,13 +417,9 @@
                       (sp-local-pair 'scala-mode "{" nil
                                      :post-handlers '((4lex1v/indent-in-braces "RET")))
 
-                      (set-face-attribute scala-font-lock:lazy-face     nil :weight 'bold)
-                      (set-face-attribute scala-font-lock:final-face    nil :weight 'bold)
-                      (set-face-attribute scala-font-lock:private-face  nil :weight 'bold)
-                      (set-face-attribute scala-font-lock:implicit-face nil :weight 'bold)
-                      (set-face-attribute scala-font-lock:abstract-face nil :weight 'bold)
-                      (set-face-attribute scala-font-lock:override-face nil :weight 'bold)
-                      (set-face-attribute scala-font-lock:sealed-face   nil :weight 'bold)
+                      (mapc
+                       (lambda (kw) (make-face-bold (intern (format "scala-font-lock:%s-face" kw))))
+                       '("final" "private" "implicit" "abstract" "override" "sealed" "lazy"))
 
                       (use-package ensime
                         :commands ensime
