@@ -336,8 +336,14 @@
                                   'clojure-mode-hook
                                   'cider-repl-mode-hook))
 
-  :config (which-key-declare-prefixes
-            "C-c s" "smartparens"))
+  :config (progn
+
+            (sp-pair "(" ")" :wrap "C-(")
+            (sp-pair "[" "]" :wrap "s-[")
+            (sp-pair "{" "}" :wrap "C-{")
+
+            (which-key-declare-prefixes
+             "C-c s" "smartparens")))
 
 (use-package company
   :diminish company-mode
