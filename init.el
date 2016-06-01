@@ -430,7 +430,7 @@
                         :bind (:map scala-mode-map
                                     ("C-c e" . ensime-print-errors-at-point)
                                     ("C-c t" . ensime-print-type-at-point)
-                                    ("C-c i" . ensime-import-type-at-point)
+                                    ("C-c o" . ensime-import-type-at-point)
                                     ("C-M-." . ensime-edit-definition-other-window))
 
                         :init (progn
@@ -552,5 +552,19 @@
 
 (use-package idris-mode
   :load-path "packages/idris")
+
+(use-package flyspell
+  :bind (("C-c i b" . flyspell-buffer)
+         ("C-c i f" . flyspell-mode))
+  :init (progn
+          (which-key-declare-prefixes "C-c i" "flyspell")
+
+          (use-package ispell
+            :bind (("C-c i c" . ispell-comments-and-strings)
+                   ("C-c i d" . ispell-change-dictionary)
+                   ("C-c i k" . ispell-kill-ispell)
+                   ("C-c i m" . ispell-message)
+                   ("C-c i r" . ispell-region))))
+  :config (unbind-key "C-." flyspell-mode-map))
 
 (setq gc-cons-threshold 1000000)
