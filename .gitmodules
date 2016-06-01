@@ -93,3 +93,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/idris"]
 	path = packages/idris
 	url = git@github.com:idris-hackers/idris-mode.git
+[submodule "core/undo-tree"]
+	path = core/undo-tree
+	url = http://www.dr-qubit.org/git/undo-tree.git

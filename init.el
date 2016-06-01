@@ -573,4 +573,10 @@
                    ("C-c i r" . ispell-region))))
   :config (unbind-key "C-." flyspell-mode-map))
 
+(use-package undo-tree
+  :load-path "core/undo-tree"
+  :diminish undo-tree-mode
+  :config (global-undo-tree-mode)
+  :bind ("M-/" . undo-tree-visualize))
+
 (setq gc-cons-threshold 1000000)
