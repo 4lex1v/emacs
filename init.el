@@ -431,6 +431,15 @@
                                     ("C-M-." . ensime-edit-definition-other-window))
 
                         :init (progn
+
+                                (which-key-declare-prefixes-for-mode 'scala-mode
+                                  "C-c C-d" "ensime/debug"
+                                  "C-c C-c" "ensime/compiler"
+                                  "C-c C-r" "ensime/refactoring"
+                                  "C-c C-t" "ensime/tests"
+                                  "C-c C-v" "ensime/general"
+                                  "C-c C-b" "ensime/sbt")
+                                
                                 (use-package popup :load-path "core/popup")
                                 (setq ensime-default-buffer-prefix "ENSIME-"))
 
@@ -517,7 +526,7 @@
                 web-mode-enable-current-element-highlight t
                 web-mode-enable-current-column-highlight nil)
 
-          (which-key-declare-prefixes
+          (which-key-declare-prefixes-for-mode 'web-mode
             "C-c C-t" "web/tag"
             "C-c C-b" "web/block"
             "C-c C-d" "web/dom"
