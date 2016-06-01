@@ -424,7 +424,9 @@
                                      :post-handlers '((4lex1v/indent-in-braces "RET")))
 
                       (mapc
-                       (lambda (kw) (make-face-bold (intern (format "scala-font-lock:%s-face" kw))))
+                       (lambda (kw)
+                         (let ((face-ref (intern (format "scala-font-lock:%s-face" kw))))
+                           (copy-face font-lock-keyword-face face-ref)))
                        '("final" "private" "implicit" "abstract" "override" "sealed" "lazy"))
 
                       (use-package ensime
