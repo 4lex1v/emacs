@@ -423,6 +423,7 @@
                       (set-face-attribute scala-font-lock:implicit-face nil :weight 'bold)
                       (set-face-attribute scala-font-lock:abstract-face nil :weight 'bold)
                       (set-face-attribute scala-font-lock:override-face nil :weight 'bold)
+                      (set-face-attribute scala-font-lock:sealed-face   nil :weight 'bold)
 
                       (use-package ensime
                         :commands ensime
