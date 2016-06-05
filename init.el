@@ -130,6 +130,12 @@
   :init (setq dired-use-ls-dired nil
               diredp-toggle-find-file-reuse-dir nil))
 
+(use-package ranger
+  :load-path "core/ranger"
+  :commands ranger
+  :init (setq ranger-cleanup-eagerly t
+              ranger-show-dotfiles   t))
+
 (use-package which-key
   :diminish which-key-mode
   :load-path "core/which-key"
@@ -420,14 +426,15 @@
                       (bind-key "M-j"        'scala-indent:join-line  scala-mode-map)
                       (bind-key "C-c c"      'sbt-command             scala-mode-map)
 
-                      (sp-local-pair 'scala-mode "{" nil
-                                     :post-handlers '((4lex1v/indent-in-braces "RET")))
+                      ;;(sp-local-pair 'scala-mode "{" nil :post-handlers '((4lex1v/indent-in-braces "RET")))
+                      (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
+                      (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
 
                       (mapc
                        (lambda (kw)
                          (let ((face-ref (intern (format "scala-font-lock:%s-face" kw))))
                            (copy-face font-lock-keyword-face face-ref)))
-                       '("final" "private" "implicit" "abstract" "override" "sealed" "lazy"))
+                       '("final" "private" "protected" "implicit" "abstract" "override" "sealed" "lazy"))
 
                       (use-package ensime
                         :commands ensime

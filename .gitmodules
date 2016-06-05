@@ -96,3 +96,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/undo-tree"]
 	path = core/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
+[submodule "core/ranger"]
+	path = core/ranger
+	url = git@github.com:ralesi/ranger.el.git
