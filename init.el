@@ -95,7 +95,7 @@
           (fset 'yes-or-no-p   'y-or-n-p))
 
   :config (progn 
-            (load-theme 'spacemacs-light t) ;; theme
+            (load-theme 'spacemacs-dark t) ;; theme
             (4lex1v/configure-frame-size 'maximized)
             (4lex1v/transparent-ui 100 100)))
 
