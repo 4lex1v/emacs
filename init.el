@@ -133,7 +133,8 @@
 (use-package ranger
   :load-path "core/ranger"
   :commands ranger
-  :init (setq ranger-cleanup-eagerly t
+  :init (setq ranger-override-dired  nil
+              ranger-cleanup-eagerly t
               ranger-show-dotfiles   t))
 
 (use-package which-key
@@ -176,7 +177,8 @@
          ("M-y"     . helm-show-kill-ring)
          ("C-x b"   . helm-mini)
          ("C-x C-f" . helm-find-files)         
-         ("M-x"     . helm-M-x))
+         ("M-x"     . helm-M-x)
+         ("M-2"     . helm-mini))
   
   :bind (:map helm-map
               ("<tab>" . helm-execute-persistent-action)
