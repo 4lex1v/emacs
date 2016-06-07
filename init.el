@@ -456,6 +456,8 @@
                                   "C-c C-t" "ensime/tests"
                                   "C-c C-v" "ensime/general"
                                   "C-c C-b" "ensime/sbt")
+
+                                (setq ensime-server-version "2.0.0-SNAPSHOT")
                                 
                                 (use-package popup :load-path "core/popup")
                                 (setq ensime-default-buffer-prefix "ENSIME-"))
