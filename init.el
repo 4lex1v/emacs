@@ -37,6 +37,7 @@
   :bind (("RET"         . newline-and-indent)
          ("M-j"         . join-line)
          ("C-x C-b"     . ibuffer)
+         ("M-3"         . ibuffer)
          ("C-a"         . back-to-indentation)
          ("M-m"         . beginning-of-line)
          ("C-S-d"       . 4lex1v/duplicate-line)
@@ -95,7 +96,7 @@
           (fset 'yes-or-no-p   'y-or-n-p))
 
   :config (progn 
-            (load-theme 'spacemacs-dark t) ;; theme
+            (load-theme 'spacemacs-light t) ;; theme
             (4lex1v/configure-frame-size 'maximized)
             (4lex1v/transparent-ui 100 100)))
 
@@ -132,7 +133,7 @@
 
 (use-package ranger
   :load-path "core/ranger"
-  :commands ranger
+  :bind ("C-x C-r" . ranger)
   :init (setq ranger-override-dired  nil
               ranger-cleanup-eagerly t
               ranger-show-dotfiles   t))
