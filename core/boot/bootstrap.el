@@ -20,9 +20,9 @@
   (add-to-list 'default-frame-alist
                (cons 'fullscreen size-param)))
 
-(defun 4lex1v/transparent-ui (v1 v2)
-  (set-frame-parameter (selected-frame) 'alpha (cons v1 v2))
-  (add-to-list 'default-frame-alist (cons 'alpha (cons v1 v2))))
+(defun 4lex1v/transparent-ui (active inactive)
+  (set-frame-parameter (selected-frame) 'alpha (cons active inactive))
+  (add-to-list 'default-frame-alist (cons 'alpha (cons active inactive))))
 
 ;;----------------------------------------------------------------------------
 ;; Duplicate current line
