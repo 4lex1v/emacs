@@ -599,4 +599,6 @@
   :config (global-undo-tree-mode)
   :bind ("M-/" . undo-tree-visualize))
 
+(use-package fish-mode)
+
 (setq gc-cons-threshold 1000000)
