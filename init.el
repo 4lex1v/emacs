@@ -117,11 +117,10 @@
 
           ;; Add local bins to the PATH
           (let ((dir "/usr/local/bin"))
-            (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+            (setenv "PATH" (concat "/usr/local/homebrew/bin:/usr/local/bin:" (getenv "PATH")))
             (add-to-list 'exec-path dir))
           
-          (4lex1v/configure-font '("Hack" :size 18))
-          ))
+          (4lex1v/configure-font '("Hack" :size 17))))
 
 (use-package f
   :defer 2
@@ -433,12 +432,6 @@
                       (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
                       (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
 
-                      (mapc
-                       (lambda (kw)
-                         (let ((face-ref (intern (format "scala-font-lock:%s-face" kw))))
-                           (copy-face font-lock-keyword-face face-ref)))
-                       '("final" "private" "protected" "implicit" "abstract" "override" "sealed" "lazy"))
-
                       (use-package ensime
                         :commands ensime
 
@@ -458,12 +451,20 @@
                                   "C-c C-v" "ensime/general"
                                   "C-c C-b" "ensime/sbt")
 
-                                (setq ensime-server-version "2.0.0-SNAPSHOT")
+                                (setq ensime-server-version "2.0.0-SNAPSHOT"
+                                      ensime-startup-snapshot-notification nil)
+                                
                                 
                                 (use-package popup :load-path "core/popup")
                                 (setq ensime-default-buffer-prefix "ENSIME-"))
 
-                        :config (unbind-key "M-p" ensime-mode-map))))))
+                        :config (unbind-key "M-p" ensime-mode-map))
+
+                      (mapc
+                       (lambda (kw)
+                         (let ((face-ref (intern (format "scala-font-lock:%s-face" kw))))
+                           (copy-face font-lock-keyword-face face-ref)))
+                       '("final" "private" "protected" "implicit" "abstract" "override" "sealed" "lazy"))))))
 
 (use-package elisp
   :load-path "packages/elisp"
