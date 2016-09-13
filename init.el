@@ -73,7 +73,7 @@
                 user-mail-address          "4lex1v@gmail.com"
                 show-paren-delay            0.0
                 ring-bell-function         'ignore
-                initial-major-mode         'emacs-lisp-mode
+                initial-major-mode         'scala-mode
                 tramp-default-method       "ssh"
                 make-backup-files           nil
                 auto-save-default           nil
