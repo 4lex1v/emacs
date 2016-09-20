@@ -99,3 +99,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/ranger"]
 	path = core/ranger
 	url = git@github.com:ralesi/ranger.el.git
+[submodule "core/helm/helm-projectile"]
+	path = core/helm/helm-projectile
+	url = git@github.com:bbatsov/helm-projectile.git

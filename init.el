@@ -259,7 +259,7 @@
 
             (use-package helm-projectile
               :demand t
-
+              :load-path "core/helm/helm-projectile"
               :config (progn
                         (setq projectile-completion-system 'helm)
                         (helm-projectile-on)))
