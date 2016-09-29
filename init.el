@@ -115,10 +115,7 @@
                 mac-command-modifier        'meta
                 mac-option-modifier          nil)
 
-          ;; Add local bins to the PATH
-          (let ((dir "/usr/local/bin"))
-            (setenv "PATH" (concat "/usr/local/homebrew/bin:/usr/local/bin:" (getenv "PATH")))
-            (add-to-list 'exec-path dir))
+          (add-to-list 'exec-path "/usr/local/homebrew/bin")
           
           (4lex1v/configure-font '("Hack" :size 17))))
 
