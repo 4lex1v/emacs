@@ -117,7 +117,7 @@
 
           (add-to-list 'exec-path "/usr/local/homebrew/bin")
           
-          (4lex1v/configure-font '("Hack" :size 17))))
+          (4lex1v/configure-font '("Monaco" :size 17))))
 
 (use-package f
   :defer 2
