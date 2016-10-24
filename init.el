@@ -580,8 +580,8 @@
   :load-path "packages/yaml"
   :mode ("\\.yml$" . yaml-mode))
 
-(use-package idris-mode
-  :load-path "packages/idris")
+;; (use-package idris-mode
+;;   :load-path "packages/idris")
 
 (use-package flyspell
   :bind (("C-c i b" . flyspell-buffer)
