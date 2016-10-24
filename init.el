@@ -163,6 +163,12 @@
   :config (which-key-declare-prefixes
             "C-c j" "ace-jump"))
 
+(use-package async
+            :load-path "core/async"
+            :config (progn
+                      (use-package async-bytecomp)
+                      (use-package dired-async)))
+
 (use-package helm
   :diminish helm-mode
   :load-path "core/helm/helm-core"

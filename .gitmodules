@@ -102,3 +102,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/helm/helm-projectile"]
 	path = core/helm/helm-projectile
 	url = git@github.com:bbatsov/helm-projectile.git
+[submodule "async"]
+	path = core/async
+	url = git@github.com:jwiegley/emacs-async.git
