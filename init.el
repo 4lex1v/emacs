@@ -4,6 +4,9 @@
 ;; Change back after config has been loaded
 (setq gc-cons-threshold 10000000)
 
+;; Emacs inserts useless package init function...
+(setq package--init-file-ensured t)
+
 ;; Add bootstrap libs to the load path 
 (add-to-list 'load-path (concat user-emacs-directory "core/boot"))
 (add-to-list 'load-path (concat user-emacs-directory "core/vendor"))
