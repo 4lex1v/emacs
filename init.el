@@ -300,6 +300,8 @@
          ("C-c m o" . magit-submodule-popup))
 
   :init (progn
+          (use-package with-editor :load-path "core/with-editor")
+
           (unbind-key "C-c m")
 
           (which-key-declare-prefixes
