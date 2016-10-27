@@ -118,7 +118,15 @@
                 mac-command-modifier        'meta
                 mac-option-modifier          nil)
 
-          (add-to-list 'exec-path "/usr/local/homebrew/bin")
+          (let* ((brew-bin-path "/usr/local/homebrew/bin")
+                 (current-path  (getenv "PATH"))
+                 (new-path      (format "%s:%s" brew-bin-path current-path)))
+
+            ;; To find apps, e.g SBT
+            (add-to-list 'exec-path brew-bin-path)
+            
+            ;; For Eshell
+            (setenv "PATH" new-path))
           
           (4lex1v/configure-font '("Monaco" :size 17))))
 
