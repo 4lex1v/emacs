@@ -105,3 +105,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "async"]
 	path = core/async
 	url = git@github.com:jwiegley/emacs-async.git
+[submodule "with-editor"]
+	path = core/with-editor
+	url = git@github.com:magit/with-editor.git
