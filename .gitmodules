@@ -108,3 +108,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "with-editor"]
 	path = core/with-editor
 	url = git@github.com:magit/with-editor.git
+[submodule "themes/dracula"]
+	path = themes/dracula
+	url = git@github.com:dracula/emacs.git
