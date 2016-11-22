@@ -434,8 +434,6 @@
                     (setq scala-indent:use-javadoc-style t
                           popup-complete-enabled-modes '(scala-mode))
 
-                    (4lex1v/hook-into-modes #'4lex1v/connect-running-ensime 'scala-mode-hook)
-
                     (use-package sbt-mode
                       :commands (sbt-start sbt-command)))
 
@@ -461,7 +459,6 @@
                                     ("C-M-." . ensime-edit-definition-other-window))
 
                         :init (progn
-
                                 (which-key-declare-prefixes-for-mode 'scala-mode
                                   "C-c C-d" "ensime/debug"
                                   "C-c C-c" "ensime/compiler"
@@ -477,7 +474,15 @@
                                 (use-package popup :load-path "core/popup")
                                 (setq ensime-default-buffer-prefix "ENSIME-"))
 
-                        :config (unbind-key "M-p" ensime-mode-map))
+                        :config (progn
+                                  (unbind-key "M-p" ensime-mode-map)
+                                  (add-hook 'scala-mode-hook
+                                            #'(lambda ()
+                                                (if (fboundp 'projectile-project-root)
+                                                    (4lex1v/connect-running-ensime (projectile-project-root))
+                                                  (progn
+                                                    (message (format "Projectile is not loaded, using %s" default-directory))
+                                                    (4lex1v/connect-running-ensime default-directory)))))))
 
                       (mapc
                        (lambda (kw)
