@@ -35,6 +35,9 @@
   :demand t
   :load-path "themes/spacemacs")
 
+(use-package dracula-theme
+  :load-path "themes/dracula")
+
 (use-package bootstrap
   :demand t
   :bind (("RET"         . newline-and-indent)
@@ -99,7 +102,7 @@
           (fset 'yes-or-no-p   'y-or-n-p))
 
   :config (progn 
-            (load-theme 'spacemacs-dark t) ;; theme
+            (if (window-system) (load-theme 'dracula t))
             (4lex1v/configure-frame-size 'maximized)
             (4lex1v/transparent-ui 100 100)))
 
@@ -128,7 +131,7 @@
             ;; For Eshell
             (setenv "PATH" new-path))
           
-          (4lex1v/configure-font '("Monaco" :size 17))))
+          (4lex1v/configure-font '("Hack" :size 17))))
 
 (use-package f
   :defer 2
