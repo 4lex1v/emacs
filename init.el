@@ -24,10 +24,12 @@
   :init (setq solarized-contrast                   'high
               solarized-visibility                 'high
               solarized-termcolors                  256
-              solarized-distinct-fringe-background  nil
+              solarized-distinct-fringe-background  t
               solarized-use-variable-pitch          nil
               solarized-use-less-bold               nil
               solarized-use-more-italic             nil
+              solarized-high-contrast-mode-line     t
+              solarized-emphasize-indicators        t
               x-underline-at-descent-line           t))
 
 ;; Just a theme
@@ -262,7 +264,8 @@
 (use-package projectile
   :load-path "core/projectile"
   :bind-keymap ("C-c p" . projectile-command-map)
-  :bind ("M-1" . helm-projectile)
+  :bind (("M-1" . helm-projectile)
+         ("M-4" . projectile-switch-project))
 
   :init (setq projectile-enable-caching       t
               projectile-require-project-root t
@@ -484,11 +487,13 @@
                                                     (message (format "Projectile is not loaded, using %s" default-directory))
                                                     (4lex1v/connect-running-ensime default-directory)))))))
 
-                      (mapc
-                       (lambda (kw)
-                         (let ((face-ref (intern (format "scala-font-lock:%s-face" kw))))
-                           (copy-face font-lock-keyword-face face-ref)))
-                       '("final" "private" "protected" "implicit" "abstract" "override" "sealed" "lazy"))))))
+                      (add-hook 'scala-mode-hook
+                                (lambda ()
+                                  (mapc
+                                   (lambda (kw)
+                                     (let ((face-ref (intern (format "scala-font-lock:%s-face" kw))))
+                                       (copy-face font-lock-keyword-face face-ref)))
+                                   '("final" "private" "protected" "implicit" "abstract" "sealed" "lazy"))))))))
 
 (use-package elisp
   :load-path "packages/elisp"
