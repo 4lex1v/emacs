@@ -631,4 +631,8 @@
 
 (use-package fish-mode)
 
+;; just for now
+(use-package cmake-mode
+  :load-path "packages/native/cmake")
+
 (setq gc-cons-threshold 1000000)
