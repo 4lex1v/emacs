@@ -90,7 +90,8 @@
                 initial-scratch-message     nil
                 kill-do-not-save-duplicates t
                 ad-redefinition-action     'accept
-                next-line-add-newlines      nil)
+                next-line-add-newlines      t
+                desktop-save-mode           t)
 
           ;; Find a better alternative to basic linum mode
           (global-hl-line-mode t)
