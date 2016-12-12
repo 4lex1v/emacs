@@ -66,10 +66,13 @@
          ("C-;"         . toggle-comment-on-line))
 
   :init (progn 
-          (tooltip-mode -1)
-          (tool-bar-mode -1)
-          (menu-bar-mode -1)
-          (scroll-bar-mode -1)
+          
+          (if (window-system)
+              (progn
+                (tooltip-mode -1)
+                (tool-bar-mode -1)
+                (menu-bar-mode -1)
+                (scroll-bar-mode -1)))
 
           (setq-default tab-width 2
                         cursor-type 'box
@@ -113,11 +116,7 @@
 (use-package osx
   :if (eq system-type 'darwin)
   :init (progn
-
-          ;; Still hide for terminal mode
-          (if (window-system)
-              (menu-bar-mode 1))
-
+          
           (setq browse-url-browser-function 'browse-url-default-macosx-browser
                 delete-by-moving-to-trash    t
                 mac-option-key-is-meta       nil
@@ -135,7 +134,7 @@
             ;; For Eshell
             (setenv "PATH" new-path))
           
-          (4lex1v/configure-font '("Hack" :size 17))))
+          (4lex1v/configure-font '("Ayuthaya" :size 18))))
 
 (use-package f
   :defer 2
@@ -162,7 +161,7 @@
 
   :config (progn
             ;; Activate mode
-            (which-key-setup-side-window-right)
+            (which-key-setup-side-window-bottom)
             (which-key-mode)))
 
 (use-package ace-control
