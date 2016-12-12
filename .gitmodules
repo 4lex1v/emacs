@@ -111,3 +111,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "themes/dracula"]
 	path = themes/dracula
 	url = git@github.com:dracula/emacs.git
+[submodule "packages/haskell/haskell-mode"]
+	path = packages/haskell/haskell-mode
+	url = git@github.com:haskell/haskell-mode.git
+[submodule "themes/zenburn-emacs"]
+	path = themes/zenburn-emacs
+	url = git@github.com:bbatsov/zenburn-emacs.git

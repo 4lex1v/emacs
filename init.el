@@ -18,6 +18,15 @@
 
 ;; UI config goes first, if any subsequent config fails
 ;; at least we can have a pretty UI to work with emacs...
+(use-package zenburn
+  :if window-system
+  :load-path "themes/zenburn-theme"
+  :init (progn
+          (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/zenburn-emacs/")))
+
+(use-package spacemacs-common :if window-system :load-path "themes/spacemacs")
+(use-package dracula-theme    :if window-system :load-path "themes/dracula")
+
 (use-package solarized
   :if window-system
   :load-path "themes/solarized-emacs"
@@ -31,14 +40,6 @@
               solarized-high-contrast-mode-line     t
               solarized-emphasize-indicators        t
               x-underline-at-descent-line           t))
-
-;; Just a theme
-(use-package spacemacs-common
-  :demand t
-  :load-path "themes/spacemacs")
-
-(use-package dracula-theme
-  :load-path "themes/dracula")
 
 (use-package bootstrap
   :demand t
@@ -104,7 +105,7 @@
           (fset 'yes-or-no-p   'y-or-n-p))
 
   :config (progn 
-            (if (window-system) (load-theme 'dracula t))
+            (if (window-system) (load-theme 'solarized-light t))
             (4lex1v/configure-frame-size 'maximized)
             (4lex1v/transparent-ui 100 100)))
 
