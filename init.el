@@ -636,4 +636,7 @@
 (use-package cmake-mode
   :load-path "packages/native/cmake")
 
+(use-package haskell-mode
+  :load-path "packages/haskell/haskell-mode")
+
 (setq gc-cons-threshold 1000000)
