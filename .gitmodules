@@ -117,3 +117,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "themes/zenburn-emacs"]
 	path = themes/zenburn-emacs
 	url = git@github.com:bbatsov/zenburn-emacs.git
+[submodule "packages/emacs-jabber"]
+	path = packages/emacs-jabber
+	url = git@github.com:legoscia/emacs-jabber.git

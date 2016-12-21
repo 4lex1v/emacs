@@ -635,4 +635,10 @@
 (use-package haskell-mode
   :load-path "packages/haskell/haskell-mode")
 
+(use-package exec-path-from-shell) ;; defined in core/vendor
+(use-package jabber
+  :load-path "packages/emacs-jabber"
+  :init (setq jabber-account-list
+              `(("4lex1v@livecoding.tv"
+                 (:password . ,(exec-path-from-shell-getenv "LC_PWD"))))))
 (setq gc-cons-threshold 1000000)
