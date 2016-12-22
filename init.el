@@ -43,27 +43,20 @@
 
 (use-package bootstrap
   :demand t
-  :bind (("RET"         . newline-and-indent)
-         ("M-j"         . join-line)
-         ("C-x C-b"     . ibuffer)
-         ("M-3"         . ibuffer)
-         ("C-a"         . back-to-indentation)
-         ("M-m"         . beginning-of-line)
-         ("C-S-d"       . 4lex1v/duplicate-line)
-         ("M-`"         . other-frame)
-         ("C-c r"       . revert-buffer)
-         ("C-c C-d"     . 4lex1v/delete-current-file)
-         ("C-x \\"      . align-regexp)
-
-         ("<f9>"        . open-init-file)
-         ("<f10>"       . customize-themes)
+  :bind (("RET"     . newline-and-indent)
+         ("M-j"     . join-line)
+         ("C-x C-b" . ibuffer)
+         ("C-a"     . back-to-indentation)
+         ("M-m"     . beginning-of-line)
+         ("C-S-d"   . 4lex1v/duplicate-line)
+         ("M-`"     . other-frame)
+         ("C-c r"   . revert-buffer)
+         ("C-x \\"  . align-regexp)
+         ("<f10>"   . customize-themes)
          
-         ("C-+"         . text-scale-increase)
-         ("C--"         . text-scale-decrease)
-         
-         ("C-q"         . 4lex1v/close-buffer)
-         ("M-q"         . 4lex1v:w/close-other-window)
-         ("C-;"         . toggle-comment-on-line))
+         ("C-q"     . 4lex1v/close-buffer)
+         ("M-q"     . 4lex1v:w/close-other-window)
+         ("C-;"     . toggle-comment-on-line))
 
   :init (progn 
           
@@ -194,7 +187,7 @@
          ("C-x b"   . helm-mini)
          ("C-x C-f" . helm-find-files)         
          ("M-x"     . helm-M-x)
-         ("M-2"     . helm-mini))
+         ("M-3"     . helm-mini))
   
   :bind (:map helm-map
               ("<tab>" . helm-execute-persistent-action)
@@ -311,6 +304,14 @@
             "C-c m" "magit")
 
           (setq magit-last-seen-setup-instructions "2.3.2")))
+(use-package ranger
+  :load-path "core/ranger"
+  :bind ("M-2" . ranger)
+  :init (setq ranger-override-dired  nil
+              ranger-show-literal    nil ;; Turn on highlighting in ranger mode
+              ranger-cleanup-eagerly t
+              ranger-show-dotfiles   t))
+
 
 (use-package smartparens
   :diminish smartparens-mode
