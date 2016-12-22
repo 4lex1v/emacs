@@ -253,6 +253,7 @@
 
 (use-package projectile
   :load-path "core/projectile"
+  :commands projectile-project-root
   :bind-keymap ("C-c p" . projectile-command-map)
   :bind (("M-1" . helm-projectile)
          ("M-4" . projectile-switch-project))
