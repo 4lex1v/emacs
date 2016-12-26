@@ -107,8 +107,11 @@
 (use-package osx
   :if (eq system-type 'darwin)
   :init (progn
-          
-          (setq browse-url-browser-function 'browse-url-default-macosx-browser
+          ;; Should also be active for *nix?
+          (use-package exec-path-from-shell) ;; defined in core/vendor
+
+          (setq ns-use-srgb-colorspace       nil
+                browse-url-browser-function 'browse-url-default-macosx-browser
                 delete-by-moving-to-trash    t
                 mac-option-key-is-meta       nil
                 mac-command-key-is-meta      t
