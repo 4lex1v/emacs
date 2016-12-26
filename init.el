@@ -56,14 +56,6 @@
          ("C-;"     . toggle-comment-on-line))
 
   :init (progn 
-          
-          (if (window-system)
-              (progn
-                (tooltip-mode -1)
-                (tool-bar-mode -1)
-                (menu-bar-mode -1)
-                (scroll-bar-mode -1)))
-
           (setq-default tab-width 2
                         cursor-type 'box
                         cursor-in-non-selected-windows 'bar
@@ -96,10 +88,19 @@
           (put 'narrow-to-region 'disabled nil)
           (put 'narrow-to-page 'disabled nil)
 
-          (fset 'yes-or-no-p   'y-or-n-p))
+          (fset 'yes-or-no-p   'y-or-n-p)
 
-  :config (progn 
-            (if (window-system) (load-theme 'solarized-light t))
+          (if (window-system)
+              (progn
+                (tooltip-mode -1)
+                (tool-bar-mode -1)
+                (menu-bar-mode -1)
+                (scroll-bar-mode -1)
+                (load-theme 'dracula t)
+                (disable-theme 'dracula)
+                )))
+  
+  :config (progn
             (4lex1v/configure-frame-size 'maximized)
             (4lex1v/transparent-ui 100 100)))
 
