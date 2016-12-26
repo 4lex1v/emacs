@@ -130,17 +130,15 @@
           
           (4lex1v/configure-font '("Ayuthaya" :size 18))))
 
-(use-package f
-  :defer 2
-  :load-path "core/f")
-
 (use-package ranger
   :load-path "core/ranger"
   :bind ("C-x C-r" . ranger)
   :init (setq ranger-override-dired  nil
               ranger-cleanup-eagerly t
               ranger-show-dotfiles   t))
+(use-package f :load-path "core/f")
 
+;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key
   :diminish which-key-mode
   :load-path "core/which-key"
