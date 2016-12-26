@@ -12,9 +12,10 @@
 (add-to-list 'load-path (concat user-emacs-directory "core/vendor"))
 (add-to-list 'load-path (concat user-emacs-directory "core/use-package"))
 
-(eval-when-compile (require 'use-package))
-(setq use-package-verbose t
-      use-package-minimum-reported-time 0.01)
+(eval-when-compile
+  (require 'use-package)
+  (setq use-package-verbose t
+        use-package-minimum-reported-time 0.01))
 
 ;; UI config goes first, if any subsequent config fails
 ;; at least we can have a pretty UI to work with emacs...
