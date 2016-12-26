@@ -19,16 +19,13 @@
 ;; UI config goes first, if any subsequent config fails
 ;; at least we can have a pretty UI to work with emacs...
 (use-package zenburn
-  :if window-system
   :load-path "themes/zenburn-theme"
-  :init (progn
-          (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/zenburn-emacs/")))
+  :init (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/zenburn-emacs/"))
 
-(use-package spacemacs-common :if window-system :load-path "themes/spacemacs")
-(use-package dracula-theme    :if window-system :load-path "themes/dracula")
+(use-package spacemacs-common :load-path "themes/spacemacs")
+(use-package dracula-theme    :load-path "themes/dracula")
 
 (use-package solarized
-  :if window-system
   :load-path "themes/solarized-emacs"
   :init (setq solarized-contrast                   'high
               solarized-visibility                 'high
