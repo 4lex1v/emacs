@@ -1,49 +1,27 @@
-;; Preloaded libraries
-(message "Loading emacs...")
+(setq gc-cons-threshold          10000000
+      package--init-file-ensured t)
 
-;; Change back after config has been loaded
-(setq gc-cons-threshold 10000000)
+(eval-and-compile
+  (let ((pre-load-folders '("use-package" "boot" "vendor"))
+        (core-dir          (concat user-emacs-directory "core/")))
+    (mapc #'(lambda (folder) (add-to-list 'load-path (expand-file-name folder core-dir)))
+          pre-load-folders))
 
-;; Emacs inserts useless package init function...
-(setq package--init-file-ensured t)
+  (setq use-package-verbose               t
+        use-package-enable-imenu-support  t
+        use-package-check-before-init     t
+        use-package-minimum-reported-time 0.01)
 
-;; Add bootstrap libs to the load path 
-(add-to-list 'load-path (concat user-emacs-directory "core/boot"))
-(add-to-list 'load-path (concat user-emacs-directory "core/vendor"))
-(add-to-list 'load-path (concat user-emacs-directory "core/use-package"))
+  (require 'use-package))
 
-(eval-when-compile
-  (require 'use-package)
-  (setq use-package-verbose t
-        use-package-minimum-reported-time 0.01))
-
-;; UI config goes first, if any subsequent config fails
-;; at least we can have a pretty UI to work with emacs...
-(use-package zenburn
-  :load-path "themes/zenburn-theme"
-  :init (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/zenburn-emacs/"))
-
-(use-package spacemacs-common :load-path "themes/spacemacs")
-(use-package dracula-theme    :load-path "themes/dracula")
-
-(use-package solarized
-  :load-path "themes/solarized-emacs"
-  :init (setq solarized-contrast                   'high
-              solarized-visibility                 'high
-              solarized-termcolors                  256
-              solarized-distinct-fringe-background  t
-              solarized-use-variable-pitch          nil
-              solarized-use-less-bold               nil
-              solarized-use-more-italic             nil
-              solarized-high-contrast-mode-line     t
-              solarized-emphasize-indicators        t
-              x-underline-at-descent-line           t))
+(use-package async
+  :load-path "core/async"
+  :config (use-package async-bytecomp))
 
 (use-package bootstrap
   :demand t
   :bind (("RET"     . newline-and-indent)
          ("M-j"     . join-line)
-         ("C-x C-b" . ibuffer)
          ("C-a"     . back-to-indentation)
          ("M-m"     . beginning-of-line)
          ("C-S-d"   . 4lex1v/duplicate-line)
@@ -62,7 +40,8 @@
                         cursor-in-non-selected-windows 'bar
                         frame-title-format " %@%b% -"
                         linum-format "%3d "  ;; Try dynamic?
-                        indent-tabs-mode  nil)
+                        indent-tabs-mode  nil
+                        load-prefer-newer t)
 
           (setq user-full-name             "Aleksandr Ivanov"
                 user-mail-address          "4lex1v@gmail.com"
@@ -97,9 +76,10 @@
                 (tool-bar-mode -1)
                 (menu-bar-mode -1)
                 (scroll-bar-mode -1)
-                (load-theme 'dracula t)
-                (disable-theme 'dracula)
-                )))
+                
+                (use-package themes
+                  :load-path "themes"
+                  :config (load-theme 'dracula t)))))
   
   :config (progn
             (4lex1v/configure-frame-size 'maximized)
