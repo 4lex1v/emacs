@@ -84,9 +84,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/web"]
 	path = packages/web
 	url = git@github.com:fxbois/web-mode.git
-[submodule "core/hydra"]
-	path = core/hydra
-	url = https://github.com/abo-abo/hydra.git
 [submodule "packages/yaml"]
 	path = packages/yaml
 	url = https://github.com/yoshiki/yaml-mode.git
