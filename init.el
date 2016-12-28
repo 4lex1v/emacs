@@ -613,7 +613,7 @@
          ("C-c i f" . flyspell-mode))
   :init (progn
           (which-key-declare-prefixes "C-c i" "flyspell")
-
+          
           (use-package ispell
             :bind (("C-c i c" . ispell-comments-and-strings)
                    ("C-c i d" . ispell-change-dictionary)
@@ -627,8 +627,6 @@
   :diminish undo-tree-mode
   :config (global-undo-tree-mode)
   :bind ("M-/" . undo-tree-visualize))
-
-(use-package fish-mode)
 
 ;; just for now
 (use-package cmake-mode
@@ -644,3 +642,17 @@
               `(("4lex1v@livecoding.tv"
                  (:password . ,(exec-path-from-shell-getenv "LC_PWD"))))))
 (setq gc-cons-threshold 1000000)
+
+(use-package org
+  :load-path "packages/org/org-mode"
+
+  :bind (("C-c o l" . org-store-link)
+         ("C-c o a" . org-agenda)
+         ("C-c o c" . org-capture))
+
+  :init (setq org-log-done             t
+              org-src-fontify-natively t
+              org-babel-load-languages '((emacs-lisp . t)
+                                         (scala      . t)
+                                         (haskell    . t))))
+

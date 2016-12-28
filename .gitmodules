@@ -120,3 +120,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/emacs-jabber"]
 	path = packages/emacs-jabber
 	url = git@github.com:legoscia/emacs-jabber.git
+[submodule "packages/org/org-mode"]
+	path = packages/org/org-mode
+	url = git://orgmode.org/org-mode.git
