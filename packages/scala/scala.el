@@ -35,8 +35,7 @@ project file .ensime defined in the root directory"
 
 (defun 4lex1v/connect-running-ensime (project-root-dir)
   (if (4lex1v/ensime-running-p project-root-dir)
-      (ensime-mode 1)
-    (error "Not an ENSIME project")))
+      (ensime-mode 1)))
 
 (defun 4lex1v/start-ensime (project-root-dir)
   (interactive)
@@ -59,5 +58,12 @@ project file .ensime defined in the root directory"
 (defun configure-backends (backends)
   (lambda ()
     (add-to-list 'company-backends 'ensime-company)))
+
+(defun 4lex1v/fix-scala-fonts ()
+  (mapc
+   (lambda (kw)
+     (let ((face-ref (intern (format "scala-font-lock:%s-face" kw))))
+       (copy-face font-lock-keyword-face face-ref)))
+   '("final" "private" "protected" "implicit" "abstract" "sealed" "lazy" "override")))
 
 (provide 'scala)
