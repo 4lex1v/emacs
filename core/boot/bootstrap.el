@@ -90,18 +90,17 @@ then two windows around, provide an index number which window to close"
       (progn
         (other-window 1)
         (kill-buffer (current-buffer))
-        (delete-window))))
-      
-(defun 4lex1v/with-projectile-project (func)
-  (if (projectile-project-p)
-      (func)
-    (error "Not a projectile project!")))
+        (delete-window))))     
 
 (defmacro func (name &rest body)
   "Shortcut for basic interactive no-arg functions"
   `(defun ,name ()
      (interactive)
      ,@body))
+
+(defmacro if-bound-f (f &optional args)
+  "Helper function to guard against unbound functions"
+  `(if (fboundp ',f) (funcall ,f args)))
 
 (defun toggle-comment-on-line ()
   (interactive)
@@ -118,22 +117,5 @@ then two windows around, provide an index number which window to close"
   (and (string-match (rx-to-string `(: bos ,prefix) t)
                      string)
        t))
-
-(defun docker-machine-connect (name)
-  "Connects to a running machine by its `name'"
-  (interactive "sDocker-machine name: ")
-  (let ((docker-env
-         (mapcar
-          (lambda (line)
-            (split-string-and-unquote
-             (replace-regexp-in-string "\\(export \\|=\\)" " " line)))
-          (-filter
-           (lambda (line) (string/starts-with line "export"))
-           (split-string
-            (shell-command-to-string
-             (concat "docker-machine env " name)) "\n" t)))))
-    (mapc
-     (lambda (params) (apply 'setenv params))
-     docker-env)))
 
 (provide 'bootstrap)

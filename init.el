@@ -585,13 +585,32 @@
 (use-package docker
   :load-path "core/docker"
   :commands docker-images
-  :init (progn
-          (setq default-docker-machine-name "universe")
-          (if (eq (shell-command
-                   (concat "docker-machine env "
-                           default-docker-machine-name))
-                  0)
-              (docker-machine-connect default-docker-machine-name))))
+
+  :init (setq default-docker-machine-name "universe")
+  
+  :config (progn
+            (defun docker-machine-connect (name)
+              "Connects to a running machine by its `name'"
+              (interactive "sDocker-machine name: ")
+              (let ((docker-env
+                     (mapcar
+                      #'(lambda (line)
+                          (split-string-and-unquote
+                           (replace-regexp-in-string "\\(export \\|=\\)" " " line)))
+                      (-filter
+                       #'(lambda (line) (string/starts-with line "export"))
+                       (split-string
+                        (shell-command-to-string
+                         (concat "docker-machine env " name)) "\n" t)))))
+                (mapc
+                 #'(lambda (params) (apply 'setenv params))
+                 docker-env)))
+
+            (if (eq (shell-command
+                     (concat "docker-machine env "
+                             default-docker-machine-name))
+                    0)
+                (docker-machine-connect default-docker-machine-name))))
 
 (use-package centered-cursor-mode
   :commands global-centered-cursor-mode
