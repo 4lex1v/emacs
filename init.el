@@ -1,24 +1,13 @@
 (setq gc-cons-threshold          10000000
       package--init-file-ensured t)
 
-(eval-and-compile
-  (add-to-list 'load-path (expand-file-name "foundation/use-package" user-emacs-directory))
+(load (expand-file-name "foundation/foundation" user-emacs-directory))
 
+(eval-and-compile
   (let ((pre-load-folders '("boot" "vendor"))
         (core-dir          (concat user-emacs-directory "core/")))
     (mapc #'(lambda (folder) (add-to-list 'load-path (expand-file-name folder core-dir)))
-          pre-load-folders))
-
-  (setq use-package-verbose               t
-        use-package-enable-imenu-support  t
-        use-package-check-before-init     t
-        use-package-minimum-reported-time 0.01)
-
-  (require 'use-package))
-
-(use-package async
-  :load-path "core/async"
-  :config (use-package async-bytecomp))
+          pre-load-folders)))
 
 (use-package bootstrap
   :demand t
