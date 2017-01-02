@@ -2,7 +2,9 @@
       package--init-file-ensured t)
 
 (eval-and-compile
-  (let ((pre-load-folders '("use-package" "boot" "vendor"))
+  (add-to-list 'load-path (expand-file-name "foundation/use-package" user-emacs-directory))
+
+  (let ((pre-load-folders '("boot" "vendor"))
         (core-dir          (concat user-emacs-directory "core/")))
     (mapc #'(lambda (folder) (add-to-list 'load-path (expand-file-name folder core-dir)))
           pre-load-folders))

@@ -8,7 +8,7 @@
 	branch = master
 
 [submodule "core/use-package"]
-	path = core/use-package
+	path = foundation/use-package
 	url = https://github.com/jwiegley/use-package.git
 	branch = master
 [submodule "core/projectile"]
