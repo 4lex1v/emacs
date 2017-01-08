@@ -1,29 +1,29 @@
-;; Investigate various elisp compilation options...
-
-(defun 4lex1v/configure-font (font-config-plist)
-  "TODO :: add documentation"
-  (let* ((font-name (car font-config-plist))
-         (font-size (plist-get (cdr font-config-plist) :size))
-         (frame-font (format "%s-%d" font-name font-size)))
-    
+;; GUI related config functions
+(defun 4lex1v:gui:font (name &rest configs)
+  "Helper function for simpler font configuration"
+  (let* ((font-size  (plist-get configs :size))
+         (frame-font (format "%s-%d" name font-size)))
     ;; Set font for the current frame
     (set-frame-font frame-font)
     
     ;; Set default font for new frames
     (add-to-list 'default-frame-alist (cons 'font frame-font))))
 
-(defun 4lex1v/configure-frame-size (size-param)
-  ;; Set frame size for current frame
-  (set-frame-parameter nil 'fullscreen size-param)
-  
-  ;; Set Default frame size param
-  (add-to-list 'default-frame-alist
-               (cons 'fullscreen size-param)))
+(defun 4lex1v:gui:frame (&rest configs)
+  "Helper function for simpler frame configuration"
+  (pcase-let* ((frame-size (plist-get configs :size))
+               (`(,active . ,inactive) (plist-get configs :transparency))
+               (theme-name (plist-get configs :theme)))
+    
+    (set-frame-parameter nil 'fullscreen frame-size)
+    (add-to-list 'default-frame-alist (cons 'fullscreen frame-size))
 
-(defun 4lex1v/transparent-ui (active inactive)
-  (set-frame-parameter (selected-frame) 'alpha (cons active inactive))
-  (add-to-list 'default-frame-alist (cons 'alpha (cons active inactive))))
+    (set-frame-parameter (selected-frame) 'alpha (cons active inactive))
+    (add-to-list 'default-frame-alist (cons 'alpha (cons active inactive)))
 
+    (load-theme theme-name t)))
+
+;; BACKUP from Bootstrap
 ;;----------------------------------------------------------------------------
 ;; Duplicate current line
 ;; Taken from: http://stackoverflow.com/a/998472
@@ -117,5 +117,3 @@ then two windows around, provide an index number which window to close"
   (and (string-match (rx-to-string `(: bos ,prefix) t)
                      string)
        t))
-
-(provide 'bootstrap)
