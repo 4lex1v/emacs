@@ -99,9 +99,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/helm/helm-projectile"]
 	path = core/helm/helm-projectile
 	url = git@github.com:bbatsov/helm-projectile.git
-[submodule "async"]
-	path = foundation/async
-	url = git@github.com:jwiegley/emacs-async.git
 [submodule "with-editor"]
 	path = core/with-editor
 	url = git@github.com:magit/with-editor.git
@@ -120,3 +117,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/org/org-mode"]
 	path = packages/org/org-mode
 	url = git://orgmode.org/org-mode.git
+[submodule "foundation/emacs-deferred"]
+	path = foundation/emacs-deferred
+	url = git@github.com:kiwanami/emacs-deferred.git
