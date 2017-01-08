@@ -3,283 +3,270 @@
 
 (load (expand-file-name "foundation/foundation" user-emacs-directory))
 
-(eval-and-compile
-  (let ((pre-load-folders '("boot" "vendor"))
-        (core-dir          (concat user-emacs-directory "core/")))
-    (mapc #'(lambda (folder) (add-to-list 'load-path (expand-file-name folder core-dir)))
-          pre-load-folders)))
+;; Vendor packages
+(use-package dash
+  :github magnars
+  :config
+  (use-package s :github magnars &async)
+  (use-package f :github rejeep &async))
+(use-package diminish :github myrjola &async)
 
-(use-package bootstrap
+(use-package foundation
   :demand t
-  :bind (("RET"     . newline-and-indent)
-         ("M-j"     . join-line)
-         ("C-a"     . back-to-indentation)
-         ("M-m"     . beginning-of-line)
-         ("C-S-d"   . 4lex1v/duplicate-line)
-         ("M-`"     . other-frame)
-         ("C-c r"   . revert-buffer)
-         ("C-x \\"  . align-regexp)
-         ("<f10>"   . customize-themes)
-         
-         ("C-q"     . 4lex1v/close-buffer)
-         ("M-q"     . 4lex1v:w/close-other-window)
-         ("C-;"     . toggle-comment-on-line))
+  :load-path "foundation"
+  :bind
+  (("RET"     . newline-and-indent)
+   ("M-j"     . join-line)
+   ("C-a"     . back-to-indentation)
+   ("M-m"     . beginning-of-line)
 
-  :init (progn 
-          (setq-default tab-width 2
-                        cursor-type 'box
-                        cursor-in-non-selected-windows 'bar
-                        frame-title-format " %@%b% -"
-                        linum-format "%3d "  ;; Try dynamic?
-                        indent-tabs-mode  nil
-                        load-prefer-newer t)
+   ("M-`"     . other-frame)
+   ("C-c r"   . revert-buffer)
+   ("C-x \\"  . align-regexp)
+   ("C-;"     . toggle-comment-on-line)
 
-          (setq user-full-name             "Aleksandr Ivanov"
-                user-mail-address          "4lex1v@gmail.com"
-                show-paren-delay            0.0
-                ring-bell-function         'ignore
-                initial-major-mode         'scala-mode
-                tramp-default-method       "ssh"
-                make-backup-files           nil
-                auto-save-default           nil
-                inhibit-startup-message     t
-                initial-scratch-message     nil
-                kill-do-not-save-duplicates t
-                ad-redefinition-action     'accept
-                next-line-add-newlines      t
-                desktop-save-mode           t)
+   ("C-q"     . 4lex1v/close-buffer)
+   ("M-q"     . 4lex1v:w/close-other-window)
+   ("C-S-d"   . 4lex1v/duplicate-line))
 
-          ;; Find a better alternative to basic linum mode
-          (global-hl-line-mode t)
-          (global-linum-mode   nil)
+  :init
+  (use-package spacemacs-common :load-path "themes/spacemacs")
+  (use-package zenburn-theme    :load-path "themes/zenburn-emacs")
+  (use-package dracula-theme    :load-path "themes/dracula")
+  (use-package solarized-theme
+    :load-path "themes/solarized-emacs"
+    :init
+    (setq solarized-contrast                   'high
+          solarized-visibility                 'high
+          solarized-termcolors                  256
+          solarized-distinct-fringe-background  t
+          solarized-use-variable-pitch          nil
+          solarized-use-less-bold               nil
+          solarized-use-more-italic             nil
+          solarized-high-contrast-mode-line     t
+          solarized-emphasize-indicators        t
+          x-underline-at-descent-line           t))
 
-          (column-number-mode  t)
-          (show-paren-mode     t)
+  (use-package exec-path-from-shell
+    :github purcell/exec-path-from-shell &async
+    :commands exec-path-from-shell-getenv
+    :config
+    (let* ((brew-bin-path "/usr/local/homebrew/bin")
+           (current-path  (getenv "PATH"))
+           (new-path      (format "%s:%s" brew-bin-path current-path)))
 
-          (put 'narrow-to-region 'disabled nil)
-          (put 'narrow-to-page 'disabled nil)
+      ;; To find apps, e.g SBT
+      (add-to-list 'exec-path brew-bin-path)
+      
+      ;; For Eshell
+      (setenv "PATH" new-path)))
 
-          (fset 'yes-or-no-p   'y-or-n-p)
+  (use-package osx
+    :if (eq system-type 'darwin)
+    :load-path "core/boot"
+    :init
+    (setq browse-url-browser-function 'browse-url-default-macosx-browser
+          delete-by-moving-to-trash    t
+          mac-option-key-is-meta       nil
+          mac-command-key-is-meta      t
+          mac-command-modifier        'meta
+          mac-option-modifier          nil))
 
-          (if (window-system)
-              (progn
-                (tooltip-mode -1)
-                (tool-bar-mode -1)
-                (menu-bar-mode -1)
-                (scroll-bar-mode -1)
-                
-                (use-package themes
-                  :load-path "themes"
-                  :config (load-theme 'dracula t)))))
-  
-  :config (progn
-            (4lex1v/configure-frame-size 'maximized)
-            (4lex1v/transparent-ui 100 100)))
-
-(use-package osx
-  :if (eq system-type 'darwin)
-  :init (progn
-          ;; Should also be active for *nix?
-          (use-package exec-path-from-shell) ;; defined in core/vendor
-
-          (setq ns-use-srgb-colorspace       nil
-                browse-url-browser-function 'browse-url-default-macosx-browser
-                delete-by-moving-to-trash    t
-                mac-option-key-is-meta       nil
-                mac-command-key-is-meta      t
-                mac-command-modifier        'meta
-                mac-option-modifier          nil)
-
-          (let* ((brew-bin-path "/usr/local/homebrew/bin")
-                 (current-path  (getenv "PATH"))
-                 (new-path      (format "%s:%s" brew-bin-path current-path)))
-
-            ;; To find apps, e.g SBT
-            (add-to-list 'exec-path brew-bin-path)
-            
-            ;; For Eshell
-            (setenv "PATH" new-path))
-          
-          (4lex1v/configure-font '("Ayuthaya" :size 18))))
-
-(use-package f :load-path "core/f")
+  :config
+  (4lex1v:gui:font "Hack" ;"Ayuthaya"
+                   :size 18)
+  (4lex1v:gui:frame :size         'maximized
+                    :transparency '(100 . 100)
+                    :theme        'dracula))
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key
   :diminish which-key-mode
   :load-path "core/which-key"
-  :init (setq which-key-idle-delay 0.2
-              which-key-popup-type 'side-window
-              which-key-sort-order 'which-key-prefix-then-key-order)
-  :config (progn
-            (which-key-setup-side-window-bottom)
-            (which-key-mode)))
+  :init
+  (setq which-key-idle-delay 0.2
+        which-key-popup-type 'side-window
+        which-key-sort-order 'which-key-prefix-then-key-order)
+  :config
+  (which-key-setup-side-window-bottom)
+  (which-key-mode))
 
 (use-package helm
   :diminish helm-mode
   :load-path "core/helm/helm-core"
   :commands helm-mode
 
-  :bind* ("C-c h o" . helm-occur) ;; NOTE :: Replace with Swoop?
-  :bind (("C-c h"   . helm-command-prefix)
-         ("C-h a"   . helm-apropos)
-         ("M-y"     . helm-show-kill-ring)
-         ("C-x b"   . helm-mini)
-         ("C-x C-f" . helm-find-files)         
-         ("M-x"     . helm-M-x)
-         ("M-3"     . helm-mini))
+  :bind*
+  ("C-c h o" . helm-occur) ;; NOTE :: Replace with Swoop?
+  :bind
+  (("C-c h"   . helm-command-prefix)
+   ("C-h a"   . helm-apropos)
+   ("M-y"     . helm-show-kill-ring)
+   ("C-x b"   . helm-mini)
+   ("C-x C-f" . helm-find-files)         
+   ("M-x"     . helm-M-x)
+   ("M-3"     . helm-mini))
   
-  :bind (:map helm-map
-              ("<tab>" . helm-execute-persistent-action)
-              ("C-i"   . helm-execute-persistent-action)
-              ("C-z"   . helm-select-action)
-              ("C-o"   . helm-next-source)
-              ("M-o"   . helm-previous-source)
-              ("C-j"   . helm-buffer-switch-other-window))
+  :bind
+  (:map helm-map
+   ("<tab>" . helm-execute-persistent-action)
+   ("C-i"   . helm-execute-persistent-action)
+   ("C-z"   . helm-select-action)
+   ("C-o"   . helm-next-source)
+   ("M-o"   . helm-previous-source)
+   ("C-j"   . helm-buffer-switch-other-window))
 
-  :init (progn
-          (setq helm-idle-delay                        0.0
-                helm-input-idle-delay                  0.01
-                helm-quick-update                      t
-                helm-split-window-in-side-p            t
-                helm-buffers-fuzzy-matching            t
-                helm-move-to-line-cycle-in-source      t
-                helm-scroll-amount                     8
-                helm-ff-search-library-in-sexp         t
-                helm-ff-file-name-history-use-recentf  t
-                helm-ag-insert-at-point                'symbol)
+  :init
+  (setq helm-idle-delay                        0.0
+        helm-input-idle-delay                  0.01
+        helm-quick-update                      t
+        helm-split-window-in-side-p            t
+        helm-buffers-fuzzy-matching            t
+        helm-move-to-line-cycle-in-source      t
+        helm-scroll-amount                     8
+        helm-ff-search-library-in-sexp         t
+        helm-ff-file-name-history-use-recentf  t
+        helm-ag-insert-at-point                'symbol)
 
-          (use-package helm-config)
-          (use-package helm-mode))
+  (use-package helm-config)
+  (use-package helm-mode)
   
-  :config (progn
-            (helm-autoresize-mode)
+  :config 
+  (helm-autoresize-mode)
 
-            (which-key-declare-prefixes "C-c h" "helm")
+  (with-mode which-key
+    (which-key-declare-prefixes "C-c h" "helm"))
 
-            (use-package helm-descbinds
-              :load-path "core/helm/helm-descbinds"
-              :commands helm-descbinds
-              :init (progn
-                      (fset 'describe-bindings 'helm-descbinds)
-                      (setq helm-descbinds-window-style 'same-window)))
+  (use-package helm-descbinds
+    :load-path "core/helm/helm-descbinds"
+    :commands helm-descbinds
+    :init
+    (fset 'describe-bindings 'helm-descbinds)
+    (setq helm-descbinds-window-style 'same-window))
 
-            (use-package helm-swoop
-              :load-path "core/helm/helm-swoop"
-              :commands helm-swoop
+  (use-package helm-swoop
+    :load-path "core/helm/helm-swoop"
+    :commands helm-swoop
 
-              :bind (("M-i"     . helm-swoop)
-                     ("M-I"     . helm-swoop-back-to-last-point)
-                     ("C-c M-i" . helm-multi-swoop)
-                     ("C-x M-i" . helm-multi-swoop-all))
+    :bind
+    (("M-i"     . helm-swoop)
+     ("M-I"     . helm-swoop-back-to-last-point)
+     ("C-c M-i" . helm-multi-swoop)
+     ("C-x M-i" . helm-multi-swoop-all)
+     :map isearch-mode-map
+     ("M-i" . helm-swoop-from-isearch)
+     ("M-I" . helm-multi-swoop-all-from-isearch)
+     :map helm-swoop-map
+     ("M-i" . helm-multi-swoop-all-from-helm-swoop)
+     ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop))
 
-              :bind (:map isearch-mode-map
-                          ("M-i" . helm-swoop-from-isearch)
-                          ("M-I" . helm-multi-swoop-all-from-isearch))
+    :init
+    (setq helm-multi-swoop-edit-save t
+          helm-swoop-split-with-multiple-windows nil
+          helm-swoop-split-direction 'split-window-vertically
+          helm-swoop-move-to-line-cycle t
+          helm-swoop-use-line-number-face t))
 
-              ;; FIXME :: For whatever reason map is void
-              ;; :bind (:map helm-swoop-map
-              ;;             ("M-i" . helm-multi-swoop-all-from-helm-swoop)
-              ;;             ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop))
-
-              :init (setq helm-multi-swoop-edit-save t
-                          helm-swoop-split-with-multiple-windows nil
-                          helm-swoop-split-direction 'split-window-vertically
-                          helm-swoop-move-to-line-cycle t
-                          helm-swoop-use-line-number-face t))
-
-            (use-package helm-ag
-              :load-path "core/helm/helm-ag"
-              :commands helm-projectile-ag)))
+  (use-package helm-ag
+    :load-path "core/helm/helm-ag"
+    :commands helm-projectile-ag))
 
 (use-package projectile
   :load-path "core/projectile"
   :commands projectile-project-root
   :bind-keymap ("C-c p" . projectile-command-map)
-  :bind (("M-1" . helm-projectile)
-         ("M-4" . projectile-switch-project))
+  :bind
+  (("M-1" . helm-projectile)
+   ("M-4" . projectile-switch-project))
 
-  :init (setq projectile-enable-caching       t
-              projectile-require-project-root t
-              projectile-use-git-grep         t)
+  :init
+  (setq projectile-enable-caching       t
+        projectile-require-project-root t
+        projectile-use-git-grep         t)
 
-  :config (progn
-            (projectile-global-mode)
+  :config
+  (projectile-global-mode)
 
-            (which-key-declare-prefixes
-              "C-c p" "projectile")
+  (with-mode which-key
+    (which-key-declare-prefixes "C-c p" "projectile"))
 
-            (use-package helm-projectile
-              :demand t
-              :load-path "core/helm/helm-projectile"
-              :config (progn
-                        (setq projectile-completion-system 'helm)
-                        (helm-projectile-on)))
+  (with-package helm
+    (use-package helm-projectile
+      :demand t
+      :load-path "core/helm/helm-projectile"
+      :init (setq projectile-completion-system 'helm)
+      :config (helm-projectile-on)))
 
-            ;; Stored in core/vendor
-            (use-package ibuffer-projectile
-              :init (add-hook 'ibuffer-hook
-                              (lambda ()
-                                (ibuffer-projectile-set-filter-groups)
-                                (unless (eq ibuffer-sorting-mode 'alphabetic)
-                                  (ibuffer-do-sort-by-alphabetic)))))
-            
-            (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name))))))
+  ;; Stored in core/vendor
+  (use-package ibuffer-projectile
+    :github purcell/ibuffer-projectile
+    :init
+    (add-hook 'ibuffer-hook
+              (lambda ()
+                (ibuffer-projectile-set-filter-groups)
+                (unless (eq ibuffer-sorting-mode 'alphabetic)
+                  (ibuffer-do-sort-by-alphabetic)))))
+  
+  (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name)))))
 
 (use-package magit
   :load-path "core/magit/lisp"
   :commands magit-clone
-  :bind (("C-c m s" . magit-status)
-         ("C-c m p" . magit-push-popup)
-         ("C-c m f" . magit-pull-popup)
-         ("C-c m b" . magit-blame)
-         ("C-c m r" . magit-show-refs-popup)
-         ("C-c m m" . magit-dispatch-popup)
-         ("C-c m o" . magit-submodule-popup))
+  :bind
+  (("C-c m s" . magit-status)
+   ("C-c m p" . magit-push-popup)
+   ("C-c m f" . magit-pull-popup)
+   ("C-c m b" . magit-blame)
+   ("C-c m r" . magit-show-refs-popup)
+   ("C-c m m" . magit-dispatch-popup)
+   ("C-c m o" . magit-submodule-popup))
 
-  :init (progn
-          (use-package with-editor :load-path "core/with-editor")
-
-          (unbind-key "C-c m")
-
-          (which-key-declare-prefixes "C-c m" "magit")
-
-          (setq magit-last-seen-setup-instructions "2.3.2")))
+  :init
+  (setq magit-last-seen-setup-instructions "2.3.2")
+  (use-package with-editor :load-path "core/with-editor")
+  (unbind-key "C-c m")
+  (with-mode which-key 
+    (which-key-declare-prefixes "C-c m" "magit")))
 
 (use-package ranger
   :load-path "core/ranger"
-  :bind (("M-2" . ranger)
-         ("M-5" . helm-ranger-bookmarks))
-  :init (setq ranger-override-dired  nil
-              ranger-show-literal    nil ;; Turn on highlighting in ranger mode
-              ranger-cleanup-eagerly t
-              ranger-show-dotfiles   t)
+  :bind
+  (("M-2" . ranger)
+   ("M-5" . helm-ranger-bookmarks))
+  :init
+  (setq ranger-override-dired  nil
+        ranger-show-literal    nil ;; Turn on highlighting in ranger mode
+        ranger-cleanup-eagerly t
+        ranger-show-dotfiles   t)
 
-  :config (defun helm-ranger-bookmarks ()
-            (interactive)
-            (helm :sources (helm-build-in-buffer-source "Ranger Bookmarks"
-                             :data (lambda ()
-                                     (bookmark-maybe-load-default-file)
-                                     (ranger--directory-bookmarks))
-                             :fuzzy-match t
-                             :action 'ranger)
-                  :buffer "*helm ranger bookmarks*")))
+  :config
+  (defun helm-ranger-bookmarks ()
+    (interactive)
+    (helm :sources (helm-build-in-buffer-source "Ranger Bookmarks"
+                     :data (lambda ()
+                             (bookmark-maybe-load-default-file)
+                             (ranger--directory-bookmarks))
+                     :fuzzy-match t
+                     :action 'ranger)
+          :buffer "*helm ranger bookmarks*")))
 
 (use-package ace-control
   :load-path "core/ace"
-  :init (progn
+  :init
+  ;; Improved version of ace-jump-mode
+  (use-package avy
+    :bind
+    (("C-c SPC" . avy-goto-char)
+     ("C-c j w" . avy-goto-word-1)
+     ("C-c j l" . avy-goto-line)))
 
-          ;; Improved version of ace-jump-mode
-          (use-package avy
-            :bind (("C-c SPC" . avy-goto-char)
-                   ("C-c j w" . avy-goto-word-1)
-                   ("C-c j l" . avy-goto-line)))
+  (use-package ace-window
+    :bind
+    (("C-'"  . ace-window)
+     ("<f7>" . ace-window)))
 
-          (use-package ace-window
-            :bind (("C-'"  . ace-window)
-                   ("<f7>" . ace-window)))
-
-          (which-key-declare-prefixes "C-c j" "ace-jump")))
+  (with-mode which-key
+    (which-key-declare-prefixes "C-c j" "ace-jump")))
 
 (use-package smartparens
   :diminish smartparens-mode
@@ -333,15 +320,13 @@
                                   'emacs-lisp-mode-hook
                                   'clojure-mode-hook
                                   'cider-repl-mode-hook))
-
-  :config (progn
-
-            (sp-pair "(" ")" :wrap "C-(")
-            (sp-pair "[" "]" :wrap "s-[")
-            (sp-pair "{" "}" :wrap "C-{")
-
-            (which-key-declare-prefixes
-              "C-c s" "smartparens")))
+  :config
+  (sp-pair "(" ")" :wrap "C-(")
+  (sp-pair "[" "]" :wrap "s-[")
+  (sp-pair "{" "}" :wrap "C-{")
+  (with-mode which-key
+    (which-key-declare-prefixes
+      "C-c s" "smartparens")))
 
 (use-package company
   :diminish company-mode
@@ -365,115 +350,139 @@
   :diminish yas-minor-mode
   :load-path "core/yasnippet"
   :commands yas-minor-mode
-
-  :init (progn
-          (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-          (4lex1v/hook-into-modes #'yas-minor-mode 'scala-mode-hook))
-
-  :config (progn
-            (yas-reload-all)
-            (which-key-declare-prefixes "C-c &" "yasnippet")))
+  :init (setq yas-snippet-dirs '("~/.emacs.d/snippets")) 
+  :config
+  (yas-reload-all)
+  (with-mode which-key
+    (which-key-declare-prefixes "C-c &" "yasnippet")))
 
 (use-package hideshowvis
   :diminish hs-minor-mode
+  :github emacsmirror/hideshowvis &async
   :commands hideshowvis-enable
 
-  :bind (("M-[" . hs-hide-block)
-         ("M-]" . hs-show-block))
+  :bind
+  (("M-[" . hs-hide-block)
+   ("M-]" . hs-show-block))
 
-  :init (progn
-          (which-key-declare-prefixes
-            "C-c @" "hideshow")
+  :init
+  (with-mode which-key
+    (which-key-declare-prefixes
+      "C-c @" "hideshow"))
 
-          (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)
-          (let ((modes '(emacs-lisp-mode-hook scala-mode-hook)))
-            (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes)
-            (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes)))
+  (let ((modes '(emacs-lisp-mode-hook scala-mode-hook)))
+    (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes)
+    (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes))
   
-  :config (progn
-            (hideshowvis-symbols)
-            (hideshowvis-enable)))
+  :config
+  (hideshowvis-symbols)
+  (hideshowvis-enable))
 
 (use-package elisp-mode
-  :diminish (emacs-lisp-mode . "ELisp")
+  :diminish    (emacs-lisp-mode . "ELisp")
   :interpreter ("emacs" . emacs-lisp-mode)
-  :mode ("\\.el$" . emacs-lisp-mode)
+  :mode        ("\\.el$" . emacs-lisp-mode)
+  :bind
+  (("M-." . find-function-at-point)
+   ("M-," . find-variable-at-point)
+   ("C-c e r" . eval-region)
+   ("C-c h l" . find-library))
 
-  :bind (("M-." . find-function-at-point)
-         ("M-," . find-variable-at-point))
+  :init
+  (use-package seq :github NicolasPetton &async)
+  
+  (use-package macrostep
+    :load-path "packages/elisp/macrostep"
+    :commands macrostep-expand
+    :bind
+    (:map emacs-lisp-mode-map
+     ("C-c e m" . macrostep-expand)))
 
-  :init (use-package macrostep
-          :load-path "packages/elisp/macrostep"
-          :commands macrostep-expand
-          :bind (:map emacs-lisp-mode-map
-                      ("C-c e" . macrostep-expand))))
+  (with-mode which-key
+    (which-key-declare-prefixes-for-mode 'emacs-lisp-mode 
+      "C-c e" "elisp")))
 
 (use-package scala
   :load-path "packages/scala"
-  :init (use-package scala-mode
-          :commands scala-mode
-          :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode)
-          :interpreter ("scala" . scala-mode)
+  :init
+  (use-package scala-mode
+    :commands scala-mode
+    :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode)
+    :interpreter ("scala" . scala-mode)
 
-          :init (setq scala-indent:use-javadoc-style t)
+    :init
+    (setq-default initial-major-mode 'scala-mode)
+    (setq scala-indent:use-javadoc-style t)
 
-          :bind (:map scala-mode-map
-                      ("C-c b"      . sbt-ext:open-build-file)
-                      ("<C-return>" . newline-or-comment)
-                      ("M-j"        . scala-indent:join-line)
-                      ("C-c c"      . sbt-command))
+    :bind
+    (:map scala-mode-map
+     ("C-c b"      . sbt-ext:open-build-file)
+     ("<C-return>" . newline-or-comment)
+     ("M-j"        . scala-indent:join-line)
+     ("C-c c"      . sbt-command))
 
-          :config (progn
-                    (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
-                    (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
+    :config
+    (use-package sbt-mode :commands (sbt-start sbt-command))
+    (use-package ensime
+      :commands ensime
+      :bind
+      (:map scala-mode-map
+       ("C-c e" . ensime-print-errors-at-point)
+       ("C-c t" . ensime-print-type-at-point)
+       ("C-c o" . ensime-import-type-at-point)
+       ("C-M-." . ensime-edit-definition-other-window))
 
-                    (use-package sbt-mode :commands (sbt-start sbt-command))
+      :init
+      (setq ensime-server-version        "1.0.0"
+            ensime-default-buffer-prefix "ENSIME-"
+            ensime-startup-notification   nil)
 
-                    (use-package ensime
-                      :commands ensime
-                      :bind (:map scala-mode-map
-                                  ("C-c e" . ensime-print-errors-at-point)
-                                  ("C-c t" . ensime-print-type-at-point)
-                                  ("C-c o" . ensime-import-type-at-point)
-                                  ("C-M-." . ensime-edit-definition-other-window))
+      (with-mode which-key
+        (which-key-declare-prefixes-for-mode 'scala-mode
+          "C-c C-d" "ensime/debug"
+          "C-c C-c" "ensime/compiler"
+          "C-c C-r" "ensime/refactoring"
+          "C-c C-t" "ensime/tests"
+          "C-c C-v" "ensime/general"
+          "C-c C-b" "ensime/sbt"))
+      
+      (use-package popup :load-path "core/popup")
 
-                      :init (progn
-                              (setq ensime-server-version "1.0.0"
-                                    ensime-startup-notification nil)
+      ;; Smart Ensime loader
+      (4lex1v/hook-into-modes
+       #'(lambda () 
+           (if (and (if-bound-f projectile-project-p)
+                    (if-bound-f projectile-project-root))
+               (4lex1v/connect-running-ensime (projectile-project-root))
+             (progn
+               (message (format "Projectile is not loaded, using %s" default-directory))
+               (4lex1v/connect-running-ensime default-directory))))
+       'scala-mode-hook)
 
-                              (which-key-declare-prefixes-for-mode 'scala-mode
-                                "C-c C-d" "ensime/debug"
-                                "C-c C-c" "ensime/compiler"
-                                "C-c C-r" "ensime/refactoring"
-                                "C-c C-t" "ensime/tests"
-                                "C-c C-v" "ensime/general"
-                                "C-c C-b" "ensime/sbt")
-                              
-                              (use-package popup :load-path "core/popup")
-                              (setq ensime-default-buffer-prefix "ENSIME-")
+      ;; Eldoc support in Scala + Ensime mode
+      (setq-local eldoc-documentation-function
+                  #'(lambda ()
+                      (when (ensime-connected-p)
+                        (let ((err (ensime-print-errors-at-point)))
+                          (or (and err (not (string= err "")) err)
+                              (ensime-print-type-at-point))))))
 
-                              ;; Smart Ensime loader
-                              (4lex1v/hook-into-modes
-                               #'(lambda () 
-                                   (if (and (if-bound-f projectile-project-p)
-                                            (if-bound-f projectile-project-root))
-                                       (4lex1v/connect-running-ensime (projectile-project-root))
-                                     (progn
-                                       (message (format "Projectile is not loaded, using %s" default-directory))
-                                       (4lex1v/connect-running-ensime default-directory))))
-                               'scala-mode-hook)
+      :config (unbind-key "M-p" ensime-mode-map))
+    
+    (with-package smartparens-mode
+      (use-package smartparens-scala
+        :init
+        (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
+        (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))))
+    
+    (with-package hideshowvis
+      (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil)
+          hs-special-modes-alist))
 
-                              ;; Eldoc support in Scala + Ensime mode
-                              (setq-local eldoc-documentation-function
-                                          #'(lambda ()
-                                              (when (ensime-connected-p)
-                                                (let ((err (ensime-print-errors-at-point)))
-                                                  (or (and err (not (string= err "")) err)
-                                                      (ensime-print-type-at-point)))))))
+    (with-package yasnippet
+      (add-hook 'scala-mode-hook #'yas-minor-mode))
 
-                      :config (unbind-key "M-p" ensime-mode-map))
-                    
-                    (4lex1v/hook-into-modes #'4lex1v/fix-scala-fonts 'scala-mode-hook))))
+    (4lex1v/hook-into-modes #'4lex1v/fix-scala-fonts 'scala-mode-hook)))
 
 
 
@@ -524,26 +533,26 @@
 
 (use-package web-mode
   :load-path "packages/web"
+  :mode
+  (("\\.html\\'" . web-mode)
+   ("\\.html\\.erb\\'" . web-mode)
+   ("\\.mustache\\'" . web-mode)
+   ("\\.jinja\\'" . web-mode)
+   ("\\.php\\'" . web-mode))
+  :init
+  (setq web-mode-engines-alist '(("\\.jinja\\'"  . "django"))
+        web-mode-enable-auto-pairing t
+        web-mode-enable-css-colorization t
+        web-mode-enable-current-element-highlight t
+        web-mode-enable-current-column-highlight nil)
 
-  :mode (("\\.html\\'" . web-mode)
-         ("\\.html\\.erb\\'" . web-mode)
-         ("\\.mustache\\'" . web-mode)
-         ("\\.jinja\\'" . web-mode)
-         ("\\.php\\'" . web-mode))
-
-  :init (progn
-          (setq web-mode-engines-alist '(("\\.jinja\\'"  . "django"))
-                web-mode-enable-auto-pairing t
-                web-mode-enable-css-colorization t
-                web-mode-enable-current-element-highlight t
-                web-mode-enable-current-column-highlight nil)
-
-          (which-key-declare-prefixes-for-mode 'web-mode
-            "C-c C-t" "web/tag"
-            "C-c C-b" "web/block"
-            "C-c C-d" "web/dom"
-            "C-c C-a" "web/attribute"
-            "C-c C-e" "web/element")))
+  (with-mode which-key
+    (which-key-declare-prefixes-for-mode 'web-mode
+      "C-c C-t" "web/tag"
+      "C-c C-b" "web/block"
+      "C-c C-d" "web/dom"
+      "C-c C-a" "web/attribute"
+      "C-c C-e" "web/element")))
 
 (use-package docker
   :load-path "core/docker"
@@ -577,32 +586,34 @@
 
 (use-package centered-cursor-mode
   :diminish centered-cursor-mode
-  :init (setq ccm-recenter-at-end-of-file t
-              ccm-ignored-commands '(mouse-drag-region
-                                     mouse-set-point
-                                     widget-button-click
-                                     scroll-bar-toolkit-scroll))
+  :github emacsmirror/centered-cursor-mode &async
+  :init
+  (setq ccm-recenter-at-end-of-file t
+        ccm-ignored-commands '(mouse-drag-region
+                               mouse-set-point
+                               widget-button-click
+                               scroll-bar-toolkit-scroll))
   :config (global-centered-cursor-mode t))
 
 (use-package yaml-mode
   :load-path "packages/yaml"
   :mode ("\\.yml$" . yaml-mode))
 
-;; (use-package idris-mode
-;;   :load-path "packages/idris")
-
 (use-package flyspell
-  :bind (("C-c i b" . flyspell-buffer)
-         ("C-c i f" . flyspell-mode))
-  :init (progn
-          (which-key-declare-prefixes "C-c i" "flyspell")
-          
-          (use-package ispell
-            :bind (("C-c i c" . ispell-comments-and-strings)
-                   ("C-c i d" . ispell-change-dictionary)
-                   ("C-c i k" . ispell-kill-ispell)
-                   ("C-c i m" . ispell-message)
-                   ("C-c i r" . ispell-region))))
+  :bind
+  (("C-c i b" . flyspell-buffer)
+   ("C-c i f" . flyspell-mode))
+  :init
+  (with-mode which-key
+    (which-key-declare-prefixes "C-c i" "flyspell"))
+  
+  (use-package ispell
+    :bind
+    (("C-c i c" . ispell-comments-and-strings)
+     ("C-c i d" . ispell-change-dictionary)
+     ("C-c i k" . ispell-kill-ispell)
+     ("C-c i m" . ispell-message)
+     ("C-c i r" . ispell-region)))
   :config (unbind-key "C-." flyspell-mode-map))
 
 (use-package undo-tree
@@ -621,28 +632,37 @@
 (use-package markdown-mode
   :load-path "packages/markdown-mode"
   :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'"       . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
+  :mode
+  (("README\\.md\\'" . gfm-mode)
+   ("\\.md\\'"       . markdown-mode)
+   ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 
 (use-package jabber
   :load-path "packages/emacs-jabber"
-  :init (setq jabber-account-list
-              `(("4lex1v@livecoding.tv"
-                 (:password . ,(exec-path-from-shell-getenv "LC_PWD"))))))
+  :init
+  (setq jabber-account-list
+        `(("4lex1v@livecoding.tv"
+           (:password . ,(exec-path-from-shell-getenv "LC_PWD"))))))
 
 (use-package org
   :load-path "packages/org/org-mode"
+  :bind
+  (("C-c o l" . org-store-link)
+   ("C-c o a" . org-agenda)
+   ("C-c o c" . org-capture))
+  :init
+  (setq org-log-done             t
+        org-src-fontify-natively t
+        org-babel-load-languages '((emacs-lisp . t)
+                                   (scala      . t)
+                                   (haskell    . t)))
+  (with-mode which-key
+    (which-key-declare-prefixes
+      "C-c o" "org")))
 
-  :bind (("C-c o l" . org-store-link)
-         ("C-c o a" . org-agenda)
-         ("C-c o c" . org-capture))
-
-  :init (setq org-log-done             t
-              org-src-fontify-natively t
-              org-babel-load-languages '((emacs-lisp . t)
-                                         (scala      . t)
-                                         (haskell    . t))))
+(use-package multiple-cursors
+  :github magnars &async
+  :bind ("C-S-c C-S-c" . mc/edit-lines))
 
 (setq gc-cons-threshold 100000)
