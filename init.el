@@ -240,15 +240,16 @@
         ranger-show-dotfiles   t)
 
   :config
-  (defun helm-ranger-bookmarks ()
-    (interactive)
-    (helm :sources (helm-build-in-buffer-source "Ranger Bookmarks"
-                     :data (lambda ()
-                             (bookmark-maybe-load-default-file)
-                             (ranger--directory-bookmarks))
-                     :fuzzy-match t
-                     :action 'ranger)
-          :buffer "*helm ranger bookmarks*")))
+  (with-package helm
+    (defun helm-ranger-bookmarks ()
+     (interactive)
+     (helm :sources (helm-build-in-buffer-source "Ranger Bookmarks"
+                      :data (lambda ()
+                              (bookmark-maybe-load-default-file)
+                              (ranger--directory-bookmarks))
+                      :fuzzy-match t
+                      :action 'ranger)
+           :buffer "*helm ranger bookmarks*"))))
 
 (use-package ace-control
   :load-path "core/ace"
