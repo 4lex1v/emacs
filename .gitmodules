@@ -122,3 +122,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/markdown-mode"]
 	path = packages/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
+[submodule "foundation/use-package"]
+	path = foundation/use-package
+	url = git@github.com:jwiegley/use-package.git
