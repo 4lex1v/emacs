@@ -409,8 +409,8 @@
       "C-c @" "hideshow"))
 
   (let ((modes '(emacs-lisp-mode-hook scala-mode-hook)))
-    (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes)
-    (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes))
+    (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes)
+    (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes))
   
   :config
   (hideshowvis-symbols)
