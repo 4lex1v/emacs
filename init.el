@@ -382,7 +382,13 @@
   :diminish yas-minor-mode
   :load-path "core/yasnippet"
   :commands yas-minor-mode
-  :init (setq yas-snippet-dirs '("~/.emacs.d/snippets")) 
+  :init
+  (setq yas-snippet-dirs
+        '("~/.emacs.d/snippets"
+          "~/.emacs.d/core/yasnippet/snippets"))
+  (4lex1v/hook-into-modes #'yas-minor-mode
+                          'scala-mode-hook
+                          'emacs-lisp-mode-hook)
   :config
   (yas-reload-all)
   (with-mode which-key
