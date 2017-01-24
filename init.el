@@ -498,16 +498,17 @@
       
       (use-package popup :load-path "core/popup")
 
-      ;; Smart Ensime loader
-      (4lex1v/hook-into-modes
-       #'(lambda () 
+      (defun 4lex1v:smart-ensime-loader ()
+        (lambda () 
            (if (and (if-bound-f projectile-project-p)
                     (if-bound-f projectile-project-root))
                (4lex1v/connect-running-ensime (projectile-project-root))
              (progn
                (message (format "Projectile is not loaded, using %s" default-directory))
-               (4lex1v/connect-running-ensime default-directory))))
-       'scala-mode-hook)
+               (4lex1v/connect-running-ensime default-directory)))))
+
+      ;; Smart Ensime loader
+      (4lex1v/hook-into-modes #'4lex1v:smart-ensime-loader 'scala-mode-hook)
 
       ;; Eldoc support in Scala + Ensime mode
       (setq-local eldoc-documentation-function
