@@ -419,12 +419,13 @@
 (use-package elisp-mode
   :diminish    (emacs-lisp-mode . "ELisp")
   :interpreter ("emacs" . emacs-lisp-mode)
-  :mode        ("\\.el$" . emacs-lisp-mode)
+  :mode
+  (("\\.el$" . emacs-lisp-mode)
+   ("Cask"   . emacs-lisp-mode))
   :bind
   (("M-." . find-function-at-point)
    ("M-," . find-variable-at-point)
-   ("C-c e r" . eval-region)
-   ("C-c h l" . find-library))
+   ("C-c e r" . eval-region))
 
   :init
   (use-package seq :github NicolasPetton &async)
