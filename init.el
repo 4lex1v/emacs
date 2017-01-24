@@ -69,17 +69,20 @@
     :init
     (setq browse-url-browser-function 'browse-url-default-macosx-browser
           delete-by-moving-to-trash    t
-          mac-option-key-is-meta       nil
-          mac-command-key-is-meta      t
           mac-command-modifier        'meta
-          mac-option-modifier          nil))
+          mac-option-modifier         'super
+          mac-control-modifier        'control
+          ns-function-modifier        'hyper))
 
   :config
-  (4lex1v:gui:font "Hack" ;"Ayuthaya"
+  (4lex1v:gui:font "Ayuthaya"
                    :size 18)
   (4lex1v:gui:frame :size         'maximized
                     :transparency '(100 . 100)
-                    :theme        'dracula))
+                    :theme        'sirthias
+                    :cursor       '(bar . box))
+
+  (unbind-key "C-x b"))
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key
