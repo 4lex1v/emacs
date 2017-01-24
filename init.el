@@ -531,9 +531,6 @@
       (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil)
           hs-special-modes-alist))
 
-    (with-package yasnippet
-      (add-hook 'scala-mode-hook #'yas-minor-mode))
-
     (4lex1v/hook-into-modes #'4lex1v/fix-scala-fonts 'scala-mode-hook)))
 
 
