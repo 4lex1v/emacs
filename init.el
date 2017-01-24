@@ -241,12 +241,36 @@
   (("M-2" . ranger)
    ("M-5" . helm-ranger-bookmarks))
   :init
-  (setq ranger-override-dired  nil
+  (setq ranger-override-dired 'ranger
         ranger-show-literal    nil ;; Turn on highlighting in ranger mode
         ranger-cleanup-eagerly t
         ranger-show-dotfiles   t)
-
   :config
+  (ranger-override-dired-mode t)
+
+  (defun drill-folder-down (&optional initial)
+    (interactive)
+    (let ((folder (or initial (dired-get-filename nil t))))
+      (when (and folder (file-directory-p folder))
+        (let* ((subfolder (f-entries folder))
+               (nr-of-subfolders (length subfolder)))
+          (if (eq nr-of-subfolders 1)
+              (drill-folder-down (car subfolder))
+            (ranger-find-file initial))))))
+
+  (defun drill-folder-up (&optional initial)
+    (interactive)
+    (let* ((entry  (or initial default-directory))
+           (parent-folder (f-parent entry))
+           (parent-content (f-entries parent-folder))
+           (nr-of-entryies (length parent-content)))
+      (if (eq nr-of-entryies 1)
+          (drill-folder-up parent-folder)
+        (ranger-find-file parent-folder))))           
+
+  (bind-key "l" #'drill-folder-down ranger-mode-map)
+  (bind-key "h" #'drill-folder-up   ranger-mode-map)
+
   (with-package helm
     (defun helm-ranger-bookmarks ()
      (interactive)
