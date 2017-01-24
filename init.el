@@ -452,7 +452,7 @@
             
 (use-package scala
   :load-path "packages/scala"
-  :init
+  :config
   (use-package scala-mode
     :commands scala-mode
     :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode)
@@ -464,10 +464,11 @@
 
     :bind
     (:map scala-mode-map
-     ("C-c b"      . sbt-ext:open-build-file)
-     ("<C-return>" . newline-or-comment)
-     ("M-j"        . scala-indent:join-line)
-     ("C-c c"      . sbt-command))
+     ("C-c b"         . sbt-ext:open-build-file)
+     ("<C-return>"    . newline-or-comment)
+     ("M-j"           . scala-indent:join-line)
+     ("C-c c"         . sbt-command)
+     ("C-<backspace>" . contextual-backspace))
 
     :config
     (use-package sbt-mode :commands (sbt-start sbt-command))
