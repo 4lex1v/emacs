@@ -441,6 +441,15 @@
     (which-key-declare-prefixes-for-mode 'emacs-lisp-mode 
       "C-c e" "elisp")))
 
+(use-package eshell
+  :init
+  (defun 4lex1v:helm-eshell-history ()
+    (eshell-cmpl-initialize)
+    (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+    (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
+
+  (add-hook 'eshell-mode-hook #'4lex1v:helm-eshell-history))
+            
 (use-package scala
   :load-path "packages/scala"
   :init
