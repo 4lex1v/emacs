@@ -13,8 +13,12 @@
   "Helper function for simpler frame configuration"
   (pcase-let* ((frame-size (plist-get configs :size))
                (`(,active . ,inactive) (plist-get configs :transparency))
-               (theme-name (plist-get configs :theme)))
+               (theme-name (plist-get configs :theme))
+               (`(,active-cursor . ,inactive-cursor) (plist-get configs :cursor)))
     
+    (setq-default cursor-type active-cursor
+                  cursor-in-non-selected-windows inactive-cursor)
+
     (set-frame-parameter nil 'fullscreen frame-size)
     (add-to-list 'default-frame-alist (cons 'fullscreen frame-size))
 
@@ -98,9 +102,9 @@ then two windows around, provide an index number which window to close"
      (interactive)
      ,@body))
 
-(defmacro if-bound-f (f &optional args)
+(defsubst if-bound-f (f &optional args)
   "Helper function to guard against unbound functions"
-  `(if (fboundp ',f) (funcall ,f args)))
+  (if (fboundp ',f) (funcall ',f args)))
 
 (defun toggle-comment-on-line ()
   (interactive)
@@ -117,3 +121,19 @@ then two windows around, provide an index number which window to close"
   (and (string-match (rx-to-string `(: bos ,prefix) t)
                      string)
        t))
+
+(defun contextual-backspace ()
+  "Hungry whitespace or delete word depending on context."
+  (interactive)
+  (if (looking-back "[[:space:]\n]\\{2,\\}" (- (point) 2))
+      (while (looking-back "[[:space:]\n]" (- (point) 1))
+        (delete-char -1))
+    (cond
+     ((and (boundp 'smartparens-strict-mode)
+           smartparens-strict-mode)
+      (sp-backward-kill-word 1))
+     ((and (boundp 'subword-mode) 
+           subword-mode)
+      (subword-backward-kill 1))
+     (t
+      (backward-kill-word 1)))))

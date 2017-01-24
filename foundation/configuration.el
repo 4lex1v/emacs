@@ -4,7 +4,8 @@
               cursor-in-non-selected-windows 'bar
               frame-title-format " %@%b% -"
               linum-format       "%3d "  ;; Try dynamic?
-              load-prefer-newer  t)
+              load-prefer-newer  t
+              left-fringe-width  20)
 
 (setq user-full-name             "Aleksandr Ivanov"
       user-mail-address          "4lex1v@gmail.com"
