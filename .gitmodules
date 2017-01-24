@@ -125,3 +125,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "foundation/use-package"]
 	path = foundation/use-package
 	url = git@github.com:jwiegley/use-package.git
+[submodule "packages/purescript"]
+	path = packages/purescript
+	url = git@github.com:epost/psc-ide-emacs.git
