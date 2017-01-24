@@ -55,15 +55,13 @@ project file .ensime defined in the root directory"
         (if (file-exists-p ensime-cache-folder) (delete-directory ensime-cache-folder t))
         (if (file-exists-p ensime-file) (delete-file ensime-file)))))
 
-(defun configure-backends (backends)
-  (lambda ()
-    (add-to-list 'company-backends 'ensime-company)))
-
 (defun 4lex1v/fix-scala-fonts ()
+  (interactive)
   (mapc
    (lambda (kw)
      (let ((face-ref (intern (format "scala-font-lock:%s-face" kw))))
        (copy-face font-lock-keyword-face face-ref)))
-   '("final" "private" "protected" "implicit" "abstract" "sealed" "lazy" "override")))
+   '("final" "private" "protected" "implicit" "abstract" "sealed" "lazy" "override"
+     "inline")))
 
 (provide 'scala)
