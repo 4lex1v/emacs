@@ -484,7 +484,8 @@
       :init
       (setq ensime-server-version        "1.0.0"
             ensime-default-buffer-prefix "ENSIME-"
-            ensime-startup-notification   nil)
+            ensime-startup-notification   nil
+            ensime-startup-snapshot-notification nil)
 
       (with-mode which-key
         (which-key-declare-prefixes-for-mode 'scala-mode
