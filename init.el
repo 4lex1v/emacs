@@ -515,7 +515,11 @@
                           (or (and err (not (string= err "")) err)
                               (ensime-print-type-at-point))))))
 
-      :config (unbind-key "M-p" ensime-mode-map))
+      :config
+      (unbind-key "M-p" ensime-mode-map)
+      (use-package ensime-company
+        :init
+        (add-to-list 'company-backends 'ensime-company)))
     
     (with-package smartparens-mode
       (use-package smartparens-scala
