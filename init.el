@@ -9,6 +9,7 @@
   :config
   (use-package s :github magnars &async)
   (use-package f :github rejeep &async))
+
 (use-package diminish :github myrjola &async)
 
 (use-package foundation
@@ -33,6 +34,7 @@
   (use-package spacemacs-common :load-path "themes/spacemacs")
   (use-package zenburn-theme    :load-path "themes/zenburn-emacs")
   (use-package dracula-theme    :load-path "themes/dracula")
+  (use-package sirthias-theme   :load-path "themes/sirthias")
   (use-package solarized-theme
     :load-path "themes/solarized-emacs"
     :init
