@@ -110,7 +110,9 @@
    ("C-x b"   . helm-mini)
    ("C-x C-f" . helm-find-files)         
    ("M-x"     . helm-M-x)
-   ("M-3"     . helm-mini))
+   ("M-3"     . helm-mini)
+   ("M-:"     . helm-eval-expression-with-eldoc)
+   ("C-c h l" . helm-locate-library))
   
   :bind
   (:map helm-map
