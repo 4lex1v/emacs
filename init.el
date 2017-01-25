@@ -50,6 +50,8 @@
           x-underline-at-descent-line           t))
 
   (use-package exec-path-from-shell
+    :if (or (eq system-type 'darwin)
+            (eq system-type 'gnu/linux))
     :github purcell/exec-path-from-shell &async
     :commands exec-path-from-shell-getenv
     :config
@@ -75,8 +77,7 @@
           ns-function-modifier        'hyper))
 
   :config
-  (4lex1v:gui:font "Ayuthaya"
-                   :size 18)
+  (4lex1v:gui:font "Ayuthaya" :size 18)
   (4lex1v:gui:frame :size         'maximized
                     :transparency '(100 . 100)
                     :theme        'sirthias
@@ -100,29 +101,26 @@
   :diminish helm-mode
   :load-path "core/helm/helm-core"
   :commands helm-mode
-
   :bind*
   ("C-c h o" . helm-occur) ;; NOTE :: Replace with Swoop?
   :bind
   (("C-c h"   . helm-command-prefix)
-   ("C-h a"   . helm-apropos)
+   ;;("C-h a"   . helm-apropos) Use "C-c h a" instead
    ("M-y"     . helm-show-kill-ring)
-   ("C-x b"   . helm-mini)
+   ("C-x b"   . helm-mini) ;; 
+   ("M-3"     . helm-mini)
    ("C-x C-f" . helm-find-files)         
    ("M-x"     . helm-M-x)
-   ("M-3"     . helm-mini)
    ("M-:"     . helm-eval-expression-with-eldoc)
-   ("C-c h l" . helm-locate-library))
-  
-  :bind
-  (:map helm-map
+   ("C-c h l" . helm-locate-library)
+   :map helm-map
    ("<tab>" . helm-execute-persistent-action)
    ("C-i"   . helm-execute-persistent-action)
    ("C-z"   . helm-select-action)
    ("C-o"   . helm-next-source)
    ("M-o"   . helm-previous-source)
    ("C-j"   . helm-buffer-switch-other-window))
-
+  
   :init
   (setq helm-idle-delay                        0.0
         helm-input-idle-delay                  0.01
@@ -147,6 +145,8 @@
   (use-package helm-descbinds
     :load-path "core/helm/helm-descbinds"
     :commands helm-descbinds
+    :bind (:map helm-command-map
+           ("b" . helm-descbinds))
     :init
     (fset 'describe-bindings 'helm-descbinds)
     (setq helm-descbinds-window-style 'same-window))
@@ -229,7 +229,8 @@
    ("C-c m o" . magit-submodule-popup))
 
   :init
-  (setq magit-last-seen-setup-instructions "2.3.2")
+  (setq magit-last-seen-setup-instructions "2.3.2"
+        magit-status-show-hashes-in-headers t)
   (use-package with-editor :load-path "core/with-editor")
   (unbind-key "C-c m")
   (with-mode which-key 
