@@ -105,14 +105,17 @@
   ("C-c h o" . helm-occur) ;; NOTE :: Replace with Swoop?
   :bind
   (("C-c h"   . helm-command-prefix)
-   ;;("C-h a"   . helm-apropos) Use "C-c h a" instead
    ("M-y"     . helm-show-kill-ring)
    ("C-x b"   . helm-mini) ;; 
-   ("M-3"     . helm-mini)
    ("C-x C-f" . helm-find-files)         
    ("M-x"     . helm-M-x)
    ("M-:"     . helm-eval-expression-with-eldoc)
    ("C-c h l" . helm-locate-library)
+
+   ;; Number keys
+   ("M-3"     . helm-mini)
+   ("M-6"     . helm-bookmarks)
+
    :map helm-map
    ("<tab>" . helm-execute-persistent-action)
    ("C-i"   . helm-execute-persistent-action)
@@ -221,20 +224,32 @@
   :commands magit-clone
   :bind
   (("C-c m s" . magit-status)
-   ("C-c m p" . magit-push-popup)
-   ("C-c m f" . magit-pull-popup)
-   ("C-c m b" . magit-blame)
-   ("C-c m r" . magit-show-refs-popup)
    ("C-c m m" . magit-dispatch-popup)
-   ("C-c m o" . magit-submodule-popup))
+   ("C-c m b" . magit-blame)
+   ("C-c m o" . magit-submodule-popup)
+   ("C-c m y" . magit-show-refs-popup)
+   ("C-c m e" . magit-ediff-popup)
+   
+   ;; Git Logging
+   ("C-c m l l" . magit-log-all)
+   ("C-c m l b" . magit-log-buffer-file)
+   ("C-c m l c" . magit-log-current)
+
+   ("C-c m p" . magit-push-popup)
+   ("C-c m f" . magit-pull-popup))
 
   :init
   (setq magit-last-seen-setup-instructions "2.3.2"
         magit-status-show-hashes-in-headers t)
+
   (use-package with-editor :load-path "core/with-editor")
   (unbind-key "C-c m")
   (with-mode which-key 
-    (which-key-declare-prefixes "C-c m" "magit")))
+    (which-key-declare-prefixes "C-c m" "magit")
+    (which-key-declare-prefixes "C-c m l" "magit/log"))
+
+  :config
+  (add-to-list 'magit-log-arguments "--color"))
 
 (use-package ranger
   :load-path "core/ranger"
@@ -456,12 +471,13 @@
   :config
   (use-package scala-mode
     :commands scala-mode
-    :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode)
+    :mode ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
     :interpreter ("scala" . scala-mode)
 
     :init
     (setq-default initial-major-mode 'scala-mode)
-    (setq scala-indent:use-javadoc-style t)
+    (setq scala-indent:use-javadoc-style t
+          scala-mode:debug-messages nil)
 
     :bind
     (:map scala-mode-map
@@ -537,7 +553,14 @@
 
     (4lex1v/hook-into-modes #'4lex1v/fix-scala-fonts 'scala-mode-hook)))
 
+(defun format-all (project)
+  (interactive "D")
+  (-select
+   (lambda (file)
+     (f-ext-p file "scala"))
+   (f-files project 'identity t)))
 
+(func fd (format-all default-directory))
 
 ;; Configuration inspired by -
 ;; https://github.com/flyingmachine/emacs-for-clojure/blob/master/customizations/setup-clojure.el
@@ -707,6 +730,7 @@
   :init
   (setq org-log-done             t
         org-src-fontify-natively t
+        org-descriptive-links    nil
         org-babel-load-languages '((emacs-lisp . t)
                                    (scala      . t)
                                    (haskell    . t)))
