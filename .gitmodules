@@ -128,3 +128,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/purescript"]
 	path = packages/purescript
 	url = git@github.com:epost/psc-ide-emacs.git
+[submodule "core/vim/evil-core"]
+	path = core/vim/evil-core
+	url = git@github.com:emacs-evil/evil.git
+[submodule "core/vim/evil-leader"]
+	path = core/vim/evil-leader
+	url = git@github.com:cofi/evil-leader.git

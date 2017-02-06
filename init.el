@@ -30,11 +30,12 @@
    ("M-q"     . 4lex1v:w/close-other-window)
    ("C-S-d"   . 4lex1v/duplicate-line))
 
+
   :init
-  (use-package spacemacs-common :load-path "themes/spacemacs")
-  (use-package zenburn-theme    :load-path "themes/zenburn-emacs")
-  (use-package dracula-theme    :load-path "themes/dracula")
-  (use-package sirthias-theme   :load-path "themes/sirthias")
+  ;; (use-package spacemacs-common :load-path "themes/spacemacs")
+  ;; (use-package zenburn-theme    :load-path "themes/zenburn-emacs")
+  ;; (use-package dracula-theme    :load-path "themes/dracula")
+  ;; (use-package sirthias-theme   :load-path "themes/sirthias")
   (use-package solarized-theme
     :load-path "themes/solarized-emacs"
     :init
@@ -80,10 +81,39 @@
   (4lex1v:gui:font "Ayuthaya" :size 18)
   (4lex1v:gui:frame :size         'maximized
                     :transparency '(100 . 100)
-                    :theme        'sirthias
+                    :theme        'solarized-light 
                     :cursor       '(bar . box))
 
   (unbind-key "C-x b"))
+
+(use-package evil
+  :load-path "core/vim/evil-core"
+  :init
+  (setq evil-default-cursor t)
+ 
+  (use-package evil-leader
+    :load-path "core/vim/evil-leader"
+    :init
+    (setq evil-leader/in-all-states t)
+    :config
+    (evil-leader/set-leader "SPC")
+
+    ;; Window management
+    (evil-leader/set-key "wo"  'other-window)
+    (evil-leader/set-key "wsb" 'split-window-below)
+    (evil-leader/set-key "wsh" 'split-window-horizontally)
+    (evil-leader/set-key "wdd" 'delete-window)
+    (evil-leader/set-key "wdo" 'delete-other-windows)
+
+    ;; File management
+    (func init.el (find-file (concat user-emacs-directory "/" "init.el")))
+    (evil-leader/set-key "fi" 'init.el)
+    (evil-leader/set-key "ff" 'helm-find-files)
+
+    (global-evil-leader-mode))
+
+  :config
+  (evil-mode 1))
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key
@@ -145,6 +175,10 @@
   (with-mode which-key
     (which-key-declare-prefixes "C-c h" "helm"))
 
+  (with-mode evil-leader
+    (evil-leader/set-key "fi" 'helm-imenu)
+    (evil-leader/set-key "fm" 'helm-mini))
+
   (use-package helm-descbinds
     :load-path "core/helm/helm-descbinds"
     :commands helm-descbinds
@@ -194,6 +228,10 @@
         projectile-require-project-root t
         projectile-use-git-grep         t)
 
+  (with-mode evil-leader
+    (evil-leader/set-key "pp" 'helm-projectile-switch-project)
+    (evil-leader/set-key "ps" 'helm-projectile-ag))
+
   :config
   (projectile-global-mode)
 
@@ -242,6 +280,17 @@
   (setq magit-last-seen-setup-instructions "2.3.2"
         magit-status-show-hashes-in-headers t)
 
+  (with-mode evil-leader
+    (evil-leader/set-key "gs" 'magit-status)
+    (evil-leader/set-key "gs" 'magit-status)
+    (evil-leader/set-key "gm" 'magit-dispatch-popup)
+    (evil-leader/set-key "gb" 'magit-blame)
+    (evil-leader/set-key "gy" 'magit-show-refs-popup)
+    (evil-leader/set-key "gll" 'magit-log-all)
+
+    (with-mode which-key
+      (which-key-declare-prefixes "§ g" "magit")))
+  
   (use-package with-editor :load-path "core/with-editor")
   (unbind-key "C-c m")
   (with-mode which-key 
@@ -261,6 +310,10 @@
         ranger-show-literal    nil ;; Turn on highlighting in ranger mode
         ranger-cleanup-eagerly t
         ranger-show-dotfiles   t)
+
+  (with-mode evil-leader
+    (evil-leader/set-key "fr" 'ranger))
+
   :config
   (ranger-override-dired-mode t)
 
@@ -306,7 +359,9 @@
     :bind
     (("C-c SPC" . avy-goto-char)
      ("C-c j w" . avy-goto-word-1)
-     ("C-c j l" . avy-goto-line)))
+     ("C-c j l" . avy-goto-line))
+    :init
+    (evil-leader/set-key "c" 'avy-goto-char))
 
   (use-package ace-window
     :bind
@@ -488,7 +543,11 @@
      ("C-<backspace>" . contextual-backspace))
 
     :config
-    (use-package sbt-mode :commands (sbt-start sbt-command))
+    (use-package sbt-mode
+      :commands (sbt-start sbt-command)
+      :init
+      (evil-set-initial-state 'sbt-mode 'emacs))
+
     (use-package ensime
       :commands ensime
       :bind
@@ -734,6 +793,9 @@
         org-babel-load-languages '((emacs-lisp . t)
                                    (scala      . t)
                                    (haskell    . t)))
+
+  (add-hook 'org-mode-hook 'flyspell-mode)
+
   (with-mode which-key
     (which-key-declare-prefixes
       "C-c o" "org")))
