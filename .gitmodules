@@ -119,3 +119,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/purescript"]
 	path = packages/purescript
 	url = git@github.com:epost/psc-ide-emacs.git
+[submodule "packages/idris-mode"]
+	path = packages/idris-mode
+	url = git@github.com:idris-hackers/idris-mode.git
+[submodule "core/expand-region"]
+	path = core/expand-region
+	url = git@github.com:magnars/expand-region.el.git
