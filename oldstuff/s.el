@@ -1,0 +1,1 @@
+<html><body>You are being <a href="https://raw.githubusercontent.com/magnars/s.el/master/s.el">redirected</a>.</body></html>

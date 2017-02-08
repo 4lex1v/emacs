@@ -113,18 +113,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/org/org-mode"]
 	path = packages/org/org-mode
 	url = git://orgmode.org/org-mode.git
-[submodule "foundation/use-package-ext"]
-	path = foundation/use-package-ext
-	url = git@github.com:4lex1v/use-package-ext.git
-[submodule "foundation/emacs-deferred"]
-	path = foundation/emacs-deferred
-	url = git@github.com:kiwanami/emacs-deferred.git
 [submodule "packages/markdown-mode"]
 	path = packages/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
-[submodule "foundation/use-package"]
-	path = foundation/use-package
-	url = git@github.com:jwiegley/use-package.git
 [submodule "packages/purescript"]
 	path = packages/purescript
 	url = git@github.com:epost/psc-ide-emacs.git
