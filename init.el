@@ -48,6 +48,11 @@
          solarized-high-contrast-mode-line     t
          solarized-emphasize-indicators        t
          x-underline-at-descent-line           t))
+
+  ;; mode line settings
+  (line-number-mode t)
+  (column-number-mode t)
+  (size-indication-mode t)
   
   (bind-key "M-o"
             #'(lambda (arg)
@@ -266,8 +271,20 @@
   (setq magit-last-seen-setup-instructions "2.3.2"
         magit-status-show-hashes-in-headers t)
 
-  (use-package with-editor :load-path "core/with-editor")
   (unbind-key "C-c m")
+
+  (use-package with-editor :load-path "core/with-editor")
+
+  (use-package diff-hl
+    :load-path "core/diff-hl"
+    :init
+    (add-hook 'dired-mode-hook #'diff-hl-dired-mode)
+    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh t)
+    :config
+    (global-diff-hl-mode 1)
+    (use-package diff-hl-flydiff
+      :config (diff-hl-flydiff-mode)))
+
   (with-mode which-key 
     (which-key-declare-prefixes "C-c m" "magit")
     (which-key-declare-prefixes "C-c m l" "magit/log"))

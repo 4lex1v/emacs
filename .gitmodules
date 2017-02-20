@@ -125,3 +125,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/expand-region"]
 	path = core/expand-region
 	url = git@github.com:magnars/expand-region.el.git
+[submodule "core/diff-hl"]
+	path = core/diff-hl
+	url = git@github.com:dgutov/diff-hl.git
