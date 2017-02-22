@@ -93,11 +93,10 @@
 
 (use-package yasnippet
   :diminish yas-minor-mode
-  :load-path "platform/editor/yasnippet"
   :commands yas-minor-mode
   :init
   (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets"
+        '("~/.emacs.d/platform/editor/snippets"
           "~/.emacs.d/platform/editor/yasnippet/snippets"))
   (4lex1v/hook-into-modes #'yas-minor-mode
                           'scala-mode-hook

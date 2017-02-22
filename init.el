@@ -13,13 +13,13 @@
 ;; Modules: Languages
 (fnd:install-module elisp)
 (fnd:install-module scala)
+(fnd:install-module haskell)
+(fnd:install-module idris)
+(fnd:install-module purescript)
 (fnd:install-module native)
 (fnd:install-module clojure)
 (fnd:install-module python)
 (fnd:install-module web)
-(fnd:install-module haskell)
-(fnd:install-module idris)
-(fnd:install-module purescript)
 
 ;; Modules: Others
 (fnd:install-module org)
