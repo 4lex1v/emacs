@@ -153,3 +153,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "platform/editor/expand-region"]
 	path = platform/editor/expand-region
 	url = git@github.com:magnars/expand-region.el.git
+[submodule "foundation"]
+	path = foundation
+	url = git@github.com:4lex1v/foundation.git
