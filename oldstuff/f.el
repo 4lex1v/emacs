@@ -1,1 +1,0 @@
-<html><body>You are being <a href="https://raw.githubusercontent.com/rejeep/f.el/master/f.el">redirected</a>.</body></html>

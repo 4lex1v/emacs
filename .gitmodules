@@ -1,123 +1,112 @@
 [submodule "themes/sirthias"]
-	path = themes/sirthias
+	path = platform/appearance/themes/sirthias
 	url = https://github.com/4lex1v/sirthias-theme.git
 	branch = master
 [submodule "themes/solarized-emacs"]
-	path = themes/solarized-emacs
+	path = platform/appearance/themes/solarized-emacs
 	url = https://github.com/bbatsov/solarized-emacs.git
 	branch = master
 
 [submodule "core/projectile"]
-	path = core/projectile
+	path = platform/behaviour/projectile
 	url = git@github.com:bbatsov/projectile.git
 	branch = master
 [submodule "core/magit"]
-	path = core/magit
+	path = modules/vcs/magit
 	url = git@github.com:magit/magit.git
 	branch = master
 [submodule "core/company"]
-	path = core/company
+	path = platform/editor/company
 	url = git@github.com:company-mode/company-mode.git
 	branch = master
 [submodule "core/yasnippet"]
-	path = core/yasnippet
+	path = platform/editor/yasnippet
 	url = git@github.com:capitaomorte/yasnippet.git
 	branch = master
 [submodule "core/smartparens"]
-	path = core/smartparens
+	path = platform/editor/smartparens
 	url = git@github.com:Fuco1/smartparens.git
 	branch = master
-[submodule "core/popup"]
-	path = core/popup
-	url = git@github.com:auto-complete/popup-el.git
-	branch = master
-
 [submodule "packages/scala/scala-mode"]
-	path = packages/scala/scala-mode
+	path = modules/scala/scala-mode
 url=git@github.com:ensime/emacs-scala-mode.git
 	branch = master
 [submodule "packages/scala/sbt-mode"]
-	path = packages/scala/sbt-mode
+	path = modules/scala/sbt-mode
 	url = git@github.com:hvesalai/sbt-mode.git
 	branch = master
 [submodule "packages/scala/ensime"]
-	path = packages/scala/ensime
+	path = modules/scala/ensime
 	url = git@github.com:ensime/ensime-emacs.git
 	branch = master
-[submodule "core/f"]
-	path = core/f
-	url = git@github.com:rejeep/f.el.git
 [submodule "packages/elisp/macrostep"]
-	path = packages/elisp/macrostep
+	path = modules/elisp/macrostep
 	url = git@github.com:joddie/macrostep.git
 [submodule "packages/clojure/packages/clojure/clojure-mode"]
-	path = packages/clojure/clojure-mode
+	path = modules/clojure/clojure-mode
 	url = git@github.com:clojure-emacs/clojure-mode.git
 [submodule "packages/clojure/cider"]
-	path = packages/clojure/cider
+	path = modules/clojure/cider
 	url = git@github.com:clojure-emacs/cider.git
 [submodule "core/helm/helm-core"]
-	path = core/helm/helm-core
+	path = platform/behaviour/helm-core
 	url = git@github.com:emacs-helm/helm.git
 [submodule "core/helm/helm-ag"]
-	path = core/helm/helm-ag
+	path = platform/behaviour/helm-ag
 	url = git@github.com:syohex/emacs-helm-ag.git
 [submodule "core/helm/helm-swoop"]
-	path = core/helm/helm-swoop
+	path = platform/behaviour/helm-swoop
 	url = git@github.com:ShingoFukuyama/helm-swoop.git
 [submodule "core/helm/helm-descbinds"]
-	path = core/helm/helm-descbinds
+	path = platform/behaviour/helm-descbinds
 	url = git@github.com:emacs-helm/helm-descbinds.git
 [submodule "core/docker"]
-	path = core/docker
+	path = modules/infra/docker/docker
 	url = git@github.com:Silex/docker.el.git
 [submodule "themes/spacemacs"]
-	path = themes/spacemacs
+	path = platform/appearance/themes/spacemacs
 	url = git@github.com:nashamri/spacemacs-theme.git
 [submodule "core/which-key"]
-	path = core/which-key
+	path = platform/editor/which-key
 	url = git@github.com:justbur/emacs-which-key.git
 [submodule "packages/web"]
-	path = packages/web
+	path = modules/web/web-mode
 	url = git@github.com:fxbois/web-mode.git
 [submodule "packages/yaml"]
-	path = packages/yaml
+	path = modules/formats/yaml
 	url = https://github.com/yoshiki/yaml-mode.git
 [submodule "packages/idris"]
-	path = packages/idris
+	path = modules/idris/idris-mode
 	url = git@github.com:idris-hackers/idris-mode.git
 [submodule "core/undo-tree"]
-	path = core/undo-tree
+	path = platform/editor/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
 [submodule "core/ranger"]
-	path = core/ranger
+	path = platform/behaviour/ranger
 	url = git@github.com:ralesi/ranger.el.git
 [submodule "core/helm/helm-projectile"]
-	path = core/helm/helm-projectile
+	path = platform/behaviour/helm-projectile
 	url = git@github.com:bbatsov/helm-projectile.git
-[submodule "with-editor"]
-	path = core/with-editor
-	url = git@github.com:magit/with-editor.git
 [submodule "themes/dracula"]
-	path = themes/dracula
+	path = platform/appearance/themes/dracula
 	url = git@github.com:dracula/emacs.git
 [submodule "packages/haskell/haskell-mode"]
-	path = packages/haskell/haskell-mode
+	path = modules/haskell/haskell-mode
 	url = git@github.com:haskell/haskell-mode.git
 [submodule "themes/zenburn-emacs"]
-	path = themes/zenburn-emacs
+	path = platform/appearance/themes/zenburn-emacs
 	url = git@github.com:bbatsov/zenburn-emacs.git
 [submodule "packages/emacs-jabber"]
-	path = packages/emacs-jabber
+	path = modules/communications/jabber
 	url = git@github.com:legoscia/emacs-jabber.git
 [submodule "packages/org/org-mode"]
-	path = packages/org/org-mode
+	path = modules/org/org-mode
 	url = git://orgmode.org/org-mode.git
 [submodule "packages/markdown-mode"]
-	path = packages/markdown-mode
+	path = modules/formats/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
 [submodule "packages/purescript"]
-	path = packages/purescript
+	path = modules/purescript/purescript-mode
 	url = git@github.com:epost/psc-ide-emacs.git
 [submodule "packages/idris-mode"]
 	path = packages/idris-mode
@@ -126,5 +115,41 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = core/expand-region
 	url = git@github.com:magnars/expand-region.el.git
 [submodule "core/diff-hl"]
-	path = core/diff-hl
+	path = modules/vcs/diff-hl
 	url = git@github.com:dgutov/diff-hl.git
+[submodule "packages/emacs-request"]
+	path = modules/elisp/request
+	url = git@github.com:tkf/emacs-request.git
+[submodule "packages/emacs-deferred"]
+	path = modules/elisp/deferred
+	url = git@github.com:kiwanami/emacs-deferred.git
+[submodule "packages/python/anaconda-mode"]
+	path = modules/python/anaconda-mode
+	url = git@github.com:proofit404/anaconda-mode.git
+[submodule "packages/python/elpy"]
+	path = modules/python/elpy
+	url = git@github.com:jorgenschaefer/elpy.git
+[submodule "packages/python/emacs-jedi"]
+	path = modules/python/emacs-jedi
+	url = https://github.com/tkf/emacs-jedi
+[submodule "packages/python/emacs-ipython-notebook"]
+	path = modules/python/emacs-ipython-notebook
+	url = git@github.com:millejoh/emacs-ipython-notebook.git
+[submodule "packages/vcs/magithub"]
+	path = modules/vcs/magithub
+	url = https://github.com/vermiculus/magithub
+[submodule "modules/essentials/use-package"]
+	path = platform/essentials/use-package
+	url = git@github.com:jwiegley/use-package.git
+[submodule "platform/system/exec-path-from-shell"]
+	path = platform/system/exec-path-from-shell
+	url = git@github.com:purcell/exec-path-from-shell.git
+[submodule "platform/editor/ace-window"]
+	path = platform/editor/ace-window
+	url = git@github.com:abo-abo/ace-window.git
+[submodule "platform/editor/avy"]
+	path = platform/editor/avy
+	url = git@github.com:abo-abo/avy.git
+[submodule "platform/editor/expand-region"]
+	path = platform/editor/expand-region
+	url = git@github.com:magnars/expand-region.el.git

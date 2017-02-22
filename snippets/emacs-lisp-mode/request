@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: request
+# key: request
+# --
+(cl-function
+  (lambda (&key data &allow-other-keys)
+    $0))
