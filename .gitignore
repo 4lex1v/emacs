@@ -11,3 +11,4 @@ url
 init.elc
 bookmarks
 .cached-packages
+.cask
