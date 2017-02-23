@@ -20,3 +20,10 @@
       "C-c C-d" "web/dom"
       "C-c C-a" "web/attribute"
       "C-c C-e" "web/element")))
+
+(use-package restclient
+  :load-path "modules/web/restclient"
+  :after org
+  :init
+  (use-package ob-restclient
+    :load-path "modules/web"))

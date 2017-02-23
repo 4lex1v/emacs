@@ -159,3 +159,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/communications/slack"]
 	path = modules/communications/slack
 	url = git@github.com:yuya373/emacs-slack.git
+[submodule "modules/formats/pandoc-mode"]
+	path = modules/formats/pandoc-mode
+	url = git@github.com:joostkremers/pandoc-mode.git
+[submodule "modules/web/restclient"]
+	path = modules/web/restclient
+	url = git@github.com:pashky/restclient.el.git

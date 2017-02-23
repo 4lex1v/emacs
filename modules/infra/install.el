@@ -35,7 +35,5 @@
     (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
     (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
 
-  ;(eshell/alias "git" "hub")
-
   (add-hook 'eshell-mode-hook #'4lex1v:helm-eshell-history)
   (add-hook 'eshell-mode-hook #'ansi-color-for-comint-mode-on))
