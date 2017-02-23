@@ -27,4 +27,6 @@
 (fnd:install-module infra)
 (fnd:install-module formats)
 
+(fnd:install-module communications :ignore t)
+
 (setq gc-cons-threshold 100000)
