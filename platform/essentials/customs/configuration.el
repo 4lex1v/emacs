@@ -21,6 +21,9 @@
       next-line-add-newlines      t
       desktop-save-mode           t)
 
+;; https://www.reddit.com/r/emacs/comments/53zpv9/how_do_i_get_emacs_to_stop_adding_custom_fields/
+(defun package--save-selected-packages (&rest opt) nil)
+
 ;; Find a better alternative to basic linum mode
 (global-hl-line-mode t)
 (global-linum-mode   nil)
