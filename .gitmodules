@@ -156,3 +156,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "foundation"]
 	path = foundation
 	url = git@github.com:4lex1v/foundation.git
+[submodule "modules/communications/slack"]
+	path = modules/communications/slack
+	url = git@github.com:yuya373/emacs-slack.git
