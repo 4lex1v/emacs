@@ -9,6 +9,7 @@
 (fnd:platform-module appearance)
 (fnd:platform-module behaviour)
 (fnd:platform-module editor)
+(fnd:platform-module system)
 
 ;; Modules: Languages
 (fnd:install-module elisp)
@@ -26,6 +27,7 @@
 (fnd:install-module vcs)
 (fnd:install-module infra)
 (fnd:install-module formats)
+(fnd:install-module statistics)
 
 (fnd:install-module communications :ignore t)
 

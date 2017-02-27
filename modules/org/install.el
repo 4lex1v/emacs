@@ -1,5 +1,6 @@
 (use-package org
   :load-path "modules/org/org-mode"
+  :after flyspell
   :bind
   (("C-c o l" . org-store-link)
    ("C-c o a" . org-agenda)
@@ -12,7 +13,9 @@
         org-startup-with-inline-images t
         org-babel-load-languages '((emacs-lisp . t)
                                    (scala      . t)
-                                   (haskell    . t)))
+                                   (haskell    . t))
+        org-descriptive-links t) 
+
   (with-mode which-key
     (which-key-declare-prefixes
       "C-c o" "org"))

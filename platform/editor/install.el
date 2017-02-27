@@ -135,7 +135,7 @@
     (which-key-declare-prefixes
       "C-c @" "hideshow"))
 
-  (let ((modes '(emacs-lisp-mode-hook scala-mode-hook)))
+  (let ((modes '(emacs-lisp-mode-hook scala-mode-hook nxml-mode-hook)))
     (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes)
     (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes))
   

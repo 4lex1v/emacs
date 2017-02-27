@@ -165,3 +165,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/web/restclient"]
 	path = modules/web/restclient
 	url = git@github.com:pashky/restclient.el.git
+[submodule "modules/statistics/ess"]
+	path = modules/statistics/ess
+	url = git@github.com:emacs-ess/ESS.git
