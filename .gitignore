@@ -12,3 +12,4 @@ init.elc
 bookmarks
 .cached-packages
 .cask
+.module-configs
