@@ -1,0 +1,4 @@
+#+BEGIN_SRC emacs-lisp
+  (use-package purescript
+    :load-path "modules/purescript/purescript-mode")
+#+END_SRC

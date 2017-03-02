@@ -199,3 +199,6 @@
   :diminish undo-tree-mode
   :config (global-undo-tree-mode)
   :bind ("M-/" . undo-tree-visualize))
+
+(load "evil-editor-control")
+

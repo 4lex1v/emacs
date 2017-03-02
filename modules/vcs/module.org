@@ -1,3 +1,11 @@
+#+TITLE: Version Control configuration
+#+STARTUP: content
+
+* Version Control
+
+My *Version Control* workflow heavily depends on [[https://github.com/magit/magit][Magit]]
+** Magit, the Magnificent
+#+BEGIN_SRC emacs-lisp
 (use-package magit
   :load-path "modules/vcs/magit/lisp"
   :commands magit-clone
@@ -33,6 +41,30 @@
   :config
   (add-to-list 'magit-log-arguments "--color"))
 
+#+END_SRC
+
+*** Evil integration
+#+BEGIN_SRC emacs-lisp
+  (which-key-declare-prefixes "<SPC> m" "magit") 
+  (evil-leader/set-key "ms" 'magit-status)
+  (evil-leader/set-key "mm" 'magit-dispatch-popup)
+  (evil-leader/set-key "mb" 'magit-blame)
+  (evil-leader/set-key "mo" 'magit-submodule-popup)
+  (evil-leader/set-key "my" 'magit-show-refs-popup)
+  (evil-leader/set-key "me" 'magit-ediff-popup)
+  (evil-leader/set-key "mp" 'magit-push-popup)
+  (evil-leader/set-key "mf" 'magit-pull-popup)
+
+  (which-key-declare-prefixes "<SPC> m l" "magit-log") 
+  (evil-leader/set-key "mll" 'magit-log-all)
+  (evil-leader/set-key "mlb" 'magit-log-buffer-file)
+  (evil-leader/set-key "mlc" 'magit-log-current)
+
+#+END_SRC
+
+** Diff HL
+For proper diff highlighting (on the fringe)   
+#+BEGIN_SRC emacs-lisp
 (use-package diff-hl
   :load-path "modules/vcs/diff-hl"
   :config
@@ -44,9 +76,14 @@
 
   (use-package diff-hl-flydiff
     :config (diff-hl-flydiff-mode)))
+#+END_SRC 
 
+** Magithub
+Nice integration with core Github functionality
+#+BEGIN_SRC emacs-lisp
 (use-package magithub
   :load-path "modules/vcs/magithub"
   :after magit
   :config
   (magithub-feature-autoinject t))
+#+END_SRC

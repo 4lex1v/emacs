@@ -129,7 +129,8 @@
   :load-path "platform/behaviour/ranger"
   :commands ranger
   :bind
-  ("M-5" . helm-ranger-bookmarks)
+  (("M-5"     . helm-ranger-bookmarks)
+   ("C-c C-l" . org-store-link))
   :init
   (setq ranger-override-dired 'ranger
         ranger-show-literal    nil ;; Turn on highlighting in ranger mode

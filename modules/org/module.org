@@ -1,3 +1,9 @@
+#+STARTUP: showall
+
+* Org Mode configuration
+  
+** Org Mode support
+#+BEGIN_SRC emacs-lisp
 (use-package org
   :load-path "modules/org/org-mode"
   :after flyspell
@@ -21,3 +27,17 @@
       "C-c o" "org"))
   
   (add-hook 'org-mode-hook #'flyspell-mode))
+#+END_SRC
+
+A bunch of nice configurations i saw in [[https://www.youtube.com/watch?v%3DSzA2YODtgK4]["Getting started with Org Mode" by Harry Schwartz]]:
+   
+- This one replaces Org's =...= with downwards arrow:
+#+BEGIN_SRC emacs-lisp
+  (setq org-ellipsis "⬎")
+#+END_SRC 
+   
+- This one removes leading =*=, though it breaks some "perception", so I'm not using it
+#+BEGIN_SRC emacs-lisp
+  (setq org-hide-leading-stars nil)
+#+END_SRC
+

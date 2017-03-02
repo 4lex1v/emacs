@@ -168,3 +168,12 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/statistics/ess"]
 	path = modules/statistics/ess
 	url = git@github.com:emacs-ess/ESS.git
+[submodule "platform/evil/evil-core"]
+	path = platform/vim/evil-core
+	url = git@github.com:emacs-evil/evil.git
+[submodule "platform/evil/evil-leader"]
+	path = platform/vim/evil-leader
+	url = git@github.com:cofi/evil-leader.git
+[submodule "modules/reader/pdf-tools"]
+	path = modules/reader/pdf-tools
+	url = git@github.com:politza/pdf-tools.git

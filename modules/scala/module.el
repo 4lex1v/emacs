@@ -1,4 +1,5 @@
-(load-file (expand-file-name "modules/scala/custom.el" user-emacs-directory))
+
+(load "defs")
 
 (use-package scala-mode
   :load-path "modules/scala/scala-mode"
