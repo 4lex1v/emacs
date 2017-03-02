@@ -12,7 +12,10 @@
 
   :init
   (which-key-declare-prefixes-for-mode 'emacs-lisp-mode "C-c e" "elisp"))
-  ;(with-mode which-key))
+
+(which-key-declare-prefixes-for-mode 'emacs-lisp-mode "<SPC> e" "emacs")
+(which-key-declare-prefixes-for-mode 'emacs-lisp-mode "<SPC> e d" "emacs-docs")
+(evil-leader/set-key-for-mode 'emacs-lisp-mode "eda" #'helm-apropos)
 
 (use-package macrostep
   :load-path "modules/elisp/macrostep"
@@ -21,6 +24,11 @@
   :bind
   (:map emacs-lisp-mode-map
    ("C-c e m" . macrostep-expand)))
+
+(evil-leader/set-key-for-mode 'emacs-lisp-mode "em" #'macrostep-expand)
+(evil-declare-key 'normal #'macrostep-keymap
+  "q" #'macrostep-collapse-all
+  "c" #'macrostep-expand)
 
 (use-package deferred
   :load-path "modules/elisp/deferred"

@@ -1,27 +1,52 @@
+#+STARTUP: content
+
 * Emacs Appearance configuration
 
 ** Themes
+*** Zenburn                                                        :DISABLED:
+
 #+BEGIN_SRC emacs-lisp
-  ;;(use-package zenburn-theme    :load-path "platform/appearance/themes/zenburn-emacs")
-  ;;(use-package dracula-theme    :load-path "platform/appearance/themes/dracula")
-  ;;(use-package sirthias-theme   :load-path "platform/appearance/themes/sirthias")
+  (add-to-list 'load-path (expand-file-name "platform/appearance/themes/zenburn-emacs" user-emacs-directory))
+#+END_SRC
 
-  (use-package spacemacs-common 
-    :load-path "platform/appearance/themes/spacemacs")
+*** Dracula                                                        :DISABLED:
 
-  (use-package solarized-theme
-    :load-path "platform/appearance/themes/solarized-emacs"
-    :init
-    (setq solarized-contrast                   'high
-          solarized-visibility                 'high
-          solarized-termcolors                  256
-          solarized-distinct-fringe-background  t
-          solarized-use-variable-pitch          nil
-          solarized-use-less-bold               nil
-          solarized-use-more-italic             nil
-          solarized-high-contrast-mode-line     t
-          solarized-emphasize-indicators        t
-          x-underline-at-descent-line           t))
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path (expand-file-name "platform/appearance/themes/dracula" user-emacs-directory))
+#+END_SRC
+
+*** Sirthias                                                       :DISABLED:
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path (expand-file-name "platform/appearance/themes/sirthias" user-emacs-directory))
+#+END_SRC 
+
+*** Solarised                                                      :DISABLED:
+Solarised theme configuration, guess the most optimal values for me, though still don't really like this theme:    
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path (expand-file-name "platform/appearance/themes/solarized-emacs" user-emacs-directory))
+  (setq solarized-contrast                   'high
+        solarized-visibility                 'high
+        solarized-termcolors                  256
+        solarized-distinct-fringe-background  t
+        solarized-use-variable-pitch          nil
+        solarized-use-less-bold               nil
+        solarized-use-more-italic             nil
+        solarized-high-contrast-mode-line     t
+        solarized-emphasize-indicators        t
+        x-underline-at-descent-line           t)
+#+END_SRC
+
+*** Spacemacs                                                       :CURRENT:
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path (expand-file-name "platform/appearance/themes/spacemacs" user-emacs-directory))
+#+END_SRC
+
+*** General themes' settings
+#+BEGIN_SRC emacs-lisp
+  (require 'spacemacs-light-theme)
+  (load-theme 'spacemacs-light t t)
 #+END_SRC
 
 ** Fonts
@@ -41,10 +66,10 @@
      (change-font-size 16)
    #+END_SRC
    
+** General
    The rest:
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :results none
       (4lex1v:gui:frame :size         'maximized
                        :transparency '(100 . 100)
-                       :theme        'spacemacs-light
                        :cursor       '(box . bar))
    #+END_SRC

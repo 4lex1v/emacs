@@ -13,7 +13,6 @@
   "Helper function for simpler frame configuration"
   (pcase-let* ((frame-size (plist-get configs :size))
                (`(,active . ,inactive) (plist-get configs :transparency))
-               (theme-name (plist-get configs :theme))
                (`(,active-cursor . ,inactive-cursor) (plist-get configs :cursor)))
     
     (setq-default cursor-type active-cursor
@@ -23,10 +22,7 @@
     (add-to-list 'default-frame-alist (cons 'fullscreen frame-size))
 
     (set-frame-parameter (selected-frame) 'alpha (cons active inactive))
-    (add-to-list 'default-frame-alist (cons 'alpha (cons active inactive)))
-
-    (if theme-name 
-      (load-theme theme-name t))))
+    (add-to-list 'default-frame-alist (cons 'alpha (cons active inactive)))))
 
 ;; BACKUP from Bootstrap
 ;;----------------------------------------------------------------------------

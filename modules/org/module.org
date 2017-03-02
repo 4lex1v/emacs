@@ -3,31 +3,48 @@
 * Org Mode configuration
   
 ** Org Mode support
-#+BEGIN_SRC emacs-lisp
-(use-package org
-  :load-path "modules/org/org-mode"
-  :after flyspell
-  :bind
-  (("C-c o l" . org-store-link)
-   ("C-c o a" . org-agenda)
-   ("C-c o c" . org-capture))
-  :bind* ("C-'"  . ace-window)
-  :init
+
+Just not to forget. My Foundation framework i'm using for my Emacs configuration relies on the Org-Mode
+to process "module.org" files, it's some sort of chicken-and-egg problem. To solve it i've added [[file:~/.emacs.d/init.el::(add-to-list%20'load-path%20(expand-file-name%20"modules/org/org-mode/lisp"%20user-emacs-directory))][a line]] 
+to my configuration which bootstraps Foundation with a proper Org-Mode installation (i've also removed 
+original "org" folder from the distribution itself).
+
+#+BEGIN_SRC emacs-lisp :results none
+  (add-to-list 'load-path (expand-file-name "modules/org/org-mode/lisp" user-emacs-directory))
+#+END_SRC
+
+A bunch of standard settings for a customized Org-Mode experience:
+
+#+BEGIN_SRC emacs-lisp :results none
   (setq org-log-done             t
         org-src-fontify-natively t
-        org-descriptive-links    nil
+        org-descriptive-links    t
         org-startup-with-inline-images t
         org-babel-load-languages '((emacs-lisp . t)
                                    (scala      . t)
-                                   (haskell    . t))
-        org-descriptive-links t) 
+                                   (haskell    . t)
+                                   (shell      . t)))
 
   (with-mode which-key
     (which-key-declare-prefixes
       "C-c o" "org"))
-  
-  (add-hook 'org-mode-hook #'flyspell-mode))
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results none
+  (use-package org
+    :after flyspell
+    :bind
+    (("C-c o l" . org-store-link)
+     ("C-c o a" . org-agenda)
+     ("C-c o c" . org-capture))
+    :bind* ("C-'"  . ace-window)) ;; I believe doesn't make much sense with Evil? 
+#+END_SRC
+
+Still struggling to choose a consistent way of doing this:
+#+BEGIN_SRC emacs-lisp :results none
+  (add-hook 'org-mode-hook #'flyspell-mode)
+#+END_SRC
+
 
 A bunch of nice configurations i saw in [[https://www.youtube.com/watch?v%3DSzA2YODtgK4]["Getting started with Org Mode" by Harry Schwartz]]:
    

@@ -181,3 +181,5 @@
                        :fuzzy-match t
                        :action 'ranger)
             :buffer "*helm ranger bookmarks*"))))
+
+(evil-leader/set-key "eq" #'save-buffers-kill-emacs)
