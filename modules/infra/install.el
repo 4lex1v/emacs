@@ -36,4 +36,9 @@
     (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
 
   (add-hook 'eshell-mode-hook #'4lex1v:helm-eshell-history)
-  (add-hook 'eshell-mode-hook #'ansi-color-for-comint-mode-on))
+  (add-hook 'eshell-mode-hook #'ansi-color-for-comint-mode-on)
+
+  :config
+    ;; MacOS specific aliases
+  (if (eq (system 'darwin))
+      (eshell/alias "bubu" "brew update && brew upgrade")))
