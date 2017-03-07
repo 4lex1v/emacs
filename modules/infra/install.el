@@ -39,6 +39,8 @@
   (add-hook 'eshell-mode-hook #'ansi-color-for-comint-mode-on)
 
   :config
-    ;; MacOS specific aliases
-  (if (eq (system 'darwin))
+  (require 'em-alias)
+  
+  ;; MacOS specific aliases
+  (if (eq system-type 'darwin)
       (eshell/alias "bubu" "brew update && brew upgrade")))

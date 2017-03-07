@@ -1,6 +1,6 @@
 (setq gc-cons-threshold 10000000
       package--init-file-ensured t
-      debug-on-error nil)
+      debug-on-error t)
 
 ;; At this point i'm not sure what's the better way to solve this chiken-and-egg issue
 ;; There's a corresponding comment in org module.org config file
@@ -27,6 +27,7 @@
 (fnd:install-module purescript)
 (fnd:install-module native)
 (fnd:install-module clojure)
+(fnd:install-module groovy)
 (fnd:install-module python :ignore t)
 (fnd:install-module web)
 
@@ -40,3 +41,16 @@
 ;(fnd:install-module reader)
 
 (setq gc-cons-threshold 100000)
+
+;; change mode-line color by evil state
+;; (lexical-let ((default-color (cons (face-background 'mode-line)
+;;                                    (face-foreground 'mode-line))))
+;;   (add-hook 'post-command-hook
+;;             (lambda ()
+;;               (let ((color (cond ((minibufferp) default-color)
+;;                                  ((evil-insert-state-p) '("#e80000" . "#ffffff"))
+;;                                  ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
+;;                                  ((buffer-modified-p)   '("#006fa0" . "#ffffff"))
+;;                                  (t default-color))))
+;;                 (set-face-background 'mode-line (car color))
+;;                 (set-face-foreground 'mode-line (cdr color))))))

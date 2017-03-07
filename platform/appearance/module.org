@@ -37,6 +37,10 @@ Solarised theme configuration, guess the most optimal values for me, though stil
         x-underline-at-descent-line           t)
 #+END_SRC
 
+*** Monokai                                                        :DISABLED:
+#+BEGIN_SRC emacs-lisp :results none
+  (add-to-list 'load-path (expand-file-name "platform/appearance/themes/monokai-emacs" user-emacs-directory))
+#+END_SRC
 *** Spacemacs                                                       :CURRENT:
 
 #+BEGIN_SRC emacs-lisp
@@ -49,23 +53,46 @@ Solarised theme configuration, guess the most optimal values for me, though stil
   (load-theme 'spacemacs-light t t)
 #+END_SRC
 
+#+RESULTS:
+: t
+
 ** Fonts
-   Loading font configuration:
-   #+BEGIN_SRC emacs-lisp
-     (load "fonts/pretty-pragmata")
-     (load "fonts")
-   #+END_SRC
+*** Definitions
+#+BEGIN_SRC emacs-lisp :results none
+  (defcustom default-font-name "PragmataPro"
+    "Font name used by default"
+    :group 'string 
+    :options '("PragmataPro"
+               "Hack"
+               "Ayuthaya"))
 
-   Picking the right font:
-   #+BEGIN_SRC emacs-lisp
-     (setq font-name "PragmataPro")
-     ;;(setq font-name "Ayuthaya")
-     ;;(setq font-name "Hack")
+  (defcustom default-font-size 18
+    "Default Font size used across all frames")
 
-     (setq font-size 16)
-     (change-font-size 16)
-   #+END_SRC
-   
+  (defun change-font-size (value)
+    (interactive
+     (list
+      (read-number (format "Font current font size [%d] to: " font-size))))
+    (setq font-size value)
+    (4lex1v:gui:font font-name :size value))
+#+END_SRC
+
+*** Loading Font properties
+Loading font configuration:
+#+BEGIN_SRC emacs-lisp
+  (load "fonts/pretty-pragmata")
+  (load "fonts")
+
+  (let ((frame-font (format "%s-%d"
+                            default-font-name
+                            default-font-size)))
+    (set-frame-font frame-font)
+    (add-to-list 'default-frame-alist (cons 'font frame-font)))
+#+END_SRC
+
+#+RESULTS:
+: ((font . PragmataPro-18) (alpha 100 . 100) (fullscreen . maximized) (font . PragmataPro-16) (vertical-scroll-bars))
+  
 ** General
    The rest:
    #+BEGIN_SRC emacs-lisp :results none

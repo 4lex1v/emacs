@@ -101,6 +101,8 @@
         projectile-use-git-grep         t)
 
   :config
+  (evil-leader/set-key "pp" 'helm-projectile-switch-project)
+  (evil-leader/set-key "ps" 'helm-projectile-ag)
   (projectile-global-mode)
 
   (with-mode which-key
@@ -145,6 +147,7 @@
                          (or (projectile-project-root)
                              default-directory)))))
 
+  (evil-leader/set-key "fr" 'ranger)
   :config
   (ranger-override-dired-mode t)
 
@@ -181,5 +184,8 @@
                        :fuzzy-match t
                        :action 'ranger)
             :buffer "*helm ranger bookmarks*"))))
+
+(use-package helm-dash
+  :load-path "platform/behaviour/helm-dash")
 
 (evil-leader/set-key "eq" #'save-buffers-kill-emacs)

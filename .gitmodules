@@ -177,3 +177,21 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/reader/pdf-tools"]
 	path = modules/reader/pdf-tools
 	url = git@github.com:politza/pdf-tools.git
+[submodule "platform/behaviour/helm-dash"]
+	path = platform/behaviour/helm-dash
+	url = https://github.com/areina/helm-dash
+[submodule "modules/groovy/groovy-emacs-modes"]
+	path = modules/groovy/groovy-emacs-modes
+	url = git@github.com:Groovy-Emacs-Modes/groovy-emacs-modes.git
+[submodule "platform/vim/evil-snipe"]
+	path = platform/vim/evil-snipe
+	url = git@github.com:hlissner/evil-snipe.git
+[submodule "platform/vim/evil-args"]
+	path = platform/vim/evil-args
+	url = git@github.com:wcsmith/evil-args.git
+[submodule "platform/appearance/themes/monokai-emacs"]
+	path = platform/appearance/themes/monokai-emacs
+	url = git@github.com:oneKelvinSmith/monokai-emacs.git
+[submodule "platform/vim/evil-mc"]
+	path = platform/vim/evil-mc
+	url = git@github.com:gabesoft/evil-mc.git

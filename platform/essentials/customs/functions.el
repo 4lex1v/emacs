@@ -1,14 +1,3 @@
-;; GUI related config functions
-(defun 4lex1v:gui:font (name &rest configs)
-  "Helper function for simpler font configuration"
-  (let* ((font-size  (plist-get configs :size))
-         (frame-font (format "%s-%d" name font-size)))
-    ;; Set font for the current frame
-    (set-frame-font frame-font)
-    
-    ;; Set default font for new frames
-    (add-to-list 'default-frame-alist (cons 'font frame-font))))
-
 (defun 4lex1v:gui:frame (&rest configs)
   "Helper function for simpler frame configuration"
   (pcase-let* ((frame-size (plist-get configs :size))
