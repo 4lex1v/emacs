@@ -58,3 +58,21 @@ A bunch of nice configurations i saw in [[https://www.youtube.com/watch?v%3DSzA2
   (setq org-hide-leading-stars nil)
 #+END_SRC
 
+
+** Org Scheenshots
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-attach-screenshot :after org)
+#+END_SRC
+
+** Personal management system
+*** Path to the notes folder
+    #+BEGIN_SRC emacs-lisp :results silent
+      (setq notes-folder "~/Sandbox/Notes")
+    #+END_SRC
+
+*** TODO Create a helm-based navigation through the notes 
+    - It would be nice to have two sections
+      + Section that contains all notes i can open
+      + Section that contains recently edited notes
+    - Should this be assigned to some nice shortcut, possible an evil one?

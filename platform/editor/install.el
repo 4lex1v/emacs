@@ -1,11 +1,11 @@
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key
-  :diminish which-key-mode
-  :load-path "core/which-key"
+  ;:diminish which-key-mode
   :init
   (setq which-key-idle-delay 0.2
         which-key-popup-type 'side-window
-        which-key-sort-order 'which-key-prefix-then-key-order)
+        which-key-sort-order 'which-key-prefix-then-key-order
+        which-key-show-operator-state-maps t) ;; Hack to make this work with Evil
   :config
   (which-key-setup-side-window-bottom)
   (which-key-mode))

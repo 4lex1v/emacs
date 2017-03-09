@@ -1,6 +1,6 @@
 (use-package yaml-mode
   :load-path "modules/formats/yaml"
-  :mode ("\\.yml$" . yaml-mode))
+  :mode ("\\.yml\\|\\.yaml$" . yaml-mode))
 
 (use-package markdown-mode
   :load-path "modules/formats/markdown-mode"

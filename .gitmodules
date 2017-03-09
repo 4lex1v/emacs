@@ -195,3 +195,12 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "platform/vim/evil-mc"]
 	path = platform/vim/evil-mc
 	url = git@github.com:gabesoft/evil-mc.git
+[submodule "modules/org/org-ref"]
+	path = modules/org/org-ref
+	url = git@github.com:jkitchin/org-ref.git
+[submodule "modules/org/org-screenshot"]
+	path = modules/org/org-screenshot
+	url = git@github.com:dfeich/org-screenshot.git
+[submodule "platform/vim/evil-surround"]
+	path = platform/vim/evil-surround
+	url = git@github.com:timcharper/evil-surround.git

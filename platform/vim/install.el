@@ -36,3 +36,8 @@
 
   ;; bind evil-jump-out-args
   (define-key evil-normal-state-map "K" 'evil-jump-out-args))
+
+(use-package evil-surround
+  :after evil
+  :config
+  (global-evil-surround-mode 1))
