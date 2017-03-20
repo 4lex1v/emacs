@@ -28,7 +28,7 @@
 (fnd:install-module native)
 (fnd:install-module clojure)
 (fnd:install-module groovy)
-(fnd:install-module python :ignore t)
+(fnd:install-module python)
 (fnd:install-module web)
 
 ;; Modules: Others
