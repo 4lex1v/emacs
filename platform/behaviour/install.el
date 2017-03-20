@@ -189,3 +189,6 @@
   :load-path "platform/behaviour/helm-dash")
 
 (evil-leader/set-key "eq" #'save-buffers-kill-emacs)
+
+;; Need to organize this to avoid disambiguity and not to forget
+(delete-selection-mode t)
