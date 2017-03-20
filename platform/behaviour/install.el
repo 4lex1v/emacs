@@ -24,7 +24,10 @@
    ("C-j"   . helm-next-line)
    ("C-k"   . helm-previous-line)
    ("M-j"   . helm-next-source)
-   ("M-k"   . helm-previous-source))
+   ("M-k"   . helm-previous-source)
+
+   :map helm-find-files-map
+   ("C-h"   . helm-find-files-up-one-level))
   
   :init
   (setq helm-idle-delay                        0.0
