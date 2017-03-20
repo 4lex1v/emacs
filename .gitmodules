@@ -204,3 +204,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "platform/vim/evil-surround"]
 	path = platform/vim/evil-surround
 	url = git@github.com:timcharper/evil-surround.git
+[submodule "modules/vcs/evil-magit"]
+	path = modules/vcs/evil-magit
+	url = git@github.com:emacs-evil/evil-magit.git

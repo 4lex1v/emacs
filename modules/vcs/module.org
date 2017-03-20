@@ -8,35 +8,14 @@ My *Version Control* workflow heavily depends on [[https://github.com/magit/magi
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :load-path "modules/vcs/magit/lisp"
-  :commands magit-clone
-  :bind
-  (("C-c m s" . magit-status)
-   ("C-c m m" . magit-dispatch-popup)
-   ("C-c m b" . magit-blame)
-   ("C-c m o" . magit-submodule-popup)
-   ("C-c m y" . magit-show-refs-popup)
-   ("C-c m e" . magit-ediff-popup)
-   
-   ;; Git Logging
-   ("C-c m l l" . magit-log-all)
-   ("C-c m l b" . magit-log-buffer-file)
-   ("C-c m l c" . magit-log-current)
-
-   ("C-c m p" . magit-push-popup)
-   ("C-c m f" . magit-pull-popup))
-
+  :commands (magit-status magit-clone)
   :init
   (setq magit-last-seen-setup-instructions "2.3.2"
-        magit-status-show-hashes-in-headers t)
+        magit-status-show-hashes-in-headers t
+        magit-diff-options '("--word-diff")
+        magit-diff-refine-hunk 'all) ;; experimental
 
-  (unbind-key "C-c m")
-
-  ;; TODO :: should `with-editor' be installed in the 'core' folder?
   (use-package with-editor :ensure t)
-
-  (with-mode which-key 
-    (which-key-declare-prefixes "C-c m" "magit")
-    (which-key-declare-prefixes "C-c m l" "magit/log"))
 
   :config
   (add-to-list 'magit-log-arguments "--color"))
@@ -45,22 +24,35 @@ My *Version Control* workflow heavily depends on [[https://github.com/magit/magi
 
 *** Evil integration
 #+BEGIN_SRC emacs-lisp
-  (which-key-declare-prefixes "<SPC> m" "magit") 
-  (evil-leader/set-key "ms" 'magit-status)
-  (evil-leader/set-key "mm" 'magit-dispatch-popup)
-  (evil-leader/set-key "mb" 'magit-blame)
-  (evil-leader/set-key "mo" 'magit-submodule-popup)
-  (evil-leader/set-key "my" 'magit-show-refs-popup)
-  (evil-leader/set-key "me" 'magit-ediff-popup)
-  (evil-leader/set-key "mp" 'magit-push-popup)
-  (evil-leader/set-key "mf" 'magit-pull-popup)
+  (use-package evil-magit
+    :after magit
+    :init 
+    (evil-leader/set-key
+      "ms"  'magit-status
+      "mm"  'magit-dispatch-popup
+      "mb"  'magit-blame
+      "mo"  'magit-submodule-popup
+      "my"  'magit-show-refs-popup
+      "me"  'magit-ediff-popup
+      "mp"  'magit-push-popup
+      "mf"  'magit-pull-popup
+      "mll" 'magit-log-all
+      "mlb" 'magit-log-buffer-file
+      "mlc" 'magit-log-current)
 
-  (which-key-declare-prefixes "<SPC> m l" "magit-log") 
-  (evil-leader/set-key "mll" 'magit-log-all)
-  (evil-leader/set-key "mlb" 'magit-log-buffer-file)
-  (evil-leader/set-key "mlc" 'magit-log-current)
+    (which-key-declare-prefixes
+      "<SPC> m"   "magit"
+      "<SPC> m l" "magit-log") 
 
-#+END_SRC
+    (evil-define-key 'normal with-editor-mode-map
+      (kbd "RET") 'with-editor-finish
+      [escape]    'with-editor-cancel)
+
+    (evil-define-key 'normal git-rebase-mode-map
+      "l" 'git-rebase-show-commit)
+
+    (add-hook 'with-editor-mode-hook 'evil-insert-state))
+#+END_SRC    
 
 ** Diff HL
 For proper diff highlighting (on the fringe)   
