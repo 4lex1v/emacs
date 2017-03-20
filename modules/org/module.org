@@ -58,6 +58,10 @@ A bunch of nice configurations i saw in [[https://www.youtube.com/watch?v%3DSzA2
   (setq org-hide-leading-stars nil)
 #+END_SRC
 
+Another life-saving settings - turns off default indentation:
+#+BEGIN_SRC emacs-lisp
+  (setq org-startup-indented nil)
+#+END_SRC
 
 ** Org Scheenshots
 
