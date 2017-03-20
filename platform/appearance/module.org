@@ -2,6 +2,22 @@
 
 * Emacs Appearance configuration
 
+** Essentials  
+*** Defaults
+    #+BEGIN_SRC emacs-lisp
+      (setq-default tab-width           2 ;; Though i'm not using tabs
+                    indent-tabs-mode    nil
+                    cursor-type        'box
+                    cursor-in-non-selected-windows 'bar
+                    frame-title-format " %@%b% -"
+                    linum-format       "%3d "  ;; Try dynamic?
+                    load-prefer-newer  t
+                    left-fringe-width  20)
+    #+END_SRC
+*** Other Settings    
+    #+BEGIN_SRC emacs-lisp
+      (global-hl-line-mode t)
+    #+END_SRC
 ** Themes
 *** Zenburn                                                        :DISABLED:
 
