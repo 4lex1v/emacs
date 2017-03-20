@@ -133,3 +133,34 @@ Loading font configuration:
                        :transparency '(100 . 100)
                        :cursor       '(box . bar))
    #+END_SRC
+** Mode-line Extensions
+
+For some inspiration have a look at the following configs:
+ - https://github.com/gjstein/emacs.d/blob/master/config/init-10-face.el
+
+*** Spaceline
+
+Right from the Spacemacs world!
+
+#+BEGIN_SRC emacs-lisp
+  (use-package spaceline-config
+    :init
+    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
+          powerline-default-separator 'bar)
+    :config
+    (spaceline-spacemacs-theme)
+    (spaceline-helm-mode))
+#+END_SRC
+
+*** Powerline
+
+Need to read more about this extension.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package powerline
+    :after spaceline-config
+    :init
+    (setq powerline-height (truncate (* 1.0 (frame-char-height)))
+          powerline-default-separator 'utf-8))
+#+END_SRC
+
