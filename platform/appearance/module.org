@@ -57,6 +57,23 @@ Solarised theme configuration, guess the most optimal values for me, though stil
 #+BEGIN_SRC emacs-lisp :results none
   (add-to-list 'load-path (expand-file-name "platform/appearance/themes/monokai-emacs" user-emacs-directory))
 #+END_SRC
+*** DOOM                                                           :DISABLED:
+For more info on the theme configuration & details, follow the [[https://github.com/hlissner/emacs-doom-theme][README]]
+
+Loading theme:
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path (expand-file-name "platform/appearance/themes/emacs-doom-theme" user-emacs-directory))
+#+END_SRC
+
+Configuration for the DOOM theme:
+#+BEGIN_SRC emacs-lisp
+  (setq doom-enable-bold t
+        doom-enable-italic t
+        doom-one-brighter-modeline t
+        doom-one-brighter-comments t)
+   
+  (use-package doom-nlinum)
+#+END_SRC
 *** Spacemacs                                                       :CURRENT:
 
 #+BEGIN_SRC emacs-lisp

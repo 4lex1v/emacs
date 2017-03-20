@@ -213,3 +213,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "platform/appearance/powerline"]
 	path = platform/appearance/powerline
 	url = git@github.com:milkypostman/powerline.git
+[submodule "platform/appearance/themes/emacs-doom-theme"]
+	path = platform/appearance/themes/emacs-doom-theme
+	url = git@github.com:hlissner/emacs-doom-theme.git
