@@ -1,12 +1,3 @@
-(setq-default tab-width           2
-              indent-tabs-mode    nil
-              cursor-type        'box
-              cursor-in-non-selected-windows 'bar
-              frame-title-format " %@%b% -"
-              linum-format       "%3d "  ;; Try dynamic?
-              load-prefer-newer  t
-              left-fringe-width  20)
-
 (setq user-full-name             "Aleksandr Ivanov"
       user-mail-address          "4lex1v@gmail.com"
       show-paren-delay            0.0
@@ -26,7 +17,7 @@
 
 ;; Find a better alternative to basic linum mode
 (global-hl-line-mode t)
-(global-linum-mode   nil)
+(global-linum-mode   -1)
 
 (column-number-mode  t)
 (show-paren-mode     t)

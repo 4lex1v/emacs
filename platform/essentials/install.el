@@ -10,7 +10,10 @@
 (require 'use-package)
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives '(("melpa"     . "https://melpa.org/packages/")
+                                 ("marmalade" . "http://marmalade-repo.org/packages/")
+                                 ("gnu"       . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
 ;; Vendor packages
