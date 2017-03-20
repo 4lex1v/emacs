@@ -1,6 +1,6 @@
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key
-  ;:diminish which-key-mode
+  :diminish which-key-mode
   :init
   (setq which-key-idle-delay 0.2
         which-key-popup-type 'side-window
