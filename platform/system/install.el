@@ -8,8 +8,9 @@
   :commands exec-path-from-shell-getenv
   :init
   (let* ((brew-bin-path "/usr/local/homebrew/bin")
+         (usr-local-bin "/usr/local/bin")
          (current-path  (getenv "PATH"))
-         (new-path      (format "%s:%s" brew-bin-path current-path)))
+         (new-path      (format "%s:%s:%s" brew-bin-path usr-local-bin current-path)))
 
     ;; To find apps, e.g SBT
     (add-to-list 'exec-path brew-bin-path)
