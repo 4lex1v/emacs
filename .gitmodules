@@ -207,3 +207,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/vcs/evil-magit"]
 	path = modules/vcs/evil-magit
 	url = git@github.com:emacs-evil/evil-magit.git
+[submodule "platform/appearance/spaceline"]
+	path = platform/appearance/spaceline
+	url = git@github.com:TheBB/spaceline.git
+[submodule "platform/appearance/powerline"]
+	path = platform/appearance/powerline
+	url = git@github.com:milkypostman/powerline.git
