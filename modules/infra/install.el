@@ -1,32 +1,19 @@
+(use-package docker-images
+  :config
+  (evil-set-initial-state #'docker-images-mode 'emacs))
+
+(use-package docker-containers
+  :config
+  (evil-set-initial-state #'docker-containers-mode 'emacs))
+
+(use-package docker-machine
+  :config
+  (evil-set-initial-state #'docker-machine-mode 'emacs))
+
 (use-package docker
-  :load-path "modules/infra/docker"
-  :commands docker-images
-
-  :init (setq default-docker-machine-name "universe")
-  
-  :config (progn
-            (defun docker-machine-connect (name)
-              "Connects to a running machine by its `name'"
-              (interactive "sDocker-machine name: ")
-              (let ((docker-env
-                     (mapcar
-                      #'(lambda (line)
-                          (split-string-and-unquote
-                           (replace-regexp-in-string "\\(export \\|=\\)" " " line)))
-                      (-filter
-                       #'(lambda (line) (string/starts-with line "export"))
-                       (split-string
-                        (shell-command-to-string
-                         (concat "docker-machine env " name)) "\n" t)))))
-                (mapc
-                 #'(lambda (params) (apply 'setenv params))
-                 docker-env)))
-
-            (if (eq (shell-command
-                     (concat "docker-machine env "
-                             default-docker-machine-name))
-                    0)
-                (docker-machine-connect default-docker-machine-name))))
+  :diminish docker-mode
+  :config
+  (docker-global-mode 1))
 
 (use-package eshell
   :init

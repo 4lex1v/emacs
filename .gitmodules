@@ -61,7 +61,7 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = platform/behaviour/helm-descbinds
 	url = git@github.com:emacs-helm/helm-descbinds.git
 [submodule "core/docker"]
-	path = modules/infra/docker/docker
+	path = modules/infra/docker
 	url = git@github.com:Silex/docker.el.git
 [submodule "themes/spacemacs"]
 	path = platform/appearance/themes/spacemacs
