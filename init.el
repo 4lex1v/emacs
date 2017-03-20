@@ -1,6 +1,4 @@
-(setq gc-cons-threshold 10000000
-      package--init-file-ensured t
-      debug-on-error nil)
+(setq gc-cons-threshold 10000000)
 
 ;; At this point i'm not sure what's the better way to solve this chiken-and-egg issue
 ;; There's a corresponding comment in org module.org config file
