@@ -21,9 +21,10 @@
    ("<tab>" . helm-execute-persistent-action)
    ("C-i"   . helm-execute-persistent-action)
    ("C-z"   . helm-select-action)
-   ("C-o"   . helm-next-source)
-   ("M-o"   . helm-previous-source)
-   ("C-j"   . helm-buffer-switch-other-window))
+   ("C-j"   . helm-next-line)
+   ("C-k"   . helm-previous-line)
+   ("M-j"   . helm-next-source)
+   ("M-k"   . helm-previous-source))
   
   :init
   (setq helm-idle-delay                        0.0
