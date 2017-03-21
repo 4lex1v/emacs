@@ -24,6 +24,7 @@
 (use-package evil-args
   :after evil
   :config
+  (add-to-list 'evil-args-delimiters " ")
   ;; bind evil-args text objects
   (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
   (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
