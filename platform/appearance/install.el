@@ -1,13 +1,19 @@
-(setq-default tab-width           2 ;; Though i'm not using tabs
-              indent-tabs-mode    nil
-              cursor-type        'box
-              cursor-in-non-selected-windows 'bar
-              frame-title-format " %@%b% -"
-              linum-format       "%3d "  ;; Try dynamic?
-              load-prefer-newer  t
-              left-fringe-width  20)
+(setq-default
+ mode-line-default-help-echo nil ; turn-off tooltips on cursor hover-over
+ tab-width           2 ;; Though i'm not using tabs
+ indent-tabs-mode    nil
+ cursor-type        'box
+ cursor-in-non-selected-windows 'bar
+ frame-title-format " %@%b% -"
+ linum-format       "%3d "  ;; Try dynamic?
+ load-prefer-newer  t
+ left-fringe-width  20)
 
-(global-hl-line-mode t)
+(when (boundp 'window-divider-mode)
+  (setq window-divider-default-places t
+        window-divider-default-bottom-width 1
+        window-divider-default-right-width 1)
+  (window-divider-mode +1))
 
 (add-to-list 'load-path (expand-file-name "platform/appearance/themes/zenburn-emacs" user-emacs-directory))
 
@@ -73,16 +79,27 @@
                  :transparency '(100 . 100)
                  :cursor       '(box . bar))
 
-(use-package spaceline-config
+(use-package spaceline
   :init
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
         powerline-default-separator 'bar)
+  (use-package spaceline-config)
   :config
   (spaceline-spacemacs-theme)
   (spaceline-helm-mode))
 
-(use-package powerline
-  :after spaceline-config
+(use-package beacon
+  :ensure t
+  :diminish beacon-mode
   :init
-  (setq powerline-height (truncate (* 1.0 (frame-char-height)))
-        powerline-default-separator 'utf-8))
+  (setq beacon-color (face-attribute 'spaceline-evil-normal :background nil t))
+  :config
+  (beacon-mode +1))
+
+(use-package hl-line
+  :init
+  (setq hl-line-sticky-flag nil
+        global-hl-line-sticky-flag nil)
+  (add-hook 'prog-mode-hook 'hl-line-mode)
+  :config
+  (global-hl-line-mode))
