@@ -1,14 +1,13 @@
 (use-package evil-leader
-  :load-path "platform/evil/evil-leader"
   :config
   (evil-leader/set-leader "<SPC>")
   (global-evil-leader-mode))
 
 (use-package evil
-  :load-path "platform/evil/evil-core"
   :after evil-leader ;; To enable evil-leader in initial buffers
   :init
-  (setq evil-default-cursor t)
+  (setq evil-default-cursor t
+        evil-ex-substitute-global t)
   :config
   (add-hook 'prog-mode-hook #'evil-normal-state)
 
