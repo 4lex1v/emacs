@@ -7,7 +7,8 @@
   :after evil-leader ;; To enable evil-leader in initial buffers
   :init
   (setq evil-default-cursor t
-        evil-ex-substitute-global t)
+        evil-ex-substitute-global t
+        evil-ex-interactive-search-highlight 'selected-window)
   :config
   (add-hook 'prog-mode-hook #'evil-normal-state)
 
@@ -16,7 +17,8 @@
   (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
  
   (evil-ex-define-cmd "e[val]" #'eval-buffer)
-  (evil-mode))
+  (evil-mode)
+  (evil-select-search-module 'evil-search-module 'evil-search))
 
 (use-package evil-snipe :after evil)
 
