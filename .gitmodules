@@ -1,14 +1,14 @@
 [submodule "themes/sirthias"]
-	path = platform/appearance/themes/sirthias
+	path = modules/appearance/themes/sirthias
 	url = https://github.com/4lex1v/sirthias-theme.git
 	branch = master
 [submodule "themes/solarized-emacs"]
-	path = platform/appearance/themes/solarized-emacs
+	path = modules/appearance/themes/solarized-emacs
 	url = https://github.com/bbatsov/solarized-emacs.git
 	branch = master
 
 [submodule "core/projectile"]
-	path = platform/behaviour/projectile
+	path = modules/behaviour/projectile
 	url = git@github.com:bbatsov/projectile.git
 	branch = master
 [submodule "core/magit"]
@@ -16,15 +16,15 @@
 	url = git@github.com:magit/magit.git
 	branch = master
 [submodule "core/company"]
-	path = platform/editor/company
+	path = modules/editor/company
 	url = git@github.com:company-mode/company-mode.git
 	branch = master
 [submodule "core/yasnippet"]
-	path = platform/editor/yasnippet
+	path = modules/editor/yasnippet
 	url = git@github.com:capitaomorte/yasnippet.git
 	branch = master
 [submodule "core/smartparens"]
-	path = platform/editor/smartparens
+	path = modules/editor/smartparens
 	url = git@github.com:Fuco1/smartparens.git
 	branch = master
 [submodule "packages/scala/scala-mode"]
@@ -49,25 +49,25 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/clojure/cider
 	url = git@github.com:clojure-emacs/cider.git
 [submodule "core/helm/helm-core"]
-	path = platform/behaviour/helm-core
+	path = modules/behaviour/helm-core
 	url = git@github.com:emacs-helm/helm.git
 [submodule "core/helm/helm-ag"]
-	path = platform/behaviour/helm-ag
+	path = modules/behaviour/helm-ag
 	url = git@github.com:syohex/emacs-helm-ag.git
 [submodule "core/helm/helm-swoop"]
-	path = platform/behaviour/helm-swoop
+	path = modules/behaviour/helm-swoop
 	url = git@github.com:ShingoFukuyama/helm-swoop.git
 [submodule "core/helm/helm-descbinds"]
-	path = platform/behaviour/helm-descbinds
+	path = modules/behaviour/helm-descbinds
 	url = git@github.com:emacs-helm/helm-descbinds.git
 [submodule "core/docker"]
 	path = modules/infra/docker
 	url = git@github.com:Silex/docker.el.git
 [submodule "themes/spacemacs"]
-	path = platform/appearance/themes/spacemacs
+	path = modules/appearance/themes/spacemacs
 	url = git@github.com:nashamri/spacemacs-theme.git
 [submodule "core/which-key"]
-	path = platform/editor/which-key
+	path = modules/editor/which-key
 	url = git@github.com:justbur/emacs-which-key.git
 [submodule "packages/web"]
 	path = modules/web/web-mode
@@ -79,22 +79,22 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/idris/idris-mode
 	url = git@github.com:idris-hackers/idris-mode.git
 [submodule "core/undo-tree"]
-	path = platform/editor/undo-tree
+	path = modules/editor/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
 [submodule "core/ranger"]
-	path = platform/behaviour/ranger
+	path = modules/behaviour/ranger
 	url = git@github.com:ralesi/ranger.el.git
 [submodule "core/helm/helm-projectile"]
-	path = platform/behaviour/helm-projectile
+	path = modules/behaviour/helm-projectile
 	url = git@github.com:bbatsov/helm-projectile.git
 [submodule "themes/dracula"]
-	path = platform/appearance/themes/dracula
+	path = modules/appearance/themes/dracula
 	url = git@github.com:dracula/emacs.git
 [submodule "packages/haskell/haskell-mode"]
 	path = modules/haskell/haskell-mode
 	url = git@github.com:haskell/haskell-mode.git
 [submodule "themes/zenburn-emacs"]
-	path = platform/appearance/themes/zenburn-emacs
+	path = modules/appearance/themes/zenburn-emacs
 	url = git@github.com:bbatsov/zenburn-emacs.git
 [submodule "packages/emacs-jabber"]
 	path = modules/communications/jabber
@@ -139,19 +139,19 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/vcs/magithub
 	url = https://github.com/vermiculus/magithub
 [submodule "modules/essentials/use-package"]
-	path = platform/essentials/use-package
+	path = modules/essentials/use-package
 	url = git@github.com:jwiegley/use-package.git
 [submodule "platform/system/exec-path-from-shell"]
-	path = platform/system/exec-path-from-shell
+	path = modules/system/exec-path-from-shell
 	url = git@github.com:purcell/exec-path-from-shell.git
 [submodule "platform/editor/ace-window"]
-	path = platform/editor/ace-window
+	path = modules/editor/ace-window
 	url = git@github.com:abo-abo/ace-window.git
 [submodule "platform/editor/avy"]
-	path = platform/editor/avy
+	path = modules/editor/avy
 	url = git@github.com:abo-abo/avy.git
 [submodule "platform/editor/expand-region"]
-	path = platform/editor/expand-region
+	path = modules/editor/expand-region
 	url = git@github.com:magnars/expand-region.el.git
 [submodule "foundation"]
 	path = foundation
@@ -169,31 +169,31 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/statistics/ess
 	url = git@github.com:emacs-ess/ESS.git
 [submodule "platform/evil/evil-core"]
-	path = platform/vim/evil-core
+	path = modules/vim/evil-core
 	url = git@github.com:emacs-evil/evil.git
 [submodule "platform/evil/evil-leader"]
-	path = platform/vim/evil-leader
+	path = modules/vim/evil-leader
 	url = git@github.com:cofi/evil-leader.git
 [submodule "modules/reader/pdf-tools"]
 	path = modules/reader/pdf-tools
 	url = git@github.com:politza/pdf-tools.git
 [submodule "platform/behaviour/helm-dash"]
-	path = platform/behaviour/helm-dash
+	path = modules/behaviour/helm-dash
 	url = https://github.com/areina/helm-dash
 [submodule "modules/groovy/groovy-emacs-modes"]
 	path = modules/groovy/groovy-emacs-modes
 	url = git@github.com:Groovy-Emacs-Modes/groovy-emacs-modes.git
 [submodule "platform/vim/evil-snipe"]
-	path = platform/vim/evil-snipe
+	path = modules/vim/evil-snipe
 	url = git@github.com:hlissner/evil-snipe.git
 [submodule "platform/vim/evil-args"]
-	path = platform/vim/evil-args
+	path = modules/vim/evil-args
 	url = git@github.com:wcsmith/evil-args.git
 [submodule "platform/appearance/themes/monokai-emacs"]
-	path = platform/appearance/themes/monokai-emacs
+	path = modules/appearance/themes/monokai-emacs
 	url = git@github.com:oneKelvinSmith/monokai-emacs.git
 [submodule "platform/vim/evil-mc"]
-	path = platform/vim/evil-mc
+	path = modules/vim/evil-mc
 	url = git@github.com:gabesoft/evil-mc.git
 [submodule "modules/org/org-ref"]
 	path = modules/org/org-ref
@@ -202,17 +202,17 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/org/org-screenshot
 	url = git@github.com:dfeich/org-screenshot.git
 [submodule "platform/vim/evil-surround"]
-	path = platform/vim/evil-surround
+	path = modules/vim/evil-surround
 	url = git@github.com:timcharper/evil-surround.git
 [submodule "modules/vcs/evil-magit"]
 	path = modules/vcs/evil-magit
 	url = git@github.com:emacs-evil/evil-magit.git
 [submodule "platform/appearance/spaceline"]
-	path = platform/appearance/spaceline
+	path = modules/appearance/spaceline
 	url = git@github.com:TheBB/spaceline.git
 [submodule "platform/appearance/powerline"]
-	path = platform/appearance/powerline
+	path = modules/appearance/powerline
 	url = git@github.com:milkypostman/powerline.git
 [submodule "platform/appearance/themes/emacs-doom-theme"]
-	path = platform/appearance/themes/emacs-doom-theme
+	path = modules/appearance/themes/emacs-doom-theme
 	url = git@github.com:hlissner/emacs-doom-theme.git
