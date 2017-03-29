@@ -1,6 +1,5 @@
 (use-package helm
   :diminish helm-mode
-  :load-path "platform/behaviour/helm-core"
   :commands helm-mode
   
   :bind* ("C-c h o" . helm-occur)
@@ -53,7 +52,6 @@
     (which-key-declare-prefixes "C-c h" "helm")))
 
 (use-package helm-swoop
-  :load-path "platform/behaviour/helm-swoop"
   :commands helm-swoop
 
   :bind
@@ -76,7 +74,6 @@
         helm-swoop-use-line-number-face t))
 
 (use-package helm-descbinds
-  :load-path "platform/behaviour/helm-descbinds"
   :commands helm-descbinds
   :bind (:map helm-command-map
          ("b" . helm-descbinds))
@@ -85,14 +82,12 @@
   (setq helm-descbinds-window-style 'same-window))
 
 (use-package helm-ag
-  :load-path "platform/behaviour/helm-ag"
   :commands helm-projectile-ag
   :init
   (setq helm-ag-insert-at-point 'symbol
         helm-ag-fuzzy-match     t))
 
 (use-package projectile
-  :load-path "platform/behaviour/projectile"
   :commands projectile-project-root
   :bind-keymap ("C-c p" . projectile-command-map)
   :bind
@@ -125,14 +120,12 @@
   (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name)))))
 
 (use-package helm-projectile
-  :load-path "platform/behaviour/helm-projectile"
   :after (helm projectile)
   :demand t
   :init (setq projectile-completion-system 'helm)
   :config (helm-projectile-on))
 
 (use-package ranger
-  :load-path "platform/behaviour/ranger"
   :commands ranger
   :bind
   (("M-5"     . helm-ranger-bookmarks)
@@ -189,10 +182,14 @@
                        :action 'ranger)
             :buffer "*helm ranger bookmarks*"))))
 
-(use-package helm-dash
-  :load-path "platform/behaviour/helm-dash")
+(use-package helm-dash)
 
 (evil-leader/set-key "eq" #'save-buffers-kill-emacs)
+(evil-leader/set-key "er" #'revert-buffer)
+(evil-leader/set-key "q"  #'4lex1v/close-buffer)
+
+(define-key evil-normal-state-map "g." #'find-function-at-point)
 
 ;; Need to organize this to avoid disambiguity and not to forget
 (delete-selection-mode t)
+
