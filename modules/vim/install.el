@@ -10,11 +10,17 @@
         evil-ex-substitute-global t
         evil-ex-interactive-search-highlight 'selected-window)
   :config
+
   (add-hook 'prog-mode-hook #'evil-normal-state)
+  (add-hook 'comint-mode-hook #'evil-normal-state)
 
   ;; Use `§' key to switch between emacs and normal state
   (evil-global-set-key 'normal "§" #'evil-emacs-state)
   (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
+
+  ;; Unbind certain keybindings 
+  (unbind-key "C-k" global-map)
+  (unbind-key "C-j" global-map)
  
   (evil-ex-define-cmd "e[val]" #'eval-buffer)
   (evil-mode)
