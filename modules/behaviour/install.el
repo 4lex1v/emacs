@@ -1,3 +1,17 @@
+;; Goes before others to correctly load which-key-declare-prefixes
+(use-package which-key
+  :diminish which-key-mode
+  :init
+  (setq which-key-idle-delay 0.2
+        which-key-popup-type 'side-window
+        which-key-sort-order 'which-key-prefix-then-key-order-reverse
+        which-key-show-operator-state-maps t ;; Hack to make this work with Evil
+        which-key-prefix-prefix ""
+        which-key-side-window-max-width 0.5) 
+  :config
+  (which-key-setup-side-window-right)
+  (which-key-mode))
+
 (use-package helm
   :diminish helm-mode
   :commands helm-mode

@@ -67,7 +67,7 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/appearance/themes/spacemacs
 	url = git@github.com:nashamri/spacemacs-theme.git
 [submodule "core/which-key"]
-	path = modules/editor/which-key
+	path = modules/behaviour/which-key
 	url = git@github.com:justbur/emacs-which-key.git
 [submodule "packages/web"]
 	path = modules/web/web-mode
