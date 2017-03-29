@@ -15,13 +15,15 @@
         window-divider-default-right-width 1)
   (window-divider-mode +1))
 
-(add-to-list 'load-path (expand-file-name "platform/appearance/themes/zenburn-emacs" user-emacs-directory))
+;; Add themes to the scope
+(fnd:attach "themes/zenburn-emacs"
+            "themes/dracula"
+            "themes/monokai-emacs"
+            "themes/emacs-doom-theme"
+            "themes/sirthias"
+            "themes/solarized-emacs"
+            "themes/spacemacs")
 
-(add-to-list 'load-path (expand-file-name "platform/appearance/themes/dracula" user-emacs-directory))
-
-(add-to-list 'load-path (expand-file-name "platform/appearance/themes/sirthias" user-emacs-directory))
-
-(add-to-list 'load-path (expand-file-name "platform/appearance/themes/solarized-emacs" user-emacs-directory))
 (setq solarized-contrast                   'high
       solarized-visibility                 'high
       solarized-termcolors                  256
@@ -33,18 +35,12 @@
       solarized-emphasize-indicators        t
       x-underline-at-descent-line           t)
 
-(add-to-list 'load-path (expand-file-name "platform/appearance/themes/monokai-emacs" user-emacs-directory))
-
-(add-to-list 'load-path (expand-file-name "platform/appearance/themes/emacs-doom-theme" user-emacs-directory))
-
 (setq doom-enable-bold t
       doom-enable-italic t
       doom-one-brighter-modeline t
       doom-one-brighter-comments t)
 
 (use-package doom-nlinum)
-
-(add-to-list 'load-path (expand-file-name "platform/appearance/themes/spacemacs" user-emacs-directory))
 
 (require 'spacemacs-light-theme)
 (load-theme 'spacemacs-light t t)
