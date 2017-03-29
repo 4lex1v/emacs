@@ -110,27 +110,28 @@
   :init
   (setq projectile-enable-caching       t
         projectile-require-project-root t
-        projectile-use-git-grep         t)
+        projectile-use-git-grep         t
+        projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
 
   :config
-  (evil-leader/set-key "pp" 'helm-projectile-switch-project)
-  (evil-leader/set-key "ps" 'helm-projectile-ag)
-  (projectile-global-mode)
+  (evil-leader/set-key
+    "pp" 'helm-projectile-switch-project
+    "ps" 'helm-projectile-ag)
+  
+  (which-key-declare-prefixes
+    "<SPC> p" "Projectile")
 
-  (with-mode which-key
-    (which-key-declare-prefixes "C-c p" "projectile"))
-  
-  ;; Stored in core/vendor
-  (use-package ibuffer-projectile
-    :ensure t
-    :init
-    (add-hook 'ibuffer-hook
-              (lambda ()
-                (ibuffer-projectile-set-filter-groups)
-                (unless (eq ibuffer-sorting-mode 'alphabetic)
-                  (ibuffer-do-sort-by-alphabetic)))))
-  
-  (setq projectile-mode-line '(:eval (format " {%s}" (projectile-project-name)))))
+  (projectile-global-mode))
+
+(use-package ibuffer-projectile
+  :after projectile
+  :ensure t
+  :init
+  (add-hook 'ibuffer-hook
+            (lambda ()
+              (ibuffer-projectile-set-filter-groups)
+              (unless (eq ibuffer-sorting-mode 'alphabetic)
+                (ibuffer-do-sort-by-alphabetic)))))
 
 (use-package helm-projectile
   :after (helm projectile)

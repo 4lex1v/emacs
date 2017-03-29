@@ -61,32 +61,23 @@
 
 (use-package company
   :diminish company-mode
-  :load-path "platform/editor/company"
   :commands global-company-mode
 
   :bind (("M-&" . company-complete))
 
-  :init (progn
-          (setq company-dabbrev-ignore-case nil
-                company-dabbrev-code-ignore-case nil
-                company-dabbrev-downcase nil
-                company-idle-delay 0
-                company-minimum-prefix-length 4)
-
-          (4lex1v/hook-into-modes #'global-company-mode
-                                  'scala-mode-hook
-                                  'emacs-lisp-mode-hook)))
+  :init 
+  (setq company-dabbrev-ignore-case nil
+        company-dabbrev-code-ignore-case nil
+        company-dabbrev-downcase nil
+        company-idle-delay 0
+        company-minimum-prefix-length 4))
 
 (use-package yasnippet
-  :diminish yas-minor-mode
   :commands yas-minor-mode
   :init
-  (setq yas-snippet-dirs
-        '("~/.emacs.d/platform/editor/snippets"
-          "~/.emacs.d/platform/editor/yasnippet/snippets"))
-  (4lex1v/hook-into-modes #'yas-minor-mode
-                          'scala-mode-hook
-                          'emacs-lisp-mode-hook)
+  (setq yas-snippet-dirs '("~/.emacs.d/modules/editor/snippets"
+                           "~/.emacs.d/modules/editor/yasnippet/snippets"))
+  
   :config
   (yas-reload-all)
   (with-mode which-key
@@ -97,7 +88,9 @@
   (("C-c SPC" . avy-goto-char)
    ("C-c j c" . avy-goto-char)
    ("C-c j w" . avy-goto-word-1)
-   ("C-c j l" . avy-goto-line)))
+   ("C-c j l" . avy-goto-line))
+  :init
+  (evil-leader/set-key "j" #'avy-goto-char))
 
 (use-package ace-window
   :bind
