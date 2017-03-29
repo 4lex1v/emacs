@@ -1,7 +1,6 @@
 (load-file (expand-file-name "modules/clojure/custom.el" user-emacs-directory))
 
 (use-package clojure-mode
-  :load-path "modules/clojure/clojure-mode"
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode)
          ("\\.boot\\'" . clojure-mode)

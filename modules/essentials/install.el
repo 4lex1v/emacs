@@ -1,5 +1,4 @@
-;; TODO :: remove load-path
-(add-to-list 'load-path (expand-file-name "use-package" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "modules/essentials/use-package" user-emacs-directory))
 
 ;; `use-package' configuration
 (setq use-package-verbose               t

@@ -2,7 +2,6 @@
 (add-to-list 'load-path (expand-file-name "."))
 
 (use-package exec-path-from-shell
-  :load-path "platform/system/exec-path-from-shell"
   :if (or (eq system-type 'darwin)
           (eq system-type 'gnu/linux))
   :commands exec-path-from-shell-getenv
