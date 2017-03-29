@@ -29,8 +29,8 @@
     "mlc" 'magit-log-current)
 
   (which-key-declare-prefixes
-    "<SPC> m"   "magit"
-    "<SPC> m l" "magit-log") 
+    "<SPC> m"   "Magit"
+    "<SPC> m l" "Logging") 
 
   (evil-define-key 'normal with-editor-mode-map
     (kbd "RET") 'with-editor-finish

@@ -16,6 +16,10 @@
 (which-key-declare-prefixes-for-mode 'emacs-lisp-mode "<SPC> e" "emacs")
 (which-key-declare-prefixes-for-mode 'emacs-lisp-mode "<SPC> e d" "emacs-docs")
 (evil-leader/set-key-for-mode 'emacs-lisp-mode "eda" #'helm-apropos)
+  (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
+    "C-c e"     "Emacs"
+    "<SPC> e"   "Emacs"
+    "<SPC> e d" "Docs")
 
 (use-package macrostep
   :load-path "modules/elisp/macrostep"

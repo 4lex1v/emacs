@@ -47,9 +47,8 @@
   (helm-autoresize-mode)
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-
-  (with-mode which-key
-    (which-key-declare-prefixes "C-c h" "helm")))
+  (which-key-declare-prefixes
+    "<SPC> h" "Helm"))
 
 (use-package helm-swoop
   :commands helm-swoop
