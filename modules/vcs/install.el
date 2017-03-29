@@ -1,7 +1,8 @@
 (use-package magit
   :load-path "modules/vcs/magit/lisp"
-  :commands (magit-status magit-clone)
+  :commands (magit-status magit-clone magit-submodule-popup)
   :init
+
   (setq magit-last-seen-setup-instructions "2.3.2"
         magit-status-show-hashes-in-headers t
         magit-diff-options '("--word-diff")
@@ -9,8 +10,27 @@
 
   (use-package with-editor :ensure t)
 
+  (setq-default
+   magit-submodule-list-columns
+   (quote
+    (("Path" 50 magit-modulelist-column-path nil)
+     ("Version" 35 magit-repolist-column-version nil)
+     ("Branch" 20 magit-repolist-column-branch nil)
+     ("L<U" 3 magit-repolist-column-unpulled-from-upstream
+      ((:right-align t)))
+     ("L>U" 3 magit-repolist-column-unpushed-to-upstream
+      ((:right-align t)))
+     ("L<P" 3 magit-repolist-column-unpulled-from-pushremote
+      ((:right-align t)))
+     ("L>P" 3 magit-repolist-column-unpushed-to-pushremote
+      ((:right-align t))))))
+
   :config
-  (add-to-list 'magit-log-arguments "--color"))
+  (add-to-list 'magit-log-arguments "--color")
+  (magit-define-popup-action 'magit-submodule-popup   
+    ?l "List" 'magit-list-submodules)
+
+  (evil-initial-state 'magit-submodule-list-mode 'emacs))
 
 (use-package evil-magit
   :after magit-mode
