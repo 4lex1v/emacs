@@ -169,7 +169,7 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/statistics/ess
 	url = git@github.com:emacs-ess/ESS.git
 [submodule "platform/evil/evil-core"]
-	path = modules/vim/evil-core
+	path = modules/behaviour/evil-core
 	url = git@github.com:emacs-evil/evil.git
 [submodule "platform/evil/evil-leader"]
 	path = modules/vim/evil-leader
@@ -187,13 +187,13 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/vim/evil-snipe
 	url = git@github.com:hlissner/evil-snipe.git
 [submodule "platform/vim/evil-args"]
-	path = modules/vim/evil-args
+	path = modules/behaviour/evil-args
 	url = git@github.com:wcsmith/evil-args.git
 [submodule "platform/appearance/themes/monokai-emacs"]
 	path = modules/appearance/themes/monokai-emacs
 	url = git@github.com:oneKelvinSmith/monokai-emacs.git
 [submodule "platform/vim/evil-mc"]
-	path = modules/vim/evil-mc
+	path = modules/editor/evil-mc
 	url = git@github.com:gabesoft/evil-mc.git
 [submodule "modules/org/org-ref"]
 	path = modules/org/org-ref
@@ -202,7 +202,7 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/org/org-screenshot
 	url = git@github.com:dfeich/org-screenshot.git
 [submodule "platform/vim/evil-surround"]
-	path = modules/vim/evil-surround
+	path = modules/editor/evil-surround
 	url = git@github.com:timcharper/evil-surround.git
 [submodule "modules/vcs/evil-magit"]
 	path = modules/vcs/evil-magit
@@ -216,3 +216,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "platform/appearance/themes/emacs-doom-theme"]
 	path = modules/appearance/themes/emacs-doom-theme
 	url = git@github.com:hlissner/emacs-doom-theme.git
+[submodule "modules/behaviour/general"]
+	path = modules/behaviour/general
+	url = git@github.com:noctuid/general.el.git
