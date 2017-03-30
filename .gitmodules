@@ -171,9 +171,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "platform/evil/evil-core"]
 	path = modules/behaviour/evil-core
 	url = git@github.com:emacs-evil/evil.git
-[submodule "platform/evil/evil-leader"]
-	path = modules/vim/evil-leader
-	url = git@github.com:cofi/evil-leader.git
 [submodule "modules/reader/pdf-tools"]
 	path = modules/reader/pdf-tools
 	url = git@github.com:politza/pdf-tools.git
@@ -183,9 +180,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/groovy/groovy-emacs-modes"]
 	path = modules/groovy/groovy-emacs-modes
 	url = git@github.com:Groovy-Emacs-Modes/groovy-emacs-modes.git
-[submodule "platform/vim/evil-snipe"]
-	path = modules/vim/evil-snipe
-	url = git@github.com:hlissner/evil-snipe.git
 [submodule "platform/vim/evil-args"]
 	path = modules/behaviour/evil-args
 	url = git@github.com:wcsmith/evil-args.git
