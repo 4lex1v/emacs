@@ -9,6 +9,18 @@
  load-prefer-newer  t
  left-fringe-width  20)
 
+(global-hl-line-mode t)
+(show-paren-mode     t)
+(delete-selection-mode t)
+(toggle-truncate-lines t)
+
+(if (window-system)
+    (progn
+      (tooltip-mode -1)
+      (tool-bar-mode -1)
+      (menu-bar-mode -1)
+      (scroll-bar-mode -1)))
+
 (when (boundp 'window-divider-mode)
   (setq window-divider-default-places t
         window-divider-default-bottom-width 1
@@ -39,8 +51,6 @@
       doom-enable-italic t
       doom-one-brighter-modeline t
       doom-one-brighter-comments t)
-
-(use-package doom-nlinum)
 
 (require 'spacemacs-light-theme)
 (load-theme 'spacemacs-light t t)
@@ -75,11 +85,13 @@
                  :transparency '(100 . 100)
                  :cursor       '(box . bar))
 
+(use-package spaceline-config)
+
 (use-package spaceline
+  :after spaceline-config
   :init
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
         powerline-default-separator 'bar)
-  (use-package spaceline-config)
   :config
   (spaceline-spacemacs-theme)
   (spaceline-helm-mode))
@@ -96,6 +108,6 @@
   :init
   (setq hl-line-sticky-flag nil
         global-hl-line-sticky-flag nil)
-  (add-hook 'prog-mode-hook 'hl-line-mode)
   :config
+  (add-hook 'prog-mode-hook 'hl-line-mode)
   (global-hl-line-mode))
