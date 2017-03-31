@@ -145,10 +145,10 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/system/exec-path-from-shell
 	url = git@github.com:purcell/exec-path-from-shell.git
 [submodule "platform/editor/ace-window"]
-	path = modules/editor/ace-window
+	path = modules/behaviour/ace-window
 	url = git@github.com:abo-abo/ace-window.git
 [submodule "platform/editor/avy"]
-	path = modules/editor/avy
+	path = modules/behaviour/avy
 	url = git@github.com:abo-abo/avy.git
 [submodule "platform/editor/expand-region"]
 	path = modules/editor/expand-region
@@ -181,7 +181,7 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/groovy/groovy-emacs-modes
 	url = git@github.com:Groovy-Emacs-Modes/groovy-emacs-modes.git
 [submodule "platform/vim/evil-args"]
-	path = modules/behaviour/evil-args
+	path = modules/editor/evil-args
 	url = git@github.com:wcsmith/evil-args.git
 [submodule "platform/appearance/themes/monokai-emacs"]
 	path = modules/appearance/themes/monokai-emacs
