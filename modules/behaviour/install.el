@@ -12,6 +12,39 @@
   (which-key-setup-side-window-right)
   (which-key-mode))
 
+(use-package general
+  :init
+  (setq general-default-states  'normal
+        general-default-prefix  "<SPC>"))
+
+(use-package evil
+  :after general ;; To enable evil-leader in initial buffers
+  :init
+  (setq evil-default-cursor t
+        evil-ex-substitute-global t
+        evil-ex-interactive-search-highlight 'selected-window)
+
+  :config
+  (general-evil-setup t)
+
+  (evil-set-initial-state 'prog-mode 'normal)
+  (evil-set-initial-state 'comint-mode 'normal)
+
+  ;; Use `§' key to switch between emacs and normal state
+  (evil-global-set-key 'normal "§" #'evil-emacs-state)
+  (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
+
+  ;; Unbind certain keybindings 
+  (unbind-key "C-k" global-map)
+  (unbind-key "C-j" global-map)
+ 
+  (evil-ex-define-cmd "e[val]" #'eval-buffer)
+  (evil-mode)
+  (evil-select-search-module 'evil-search-module 'evil-search))
+
+(use-package helm-config)
+(use-package helm-mode)
+
 (use-package helm
   :diminish helm-mode
   :commands helm-mode
@@ -53,13 +86,15 @@
         helm-ff-search-library-in-sexp         t
         helm-ff-file-name-history-use-recentf  t
         helm-follow-mode-persistent            t)
-
-  (use-package helm-config)
-  (use-package helm-mode)
-  
+ 
   :config 
   (helm-autoresize-mode)
 
+  (which-key-declare-prefixes "<SPC> f" "Files")
+
+  (func init.el (find-file (concat user-emacs-directory "/" "init.el")))
+  (general-define-key "ff" 'helm-find-files)
+  
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
   (which-key-declare-prefixes
     "<SPC> h" "Helm"))
@@ -114,7 +149,7 @@
         projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
 
   :config
-  (evil-leader/set-key
+  (general-define-key
     "pp" 'helm-projectile-switch-project
     "ps" 'helm-projectile-ag)
   
@@ -126,7 +161,7 @@
 (use-package ibuffer-projectile
   :after projectile
   :ensure t
-  :init
+  :config
   (add-hook 'ibuffer-hook
             (lambda ()
               (ibuffer-projectile-set-filter-groups)
@@ -158,7 +193,9 @@
                          (or (projectile-project-root)
                              default-directory)))))
 
-  (evil-leader/set-key "fr" 'ranger)
+  :general
+  ("fr" 'ranger)
+  
   :config
   (ranger-override-dired-mode t)
 
@@ -198,12 +235,44 @@
 
 (use-package helm-dash)
 
-(evil-leader/set-key "eq" #'save-buffers-kill-emacs)
-(evil-leader/set-key "er" #'revert-buffer)
-(evil-leader/set-key "q"  #'4lex1v/close-buffer)
+(general-nmap 
+  "eq" #'save-buffers-kill-emacs
+  "er" #'revert-buffer
+  "q"  #'4lex1v/close-buffer)
 
 (define-key evil-normal-state-map "g." #'find-function-at-point)
 
 ;; Need to organize this to avoid disambiguity and not to forget
 (delete-selection-mode t)
 
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+
+(which-key-declare-prefixes "<SPC> w" "Windows")
+(which-key-declare-prefixes "<SPC> w s" "Spliting")
+(which-key-declare-prefixes "<SPC> w d" "Deliting")
+
+(general-define-key
+ "wo"  'other-window
+ "wsb" 'split-window-below
+ "wsh" 'split-window-horizontally
+ "wdd" 'delete-window
+ "wdo" 'delete-other-windows
+ "fi"  'init.el
+ "fe"  'eshell)
+
+(fset 'yes-or-no-p   'y-or-n-p)
+
+(use-package avy
+  :bind
+  (("C-c SPC" . avy-goto-char)
+   ("C-c j c" . avy-goto-char)
+   ("C-c j w" . avy-goto-word-1)
+   ("C-c j l" . avy-goto-line))
+  :init
+  (general-define-key "j" #'avy-goto-char))
+
+(use-package ace-window
+  :bind
+  (("C-'"  . ace-window)
+   ("<f7>" . ace-window)))
