@@ -213,3 +213,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/behaviour/general"]
 	path = modules/behaviour/general
 	url = git@github.com:noctuid/general.el.git
+[submodule "modules/behaviour/hydra"]
+	path = modules/behaviour/hydra
+	url = git@github.com:abo-abo/hydra.git

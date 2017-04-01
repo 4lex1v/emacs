@@ -1,0 +1,10 @@
+(defun 4lex1v:open-sbt-build-file (project-root-dir)
+  (interactive)
+  (let ((sbt-build-file (concat project-root-dir "build.sbt")))
+    (if (file-exists-p sbt-build-file)
+        (find-file sbt-build-file)
+      (error "build.sbt is not defined"))))
+
+(defun 4lex1v:sbt-compile-command ()
+  (interactive)
+  (sbt-command "compile"))
