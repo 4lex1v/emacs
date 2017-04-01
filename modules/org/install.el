@@ -30,6 +30,9 @@
 
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   
+  (add-to-list 'org-structure-template-alist
+             '("scala" "#+BEGIN_SRC scala \n\t?\n#+END_SRC"))
+  
   (add-hook 'org-mode-hook #'flyspell-mode))
 
 (use-package ob :after org)
