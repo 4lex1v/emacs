@@ -1,6 +1,12 @@
+(use-package smartparens-config
+  :init
+  (setq sp-autoinsert-if-followed-by-word t
+        sp-autoskip-closing-pair 'always-end
+        sp-hybrid-kill-entire-symbol nil))
+
 (use-package smartparens
+  :after smartparens-config
   :diminish smartparens-mode
-  :commands smartparens-mode
 
   :bind
   (:map sp-keymap
@@ -39,22 +45,11 @@
    ("C-c s j"          . sp-join-sexp)
    ("C-c s s"          . sp-split-sexp))
 
-  :init (progn
-          (use-package smartparens-config
-            :init (setq sp-autoinsert-if-followed-by-word t
-                        sp-autoskip-closing-pair 'always-end
-                        sp-hybrid-kill-entire-symbol nil))
-
-          (4lex1v/hook-into-modes #'smartparens-mode
-                                  'scala-mode-hook
-                                  'emacs-lisp-mode-hook
-                                  'clojure-mode-hook
-                                  'cider-repl-mode-hook
-                                  'idris-mode-hook))
   :config
   (sp-pair "(" ")" :wrap "C-(")
   (sp-pair "[" "]" :wrap "s-[")
   (sp-pair "{" "}" :wrap "C-{")
+  
   (with-mode which-key
     (which-key-declare-prefixes
       "C-c s" "smartparens")))
@@ -83,37 +78,12 @@
   (with-mode which-key
     (which-key-declare-prefixes "C-c &" "yasnippet")))
 
-(use-package avy
-  :bind
-  (("C-c SPC" . avy-goto-char)
-   ("C-c j c" . avy-goto-char)
-   ("C-c j w" . avy-goto-word-1)
-   ("C-c j l" . avy-goto-line))
-  :init
-  (evil-leader/set-key "j" #'avy-goto-char))
-
-(use-package ace-window
-  :bind
-  (("C-'"  . ace-window)
-   ("<f7>" . ace-window)))
-
-(with-mode which-key
-    (which-key-declare-prefixes "C-c j" "ace-jump"))
-
 (use-package hideshowvis
   :diminish hs-minor-mode
   :ensure t
   :commands hideshowvis-enable
-
-  :bind
-  (("M-[" . hs-hide-block)
-   ("M-]" . hs-show-block))
-
   :init
-  (with-mode which-key
-    (which-key-declare-prefixes
-      "C-c @" "hideshow"))
-
+  (which-key-declare-prefixes "C-c @" "hideshow")
   (add-to-list 'hs-special-modes-alist
                (list 'nxml-mode
                      "<!--\\|<[^/>]*[^/]>"
@@ -134,7 +104,7 @@
                        'sgml-skip-tag-forward
                        nil)))
 
-  (let ((modes '(emacs-lisp-mode-hook scala-mode-hook nxml-mode-hook)))
+  (let ((modes '(nxml-mode-hook)))
     (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes)
     (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes))
   
@@ -179,5 +149,26 @@
   :config (global-undo-tree-mode)
   :bind ("M-/" . undo-tree-visualize))
 
-(load "evil-editor-control")
+(use-package evil-surround
+  :after evil
+  :config
+  (global-evil-surround-mode 1))
+
+(use-package evil-args
+  :after evil
+  :config
+  (add-to-list 'evil-args-delimiters " ")
+  ;; bind evil-args text objects
+  (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+  (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+
+  ;; bind evil-forward/backward-args
+  (define-key evil-normal-state-map "L" 'evil-forward-arg)
+  (define-key evil-normal-state-map "H" 'evil-backward-arg)
+  (define-key evil-motion-state-map "L" 'evil-forward-arg)
+  (define-key evil-motion-state-map "H" 'evil-backward-arg)
+
+  ;; bind evil-jump-out-args
+  (define-key evil-normal-state-map "K" 'evil-jump-out-args))
+
 

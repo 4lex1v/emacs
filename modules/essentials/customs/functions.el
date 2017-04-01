@@ -88,6 +88,11 @@ then two windows around, provide an index number which window to close"
      (interactive)
      ,@body))
 
+(defmacro -func (body)
+  `(lambda ()
+     (interactive)
+     ,@body))
+
 (defsubst if-bound-f (f &optional args)
   "Helper function to guard against unbound functions"
   (if (fboundp ',f) (funcall ',f args)))

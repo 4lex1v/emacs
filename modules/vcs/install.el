@@ -1,6 +1,6 @@
 (use-package magit
   :load-path "modules/vcs/magit/lisp"
-  :after eshell
+  :defer
   :init
   (setq-default
    magit-submodule-list-columns
@@ -21,8 +21,6 @@
         magit-status-show-hashes-in-headers t
         magit-diff-options '("--word-diff")
         magit-diff-refine-hunk 'all) ;; experimental
-
-  (evil-set-initial-state 'magit-submodule-list-mode 'emacs)
   
   :general 
   ("m" '(:ignore t :which-key "Magit")
@@ -40,6 +38,11 @@
    "mlc" 'magit-log-current)
 
   :config
+
+  ;; diminish magit-auto-revert-mode
+  
+  (evil-set-initial-state 'magit-submodule-list-mode 'emacs)
+  
   (add-to-list 'magit-log-arguments "--color")
 
   (magit-define-popup-action 'magit-submodule-popup   
@@ -48,13 +51,12 @@
 (use-package with-editor
   :after magit
   :ensure t
-  :defer
   :general
   (:keymaps 'with-editor-mode-map
     :prefix "" ;; don't use SPC prefix in this case
     "RET"    'with-editor-finish
     [escape] 'with-editor-cancel)
-  :init
+  :config
   (evil-set-initial-state 'with-editor-mode 'insert))
 
 (use-package evil-magit
@@ -64,14 +66,15 @@
 
 (use-package diff-hl
   :after magit
-  :init
-  (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh t)
   :config
+  (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
   (global-diff-hl-mode 1))
 
-(use-package diff-hl-flydiff
-  :after diff-hl
-  :config (diff-hl-flydiff-mode))
+; (use-package diff-hl-flydiff
+;   :after diff-hl
+;   :config 
+;   (diff-hl-flydiff-mode)
+;   )
 
 (use-package magithub
   :after magit

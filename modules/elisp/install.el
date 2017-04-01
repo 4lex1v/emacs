@@ -10,36 +10,40 @@
    ("M-," . find-variable-at-point)
    ("C-c e r" . eval-region))
 
+  :general
+  (:keymaps 'emacs-lisp-mode-map
+            "e" '(:ignore t :which-key "Emacs")
+            "ed" '(:ignore t :which-key "Docs & Help")
+            "eda" #'helm-apropos)
+  
   :init
-  (which-key-declare-prefixes-for-mode 'emacs-lisp-mode "C-c e" "elisp"))
-
-(which-key-declare-prefixes-for-mode 'emacs-lisp-mode "<SPC> e" "emacs")
-(which-key-declare-prefixes-for-mode 'emacs-lisp-mode "<SPC> e d" "emacs-docs")
-(evil-leader/set-key-for-mode 'emacs-lisp-mode "eda" #'helm-apropos)
-  (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
-    "C-c e"     "Emacs"
-    "<SPC> e"   "Emacs"
-    "<SPC> e d" "Docs")
+  (setq initial-major-mode 'emacs-lisp-mode)
+  
+  :config
+  (load "elisp-defuns")
+  (add-hook 'emacs-lisp-mode-hook #'4lex1v:fix-elisp-indentation)
+  (add-hook 'emacs-lisp-mode-hook #'yas-minor-mode)
+  (add-hook 'emacs-lisp-mode-hook #'global-company-mode)
+  (add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
+  (add-hook 'emacs-lisp-mode-hook #'hideshowvis-enable)
+  (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode))
 
 (use-package macrostep
-  :load-path "modules/elisp/macrostep"
   :after elisp-mode
   :commands macrostep-expand
-  :bind
-  (:map emacs-lisp-mode-map
-   ("C-c e m" . macrostep-expand)))
+  :mode ("\\*.el\\'" . emacs-lisp-mode)
+  
+  :general
+  (:keymaps 'macrostep-keymap
+    "q" #'macrostep-collapse-all)
 
-(evil-leader/set-key-for-mode 'emacs-lisp-mode "em" #'macrostep-expand)
-(evil-declare-key 'normal #'macrostep-keymap
-  "q" #'macrostep-collapse-all
-  "c" #'macrostep-expand)
+  (general-define-key :keymaps 'emacs-lisp-mode-map
+   "em" #'macrostep-expand))
 
 (use-package deferred
-  :load-path "modules/elisp/deferred"
   :after elisp-mode)
 
 (use-package request
-  :load-path "modules/elisp/request"
   :after (elisp-mode deferred)
   :init
   (use-package request-deferred :after deferred)
