@@ -5,7 +5,7 @@
   
   :general
   (:keymaps 'scala-mode-map
-    "s" '(:ignore t :which-key "Scala"))
+   "s" '(:ignore t :which-key "Scala"))
   
   (general-define-key :keymaps 'scala-mode-map
     :prefix ""
@@ -30,6 +30,7 @@
 
 (use-package smartparens-scala
   :after scala-mode
+  
   :config
   (add-hook 'scala-mode-hook #'smartparens-mode)
   (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
@@ -37,13 +38,15 @@
 
 (use-package sbt-mode
   :after scala-mode
+  
   :general
   (:keymaps 'scala-mode-map
-    "sb" '(:ignore t :which-key "SBT")
-    "sbb" '(4lex1v:open-sbt-build-file :which-key "build.sbt")
-    "sbs" #'sbt-start
-    "sbr" #'sbt-command
-    "sbc" `(4lex1v:sbt-compile-command :which-key "compile"))
+   "sb" '(:ignore t :which-key "SBT")
+   "sbb" '(4lex1v:open-sbt-build-file :which-key "build.sbt")
+   "sbs" #'sbt-start
+   "sbr" #'sbt-command
+   "sbc" `(4lex1v:sbt-compile-command :which-key "compile"))
+  
   :config
   (load "sbt-defuns"))
 
@@ -52,17 +55,17 @@
   :commands ensime
   :bind
   (:map scala-mode-map
-        ("C-c e" . ensime-print-errors-at-point)
-        ("C-c t" . ensime-print-type-at-point)
-        ("C-c o" . ensime-import-type-at-point)
-        ("C-M-." . ensime-edit-definition-other-window))
+   ("C-c e" . ensime-print-errors-at-point)
+   ("C-c t" . ensime-print-type-at-point)
+   ("C-c o" . ensime-import-type-at-point)
+   ("C-M-." . ensime-edit-definition-other-window))
 
   :general
   (:keymaps 'ensime-mode-map
-            "ser"  #'ensime-inf-run-scala
-            "seb" '(:ignore t :which-key "Build")
-            "sebr" #'ensime-sbt-do-run
-            "sebc" #'ensime-sbt-do-compile)
+   "ser"  #'ensime-inf-run-scala
+   "seb" '(:ignore t :which-key "Build")
+   "sebr" #'ensime-sbt-do-run
+   "sebc" #'ensime-sbt-do-compile)
   
   (general-define-key :keymaps 'scala-mode-map
     "se" '(:ignore t :which-key "Ensime")
@@ -80,7 +83,9 @@
   :config
   (load "ensime-defuns")
   (unbind-key "M-p" ensime-mode-map)
-  (4lex1v/hook-into-modes #'4lex1v:smart-ensime-loader 'scala-mode-hook)
+  
+  (add-hook 'scala-mode-hook #'4lex1v:smart-ensime-loader)
+  
   (which-key-declare-prefixes-for-mode 'ensime-mode
     "C-c C-d" "ensime/debug"
     "C-c C-c" "ensime/compiler"
