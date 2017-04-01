@@ -11,7 +11,6 @@
 
 (fnd:module essentials     "The basis for my `.emacs.d' configuration. Configures package-management system and `use-package', along with others less important settings.")
 (fnd:module appearance     "Themes, fonts, mode-line and other fancy things for a better look")
-(fnd:module vim            "Platform configuration for EVIL layer")
 (fnd:module behaviour      "All-things-navigation & movement")
 (fnd:module editor         "A lot of things to improve editing experience")
 (fnd:module system         "Low-level configuration for a better OS <=> Emacs integration")
