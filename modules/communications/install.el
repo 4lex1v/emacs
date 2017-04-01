@@ -1,5 +1,5 @@
 (use-package jabber
-  :load-path "modules/communications/jabber"
+  :defer
   :after exec-path-from-shell
   :init
   (setq jabber-account-list

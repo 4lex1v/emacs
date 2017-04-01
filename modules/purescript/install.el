@@ -1,2 +1,2 @@
-(use-package purescript
-  :load-path "modules/purescript/purescript-mode")
+(use-package psc-ide :defer)
+  

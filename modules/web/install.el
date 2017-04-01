@@ -1,5 +1,6 @@
 (use-package web-mode
   :load-path "packages/web"
+  :defer
   :mode
   (("\\.html\\'" . web-mode)
    ("\\.html\\.erb\\'" . web-mode)
@@ -22,8 +23,7 @@
       "C-c C-e" "web/element")))
 
 (use-package restclient
-  :load-path "modules/web/restclient"
-  :after org
+  :defer
   :init
-  (use-package ob-restclient
-    :load-path "modules/web"))
+  (use-package ob-restclient :after ob))
+    
