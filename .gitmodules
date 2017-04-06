@@ -216,3 +216,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/behaviour/hydra"]
 	path = modules/behaviour/hydra
 	url = git@github.com:abo-abo/hydra.git
+[submodule "modules/org/org-reveal"]
+	path = modules/org/org-reveal
+	url = git@github.com:yjwen/org-reveal.git
