@@ -7,7 +7,7 @@
   (:keymaps 'scala-mode-map
    "s" '(:ignore t :which-key "Scala"))
   
-  (general-define-key :keymaps 'scala-mode-map
+  (:keymaps 'scala-mode-map
     :prefix ""
     "<C-return>"     #'newline-or-comment
     "M-j"            #'scala-indent:join-line
@@ -41,36 +41,41 @@
   
   :general
   (:keymaps 'scala-mode-map
-   "sb" '(:ignore t :which-key "SBT")
-   "sbb" '(4lex1v:open-sbt-build-file :which-key "build.sbt")
-   "sbs" #'sbt-start
-   "sbr" #'sbt-command
-   "sbc" `(4lex1v:sbt-compile-command :which-key "compile"))
-  
+   :prefix "<SPC> sb"
+   ""  '(:ignore t :which-key "SBT")
+   "b" '(4lex1v:open-sbt-build-file :which-key "build.sbt")
+   "s" 'sbt-start
+   "r" 'sbt-command
+   "c" '(4lex1v:sbt-compile-command :which-key "compile"))
+ 
   :config
   (load "sbt-defuns"))
 
 (use-package ensime
   :after scala-mode
   :commands ensime
-  :bind
-  (:map scala-mode-map
-   ("C-c e" . ensime-print-errors-at-point)
-   ("C-c t" . ensime-print-type-at-point)
-   ("C-c o" . ensime-import-type-at-point)
-   ("C-M-." . ensime-edit-definition-other-window))
 
   :general
-  (:keymaps 'ensime-mode-map
-   "ser"  #'ensime-inf-run-scala
-   "seb" '(:ignore t :which-key "Build")
-   "sebr" #'ensime-sbt-do-run
-   "sebc" #'ensime-sbt-do-compile)
-  
   (:keymaps 'scala-mode-map
-    "se" '(:ignore t :which-key "Ensime")
-    "ses"  #'ensime
-    "seu"  #'4lex1v:update-ensime-build)
+   :prefix "<SPC> se"
+   ""  '(:ignore t :which-key "Ensime")
+   "s" 'ensime
+   "u" '4lex1v:update-ensime-build)
+  
+  (:keymaps 'ensime-mode-map
+   :prefix "<SPC> se"
+   ""  '(:ignore t :which-key "Ensime")
+   "r"  'ensime-inf-run-scala
+   "b"  '(:ignore t :which-key "Build")
+   "br" 'ensime-sbt-do-run
+   "bc" 'ensime-sbt-do-compile)
+
+  (:keymaps 'scala-mode-map
+   :prefix ","
+   "e" 'ensime-print-errors-at-point
+   "t" 'ensime-print-type-at-point
+   "o" 'ensime-import-type-at-point
+   "g" 'ensime-edit-definition-other-window)
   
   :init
   (setq ensime-server-version        "1.0.0"
