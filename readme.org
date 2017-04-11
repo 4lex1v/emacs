@@ -1,0 +1,5 @@
+* Installing a stable Emacs for Mac with Homebrew
+
+#+BEGIN_EXAMPLE sh
+brew install https://raw.githubusercontent.com/railwaycat/homebrew-emacsmacport/emacs-25.1-mac-6.1/Formula/emacs-mac.rb --with-ctags --with-modern-icon
+#+END_EXAMPLE
