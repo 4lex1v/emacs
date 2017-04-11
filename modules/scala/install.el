@@ -67,7 +67,7 @@
    "sebr" #'ensime-sbt-do-run
    "sebc" #'ensime-sbt-do-compile)
   
-  (general-define-key :keymaps 'scala-mode-map
+  (:keymaps 'scala-mode-map
     "se" '(:ignore t :which-key "Ensime")
     "ses"  #'ensime
     "seu"  #'4lex1v:update-ensime-build)
