@@ -70,7 +70,7 @@
    "br" 'ensime-sbt-do-run
    "bc" 'ensime-sbt-do-compile)
 
-  (:keymaps 'scala-mode-map
+  (:keymaps 'ensime-mode-map
    :prefix ","
    "e" 'ensime-print-errors-at-point
    "t" 'ensime-print-type-at-point
