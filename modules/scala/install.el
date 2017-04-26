@@ -70,12 +70,14 @@
    "br" 'ensime-sbt-do-run
    "bc" 'ensime-sbt-do-compile)
 
+  ;; Looks like a perfect candidate for a Hydra?
   (:keymaps 'ensime-mode-map
    :prefix ","
    "e" 'ensime-print-errors-at-point
    "t" 'ensime-print-type-at-point
    "o" 'ensime-import-type-at-point
-   "g" 'ensime-edit-definition-other-window)
+   "g" 'ensime-edit-definition-other-window
+   "." 'ensime-edit-definition)
   
   :init
   (setq ensime-server-version        "1.0.0"
