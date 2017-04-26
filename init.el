@@ -7,6 +7,7 @@
 
 ;;
 ;;; Platform Configuration
+;; Unlike other modules, these should be loaded sequentially in a given order
 ;; 
 
 (fnd:module essentials     "The basis for my `.emacs.d' configuration. Configures package-management system and `use-package', along with others less important settings.")
@@ -19,26 +20,27 @@
 ;;; Modules: Languages
 ;;
 
+
+(fnd:module clojure        "Clojure programming language support")
 (fnd:module elisp          "Configuration for `emacs-lisp-mode' and other helpfull stuff to improve the experience with `ELisp'")
-(fnd:module scala          "Scala language support + Ensime language server")
+(fnd:module groovy         "Groovy programming language support. Require for various DevOps related stuff, e.g Jenkinsfiles")
 (fnd:module haskell        "Haskell programming language support")
 (fnd:module idris          "Idris programming language support")
-(fnd:module purescript     "PureScript programming language support")
 (fnd:module native         "C/C++ support")
-(fnd:module clojure        "Clojure programming language support")
-(fnd:module groovy         "Groovy programming language support. Require for various DevOps related stuff, e.g Jenkinsfiles")
+(fnd:module purescript     "PureScript programming language support")
 (fnd:module python         "Extensive support for Python ecosystem")
+(fnd:module scala          "Scala language support + Ensime language server")
 
 ;;
 ;;; Modules: Others
 ;;
 
-(fnd:module org            "Org-mode configuration package")
-(fnd:module web            "Web & Frontend engineering stuff")
-(fnd:module vcs            "All-things-Magit")
-(fnd:module infra          "DevOps related stuff, e.g Docker")
-(fnd:module formats        "Minor formats like Markdown & YAML support")
-(fnd:module statistics     "Configuration package for math & statistics related tasks")
 (fnd:module communications "Slack, Jabber, etc...")
+(fnd:module formats        "Minor formats like Markdown & YAML support")
+(fnd:module infra          "DevOps related stuff, e.g Docker")
+(fnd:module org            "Org-mode configuration package")
+(fnd:module statistics     "Configuration package for math & statistics related tasks")
+(fnd:module vcs            "All-things-Magit")
+(fnd:module web            "Web & Frontend engineering stuff")
 
 (setq gc-cons-threshold 100000)
