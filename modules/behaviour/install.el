@@ -20,8 +20,10 @@
 (use-package evil
   :after general ;; To enable evil-leader in initial buffers
   :init
-  (setq evil-default-cursor t
-        evil-ex-substitute-global t
+  (setq evil-default-cursor             t
+        evil-ex-substitute-global       t
+        evil-ex-search-vim-style-regexp t
+        evil-want-C-u-scroll            t
         evil-ex-interactive-search-highlight 'selected-window)
 
   :config

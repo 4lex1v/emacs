@@ -81,9 +81,8 @@
   (set-frame-font frame-font)
   (add-to-list 'default-frame-alist (cons 'font frame-font)))
 
-(4lex1v:gui:frame :size         'maximized
-                 :transparency '(100 . 100)
-                 :cursor       '(box . bar))
+(4lex1v:gui:frame :transparency '(100 . 100)
+                  :cursor       '(box . bar))
 
 (use-package spaceline-config)
 
