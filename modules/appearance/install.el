@@ -72,6 +72,8 @@
   (setq font-size value)
   (4lex1v:gui:font font-name :size value))
 
+(load "functions")
+
 (load "fonts/pretty-pragmata")
 (load "fonts")
 
