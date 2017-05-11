@@ -49,7 +49,8 @@
    "c" '(4lex1v:sbt-compile-command :which-key "compile"))
  
   :config
-  (load "sbt-defuns"))
+  (load "sbt-defuns")
+  (evil-set-initial-state 'sbt-mode 'emacs))
 
 (use-package ensime
   :after scala-mode
@@ -80,7 +81,7 @@
    "." 'ensime-edit-definition)
   
   :init
-  (setq ensime-server-version        "1.0.0"
+  (setq ensime-server-version        "2.0.0-SNAPSHOT"
         ensime-default-buffer-prefix "ENSIME-"
         ensime-startup-notification   nil
         ensime-startup-snapshot-notification nil)
