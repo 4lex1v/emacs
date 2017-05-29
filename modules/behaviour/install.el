@@ -143,6 +143,12 @@
   :bind
   (("M-1" . helm-projectile)
    ("M-4" . projectile-switch-project))
+  
+  :general
+  ("p" '(:ignore t :which-key "Projectile")
+   "pp" 'helm-projectile-switch-project
+   "ps" 'helm-projectile-ag
+   "pi" 'projectile-invalidate-cache)
 
   :init
   (setq projectile-enable-caching       t
@@ -151,13 +157,6 @@
         projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
 
   :config
-  (general-define-key
-    "pp" 'helm-projectile-switch-project
-    "ps" 'helm-projectile-ag)
-  
-  (which-key-declare-prefixes
-    "<SPC> p" "Projectile")
-
   (projectile-global-mode))
 
 (use-package ibuffer-projectile
@@ -276,5 +275,6 @@
 
 (use-package ace-window
   :bind
-  (("C-'"  . ace-window)
-   ("<f7>" . ace-window)))
+  (("C-'"  . ace-window))
+  :general
+  ("wj" 'ace-window))
