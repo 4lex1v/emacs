@@ -219,3 +219,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/org/org-reveal"]
 	path = modules/org/org-reveal
 	url = git@github.com:yjwen/org-reveal.git
+[submodule "modules/appearance/themes/tao-theme-emacs"]
+	path = modules/appearance/themes/tao-theme-emacs
+	url = git@github.com:11111000000/tao-theme-emacs.git
