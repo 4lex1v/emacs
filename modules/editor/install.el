@@ -58,25 +58,28 @@
   :diminish company-mode
   :commands global-company-mode
 
-  :bind (("M-&" . company-complete))
+  :general
+  (:prefix ""
+   "C-/" 'company-complete)
 
   :init 
   (setq company-dabbrev-ignore-case nil
         company-dabbrev-code-ignore-case nil
         company-dabbrev-downcase nil
         company-idle-delay 0
-        company-minimum-prefix-length 4))
+        company-minimum-prefix-length 3))
 
 (use-package yasnippet
   :commands yas-minor-mode
+  :diminish yas-minor-mode
+ 
   :init
   (setq yas-snippet-dirs '("~/.emacs.d/modules/editor/snippets"
-                           "~/.emacs.d/modules/editor/yasnippet/snippets"))
+                           "~/.emacs.d/modules/editor/yasnippet/snippets")
+        yas-wrap-around-region t)
   
   :config
-  (yas-reload-all)
-  (with-mode which-key
-    (which-key-declare-prefixes "C-c &" "yasnippet")))
+  (yas-reload-all)) 
 
 (use-package hideshowvis
   :diminish hs-minor-mode
