@@ -60,7 +60,7 @@
   (:keymaps 'scala-mode-map
    :prefix "<SPC> se"
    ""  '(:ignore t :which-key "Ensime")
-   "s" 'ensime
+   "e" 'ensime
    "u" '4lex1v:update-ensime-build)
   
   (:keymaps 'ensime-mode-map
@@ -78,7 +78,8 @@
    "t" 'ensime-print-type-at-point
    "o" 'ensime-import-type-at-point
    "g" 'ensime-edit-definition-other-window
-   "." 'ensime-edit-definition)
+   "," 'ensime-pop-find-definition-stack
+   "." 'ensime-edit-definition-of-thing-at-point)
   
   :init
   (setq ensime-server-version        "2.0.0-SNAPSHOT"
@@ -93,6 +94,9 @@
   (unbind-key "M-p" ensime-mode-map)
   
   (add-hook 'scala-mode-hook #'4lex1v:smart-ensime-loader)
+
+  ;; The one defined by the Scala-mode for integration with Ensime
+  (require 'ob-scala)
   
   (which-key-declare-prefixes-for-mode 'ensime-mode
     "C-c C-d" "ensime/debug"
