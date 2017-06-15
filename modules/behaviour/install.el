@@ -26,6 +26,11 @@
         evil-want-C-u-scroll            t
         evil-ex-interactive-search-highlight 'selected-window)
 
+  :general
+  (:prefix ""
+   "j" 'evil-next-visual-line
+   "k" 'evil-previous-visual-line)
+  
   :config
   (general-evil-setup t)
 
