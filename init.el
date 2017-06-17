@@ -20,7 +20,6 @@
 ;;; Modules: Languages
 ;;
 
-
 (fnd:module clojure        "Clojure programming language support")
 (fnd:module elisp          "Configuration for `emacs-lisp-mode' and other helpfull stuff to improve the experience with `ELisp'")
 (fnd:module groovy         "Groovy programming language support. Require for various DevOps related stuff, e.g Jenkinsfiles")
@@ -39,6 +38,7 @@
 (fnd:module formats        "Minor formats like Markdown & YAML support")
 (fnd:module infra          "DevOps related stuff, e.g Docker")
 (fnd:module org            "Org-mode configuration package")
+(fnd:module reader         "PDF reading tools")
 (fnd:module statistics     "Configuration package for math & statistics related tasks")
 (fnd:module vcs            "All-things-Magit")
 (fnd:module web            "Web & Frontend engineering stuff")
