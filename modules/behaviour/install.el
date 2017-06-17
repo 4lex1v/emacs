@@ -29,7 +29,8 @@
   :general
   (:prefix ""
    "j" 'evil-next-visual-line
-   "k" 'evil-previous-visual-line)
+   "k" 'evil-previous-visual-line
+   "$" 'evil-end-of-visual-line)
   
   :config
   (general-evil-setup t)

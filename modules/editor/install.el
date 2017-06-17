@@ -48,11 +48,7 @@
   :config
   (sp-pair "(" ")" :wrap "C-(")
   (sp-pair "[" "]" :wrap "s-[")
-  (sp-pair "{" "}" :wrap "C-{")
-  
-  (with-mode which-key
-    (which-key-declare-prefixes
-      "C-c s" "smartparens")))
+  (sp-pair "{" "}" :wrap "C-{"))
 
 (use-package company
   :diminish company-mode

@@ -7,7 +7,9 @@
 
   :init
   (setq haskell-process-log t
-        haskell-process-type 'stack-ghci))
+        haskell-process-type 'stack-ghci)
+  :config
+  (evil-set-initial-state 'haskell-error-mode 'emacs))
 
 (use-package haskell
   :config
