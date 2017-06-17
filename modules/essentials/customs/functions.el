@@ -113,3 +113,7 @@ then two windows around, provide an index number which window to close"
       (subword-backward-kill 1))
      (t
       (backward-kill-word 1)))))
+
+(defun mac-os-p ()
+  (interactive)
+  (string-equal system-type "darwin"))

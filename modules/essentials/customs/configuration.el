@@ -1,3 +1,5 @@
+(setq-default truncate-lines t)
+
 (setq show-paren-delay            0.0
       ring-bell-function         'ignore
       tramp-default-method       "ssh"
