@@ -5,6 +5,7 @@
   (("C-c o l" . org-store-link)
    ("C-c o a" . org-agenda)
    ("C-c o c" . org-capture))
+
   :bind* ("C-'"  . ace-window)
 
   :init
@@ -21,7 +22,9 @@
                                    (js         . t))
         org-ellipsis "⬎"
         org-hide-leading-stars nil
-        org-startup-indented nil)
+        org-startup-indented nil
+        org-line-spacing 5
+        org-notes-font "Menlo")
 
   :config
   (with-mode which-key
@@ -31,9 +34,15 @@
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   
   (add-to-list 'org-structure-template-alist
-             '("scala" "#+BEGIN_SRC scala \n\t?\n#+END_SRC"))
+               '("scala" "#+BEGIN_SRC scala \n\t?\n#+END_SRC"))
   
-  (add-hook 'org-mode-hook #'flyspell-mode))
+  (defun enlarge-line-spacing ()
+    (setq-local line-spacing org-line-spacing))
+
+  (add-hook 'org-mode-hook #'enlarge-line-spacing)
+  
+  (add-hook 'org-mode-hook #'flyspell-mode)
+  (add-hook 'org-mode-hook #'toggle-truncate-lines))
 
 (use-package ob :after org)
 
