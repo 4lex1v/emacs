@@ -1,32 +1,3 @@
-(setq-default
- mode-line-default-help-echo nil ; turn-off tooltips on cursor hover-over
- tab-width           2 ;; Though i'm not using tabs
- indent-tabs-mode    nil
- cursor-type        'box
- cursor-in-non-selected-windows 'bar
- frame-title-format " %@%b% -"
- linum-format       "%3d "  ;; Try dynamic?
- load-prefer-newer  t
- left-fringe-width  20)
-
-(global-hl-line-mode t)
-(show-paren-mode     t)
-(delete-selection-mode t)
-(toggle-truncate-lines t)
-
-(if (window-system)
-    (progn
-      (tooltip-mode -1)
-      (tool-bar-mode -1)
-      (menu-bar-mode -1)
-      (scroll-bar-mode -1)))
-
-(when (boundp 'window-divider-mode)
-  (setq window-divider-default-places t
-        window-divider-default-bottom-width 1
-        window-divider-default-right-width 1)
-  (window-divider-mode +1))
-
 ;; Add themes to the scope
 (fnd:attach "themes/zenburn-emacs"
             "themes/dracula"
@@ -34,7 +5,8 @@
             "themes/emacs-doom-theme"
             "themes/sirthias"
             "themes/solarized-emacs"
-            "themes/spacemacs")
+            "themes/spacemacs"
+            "themes/tao-theme-emacs")
 
 (setq solarized-contrast                   'high
       solarized-visibility                 'high
@@ -52,47 +24,29 @@
       doom-one-brighter-modeline t
       doom-one-brighter-comments t)
 
+;; (require 'doom-themes)
+;; (load-theme 'doom-molokai t)
+
+;; (require 'dracula-theme)
+;; (load-theme 'dracula t)
+
 (require 'spacemacs-light-theme)
 (load-theme 'spacemacs-light t t)
 
-(defcustom default-font-name "PragmataPro"
-  "Font name used by default"
-  :group 'string 
-  :options '("PragmataPro"
-             "Hack"
-             "Ayuthaya"))
-
-(defcustom default-font-size 18
-  "Default Font size used across all frames")
-
-(defun change-font-size (value)
-  (interactive
-   (list
-    (read-number (format "Font current font size [%d] to: " font-size))))
-  (setq font-size value)
-  (4lex1v:gui:font font-name :size value))
-
 (load "functions")
-
 (load "fonts/pretty-pragmata")
 (load "fonts")
-
-(let ((frame-font (format "%s-%d"
-                          default-font-name
-                          default-font-size)))
-  (set-frame-font frame-font)
-  (add-to-list 'default-frame-alist (cons 'font frame-font)))
-
-(4lex1v:gui:frame :transparency '(100 . 100)
-                  :cursor       '(box . bar))
+(load "configuration")
 
 (use-package spaceline-config)
 
 (use-package spaceline
   :after spaceline-config
+  
   :init
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
         powerline-default-separator 'bar)
+  
   :config
   (spaceline-spacemacs-theme)
   (spaceline-helm-mode))
@@ -100,9 +54,12 @@
 (use-package beacon
   :ensure t
   :diminish beacon-mode
+  
   :init
   (setq beacon-color (face-attribute 'spaceline-evil-normal :background nil t))
+  
   :config
+  (add-to-list 'beacon-dont-blink-major-modes 'term-mode)
   (beacon-mode +1))
 
 (use-package hl-line
@@ -112,3 +69,6 @@
   :config
   (add-hook 'prog-mode-hook 'hl-line-mode)
   (global-hl-line-mode))
+
+(use-package hide-mode-line
+  )
