@@ -22,6 +22,7 @@
 
 (fnd:module clojure        "Clojure programming language support")
 (fnd:module elisp          "Configuration for `emacs-lisp-mode' and other helpfull stuff to improve the experience with `ELisp'")
+(fnd:module racket         "Support for the Racket programming language")
 (fnd:module groovy         "Groovy programming language support. Require for various DevOps related stuff, e.g Jenkinsfiles")
 (fnd:module haskell        "Haskell programming language support")
 (fnd:module idris          "Idris programming language support")

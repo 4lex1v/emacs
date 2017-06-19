@@ -225,3 +225,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/editor/evil-smartparens"]
 	path = modules/editor/evil-smartparens
 	url = git@github.com:expez/evil-smartparens.git
+[submodule "modules/racket/racket-mode"]
+	path = modules/racket/racket-mode
+	url = git@github.com:greghendershott/racket-mode.git
