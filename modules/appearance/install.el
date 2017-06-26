@@ -27,11 +27,11 @@
 ;; (require 'doom-themes)
 ;; (load-theme 'doom-molokai t)
 
-;; (require 'dracula-theme)
-;; (load-theme 'dracula t)
+(require 'dracula-theme)
+(load-theme 'dracula t)
 
-(require 'spacemacs-light-theme)
-(load-theme 'spacemacs-light t t)
+;; (require 'spacemacs-light-theme)
+;; (load-theme 'spacemacs-light t t)
 
 (load "functions")
 (load "fonts/pretty-pragmata")
