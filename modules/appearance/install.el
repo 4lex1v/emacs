@@ -6,7 +6,8 @@
 (load "configuration")
 
 (use-package solarized-theme
-  :if (eq theme-to-load 'solarized)
+  :if (and (display-graphic-p)
+           (eq theme-to-load 'solarized))
   :load-path "modules/appearance/themes/solarized-emacs"
   :init
   (setq solarized-contrast                   'high
@@ -18,10 +19,13 @@
         solarized-use-more-italic             nil
         solarized-high-contrast-mode-line     t
         solarized-emphasize-indicators        t
-        x-underline-at-descent-line           t))
+        x-underline-at-descent-line           t)
+  :config
+  (load-theme 'solarized-theme t))
 
 (use-package doom-themes
-  :if (eq theme-to-load 'doom)
+  :if (and (display-graphic-p)
+           (eq theme-to-load 'doom))
   :load-path "modules/appearance/themes/emacs-doom-theme"
   :init 
   (setq doom-enable-bold t
@@ -32,18 +36,19 @@
   (load-theme 'doom-molokai t))
 
 (use-package dracula-theme
-  :if (eq theme-to-load 'dracula)
+  :if (and (display-graphic-p)
+           (eq theme-to-load 'dracula))
   :load-path "modules/appearance/themes/dracula"
   :config
   (load-theme 'dracula t))
 
-(use-package spacemacs-theme
-  :if (eq theme-to-load 'spacemacs)
+(use-package spacemacs-light-theme
+  :if (and (display-graphic-p)
+           (eq theme-to-load 'spacemacs))
   :load-path "modules/appearance/themes/spacemacs"
   :init
   :config
-   (require 'spacemacs-light-theme)
-   (load-theme 'spacemacs-light t t))
+  (load-theme 'spacemacs-light t))
 
 (use-package spaceline-config)
 
