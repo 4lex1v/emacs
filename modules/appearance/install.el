@@ -1,42 +1,49 @@
-;; Add themes to the scope
-(fnd:attach "themes/zenburn-emacs"
-            "themes/dracula"
-            "themes/monokai-emacs"
-            "themes/emacs-doom-theme"
-            "themes/sirthias"
-            "themes/solarized-emacs"
-            "themes/spacemacs"
-            "themes/tao-theme-emacs")
-
-(setq solarized-contrast                   'high
-      solarized-visibility                 'high
-      solarized-termcolors                  256
-      solarized-distinct-fringe-background  t
-      solarized-use-variable-pitch          nil
-      solarized-use-less-bold               nil
-      solarized-use-more-italic             nil
-      solarized-high-contrast-mode-line     t
-      solarized-emphasize-indicators        t
-      x-underline-at-descent-line           t)
-
-(setq doom-enable-bold t
-      doom-enable-italic t
-      doom-one-brighter-modeline t
-      doom-one-brighter-comments t)
-
-;; (require 'doom-themes)
-;; (load-theme 'doom-molokai t)
-
-(require 'dracula-theme)
-(load-theme 'dracula t)
-
-;; (require 'spacemacs-light-theme)
-;; (load-theme 'spacemacs-light t t)
+(defconst theme-to-load 'dracula)
 
 (load "functions")
 (load "fonts/pretty-pragmata")
 (load "fonts")
 (load "configuration")
+
+(use-package solarized-theme
+  :if (eq theme-to-load 'solarized)
+  :load-path "modules/appearance/themes/solarized-emacs"
+  :init
+  (setq solarized-contrast                   'high
+        solarized-visibility                 'high
+        solarized-termcolors                  256
+        solarized-distinct-fringe-background  t
+        solarized-use-variable-pitch          nil
+        solarized-use-less-bold               nil
+        solarized-use-more-italic             nil
+        solarized-high-contrast-mode-line     t
+        solarized-emphasize-indicators        t
+        x-underline-at-descent-line           t))
+
+(use-package doom-themes
+  :if (eq theme-to-load 'doom)
+  :load-path "modules/appearance/themes/emacs-doom-theme"
+  :init 
+  (setq doom-enable-bold t
+        doom-enable-italic t
+        doom-one-brighter-modeline t
+        doom-one-brighter-comments t)
+  :config
+  (load-theme 'doom-molokai t))
+
+(use-package dracula-theme
+  :if (eq theme-to-load 'dracula)
+  :load-path "modules/appearance/themes/dracula"
+  :config
+  (load-theme 'dracula t))
+
+(use-package spacemacs-theme
+  :if (eq theme-to-load 'spacemacs)
+  :load-path "modules/appearance/themes/spacemacs"
+  :init
+  :config
+   (require 'spacemacs-light-theme)
+   (load-theme 'spacemacs-light t t))
 
 (use-package spaceline-config)
 
