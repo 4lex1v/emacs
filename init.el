@@ -20,15 +20,22 @@
 ;;; Modules: Languages
 ;;
 
+;; Lisps
 (fnd:module clojure        "Clojure programming language support")
 (fnd:module elisp          "Configuration for `emacs-lisp-mode' and other helpfull stuff to improve the experience with `ELisp'")
 (fnd:module racket         "Support for the Racket programming language")
+
+;; Scripting
 (fnd:module groovy         "Groovy programming language support. Require for various DevOps related stuff, e.g Jenkinsfiles")
+(fnd:module python         "Extensive support for Python ecosystem")
+(fnd:module scripting      "Set of modules to add support for scripting / dynamic / untyped languages, i.e Python, Groovy, Lua")
+
+;; Advanced FP languages
 (fnd:module haskell        "Haskell programming language support")
 (fnd:module idris          "Idris programming language support")
-(fnd:module native         "C/C++ support")
 (fnd:module purescript     "PureScript programming language support")
-(fnd:module python         "Extensive support for Python ecosystem")
+
+(fnd:module native         "C/C++ support")
 (fnd:module scala          "Scala language support + Ensime language server")
 
 ;;
