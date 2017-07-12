@@ -20,7 +20,6 @@
 ;;; Modules: Languages
 ;;
 
-;; Lisps
 (fnd:module clojure        "Clojure programming language support")
 (fnd:module elisp          "Configuration for `emacs-lisp-mode' and other helpfull stuff to improve the experience with `ELisp'")
 (fnd:module racket         "Support for the Racket programming language")
