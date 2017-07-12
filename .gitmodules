@@ -178,7 +178,7 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/behaviour/helm-dash
 	url = https://github.com/areina/helm-dash
 [submodule "modules/groovy/groovy-emacs-modes"]
-	path = modules/scripting/groovy-emacs-modes
+	path = modules/groovy/groovy-emacs-mode
 	url = git@github.com:Groovy-Emacs-Modes/groovy-emacs-modes.git
 [submodule "platform/vim/evil-args"]
 	path = modules/editor/evil-args
@@ -235,5 +235,5 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/formats/plantuml-mode
 	url = git@github.com:skuro/plantuml-mode.git
 [submodule "modules/scripting/lua-mode"]
-	path = modules/scripting/lua-mode
+	path = modules/lua/lua-mode
 	url = git@github.com:immerrr/lua-mode.git
