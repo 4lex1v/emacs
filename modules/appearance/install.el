@@ -51,20 +51,44 @@
   (load-theme 'spacemacs-light t))
 
 (use-package spaceline-config)
-
 (use-package spaceline
   :after spaceline-config
   
   :init
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
-        powerline-default-separator 'bar)
+        powerline-image-apple-rgb t
+        powerline-default-separator 'arrow)
+
+  ;; TODO :: this should be defined and loaded from Projectile
+  ;;         configuration. How can this be done?
+  (spaceline-define-segment projectile-mode-segment
+    "Pretty projectile segment rendering"
+    (if (and (fboundp 'projectile-project-p)
+             (projectile-project-p))
+        (propertize (projectile-project-name))))
+  
+  (defun custom-spaceline-theme ()
+    (spaceline-install
+      ;; Left side
+      `((hud :priority 0)
+        (evil-state :face highlight-face :priority 0)
+        projectile-mode-segment
+        buffer-id
+        ;(buffer-id :face spaceline-modified) 
+        buffer-position) 
+      
+      ;; Right side
+      '((minor-modes :when active)
+        major-mode))
+    
+    (setq-default mode-line-format '("%e" (:eval (spaceline-ml-main)))))
   
   :config
-  (spaceline-spacemacs-theme)
-  (spaceline-helm-mode))
+  (custom-spaceline-theme))
 
 (use-package beacon
   :ensure t
+  :if (display-graphic-p)
   :diminish beacon-mode
   
   :init
@@ -76,11 +100,9 @@
 
 (use-package hl-line
   :init
-  (setq hl-line-sticky-flag nil
-        global-hl-line-sticky-flag nil)
+  (setq global-hl-line-sticky-flag nil)
   :config
-  (add-hook 'prog-mode-hook 'hl-line-mode)
   (global-hl-line-mode))
 
-(use-package hide-mode-line
-  )
+;; TODO :: need to check this one out
+(use-package hide-mode-line)
