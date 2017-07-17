@@ -19,7 +19,8 @@
                                    (shell      . t)
                                    (python     . t)
                                    (clojure    . t)
-                                   (js         . t))
+                                   (js         . t)
+                                   (racket     . t))
         org-ellipsis "⬎"
         org-hide-leading-stars nil
         org-startup-indented nil
