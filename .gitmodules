@@ -237,3 +237,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/scripting/lua-mode"]
 	path = modules/lua/lua-mode
 	url = git@github.com:immerrr/lua-mode.git
+[submodule "modules/behaviour/ggtags"]
+	path = modules/behaviour/ggtags
+	url = https://github.com/leoliu/ggtags

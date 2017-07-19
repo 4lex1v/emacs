@@ -284,3 +284,16 @@
   (("C-'"  . ace-window))
   :general
   ("wj" 'ace-window))
+
+(use-package ggtags
+  :general
+  ("g" '(:ignore t :which-key "GTags")
+   "gs" 'ggtags-find-other-symbol
+   "gh" 'ggtags-view-tag-history
+   "gr" 'ggtags-find-reference
+   "gf" 'ggtags-find-file
+   "gc" 'ggtags-create-tags
+   "gu" 'ggtags-update-tags)
+  
+  :config
+  (ggtags-mode 1))
