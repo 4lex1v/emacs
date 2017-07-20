@@ -59,13 +59,21 @@
         powerline-image-apple-rgb t
         powerline-default-separator 'arrow)
 
-  ;; TODO :: this should be defined and loaded from Projectile
-  ;;         configuration. How can this be done?
   (spaceline-define-segment projectile-mode-segment
     "Pretty projectile segment rendering"
     (if (and (fboundp 'projectile-project-p)
              (projectile-project-p))
-        (propertize (projectile-project-name))))
+        (let ((project-name (projectile-project-name))
+              (branch-name
+               (if (fboundp 'magit-get-current-branch)
+                   (magit-get-current-branch))))
+          (propertize
+           (if (or (eq branch-name nil)
+                   (string-empty-p branch-name))
+               project-name
+             (format "[git: %s] | %s"
+                     branch-name
+                     project-name))))))
   
   (defun custom-spaceline-theme ()
     (spaceline-install

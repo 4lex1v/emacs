@@ -38,15 +38,15 @@
              "Menlo"
              "Ayuthaya"))
 
-(defcustom default-font-size 22
+(defcustom default-font-size 18
   "Default Font size used across all frames")
 
-(defun change-font-size (value)
-  (interactive
-   (list
-    (read-number (format "Font current font size [%d] to: " font-size))))
-  (setq font-size value)
-  (4lex1v:gui:font font-name :size value))
+;; (defun change-font-size (value)
+;;   (interactive
+;;    (list
+;;     (read-number (format "Font current font size [%d] to: " font-size))))
+;;   (setq font-size value)
+;;   (4lex1v:gui:font font-name :size value))
 
 (let ((frame-font (format "%s-%d"
                           default-font-name
