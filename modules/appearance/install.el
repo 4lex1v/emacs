@@ -47,6 +47,8 @@
            (eq theme-to-load 'spacemacs))
   :load-path "modules/appearance/themes/spacemacs"
   :init
+  (setq spacemacs-theme-comment-italic t)
+
   :config
   (load-theme 'spacemacs-light t))
 
