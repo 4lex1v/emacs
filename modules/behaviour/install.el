@@ -205,16 +205,15 @@
                          (or (projectile-project-root)
                              default-directory)))))
 
-  (defun drill-folder-down (&optional initial)
+  (cl-defun drill-folder-down (&optional (entry-point (dired-get-filename nil t)))
     (interactive)
-    (let ((folder (or initial (dired-get-filename nil t))))
-      (when (and folder
-                 (file-directory-p folder))
-        (let* ((subfolders (f-entries folder #'file-directory-p))
-               (nr-of-subfolderss (length subfolders)))
-          (if (eq nr-of-subfolderss 1)
-              (drill-folder-down (car subfolders))
-            (ranger-find-file initial))))))
+    (if (file-directory-p entry-point)
+        (let* ((subentries (f-entries entry-point)))
+          ;; If `entry-point' contains a single folder navigate into it
+          (if (and (eq (length subentries) 1)
+                   (file-directory-p (car subentries)))
+              (drill-folder-down (car subentries))
+            (ranger-find-file entry-point)))))
 
   (defun drill-folder-up (&optional initial)
     (interactive)
