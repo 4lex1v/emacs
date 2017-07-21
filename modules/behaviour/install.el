@@ -32,14 +32,13 @@
 
   :general
   (:prefix ""
-   "j" 'evil-next-visual-line
-   "k" 'evil-previous-visual-line
-   "$" 'evil-end-of-visual-line
+     "j" 'evil-next-visual-line
+     "k" 'evil-previous-visual-line
+     "$" 'evil-end-of-visual-line
    "C-j" 'evil-forward-paragraph
    "C-k" 'evil-backward-paragraph)
   
   :config
-
   (general-evil-setup t)
 
   (evil-set-initial-state 'prog-mode 'normal)
@@ -50,6 +49,7 @@
   (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
 
   (evil-ex-define-cmd "e[val]" #'eval-buffer)
+  
   (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-mode))
 
@@ -205,20 +205,15 @@
                          (or (projectile-project-root)
                              default-directory)))))
 
-  :general
-  ("fr" 'ranger)
-  
-  :config
-  (ranger-override-dired-mode t)
-
   (defun drill-folder-down (&optional initial)
     (interactive)
     (let ((folder (or initial (dired-get-filename nil t))))
-      (when (and folder (file-directory-p folder))
-        (let* ((subfolder (f-entries folder))
-               (nr-of-subfolders (length subfolder)))
-          (if (eq nr-of-subfolders 1)
-              (drill-folder-down (car subfolder))
+      (when (and folder
+                 (file-directory-p folder))
+        (let* ((subfolders (f-entries folder #'file-directory-p))
+               (nr-of-subfolderss (length subfolders)))
+          (if (eq nr-of-subfolderss 1)
+              (drill-folder-down (car subfolders))
             (ranger-find-file initial))))))
 
   (defun drill-folder-up (&optional initial)
@@ -230,6 +225,12 @@
       (if (eq nr-of-entryies 1)
           (drill-folder-up parent-folder)
         (ranger-find-file parent-folder))))           
+  
+  :general
+  ("fr" 'ranger)
+  
+  :config
+  (ranger-override-dired-mode t)
 
   (bind-key "l" #'drill-folder-down ranger-mode-map)
   (bind-key "h" #'drill-folder-up   ranger-mode-map)
