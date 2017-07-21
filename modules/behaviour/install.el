@@ -3,14 +3,18 @@
   :diminish which-key-mode
   :init
   (setq which-key-idle-delay 0.2
-        which-key-popup-type 'side-window
         which-key-sort-order 'which-key-prefix-then-key-order-reverse
         which-key-show-operator-state-maps t ;; Hack to make this work with Evil
         which-key-prefix-prefix ""
-        which-key-side-window-max-width 0.5) 
+        which-key-side-window-max-width 0.5
+
+        which-key-popup-type           'side-window 
+        which-key-side-window-location 'bottom) 
+  
   :config
-  (which-key-setup-side-window-right)
   (which-key-mode))
+
+(use-package imenu)
 
 (use-package general
   :init
@@ -30,9 +34,12 @@
   (:prefix ""
    "j" 'evil-next-visual-line
    "k" 'evil-previous-visual-line
-   "$" 'evil-end-of-visual-line)
+   "$" 'evil-end-of-visual-line
+   "C-j" 'evil-forward-paragraph
+   "C-k" 'evil-backward-paragraph)
   
   :config
+
   (general-evil-setup t)
 
   (evil-set-initial-state 'prog-mode 'normal)
@@ -42,13 +49,9 @@
   (evil-global-set-key 'normal "§" #'evil-emacs-state)
   (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
 
-  ;; Unbind certain keybindings 
-  (unbind-key "C-k" global-map)
-  (unbind-key "C-j" global-map)
- 
   (evil-ex-define-cmd "e[val]" #'eval-buffer)
-  (evil-mode)
-  (evil-select-search-module 'evil-search-module 'evil-search))
+  (evil-select-search-module 'evil-search-module 'evil-search)
+  (evil-mode))
 
 (use-package helm-config)
 (use-package helm-mode)
@@ -97,6 +100,7 @@
  
   :config 
   (helm-autoresize-mode)
+  (spaceline-helm-mode)
 
   (which-key-declare-prefixes "<SPC> f" "Files")
 
@@ -145,6 +149,7 @@
 
 (use-package projectile
   :commands projectile-project-root
+  :diminish projectile-mode
   :bind-keymap ("C-c p" . projectile-command-map)
   :bind
   (("M-1" . helm-projectile)
