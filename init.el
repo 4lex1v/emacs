@@ -1,7 +1,9 @@
 (setq gc-cons-threshold 10000000)
 
 (eval-and-compile
-  (load (expand-file-name "foundation/foundation" user-emacs-directory)))
+  (add-to-list 'load-path
+               (expand-file-name "foundation" user-emacs-directory))
+  (require 'foundation))
 
 (setq default-directory "~/Sandbox/")
 

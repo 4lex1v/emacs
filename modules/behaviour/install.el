@@ -147,6 +147,10 @@
   (setq helm-ag-insert-at-point 'symbol
         helm-ag-fuzzy-match     t))
 
+(use-package foundation-helm
+  :general
+  ("el" '(fnd:helm-list-modules :which-key "Modules")))
+
 (use-package projectile
   :commands projectile-project-root
   :diminish projectile-mode
