@@ -54,6 +54,16 @@
   :diminish company-mode
   :commands global-company-mode
 
+  ;; @NOTE :: For some reason can't make this work with general??
+  ;; Example config with general:
+  ;;   (general-define-key :keymaps 'company-active-map
+  ;;     "C-j" 'company-select-next)
+  ;; Though perfectly works via `define-key'
+  :bind
+  (:map company-active-map
+   ("C-j" . company-select-next)
+   ("C-k" . company-select-previous))
+  
   :general
   (:prefix ""
    "C-/" 'company-complete)
