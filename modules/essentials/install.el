@@ -21,6 +21,9 @@
 ;; Vendor packages
 (use-package diminish :ensure t)
 
+;; Use-Package Extensions
+(use-package upe-hooks)
+
 (unbind-key "C-x b")
 
 (load "functions")
