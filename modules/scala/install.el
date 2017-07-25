@@ -1,5 +1,5 @@
 (use-package scala-mode
-  :defer
+  :defer t
   :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
   :interpreter ("scala" . scala-mode)
   
@@ -16,21 +16,23 @@
   :init
   (setq scala-indent:use-javadoc-style t
         scala-mode:debug-messages nil)
-
+  
+  (eval-after-load 'org-mode
+    (lambda ()
+      (add-to-list 'org-babel-load-languages '(scala . t))))
+  
+  :hooks (4lex1v/fix-scala-fonts
+          hs-minor-mode
+          hideshowvis-enable
+          yas-minor-mode
+          global-company-mode)
   :config
   (load "scala-defs")
-
-  (add-hook 'scala-mode-hook #'yas-minor-mode)
-  (add-hook 'scala-mode-hook #'global-company-mode)
-  (add-hook 'scala-mode-hook #'4lex1v/fix-scala-fonts)
-  (add-hook 'scala-mode-hook #'hideshowvis-enable)
-  (add-hook 'scala-mode-hook #'hs-minor-mode)
 
   (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist))
 
 (use-package smartparens-scala
   :after scala-mode
-  
   :config
   (add-hook 'scala-mode-hook #'smartparens-mode)
   (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
@@ -96,14 +98,7 @@
   (add-hook 'scala-mode-hook #'4lex1v:smart-ensime-loader)
 
   ;; The one defined by the Scala-mode for integration with Ensime
-  (require 'ob-scala)
-  
-  (which-key-declare-prefixes-for-mode 'ensime-mode
-    "C-c C-d" "ensime/debug"
-    "C-c C-c" "ensime/compiler"
-    "C-c C-r" "ensime/refactoring"
-    "C-c C-t" "ensime/tests"
-    "C-c C-v" "ensime/general"))
+  (require 'ob-scala))
 
 (use-package ensime-company
   :after (ensime company))
