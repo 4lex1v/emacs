@@ -1,4 +1,5 @@
-(setq-default truncate-lines t)
+(setq-default truncate-lines t
+              initial-major-mode (quote fundamental-mode))
 
 (setq show-paren-delay            0.0
       ring-bell-function         'ignore
