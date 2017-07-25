@@ -61,6 +61,8 @@
         powerline-image-apple-rgb t
         powerline-default-separator 'arrow)
 
+  ;; TODO :: the problem with this functiona is that
+  ;; it's rather often that magit is not loaded
   (spaceline-define-segment projectile-mode-segment
     "Pretty projectile segment rendering"
     (if (and (fboundp 'projectile-project-p)
