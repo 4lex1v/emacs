@@ -4,9 +4,11 @@
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'"       . markdown-mode)
+         ("\\.md\\'"       . gfm-mode)
          ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
+  :init
+  (setq markdown-command "markdown"
+        markdown-open-command "grip -b"))
 
 (use-package plantuml-mode :defer)
 
