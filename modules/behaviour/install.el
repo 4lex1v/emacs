@@ -29,14 +29,25 @@
         evil-ex-search-vim-style-regexp t
         evil-want-C-u-scroll            t
         evil-ex-interactive-search-highlight 'selected-window)
-
+  
   :general
   (:prefix ""
-     "j" 'evil-next-visual-line
-     "k" 'evil-previous-visual-line
-     "$" 'evil-end-of-visual-line
+   "j" 'evil-next-visual-line
+   "k" 'evil-previous-visual-line
+   "$" 'evil-end-of-visual-line
+   "ga" 'helm-apropos
    "C-j" 'evil-forward-paragraph
-   "C-k" 'evil-backward-paragraph)
+   "C-k" 'evil-backward-paragraph
+   "g," 'evil-jump-backward)
+
+  (:states '(normal)
+   "wo"  'other-window
+   "wsb" 'split-window-below
+   "wsh" 'split-window-horizontally
+   "wdd" 'delete-window
+   "wdo" 'delete-other-windows
+   "fi"  'init.el
+   "fe"  'eshell)
   
   :config
   (general-evil-setup t)
@@ -97,7 +108,7 @@
         helm-ff-search-library-in-sexp         t
         helm-ff-file-name-history-use-recentf  t
         helm-follow-mode-persistent            t)
- 
+  
   :config 
   (helm-autoresize-mode)
   (spaceline-helm-mode)
@@ -107,9 +118,7 @@
   (func init.el (find-file (concat user-emacs-directory "/" "init.el")))
   (general-define-key "ff" 'helm-find-files)
   
-  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-  (which-key-declare-prefixes
-    "<SPC> h" "Helm"))
+  (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
 (use-package helm-swoop
   :commands helm-swoop
@@ -162,7 +171,16 @@
   :general
   ("p" '(:ignore t :which-key "Projectile")
    "pp" 'helm-projectile-switch-project
-   "ps" 'helm-projectile-ag
+   
+   ;; Search
+   "ps" '(:ignore t :which-key "Search [Ag]")
+   "pss" 'helm-projectile-ag
+   "psr" 'helm-ag-project-root
+   "psa" 'helm-do-ag
+
+   ;; Refactoring
+   "pr" 'projectile-replace
+   
    "pi" 'projectile-invalidate-cache)
 
   :init
@@ -267,15 +285,6 @@
 (which-key-declare-prefixes "<SPC> w" "Windows")
 (which-key-declare-prefixes "<SPC> w s" "Spliting")
 (which-key-declare-prefixes "<SPC> w d" "Deliting")
-
-(general-define-key
- "wo"  'other-window
- "wsb" 'split-window-below
- "wsh" 'split-window-horizontally
- "wdd" 'delete-window
- "wdo" 'delete-other-windows
- "fi"  'init.el
- "fe"  'eshell)
 
 (fset 'yes-or-no-p   'y-or-n-p)
 
