@@ -8,10 +8,10 @@
    "s" '(:ignore t :which-key "Scala"))
   
   (:keymaps 'scala-mode-map
-    :prefix ""
-    "<C-return>"     #'newline-or-comment
-    "M-j"            #'scala-indent:join-line
-    "C-<backspace>"  #'contextual-backspace)
+   :prefix ""
+   "<C-return>"     #'newline-or-comment
+   "M-j"            #'scala-indent:join-line
+   "C-<backspace>"  #'contextual-backspace)
 
   :init
   (setq scala-indent:use-javadoc-style t
@@ -40,7 +40,6 @@
 
 (use-package sbt-mode
   :after scala-mode
-  
   :general
   (:keymaps 'scala-mode-map
    :prefix "<SPC> sb"
@@ -49,15 +48,15 @@
    "s" 'sbt-start
    "r" 'sbt-command
    "c" '(4lex1v:sbt-compile-command :which-key "compile"))
- 
+  
   :config
   (load "sbt-defuns")
   (evil-set-initial-state 'sbt-mode 'emacs))
 
+;; TODO :: override the major mode segment for Ensime activated projects
 (use-package ensime
   :after scala-mode
   :commands ensime
-
   :general
   (:keymaps 'scala-mode-map
    :prefix "<SPC> se"
