@@ -51,8 +51,7 @@
   (sp-pair "{" "}" :wrap "C-{"))
 
 (use-package company
-  :diminish company-mode
-  :commands global-company-mode
+  :commands company-mode
 
   ;; @NOTE :: For some reason can't make this work with general??
   ;; Example config with general:
@@ -62,7 +61,8 @@
   :bind
   (:map company-active-map
    ("C-j" . company-select-next)
-   ("C-k" . company-select-previous))
+   ("C-k" . company-select-previous)
+   ("C-d" . company-show-doc-buffer))
   
   :general
   (:prefix ""
@@ -72,20 +72,41 @@
   (setq company-dabbrev-ignore-case nil
         company-dabbrev-code-ignore-case nil
         company-dabbrev-downcase nil
+        
         company-idle-delay 0
-        company-minimum-prefix-length 3))
+        company-minimum-prefix-length 3
+        
+        company-selection-wrap-around t
+        company-tooltip-align-annotations t
+
+        company-transformers '(company-sort-by-occurrence)))
 
 (use-package yasnippet
+  :diminish (yas-minor-mode . "Y")
   :commands yas-minor-mode
-  :diminish yas-minor-mode
- 
+  :mode ("\\.yasnippet" . snippet-mode)
+  
+  :general
+  ("es" '(:ignore t :which-key "Snippets")
+   "esa" 'yas-new-snippet)
+  
   :init
   (setq yas-snippet-dirs '("~/.emacs.d/modules/editor/snippets"
                            "~/.emacs.d/modules/editor/yasnippet/snippets")
-        yas-wrap-around-region t)
+        yas-wrap-around-region t
+        yas-indent-line t)
+  
+  (add-hook 'after-save-hook
+            (lambda ()
+              (when (eq major-mode 'snippet-mode)
+                (yas-reload-all))))
   
   :config
   (yas-reload-all)) 
+
+(use-package flycheck
+  :defer t
+  :ensure t)
 
 (use-package hideshowvis
   :diminish hs-minor-mode
