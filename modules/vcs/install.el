@@ -64,11 +64,11 @@
   :config
   (evil-magit-init))
 
-(use-package diff-hl
-  :after magit
-  :config
-  (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
-  (global-diff-hl-mode 1))
+;; (use-package diff-hl
+;;   :after magit
+;;   :config
+;;   (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
+;;   (global-diff-hl-mode 1))
 
 ; (use-package diff-hl-flydiff
 ;   :after diff-hl
@@ -76,7 +76,7 @@
 ;   (diff-hl-flydiff-mode)
 ;   )
 
-(use-package magithub
-  :after magit
-  :config
-  (magithub-feature-autoinject t))
+;; (use-package magithub
+;;   :after magit
+;;   :config
+;;   (magithub-feature-autoinject t))
