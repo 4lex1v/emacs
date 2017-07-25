@@ -31,7 +31,7 @@
 (fnd:module haskell        "Haskell programming language support")
 (fnd:module idris          "Idris programming language support")
 (fnd:module purescript     "PureScript programming language support")
-(fnd:module native         "C/C++ support")
+(fnd:module native         "C lang famil support, including C#") ;; @TODO :: after adding C# support not the best name
 (fnd:module scala          "Scala language support + Ensime language server")
 
 ;;

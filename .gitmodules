@@ -249,3 +249,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/native/irony-mode"]
 	path = modules/native/irony-mode
 	url = git@github.com:Sarcasm/irony-mode.git
+[submodule "modules/native/company-irony"]
+	path = modules/native/company-irony
+	url = git@github.com:Sarcasm/company-irony.git
