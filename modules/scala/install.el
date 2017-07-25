@@ -25,7 +25,7 @@
           hs-minor-mode
           hideshowvis-enable
           yas-minor-mode
-          global-company-mode)
+          company-mode)
   :config
   (load "scala-defs")
 

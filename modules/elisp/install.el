@@ -16,14 +16,11 @@
             "ed" '(:ignore t :which-key "Docs & Help")
             "eda" #'helm-apropos)
   
-  :init
-  (setq initial-major-mode 'emacs-lisp-mode)
-  
   :config
   (load "elisp-defuns")
   (add-hook 'emacs-lisp-mode-hook #'4lex1v:fix-elisp-indentation)
   (add-hook 'emacs-lisp-mode-hook #'yas-minor-mode)
-  (add-hook 'emacs-lisp-mode-hook #'global-company-mode)
+  (add-hook 'emacs-lisp-mode-hook #'company-mode)
   (add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
   (add-hook 'emacs-lisp-mode-hook #'hideshowvis-enable)
   (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode))
