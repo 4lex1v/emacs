@@ -1,6 +1,6 @@
 (use-package web-mode
   :load-path "packages/web"
-  :defer
+  :defer t
   :mode
   (("\\.html\\'" . web-mode)
    ("\\.html\\.erb\\'" . web-mode)
