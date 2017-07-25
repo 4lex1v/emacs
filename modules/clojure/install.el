@@ -11,7 +11,12 @@
          ("C-M-r"   . cider-refresh)
          ("C-c u"   . cider-user-ns))
 
-  :init (setq inferior-lisp-program "lein repl")
+  :init
+  (setq inferior-lisp-program "lein repl")
+  
+  (eval-after-load 'org-mode
+    (lambda ()
+      (add-to-list 'org-babel-load-languages '(clojure . t)))) 
 
   :config (progn
             (use-package clojure-mode-extra-font-locking

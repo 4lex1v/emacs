@@ -10,6 +10,11 @@
   :init
   (setq haskell-process-log t
         haskell-process-type 'stack-ghci)
+  
+  (eval-after-load 'org-mode
+    (lambda ()
+      (add-to-list 'org-babel-load-languages '(haskell . t))))
+  
   :config
   (evil-set-initial-state 'haskell-error-mode 'emacs))
 

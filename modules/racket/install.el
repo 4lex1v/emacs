@@ -3,6 +3,10 @@
   :interpreter ("racket" . racket-mode)
   :init
   (setq racket-smart-open-bracket-enable t)
+  
+  (eval-after-load 'org-mode
+    (lambda ()
+      (add-to-list 'org-babel-load-languages '(racket . t)))) 
 
   :config
   (add-hook 'scala-mode-hook #'hideshowvis-enable)
@@ -16,3 +20,8 @@
   
   (sp-local-pair 'racket-mode "'" nil :actions nil)
   (sp-local-pair 'racket-mode "`" nil :actions nil))
+
+(use-package ob-racket
+  :after racket-mode
+  :init
+  (setq org-babel-racket-command "/usr/local/bin/racket"))
