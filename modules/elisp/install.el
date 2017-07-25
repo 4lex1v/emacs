@@ -1,5 +1,4 @@
 (use-package elisp-mode
-  :diminish    (emacs-lisp-mode . "ELisp")
   :after       (yasnippet company which-key)
   :interpreter ("emacs" . emacs-lisp-mode)
   :mode        (("\\.el$" . emacs-lisp-mode)
@@ -12,7 +11,8 @@
 
   :general
   (:keymaps 'emacs-lisp-mode-map
-            "e" '(:ignore t :which-key "Emacs")
+            "e"  '(:ignore t :which-key "Emacs")
+            "ev" '(:ignore t :which-key "Describe Variable")
             "ed" '(:ignore t :which-key "Docs & Help")
             "eda" #'helm-apropos)
   
