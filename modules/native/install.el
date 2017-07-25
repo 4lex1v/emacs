@@ -2,7 +2,12 @@
 
 (use-package cc-mode
   :defer t
-  :hooks (hs-minor-mode hideshowvis-minor-mode))
+  :hooks (hs-minor-mode
+          hideshowvis-minor-mode
+          smartparens-mode
+          company-mode)
+  :config
+  (add-to-list 'company-backends 'company-clang))
   
 (use-package irony
   :after cc-mode
@@ -18,10 +23,6 @@
   (defun setup-cpp-clang-options ()
     (setq irony-additional-clang-options (quote ("-std=c++14" "-stdlib=libc++"))))
   
-  :hooks (smartparens-mode
-          company-irony-setup-begin-commands
-          irony-cdb-autosetup-compile-options)
-  
   :config
   (add-hook 'c++-mode-hook 'setup-cpp-clang-options)
   (add-hook 'c-mode-hook 'setup-c-clang-options))
@@ -29,6 +30,7 @@
 (use-package company-irony
   :after (irony company)
   :config
+  (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
   (add-to-list 'company-backends 'company-irony))
 
 ;; (use-package company-irony-c-headers

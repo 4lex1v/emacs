@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 (use-package smartparens-config
   :init
   (setq sp-autoinsert-if-followed-by-word t
@@ -79,7 +81,26 @@
         company-selection-wrap-around t
         company-tooltip-align-annotations t
 
-        company-transformers '(company-sort-by-occurrence)))
+        company-transformers '(company-sort-by-occurrence)
+
+        ;; Backends configuration
+        company-backends '((company-files
+                            company-keywords
+                            company-capf)
+                           (company-abbrev
+                            company-dabbrev)))
+
+  (defun company-add-mode-backends (backends)
+    (lambda ()
+      (make-local-variable 'company-backends)
+      (setq company-backends (copy-tree company-backends))
+      
+      ;;(setq company-backends (cons backends company-backends))
+
+      (setf (car company-backends)
+            (append backends (car company-backends)))
+      
+      )))
 
 (use-package yasnippet
   :diminish (yas-minor-mode . "Y")
@@ -102,6 +123,7 @@
                 (yas-reload-all))))
   
   :config
+  (add-to-list 'company-backends '(company-yasnippet))
   (yas-reload-all)) 
 
 (use-package flycheck

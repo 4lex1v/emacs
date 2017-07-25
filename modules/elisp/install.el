@@ -18,12 +18,16 @@
   
   :config
   (load "elisp-defuns")
+  
+  (add-hook 'emacs-lisp-mode-hook
+            (company-add-mode-backends '(company-elisp)))
+  
   (add-hook 'emacs-lisp-mode-hook #'4lex1v:fix-elisp-indentation)
   (add-hook 'emacs-lisp-mode-hook #'yas-minor-mode)
   (add-hook 'emacs-lisp-mode-hook #'company-mode)
   (add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
   (add-hook 'emacs-lisp-mode-hook #'hideshowvis-enable)
-  (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode))
+  (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode)) 
 
 (use-package macrostep
   :after elisp-mode
