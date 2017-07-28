@@ -14,3 +14,6 @@ bookmarks
 .cask
 .module-configs
 eshell
+.cache
+irony
+network-security.data
