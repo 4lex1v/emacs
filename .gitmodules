@@ -241,10 +241,10 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/behaviour/ggtags
 	url = https://github.com/leoliu/ggtags
 [submodule "modules/native/omnisharp-emacs"]
-	path = modules/native/omnisharp-emacs
+	path = modules/csharp/omnisharp-emacs
 	url = git@github.com:OmniSharp/omnisharp-emacs.git
 [submodule "modules/native/csharp-mode"]
-	path = modules/native/csharp-mode
+	path = modules/csharp/csharp-mode
 	url = git@github.com:josteink/csharp-mode.git
 [submodule "modules/native/irony-mode"]
 	path = modules/native/irony-mode

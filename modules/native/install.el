@@ -1,17 +1,26 @@
-(use-package cmake-mode)
-
 (use-package cc-mode
   :defer t
-  :hooks (hs-minor-mode
-          hideshowvis-minor-mode
-          smartparens-mode
-          company-mode)
+
   :config
-  (add-to-list 'company-backends 'company-clang))
-  
+  (add-hook 'c-mode-hook 'hs-minor-mode)
+  (add-hook 'c-mode-hook 'hideshowvis-minor-mode)
+  (add-hook 'c-mode-hook 'smartparens-mode)
+  (add-hook 'c-mode-hook 'company-mode)
+  (add-hook 'c-mode-hook 'yas-minor-mode)
+  (add-hook 'c-mode-hook (company-add-mode-backends '(company-clang))))
+
+(use-package cmake-mode
+  :after cc-mode)
+
+(use-package ob-C
+  :after org ;; wrap with `with-eval-after-load' instread?
+  :init
+  (setq org-babel-C-compiler "clang"
+        org-babel-C++-compiler "clang++")
+  :config
+  (add-to-list 'org-babel-load-languages '(C . t)))
+
 (use-package irony
-  :after cc-mode
-  
   :init
   (add-hook 'c++-mode-hook 'irony-mode)
   (add-hook 'c-mode-hook 'irony-mode)
@@ -31,7 +40,7 @@
   :after (irony company)
   :config
   (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-  (add-to-list 'company-backends 'company-irony))
+  (add-hook 'irony-mode-hook (company-add-mode-backends '(company-irony))))
 
 ;; (use-package company-irony-c-headers
 ;;   :ensure t
@@ -41,14 +50,3 @@
 ;;             ;; group with company-irony but beforehand so we get first pick
 ;;             (add-to-list 'company-backends '(company-irony-c-headers company-irony))))
 
-;; C# Language Support for Unity3D on mac
-(use-package csharp-mode
-  :defer t
-  :mode ("\\.cs$" . csharp-mode)
-  :hooks (hs-minor-mode hideshowvis-enable smartparens-mode))
-
-(use-package omnisharp
-  :after csharp-mode
-  :init
-  ;; Dirty hack for omnisharp compatibility
-  (use-package shut-up  :ensure t))

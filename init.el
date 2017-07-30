@@ -1,5 +1,10 @@
 (setq gc-cons-threshold 10000000)
 
+;; [TODOs]
+;; Appearance :: add line / column number 
+;; Appearance :: Change cursor's color, fix mode-line colors
+;; Sirthias   :: Improve sp-overlay bg color
+
 (eval-and-compile
   (add-to-list 'load-path
                (expand-file-name "foundation" user-emacs-directory))
@@ -34,6 +39,7 @@
 (fnd:module idris          "Idris programming language support")
 (fnd:module purescript     "PureScript programming language support")
 (fnd:module native         "C/C++ support")
+(fnd:module csharp         "C# support, mostly to work with Unity3D engine on Mac... or Windows")
 (fnd:module scala          "Scala language support + Ensime language server")
 
 ;;
