@@ -3,7 +3,14 @@
 ;; [TODOs]
 ;; Appearance :: add line / column number 
 ;; Appearance :: Change cursor's color, fix mode-line colors
-;; Sirthias   :: Improve sp-overlay bg color
+
+;; Sirthias   :: Improve `sp-pair-overlay-face' face
+;; Sirthias   :: Improve `org-verbatim' face
+;; Sirthias   :: Improve `comint-highlight-prompt' face
+
+;; EShell     :: Change `eshell-prompt-function' for a better eshell prompt
+
+;; System     :: Some issues with setting env vars from System module
 
 (eval-and-compile
   (add-to-list 'load-path
@@ -29,31 +36,31 @@
 ;;; Modules: Languages
 ;;
 
-(fnd:module clojure        "Clojure programming language support")
 (fnd:module elisp          "Configuration for `emacs-lisp-mode' and other helpfull stuff to improve the experience with `ELisp'")
+(fnd:module scala          "Scala language support + Ensime language server")
+(fnd:module haskell        "Haskell programming language support")
+(fnd:module native         "C/C++ support")
+(fnd:module csharp         "C# support, mostly to work with Unity3D engine on Mac... or Windows")
+(fnd:module clojure        "Clojure programming language support")
 (fnd:module racket         "Support for the Racket programming language")
 (fnd:module python         "Emacs support for Python ecosystem")
 (fnd:module lua            "Emacs module with support for Lua programming language")
 (fnd:module groovy         "Support for Groovy programming language")
-(fnd:module haskell        "Haskell programming language support")
 (fnd:module idris          "Idris programming language support")
 (fnd:module purescript     "PureScript programming language support")
-(fnd:module native         "C/C++ support")
-(fnd:module csharp         "C# support, mostly to work with Unity3D engine on Mac... or Windows")
-(fnd:module scala          "Scala language support + Ensime language server")
 
 ;;
 ;;; Modules: Others
 ;;
 
-(fnd:module communications "Slack, Jabber, etc...")
-(fnd:module formats        "Minor formats like Markdown & YAML support")
-(fnd:module infra          "DevOps related stuff, e.g Docker")
+(fnd:module vcs            "All-things-Magit")
 (fnd:module org            "Org-mode configuration package")
+(fnd:module infra          "DevOps related stuff, e.g Docker")
+(fnd:module formats        "Minor formats like Markdown & YAML support")
+(fnd:module web            "Web & Frontend engineering stuff")
+(fnd:module communications "Slack, Jabber, etc...")
 (fnd:module reader         "PDF reading tools")
 (fnd:module statistics     "Configuration package for math & statistics related tasks")
-(fnd:module vcs            "All-things-Magit")
-(fnd:module web            "Web & Frontend engineering stuff")
 
 ;;
 ;;; Modules: Projects & Work
