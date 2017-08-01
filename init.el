@@ -8,8 +8,6 @@
 ;; Sirthias   :: Improve `org-verbatim' face
 ;; Sirthias   :: Improve `comint-highlight-prompt' face
 
-;; EShell     :: Change `eshell-prompt-function' for a better eshell prompt
-
 ;; System     :: Some issues with setting env vars from System module
 
 (eval-and-compile

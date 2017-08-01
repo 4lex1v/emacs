@@ -19,17 +19,22 @@
   :config
   (evil-set-initial-state #'docker-machine-mode 'emacs))
 
-; (use-package eshell
-;   :init (require 'em-alias)
-;   :config
-;   (defun 4lex1v:helm-eshell-history ()
-;     (eshell-cmpl-initialize)
-;     (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-;     (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
+(use-package eshell
+  :init
+  (defun 4lex1v:helm-eshell-history ()
+    (eshell-cmpl-initialize)
+    (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+    (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
 
-;   (add-hook 'eshell-mode-hook #'4lex1v:helm-eshell-history)
-;   (add-hook 'eshell-mode-hook #'ansi-color-for-comint-mode-on)
+  (defun 4lex1v:eshell-prompt ()
+    (concat
+     "\n# " (user-login-name) " in " (abbreviate-file-name (eshell/pwd)) "\n"
+     ">> " ;; User's input
+     ))
   
-;   ;; MacOS specific aliases
-;   (if (eq system-type 'darwin)
-;       (eshell/alias "bubu" "brew update && brew upgrade")))
+  :hooks (4lex1v:helm-eshell-history
+          ansi-color-for-comint-mode-on)
+  
+  :config
+  (setq eshell-prompt-function #'4lex1v:eshell-prompt))
+
