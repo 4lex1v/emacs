@@ -1,22 +1,25 @@
-(use-package exec-path-from-shell
-  :if (or (eq system-type 'darwin)
-          (eq system-type 'gnu/linux))
-  :commands exec-path-from-shell-getenv
-  :init
-  (let* ((brew-bin-path "/usr/local/homebrew/bin")
-         (usr-local-bin "/usr/local/bin")
-         (current-path  (getenv "PATH"))
-         (new-path      (format "%s:%s:%s" brew-bin-path usr-local-bin current-path)))
 
-    ;; To find apps, e.g SBT
-    (add-to-list 'exec-path brew-bin-path)
-    (add-to-list 'exec-path usr-local-bin)
-    
-    ;; For Eshell
-    (setenv "PATH" new-path)))
+(defconst IS_MAC   (eq system-type 'darwin))
+(defconst IS_LINUX (eq system-type 'gnu/linux))
+(defconst IS_WIN   (eq system-type 'windows-nt))
+
+(use-package exec-path-from-shell
+  :if (or IS_MAC IS_LINUX)
+  :commands (exec-path-from-shell-getenv
+             exec-path-from-shell-setenv)
+  :init
+  
+  ;; TODO :: Check if it works on Windows
+  (defun register-path-folders (&rest paths)
+    (declare (indent 1))
+    (let ((path (-reduce-r-from
+                 (lambda (value acc) (format "%s:%s" value acc))
+                 (exec-path-from-shell-getenv "PATH")
+                 paths)))
+     (exec-path-from-shell-setenv "PATH" path))))
 
 (use-package osx
-  :if (mac-os-p)
+  :if IS_MAC
   :init
   (setq browse-url-browser-function 'browse-url-default-macosx-browser
         delete-by-moving-to-trash    t
@@ -25,8 +28,16 @@
         mac-control-modifier        'control
         ns-function-modifier        'hyper
         ns-use-native-fullscreen     t
-        frame-resize-pixelwise       t))
+        frame-resize-pixelwise       t)
+  :config
+  (register-path-folders "/usr/local/homebrew/bin" "/usr/local/bin")
+  (message "Current path :: %s" (getenv "PATH"))
 
+  (use-package em-alias
+    :config
+    (eshell/alias "bubu" "brew update && brew upgrade"))
+  
+  )
 
 (use-package term
   :config
