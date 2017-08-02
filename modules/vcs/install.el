@@ -64,6 +64,10 @@
   :config
   (evil-magit-init))
 
+(use-package ssh-agency :if IS_WINDOWS :ensure t
+  :config
+  (ssh-agency-ensure))
+
 ;; (use-package diff-hl
 ;;   :after magit
 ;;   :config
