@@ -2,13 +2,19 @@
   :defer t
   :load-path "modules/org/org-mode/lisp"
   :after flyspell
+  
   :bind* ("C-'"  . ace-window)
+  
   :general
   ;; Global Org-mode fucntionality
   ("eo" '(:ignore t :which-key "Global Org")
    "eoc" 'org-capture
    "eol" 'org-store-link
    "eoa" 'org-agenda) 
+
+  (:prefix "" :keymaps 'org-mode-map
+   "C-M-j" 'org-metadown
+   "C-M-k" 'org-metaup)
   
   :init
   (setq org-log-done                   t
@@ -20,6 +26,8 @@
         org-startup-indented           nil
         org-line-spacing               5
         org-notes-font                "Menlo"
+        
+        org-babel-load-languages      '((sql . t))
         
         ;; Agenda files to cycle
         org-agenda-files '("~/Sandbox/GTD/main.org")

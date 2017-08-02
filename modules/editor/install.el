@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package smartparens-config
+  :defer t
   :init
   (setq sp-autoinsert-if-followed-by-word t
         sp-autoskip-closing-pair 'always-end
@@ -8,8 +9,7 @@
 
 (use-package smartparens
   :after smartparens-config
-  :diminish smartparens-mode
-
+  :commands smartparens-mode
   :bind
   (:map sp-keymap
    ("M-F"              . sp-forward-symbol)
@@ -98,9 +98,9 @@
       ;;(setq company-backends (cons backends company-backends))
 
       (setf (car company-backends)
-            (append backends (car company-backends)))
-      
-      )))
+            (append backends (car company-backends)))))
+  :config
+  (add-hook 'text-mode-hook #'company-mode)) 
 
 (use-package yasnippet
   :diminish (yas-minor-mode . "Y")
@@ -223,4 +223,4 @@
   ;; bind evil-jump-out-args
   (define-key evil-normal-state-map "K" 'evil-jump-out-args))
 
-
+(diminish 'auto-revert-mode)
