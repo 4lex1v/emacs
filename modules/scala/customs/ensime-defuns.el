@@ -36,14 +36,14 @@ project file .ensime defined in the root directory"
     (sbt-command "ensimeConfig"))
 
 (defun 4lex1v:smart-ensime-loader ()
-    (interactive)
-    (lambda () 
-      (if (and (if-bound-f projectile-project-p)
-               (if-bound-f projectile-project-root))
-          (4lex1v/connect-running-ensime (projectile-project-root))
-        (progn
-          (message (format "Projectile is not loaded, using %s" default-directory))
-          (4lex1v/connect-running-ensime default-directory)))))
+  (interactive)
+  (lambda () 
+    (if (and (if-bound-f projectile-project-p)
+             (if-bound-f projectile-project-root))
+        (4lex1v/connect-running-ensime (projectile-project-root))
+      (progn
+        (message (format "Projectile is not loaded, using %s" default-directory))
+        (4lex1v/connect-running-ensime default-directory)))))
 
 (defun 4lex1v:ensime-eldoc-support ()
   (when (ensime-connected-p)

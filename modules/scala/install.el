@@ -7,19 +7,18 @@
   (:keymaps 'scala-mode-map
    "s" '(:ignore t :which-key "Scala"))
   
-  (:keymaps 'scala-mode-map
+  (:keymaps 'scala-mode-map :states '(normal insert)
    :prefix ""
    "<C-return>"     #'newline-or-comment
-   "M-j"            #'scala-indent:join-line
    "C-<backspace>"  #'contextual-backspace)
 
   :init
   (setq scala-indent:use-javadoc-style t
         scala-mode:debug-messages nil)
-  
-  (eval-after-load 'org-mode
-    (lambda ()
-      (add-to-list 'org-babel-load-languages '(scala . t))))
+
+  (with-eval-after-load "org"
+    (add-to-list 'org-babel-load-languages '(scala . t))
+    (message "Scala added to the list of Babel"))
   
   :hooks (4lex1v/fix-scala-fonts
           hs-minor-mode
@@ -48,6 +47,11 @@
    "s" 'sbt-start
    "r" 'sbt-command
    "c" '(4lex1v:sbt-compile-command :which-key "compile"))
+  
+  (:keymaps 'sbt-mode-map :states '(normal insert)
+   :prefix ""
+   "C-j" 'compilation-next-error
+   "C-k" 'compilation-previous-error)
   
   :config
   (load "sbt-defuns")

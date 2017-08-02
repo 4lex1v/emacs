@@ -1,6 +1,5 @@
 (use-package cc-mode
   :defer t
-
   :config
   (add-hook 'c-mode-hook 'hs-minor-mode)
   (add-hook 'c-mode-hook 'hideshowvis-minor-mode)
@@ -10,10 +9,11 @@
   (add-hook 'c-mode-hook (company-add-mode-backends '(company-clang))))
 
 (use-package cmake-mode
+  :defer t
   :after cc-mode)
 
 (use-package ob-C
-  :after org ;; wrap with `with-eval-after-load' instread?
+  :after (org cc-mode) ;; wrap with `with-eval-after-load' instread?
   :init
   (setq org-babel-C-compiler "clang"
         org-babel-C++-compiler "clang++")
@@ -21,6 +21,7 @@
   (add-to-list 'org-babel-load-languages '(C . t)))
 
 (use-package irony
+  :after cc-mode
   :init
   (add-hook 'c++-mode-hook 'irony-mode)
   (add-hook 'c-mode-hook 'irony-mode)
