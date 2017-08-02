@@ -1,26 +1,13 @@
-(defconst theme-to-load 'dracula)
-
 (load "functions")
 (load "fonts/pretty-pragmata")
 (load "configuration")
 
-(use-package solarized-theme
-  :if (and (display-graphic-p)
-           (eq theme-to-load 'solarized))
-  :load-path "modules/appearance/themes/solarized-emacs"
-  :init
-  (setq solarized-contrast                   'high
-        solarized-visibility                 'high
-        solarized-termcolors                  256
-        solarized-distinct-fringe-background  t
-        solarized-use-variable-pitch          nil
-        solarized-use-less-bold               nil
-        solarized-use-more-italic             nil
-        solarized-high-contrast-mode-line     t
-        solarized-emphasize-indicators        t
-        x-underline-at-descent-line           t)
-  :config
-  (load-theme 'solarized-theme t))
+;; TODO :: add line / column number 
+
+;(defconst theme-to-load 'dracula)
+;(defconst theme-to-load 'spacemacs)
+(defconst theme-to-load 'sirthias)
+;(defconst theme-to-load 'default)
 
 (use-package doom-themes
   :if (and (display-graphic-p)
@@ -49,8 +36,19 @@
   (setq spacemacs-theme-comment-italic t)
 
   :config
-  (load-theme 'spacemacs-light t))
+  (load-theme 'spacemacs-light t)
+  (set-face-attribute 'font-lock-constant-face nil :weight 'bold))
 
+(use-package sirthias-theme
+  :if (and (display-graphic-p)
+           (eq theme-to-load 'sirthias))
+  :load-path "modules/appearance/themes/sirthias"
+  :init
+  (setq sirthias-pallet-type 'warm)
+  :config
+  (load-theme 'sirthias t))
+
+;; This is a huge comment for testing the colour scheme
 (use-package spaceline-config)
 (use-package spaceline
   :after spaceline-config
@@ -59,7 +57,7 @@
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
         powerline-image-apple-rgb t
         powerline-default-separator 'arrow)
-
+  
   ;; TODO :: the problem with this functiona is that
   ;; it's rather often that magit is not loaded
   (spaceline-define-segment projectile-mode-segment
@@ -78,15 +76,19 @@
                      branch-name
                      project-name))))))
   
+  (spaceline-define-segment buffer-positioning
+    "Basic buffer positioning info"
+    "%l:%c %p")
+  
   (defun custom-spaceline-theme ()
     (spaceline-install
       ;; Left side
-      `((hud :priority 0)
-        (evil-state :face highlight-face :priority 0)
+      `((hud :face highlight :priority 0)
+        (evil-state :face mode-line-highlight :priority 0)
         projectile-mode-segment
         buffer-id
         ;(buffer-id :face spaceline-modified) 
-        buffer-position) 
+        buffer-positioning) 
       
       ;; Right side
       '((minor-modes :when active)
@@ -95,6 +97,13 @@
     (setq-default mode-line-format '("%e" (:eval (spaceline-ml-main)))))
   
   :config
+  
+  ;; For sirthias theme need to change colors
+  (if (eq theme-to-load 'sirthias)
+      (progn
+         ;(set-face-attribute 'font-lock-constant-face nil :weight 'bold))
+        ))
+  
   (custom-spaceline-theme))
 
 (use-package beacon
@@ -103,11 +112,14 @@
   :diminish beacon-mode
   
   :init
-  (setq beacon-color (face-attribute 'spaceline-evil-normal :background nil t))
+  (setq beacon-color (face-attribute 'spaceline-highlight-face
+                                     :background nil t))
   
   :config
   (add-to-list 'beacon-dont-blink-major-modes 'term-mode)
   (beacon-mode +1))
+
+(use-package rainbow-mode :ensure t)
 
 (use-package hl-line
   :init
@@ -117,3 +129,8 @@
 
 ;; TODO :: need to check this one out
 (use-package hide-mode-line)
+
+;; Set of custom hack of the default theme to make it a bit prettier
+(if (eq theme-to-load 'default)
+    (set-face-attribute 'fringe nil :background nil))
+
