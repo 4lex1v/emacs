@@ -1,6 +1,10 @@
+
+(defconst IS_MAC     (eq system-type 'darwin))
+(defconst IS_LINUX   (eq system-type 'gnu/linux))
+(defconst IS_WINDOWS (eq system-type 'windows-nt))
+
 (use-package exec-path-from-shell
-  :if (or (eq system-type 'darwin)
-          (eq system-type 'gnu/linux))
+  :if (or IS_MAC IS_LINUX)
   :commands exec-path-from-shell-getenv
   :init
   (let* ((brew-bin-path "/usr/local/homebrew/bin")
@@ -16,7 +20,7 @@
     (setenv "PATH" new-path)))
 
 (use-package osx
-  :if (mac-os-p)
+  :if IS_MAC
   :init
   (setq browse-url-browser-function 'browse-url-default-macosx-browser
         delete-by-moving-to-trash    t
