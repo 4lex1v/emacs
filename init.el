@@ -3,21 +3,17 @@
 ;; [TODOs]
 ;; Foundation :: Log warning if the module doesn't exist
 
-;; Appearance :: add line / column number 
+;; Appearance :: Add line / column number 
 ;; Appearance :: Change cursor's color, fix mode-line colors
+;; Appearance :: Rework modeline style (inspired by https://github.com/hlissner/.emacs.d/blob/master/modules/ui/doom-modeline/config.el)
 
-;; Sirthias   :: Improve `sp-pair-overlay-face' face
 ;; Sirthias   :: Improve `org-verbatim' face
 ;; Sirthias   :: Improve `comint-highlight-prompt' face
-
-;; System     :: Some issues with setting env vars from System module
 
 (eval-and-compile
   (add-to-list 'load-path
                (expand-file-name "foundation" user-emacs-directory))
   (require 'foundation))
-
-;(setq default-directory "~/Sandbox/")
 
 ;;
 ;;; Platform Configuration
@@ -54,7 +50,7 @@
 ;;
 
 (fnd:module vcs            "All-things-Magit")
-;;(fnd:module org            "Org-mode configuration package")
+(fnd:module org            "Org-mode configuration package")
 (fnd:module infra          "DevOps related stuff, e.g Docker")
 (fnd:module formats        "Minor formats like Markdown & YAML support")
 (fnd:module web            "Web & Frontend engineering stuff")

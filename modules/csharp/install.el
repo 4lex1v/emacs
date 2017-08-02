@@ -14,7 +14,9 @@
   :after csharp-mode
   :init
   ;; Dirty hack for omnisharp compatibility
-  (use-package shut-up  :ensure t)
+  (use-package shut-up
+    :after csharp-mode
+    :ensure t)
   
   :config
   (add-to-list 'company-backends (company-add-mode-backends '(company-omnisharp))))
