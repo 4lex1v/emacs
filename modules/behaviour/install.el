@@ -32,22 +32,23 @@
   
   :general
   (:prefix ""
-   "j" 'evil-next-visual-line
-   "k" 'evil-previous-visual-line
-   "$" 'evil-end-of-visual-line
-   "ga" 'helm-apropos
+   "j"   'evil-next-visual-line
+   "k"   'evil-previous-visual-line
+   "$"   'evil-end-of-visual-line
    "C-j" 'evil-forward-paragraph
    "C-k" 'evil-backward-paragraph
-   "g," 'evil-jump-backward)
+   "g,"  'evil-jump-backward
+   "g."  'find-function-at-point
+   "C-q" '4lex1v/close-buffer)
 
   (:states '(normal)
-   "wo"  'other-window
-   "wsb" 'split-window-below
-   "wsh" 'split-window-horizontally
-   "wdd" 'delete-window
-   "wdo" 'delete-other-windows
+   "f"   '(:ignore t :which-key "Files")
    "fi"  'init.el
-   "fe"  'eshell)
+   "fe"  'eshell
+   
+   "e"   '(:ignore t :which-key "Emacs")
+   "eq"  'save-buffers-kill-emacs
+   "er"  'revert-buffer)
   
   :config
   (general-evil-setup t)
@@ -60,13 +61,23 @@
   (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
 
   (evil-ex-define-cmd "e[val]" #'eval-buffer)
+  (evil-ex-define-cmd "we" #'(lambda () (interactive) (save-buffer) (eval-buffer)))
   
   (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-mode))
 
+(use-package hydra
+  :config
+  (defhydra hydra-zoom (global-map "<f2>")
+    "zoom"
+    ("g" text-scale-increase "in")
+    ("l" text-scale-decrease "out")
+    ("r" (text-scale-set 0) "reset")
+    ("0" (text-scale-set 0) :bind nil :exit t)
+    ("1" (text-scale-set 0) nil :bind nil :exit t)))
+
 (use-package helm-config)
 (use-package helm-mode)
-
 (use-package helm
   :diminish helm-mode
   :commands helm-mode
@@ -96,6 +107,10 @@
 
    :map helm-find-files-map
    ("C-h"   . helm-find-files-up-one-level))
+  
+  :general
+  (:prefix ""
+   "ga"  'helm-apropos)
   
   :init
   (setq helm-idle-delay                        0.0
@@ -160,6 +175,7 @@
   ("el" '(fnd:helm-list-modules :which-key "Modules")))
 
 (use-package projectile
+  :defer t
   :commands projectile-project-root
   :diminish projectile-mode
   :bind-keymap ("C-c p" . projectile-command-map)
@@ -170,6 +186,7 @@
   :general
   ("p" '(:ignore t :which-key "Projectile")
    "pp" 'helm-projectile-switch-project
+   "pk" 'projectile-kill-buffers
    
    ;; Search
    "ps" '(:ignore t :which-key "Search [Ag]")
@@ -203,7 +220,6 @@
 
 (use-package helm-projectile
   :after (helm projectile)
-  :demand t
   :init (setq projectile-completion-system 'helm)
   :config (helm-projectile-on))
 
@@ -268,25 +284,6 @@
 
 (use-package helm-dash)
 
-(general-nmap 
-  "eq" #'save-buffers-kill-emacs
-  "er" #'revert-buffer
-  "q"  #'4lex1v/close-buffer)
-
-(define-key evil-normal-state-map "g." #'find-function-at-point)
-
-;; Need to organize this to avoid disambiguity and not to forget
-(delete-selection-mode t)
-
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-
-(which-key-declare-prefixes "<SPC> w" "Windows")
-(which-key-declare-prefixes "<SPC> w s" "Spliting")
-(which-key-declare-prefixes "<SPC> w d" "Deliting")
-
-(fset 'yes-or-no-p   'y-or-n-p)
-
 (use-package avy
   :bind
   (("C-c SPC" . avy-goto-char)
@@ -314,3 +311,10 @@
   
   :config
   (ggtags-mode 1))
+
+;; Need to organize this to avoid disambiguity and not to forget
+(delete-selection-mode t)
+
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(fset 'yes-or-no-p   'y-or-n-p)
