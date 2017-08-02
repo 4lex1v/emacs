@@ -38,21 +38,26 @@
              "Menlo"
              "Ayuthaya"))
 
-(defcustom default-font-size 18
+(defcustom default-font-size
+  (if (or IS_MAC IS_LINUX) 18 13)
   "Default Font size used across all frames")
 
-;; (defun change-font-size (value)
-;;   (interactive
-;;    (list
-;;     (read-number (format "Font current font size [%d] to: " font-size))))
-;;   (setq font-size value)
-;;   (4lex1v:gui:font font-name :size value))
+(defun change-font-size (value)
+  (interactive
+   (list
+    (read-number (format "Font current font size [%d] to: " font-size))))
+  (setq font-size value)
+  (4lex1v:gui:font font-name :size value))
 
-(let ((frame-font (format "%s-%d"
-                          default-font-name
-                          default-font-size)))
-  (set-frame-font frame-font)
-  (add-to-list 'default-frame-alist (cons 'font frame-font)))
+;; For some reason i need this workaround otherwise Emacs is tooooo
+;; slow when i'm using Windows. Pretty sure there's a better solution
+(if (or IS_MAC IS_LINUX)
+    (let ((frame-font (format "%s-%d"
+                              default-font-name
+                              default-font-size)))
+      (set-frame-font frame-font)
+      (add-to-list 'default-frame-alist (cons 'font frame-font)))
+  (set-face-attribute 'default nil :height (* default-font-size 10)))
 
 (4lex1v:gui:frame :transparency '(100 . 100)
                   :cursor       '(box . bar))

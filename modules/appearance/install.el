@@ -2,7 +2,6 @@
 
 (load "functions")
 (load "fonts/pretty-pragmata")
-(load "fonts")
 (load "configuration")
 
 (use-package solarized-theme

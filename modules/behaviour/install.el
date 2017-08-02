@@ -111,8 +111,7 @@
   
   :config 
   (helm-autoresize-mode)
-  (spaceline-helm-mode)
-
+  ;(spaceline-helm-mode)
   (which-key-declare-prefixes "<SPC> f" "Files")
 
   (func init.el (find-file (concat user-emacs-directory "/" "init.el")))

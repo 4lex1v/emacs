@@ -1,12 +1,11 @@
 
-(defconst IS_MAC   (eq system-type 'darwin))
-(defconst IS_LINUX (eq system-type 'gnu/linux))
-(defconst IS_WIN   (eq system-type 'windows-nt))
+(defconst IS_MAC     (eq system-type 'darwin))
+(defconst IS_LINUX   (eq system-type 'gnu/linux))
+(defconst IS_WINDOWS (eq system-type 'windows-nt))
 
 (use-package exec-path-from-shell
   :if (or IS_MAC IS_LINUX)
-  :commands (exec-path-from-shell-getenv
-             exec-path-from-shell-setenv)
+  :commands exec-path-from-shell-getenv
   :init
   
   ;; TODO :: Check if it works on Windows

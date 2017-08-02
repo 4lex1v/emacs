@@ -1,4 +1,5 @@
 (use-package org
+  :defer t
   :load-path "modules/org/org-mode/lisp"
   :after flyspell
   :bind* ("C-'"  . ace-window)
