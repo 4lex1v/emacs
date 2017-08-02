@@ -53,7 +53,9 @@
 ;; slow when i'm using Windows. Pretty sure there's a better solution
 (if IS_WINDOWS
     (progn
-      (set-face-attribute 'default nil :height (* default-font-size 10)))
+      (set-face-attribute 'default nil
+                          :font "PragmataPro"
+                          :height (* default-font-size 10)))
 
   ;; Will be configured for Mac or Linux
   (let ((frame-font (format "%s-%d"
