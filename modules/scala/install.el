@@ -5,12 +5,14 @@
   
   :general
   (:keymaps 'scala-mode-map
-   "s" '(:ignore t :which-key "Scala"))
+   "s"               '(:ignore t :which-key "Scala"))
   
-  (:keymaps 'scala-mode-map :states '(normal insert)
-   :prefix ""
+  (:keymaps 'scala-mode-map :states '(normal insert) :prefix ""
    "<C-return>"     #'newline-or-comment
    "C-<backspace>"  #'contextual-backspace)
+
+  (:keymaps 'scala-mode-map :states '(normal) :prefix ""
+   "J" #'scala-join-lines)
 
   :init
   (setq scala-indent:use-javadoc-style t
@@ -25,6 +27,7 @@
           hideshowvis-enable
           yas-minor-mode
           company-mode)
+  
   :config
   (load "scala-defs")
 
@@ -40,16 +43,14 @@
 (use-package sbt-mode
   :after scala-mode
   :general
-  (:keymaps 'scala-mode-map
-   :prefix "<SPC> sb"
+  (:keymaps 'scala-mode-map :prefix "<SPC> sb"
    ""  '(:ignore t :which-key "SBT")
    "b" '(4lex1v:open-sbt-build-file :which-key "build.sbt")
    "s" 'sbt-start
    "r" 'sbt-command
    "c" '(4lex1v:sbt-compile-command :which-key "compile"))
   
-  (:keymaps 'sbt-mode-map :states '(normal insert)
-   :prefix ""
+  (:keymaps 'sbt-mode-map :states '(normal insert) :prefix ""
    "C-j" 'compilation-next-error
    "C-k" 'compilation-previous-error)
   
@@ -62,14 +63,12 @@
   :after scala-mode
   :commands ensime
   :general
-  (:keymaps 'scala-mode-map
-   :prefix "<SPC> se"
+  (:keymaps 'scala-mode-map :prefix "<SPC> se"
    ""  '(:ignore t :which-key "Ensime")
    "e" 'ensime
    "u" '4lex1v:update-ensime-build)
   
-  (:keymaps 'ensime-mode-map
-   :prefix "<SPC> se"
+  (:keymaps 'ensime-mode-map :prefix "<SPC> se"
    ""  '(:ignore t :which-key "Ensime")
    "r"  'ensime-inf-run-scala
    "b"  '(:ignore t :which-key "Build")
@@ -77,8 +76,7 @@
    "bc" 'ensime-sbt-do-compile)
 
   ;; Looks like a perfect candidate for a Hydra?
-  (:keymaps 'ensime-mode-map
-   :prefix ","
+  (:keymaps 'ensime-mode-map :prefix ","
    "e" 'ensime-print-errors-at-point
    "t" 'ensime-print-type-at-point
    "o" 'ensime-import-type-at-point

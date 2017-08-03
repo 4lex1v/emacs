@@ -26,3 +26,7 @@
        (copy-face font-lock-keyword-face face-ref)))
    '("final" "private" "protected" "implicit" "abstract" "sealed" "lazy" "override"
      "inline")))
+
+(defun scala-join-lines ()
+  (interactive)
+  (scala-indent:join-line t))
