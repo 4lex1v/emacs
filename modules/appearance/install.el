@@ -9,18 +9,6 @@
 (defconst theme-to-load 'sirthias)
 ;(defconst theme-to-load 'default)
 
-(use-package doom-themes
-  :if (and (display-graphic-p)
-           (eq theme-to-load 'doom))
-  :load-path "modules/appearance/themes/emacs-doom-theme"
-  :init 
-  (setq doom-enable-bold t
-        doom-enable-italic t
-        doom-one-brighter-modeline t
-        doom-one-brighter-comments t)
-  :config
-  (load-theme 'doom-molokai t))
-
 (use-package dracula-theme
   :if (and (display-graphic-p)
            (eq theme-to-load 'dracula))

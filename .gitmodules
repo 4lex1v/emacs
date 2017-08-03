@@ -2,11 +2,6 @@
 	path = modules/appearance/themes/sirthias
 	url = https://github.com/4lex1v/sirthias-theme.git
 	branch = master
-[submodule "themes/solarized-emacs"]
-	path = modules/appearance/themes/solarized-emacs
-	url = https://github.com/bbatsov/solarized-emacs.git
-	branch = master
-
 [submodule "core/projectile"]
 	path = modules/behaviour/projectile
 	url = git@github.com:bbatsov/projectile.git
@@ -93,9 +88,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/haskell/haskell-mode"]
 	path = modules/haskell/haskell-mode
 	url = git@github.com:haskell/haskell-mode.git
-[submodule "themes/zenburn-emacs"]
-	path = modules/appearance/themes/zenburn-emacs
-	url = git@github.com:bbatsov/zenburn-emacs.git
 [submodule "packages/emacs-jabber"]
 	path = modules/communications/jabber
 	url = git@github.com:legoscia/emacs-jabber.git
@@ -183,9 +175,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "platform/vim/evil-args"]
 	path = modules/editor/evil-args
 	url = git@github.com:wcsmith/evil-args.git
-[submodule "platform/appearance/themes/monokai-emacs"]
-	path = modules/appearance/themes/monokai-emacs
-	url = git@github.com:oneKelvinSmith/monokai-emacs.git
 [submodule "platform/vim/evil-mc"]
 	path = modules/editor/evil-mc
 	url = git@github.com:gabesoft/evil-mc.git
@@ -207,9 +196,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "platform/appearance/powerline"]
 	path = modules/appearance/powerline
 	url = git@github.com:milkypostman/powerline.git
-[submodule "platform/appearance/themes/emacs-doom-theme"]
-	path = modules/appearance/themes/emacs-doom-theme
-	url = git@github.com:hlissner/emacs-doom-theme.git
 [submodule "modules/behaviour/general"]
 	path = modules/behaviour/general
 	url = git@github.com:noctuid/general.el.git
@@ -219,9 +205,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/org/org-reveal"]
 	path = modules/org/org-reveal
 	url = git@github.com:yjwen/org-reveal.git
-[submodule "modules/appearance/themes/tao-theme-emacs"]
-	path = modules/appearance/themes/tao-theme-emacs
-	url = git@github.com:11111000000/tao-theme-emacs.git
 [submodule "modules/editor/evil-smartparens"]
 	path = modules/editor/evil-smartparens
 	url = git@github.com:expez/evil-smartparens.git
