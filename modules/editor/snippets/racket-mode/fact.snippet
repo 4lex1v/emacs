@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: factorial
+# key: fact
+# --
+(define fact
+  (λ (n)
+    (if (zero? n)
+      1
+      (* n (fact (- n 1))))))
