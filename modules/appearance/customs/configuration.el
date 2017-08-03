@@ -51,14 +51,21 @@
 
 ;; For some reason i need this workaround otherwise Emacs is tooooo
 ;; slow when i'm using Windows. Pretty sure there's a better solution
-(if (or IS_MAC IS_LINUX)
-    (let ((frame-font (format "%s-%d"
-                              default-font-name
-                              default-font-size)))
-      (set-frame-font frame-font)
-      (add-to-list 'default-frame-alist (cons 'font frame-font)))
-  (set-face-attribute 'default nil :height (* default-font-size 10)))
+(if IS_WINDOWS
+    (progn
+      (set-face-attribute 'default nil
+                          :font "PragmataPro"
+                          :height (* default-font-size 10)))
 
-(4lex1v:gui:frame :transparency '(100 . 100)
-                  :cursor       '(box . bar))
+  ;; Will be configured for Mac or Linux
+  (let ((frame-font (format "%s-%d"
+                            default-font-name
+                            default-font-size)))
+    (set-frame-font frame-font)
+    (add-to-list 'default-frame-alist (cons 'font frame-font))
+    (set-face-attribute 'default nil :height (* default-font-size 10))
+    (4lex1v:gui:frame :transparency '(100 . 100)
+                      :cursor       '(box . bar))))
+
+
 

@@ -48,9 +48,8 @@
   :config
   (load-theme 'sirthias t))
 
-;; This is a huge comment for testing the colour scheme
-(use-package spaceline-config)
-(use-package spaceline
+(use-package spaceline-config :if IS_MAC)
+(use-package spaceline :if IS_MAC
   :after spaceline-config
   
   :init
@@ -112,8 +111,10 @@
   :diminish beacon-mode
   
   :init
-  (setq beacon-color (face-attribute 'spaceline-highlight-face
-                                     :background nil t))
+  (setq beacon-color
+        (face-attribute
+         (if IS_MAC 'spaceline-highlight-face 'default)
+         :background nil t))
   
   :config
   (add-to-list 'beacon-dont-blink-major-modes 'term-mode)

@@ -64,6 +64,14 @@
   :config
   (evil-magit-init))
 
+(use-package ssh-agency :if IS_WINDOWS :ensure t
+  :after magit
+  :init
+  (setq ssh-agency-keys '("c:/Users/4lex1v/.ssh/id_rsa"))
+  :config
+  (setenv "SSH_ASKPASS" "git-gui--askpass")
+  (ssh-agency-ensure))
+
 ;; (use-package diff-hl
 ;;   :after magit
 ;;   :config
