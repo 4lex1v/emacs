@@ -34,9 +34,8 @@
 
   (use-package em-alias
     :config
-    (eshell/alias "bubu" "brew update && brew upgrade"))
-  
-  )
+    (eshell/alias "bubu" "brew update && brew upgrade")
+    (eshell/alias "sshs" "ssh-add ~/.ssh/github_rsa")))
 
 (use-package term
   :config
