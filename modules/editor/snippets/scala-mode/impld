@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: implivit def
-# key: impld
-# --
-implicit def $1(${2:arg}: $3): $4 = $0

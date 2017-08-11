@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: spray dependency
-# key: sprayDep
-# --
-"io.spray" %% "spray-$1" % "$2"$0
