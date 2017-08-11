@@ -220,9 +220,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/scripting/lua-mode"]
 	path = modules/lua/lua-mode
 	url = git@github.com:immerrr/lua-mode.git
-[submodule "modules/behaviour/ggtags"]
-	path = modules/behaviour/ggtags
-	url = https://github.com/leoliu/ggtags
 [submodule "modules/native/omnisharp-emacs"]
 	path = modules/csharp/omnisharp-emacs
 	url = git@github.com:OmniSharp/omnisharp-emacs.git
@@ -235,3 +232,15 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/native/company-irony"]
 	path = modules/native/company-irony
 	url = git@github.com:Sarcasm/company-irony.git
+[submodule "modules/behaviour/helm-gtags"]
+	path = modules/behaviour/helm-gtags
+	url = git@github.com:syohex/emacs-helm-gtags.git
+[submodule "modules/native/cedet"]
+	path = modules/native/cedet
+	url = https://git.code.sf.net/p/cedet/git
+[submodule "modules/native/disaster"]
+	path = modules/native/disaster
+	url = git@github.com:jart/disaster.git
+[submodule "snippets"]
+	path = snippets
+	url = ./snippets
