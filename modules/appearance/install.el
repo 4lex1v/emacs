@@ -24,8 +24,8 @@
   (setq spacemacs-theme-comment-italic t)
 
   :config
-  (load-theme 'spacemacs-light t)
-  (set-face-attribute 'font-lock-constant-face nil :weight 'bold))
+  (set-face-attribute 'font-lock-constant-face nil :weight 'bold)
+  (load-theme 'spacemacs-light t))
 
 (use-package sirthias-theme
   :if (and (display-graphic-p)
@@ -38,6 +38,7 @@
 
 (use-package spaceline-config :if IS_MAC)
 (use-package spaceline :if IS_MAC
+  :disabled t
   :after spaceline-config
   
   :init
@@ -121,5 +122,9 @@
 
 ;; Set of custom hack of the default theme to make it a bit prettier
 (if (eq theme-to-load 'default)
-    (set-face-attribute 'fringe nil :background nil))
+    (progn 
+      (set-face-attribute 'fringe nil :background nil)
+      (with-eval-after-load "eshell"
+        (lambda ()
+          (set-face-attribute 'eshell-prompt nil :foreground "blue")))))
 
