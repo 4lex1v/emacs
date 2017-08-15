@@ -1,12 +1,38 @@
 * Emacs' configuration repo
 
 ** What's this?
+
 Emacs configuration
 
-** Installing Emacs
 
-*** Emacs port for Mac
+* Installing Emacs
+** Mac
+*** Yamamoto's Emacs 
+    Official repository on BitBucket: https://bitbucket.org/mituharu/emacs-mac
+    
+    #+BEGIN_EXAMPLE sh
+      VERSION=emacs-25.2-mac-6.5
+      OPTIONS=(--with-ctags --with-modern-icon --with-natural-title-bar)
+      brew install https://raw.githubusercontent.com/railwaycat/homebrew-emacsmacport/$VERSION/Formula/emacs-mac.rb $OPTIONS
+    #+END_EXAMPLE
+    
+    Or:
 
-#+BEGIN_EXAMPLE sh
-brew install https://raw.githubusercontent.com/railwaycat/homebrew-emacsmacport/emacs-25.1-mac-6.1/Formula/emacs-mac.rb --with-ctags --with-modern-icon
-#+END_EXAMPLE
+    #+BEGIN_SRC sh
+    brew cask install emacs-mac
+    #+END_SRC
+    
+*** Official Emacs distribution
+
+    #+BEGIN_EXAMPLE sh
+    brew install emacs --with-cocoa --with-ctags 
+    #+END_EXAMPLE
+   
+*** Emacs for MacOsX port
+    #+BEGIN_EXAMPLE sh
+    brew cask install emacs
+    #+END_EXAMPLE
+    
+** Windows
+
+
