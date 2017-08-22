@@ -3,13 +3,18 @@
 ;; [TODOs]
 ;; Foundation :: Log warning if the module doesn't exist
 
+;; Behaviour  :: Need to configure some tagging system, etags or ggtags
+
 ;; Appearance :: Add line / column number 
 ;; Appearance :: Change cursor's color, fix mode-line colors
 ;; Appearance :: Rework modeline style (inspired by https://github.com/hlissner/.emacs.d/blob/master/modules/ui/doom-modeline/config.el)
 
 ;; Sirthias   :: Improve `org-verbatim' face
 ;; Sirthias   :: Improve `comint-highlight-prompt' face
+;; #TODO(4lex1v) :: Need to add cscope for C and maybe Scala?
+;; #TODO(4lex1v) :: Put `fixup-whitespace` on some convenient keybinding
 
+;; #NOTE(4lex1v) :: interesting repo https://github.com/alphapapa/highlight-function-calls
 (eval-and-compile
   (add-to-list 'load-path
                (expand-file-name "foundation" user-emacs-directory))
