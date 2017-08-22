@@ -50,18 +50,21 @@
    "r" 'sbt-command
    "c" '(4lex1v:sbt-compile-command :which-key "compile"))
   
+  (:keymaps 'scala-mode-map :prefix ","
+   "c" '(4lex1v:sbt-compile-command :which-key "compile"))
+  
   (:keymaps 'sbt-mode-map :states '(normal insert) :prefix ""
    "C-j" 'compilation-next-error
    "C-k" 'compilation-previous-error)
   
   :config
   (load "sbt-defuns")
-  (evil-set-initial-state 'sbt-mode 'emacs))
+  (evil-set-initial-state 'sbt-mode 'normal))
 
 ;; TODO :: override the major mode segment for Ensime activated projects
 (use-package ensime
-  :after scala-mode
-  :commands ensime
+  :defer t
+  :commands ensime-mode
   :general
   (:keymaps 'scala-mode-map :prefix "<SPC> se"
    ""  '(:ignore t :which-key "Ensime")
@@ -96,7 +99,7 @@
   (load "ensime-defuns")
   (unbind-key "M-p" ensime-mode-map)
   
-  (add-hook 'scala-mode-hook #'4lex1v:smart-ensime-loader)
+  ;;(add-hook 'scala-mode-hook #'4lex1v:smart-ensime-loader)
 
   ;; The one defined by the Scala-mode for integration with Ensime
   (require 'ob-scala))

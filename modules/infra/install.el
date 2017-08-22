@@ -36,5 +36,6 @@
           ansi-color-for-comint-mode-on)
   
   :config
-  (setq eshell-prompt-function #'4lex1v:eshell-prompt))
+  (setq eshell-prompt-function #'4lex1v:eshell-prompt
+        eshell-prompt-regexp "^>>+ "))
 

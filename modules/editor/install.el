@@ -7,6 +7,9 @@
         sp-autoskip-closing-pair 'always-end
         sp-hybrid-kill-entire-symbol nil))
 
+;; TODO :: Replace bind with General
+;; TODO :: Improve some combinations with Hyndra
+;; NOTE :: Can we introduce another mode, like <S>, with defined Smartparens bindings? Ref :: Evil
 (use-package smartparens
   :after smartparens-config
   :commands smartparens-mode
@@ -52,6 +55,36 @@
   (sp-pair "[" "]" :wrap "s-[")
   (sp-pair "{" "}" :wrap "C-{"))
 
+
+
+(defun anyfin:inject-global-backend (backend)
+  (let ((active-backends (copy-tree company-backends)))
+    (message "Active backends :: %s" active-backends)
+    (setq company-backends (append (list backend) active-backends))))
+
+(use-package yasnippet
+  :diminish (yas-minor-mode . " Y")
+  :commands yas-minor-mode
+  :mode ("\\.yasnippet" . snippet-mode)
+  
+  :general
+  ("es" '(:ignore t :which-key "Snippets")
+   "esa" 'yas-new-snippet)
+  
+  :init
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets"
+                           "~/.emacs.d/modules/editor/yasnippet/snippets")
+        yas-wrap-around-region t
+        yas-indent-line t)
+  
+  (add-hook 'after-save-hook
+            (lambda ()
+              (when (eq major-mode 'snippet-mode)
+                (yas-reload-all))))
+  
+  :config
+  (yas-reload-all)) 
+
 (use-package company
   :commands company-mode
 
@@ -67,10 +100,14 @@
    ("C-d" . company-show-doc-buffer))
   
   :general
-  (:prefix ""
-   "C-/" 'company-complete)
+  (:prefix "" :states '(insert)
+   "C-SPC" 'company-complete)
 
   :init 
+  
+  (defconst company-default-backends
+    "A set of default backends used in all major-mode where company is activated")
+
   (setq company-dabbrev-ignore-case nil
         company-dabbrev-code-ignore-case nil
         company-dabbrev-downcase nil
@@ -83,52 +120,43 @@
 
         company-transformers '(company-sort-by-occurrence)
 
-        ;; Backends configuration
-        company-backends '((company-files
-                            company-keywords
-                            company-capf)
-                           (company-abbrev
-                            company-dabbrev)))
+        ;; NOTE :: no point moving this to a default var. This set will be
+        ;;         extended further with other default modes like yasnippet.
+        company-backends     '(company-yasnippet company-files
+                              (company-abbrev company-dabbrev)
+                               company-keywords company-capf))
 
-  (defun company-add-mode-backends (backends)
+  ;; (defun anyfin:inject-company-backends (backends-set)
+  ;;   ;; default backends in this case should include all initial backends
+  ;;   ;; plus additional default backends injected by minor mode like yasnippet.
+  ;;   ;; On the other hand it shouldn't include other backends from major modes,
+  ;;   ;; those should be buffer local by design.
+  ;;   (let (default-backends (copy-tree company-backends))
+  ;;     ;; Create a new buffer-local variable
+  ;;     (make-local-variable 'company-backends)
+
+  ;;     ;; TODO :: Investigate how the following code works
+  ;;     (setq company-backends default-backends)
+  ;;     (setf (car company-backends)
+  ;;           (append backends-set (car company-backends)))))
+  
+  (defun company-add-mode-backends (backends-to-inject)
     (lambda ()
       (make-local-variable 'company-backends)
       (setq company-backends (copy-tree company-backends))
       
       ;;(setq company-backends (cons backends company-backends))
 
-      (setf (car company-backends)
-            (append backends (car company-backends)))))
-  :config
-  (add-hook 'text-mode-hook #'company-mode)) 
+      ;; (setf (car company-backends)
+      ;;       (append backends-to-inject (car company-backends)))
 
-(use-package yasnippet
-  :diminish (yas-minor-mode . "Y")
-  :commands yas-minor-mode
-  :mode ("\\.yasnippet" . snippet-mode)
-  
-  :general
-  ("es" '(:ignore t :which-key "Snippets")
-   "esa" 'yas-new-snippet)
-  
-  :init
-  (setq yas-snippet-dirs '("~/.emacs.d/modules/editor/snippets"
-                           "~/.emacs.d/modules/editor/yasnippet/snippets")
-        yas-wrap-around-region t
-        yas-indent-line t)
-  
-  (add-hook 'after-save-hook
-            (lambda ()
-              (when (eq major-mode 'snippet-mode)
-                (yas-reload-all))))
+      (add-to-list 'company-backends backends-to-inject)))
   
   :config
-  (add-to-list 'company-backends '(company-yasnippet))
-  (yas-reload-all)) 
+  (add-hook 'after-init-hook #'anyfin:build-company-backends)
+  (add-hook 'text-mode-hook #'company-mode))
 
-(use-package flycheck
-  :defer t
-  :ensure t)
+(use-package flycheck :defer t :ensure t)
 
 (use-package hideshowvis
   :diminish hs-minor-mode

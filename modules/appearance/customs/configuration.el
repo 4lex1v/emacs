@@ -67,5 +67,15 @@
     (4lex1v:gui:frame :transparency '(100 . 100)
                       :cursor       '(box . bar))))
 
+;;`font-lock-keywords`
 
-
+;; TODO(4lex1v) :: Need to add some support in combination with projectile to see all entries in the project
+;; TODO(4lex1v) :: Need to update the visual repr of these things
+;; NOTE(4lex1v) :: Wonder if i can simple use `prog-mode` to enable the highliting everywhere?
+(mapc
+ (lambda (mode)
+   (font-lock-add-keywords ;;`font-lock-keywords`
+    mode
+    '(("#\\<\\(TODO\\)\\>" 1 '(font-lock-warning-face :underline t) t)
+      ("#\\<\\(NOTE\\)\\>" 1 '(font-lock-type-face    :underline t) t))))
+   '(emacs-lisp-mode scala-mode c-mode c++-mode))

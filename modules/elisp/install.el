@@ -20,7 +20,8 @@
   (load "elisp-defuns")
   
   (add-hook 'emacs-lisp-mode-hook
-            (company-add-mode-backends '(company-elisp)))
+            (company-add-mode-backends 'company-elisp)
+            t)
   
   (add-hook 'emacs-lisp-mode-hook #'4lex1v:fix-elisp-indentation)
   (add-hook 'emacs-lisp-mode-hook #'yas-minor-mode)

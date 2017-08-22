@@ -14,6 +14,7 @@
   :config
   (which-key-mode))
 
+;; TODO(4lex1v) :: This is used in scala i guess i need to change this behaviour
 (use-package imenu)
 
 (use-package general
@@ -21,6 +22,7 @@
   (setq general-default-states  'normal
         general-default-prefix  "<SPC>"))
 
+;; NOTE :: Some movement keybinds are defined in Editor/Smartparens
 (use-package evil
   :after general ;; To enable evil-leader in initial buffers
   :init
@@ -179,10 +181,22 @@
   :commands projectile-project-root
   :diminish projectile-mode
   :bind-keymap ("C-c p" . projectile-command-map)
+
+  :init
+  (setq projectile-enable-caching       nil
+        projectile-require-project-root t
+        projectile-use-git-grep         nil
+        projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
+
+  :config
+  (projectile-global-mode))
+
+(use-package helm-projectile
+  :after (helm projectile)
+  :init (setq projectile-completion-system 'helm)
   :bind
-  (("M-1" . helm-projectile)
+  (("M-1" . helm-projectile-find-file)
    ("M-4" . projectile-switch-project))
-  
   :general
   ("p" '(:ignore t :which-key "Projectile")
    "pp" 'helm-projectile-switch-project
@@ -198,15 +212,7 @@
    "pr" 'projectile-replace
    
    "pi" 'projectile-invalidate-cache)
-
-  :init
-  (setq projectile-enable-caching       t
-        projectile-require-project-root t
-        projectile-use-git-grep         t
-        projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
-
-  :config
-  (projectile-global-mode))
+  :config (helm-projectile-on))
 
 (use-package ibuffer-projectile
   :after projectile
@@ -218,11 +224,6 @@
               (unless (eq ibuffer-sorting-mode 'alphabetic)
                 (ibuffer-do-sort-by-alphabetic)))))
 
-(use-package helm-projectile
-  :after (helm projectile)
-  :init (setq projectile-completion-system 'helm)
-  :config (helm-projectile-on))
-
 (use-package ranger
   :commands ranger
   :bind
@@ -232,7 +233,8 @@
   (setq ranger-override-dired 'ranger
         ranger-show-literal    nil ;; Turn on highlighting in ranger mode
         ranger-cleanup-eagerly t
-        ranger-show-dotfiles   t)
+        ranger-show-dotfiles   t
+        ranger-ignored-extensions '())
 
   (bind-key "M-2" #'(lambda (&optional arg)
                       (interactive "P")
@@ -267,6 +269,9 @@
   
   :config
   (ranger-override-dired-mode t)
+  
+  (add-to-list 'ranger-excluded-extensions "meta")
+  (add-to-list 'ranger-excluded-extensions "cs.meta")
 
   (bind-key "l" #'drill-folder-down ranger-mode-map)
   (bind-key "h" #'drill-folder-up   ranger-mode-map)
@@ -299,21 +304,17 @@
   :general
   ("wj" 'ace-window))
 
-(use-package ggtags
-  :general
-  ("g" '(:ignore t :which-key "GTags")
-   "gs" 'ggtags-find-other-symbol
-   "gh" 'ggtags-view-tag-history
-   "gr" 'ggtags-find-reference
-   "gf" 'ggtags-find-file
-   "gc" 'ggtags-create-tags
-   "gu" 'ggtags-update-tags)
-  
-  :config
-  (ggtags-mode 1))
+(use-package helm-gtags
+  :after helm
+  :init
+  (setq helm-gtags-auto-update t
+        helm-gtags-use-input-at-cursor t
+        helm-gtags-pulse-at-cursor t
+        helm-gtags-ignore-case t))
 
 ;; Need to organize this to avoid disambiguity and not to forget
 (delete-selection-mode t)
+(global-auto-revert-mode t)
 
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)

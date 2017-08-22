@@ -40,7 +40,8 @@ project file .ensime defined in the root directory"
   (lambda () 
     (if (and (if-bound-f projectile-project-p)
              (if-bound-f projectile-project-root))
-        (4lex1v/connect-running-ensime (projectile-project-root))
+        (if (4lex1v/ensime-project-p (projectile-project-root))
+            (4lex1v/connect-running-ensime (projectile-project-root)))
       (progn
         (message (format "Projectile is not loaded, using %s" default-directory))
         (4lex1v/connect-running-ensime default-directory)))))
