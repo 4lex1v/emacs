@@ -6,8 +6,9 @@
 
 ;(defconst theme-to-load 'dracula)
 ;(defconst theme-to-load 'spacemacs)
-(defconst theme-to-load 'sirthias)
-;(defconst theme-to-load 'default)
+;; (defconst theme-to-load 'sirthias)
+(defconst theme-to-load 'the_boring_one)
+;; (defconst theme-to-load 'default)
 
 (use-package dracula-theme
   :if (and (display-graphic-p)
@@ -31,10 +32,14 @@
   :if (and (display-graphic-p)
            (eq theme-to-load 'sirthias))
   :load-path "modules/appearance/themes/sirthias"
-  :init
-  (setq sirthias-pallet-type 'warm)
   :config
   (load-theme 'sirthias t))
+
+(use-package the_boring_one-theme
+  :if (eq theme-to-load 'the_boring_one)
+  :load-path "modules/appearance/themes/the_boring_one"
+  :config
+  (load-theme 'the_boring_one t))
 
 (use-package spaceline-config :if IS_MAC)
 (use-package spaceline :if IS_MAC

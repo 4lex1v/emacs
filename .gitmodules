@@ -244,3 +244,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "snippets"]
 	path = snippets
 	url = ./snippets
+[submodule "modules/appearance/themes/the_boring_one"]
+	path = modules/appearance/themes/the_boring_one
+	url = git@github.com:4lex1v/the_boring_one.git
