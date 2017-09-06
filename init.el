@@ -9,11 +9,18 @@
 ;; Appearance :: Change cursor's color, fix mode-line colors
 ;; Appearance :: Rework modeline style (inspired by https://github.com/hlissner/.emacs.d/blob/master/modules/ui/doom-modeline/config.el)
 
-;; Sirthias   :: Improve `org-verbatim' face
-;; Sirthias   :: Improve `comint-highlight-prompt' face
-;; #TODO(4lex1v) :: Need to add cscope for C and maybe Scala?
-;; #TODO(4lex1v) :: Put `fixup-whitespace` on some convenient keybinding
+;; #TODO(Sirthias) :: Improve `org-verbatim' face
+;; #TODO(Sirthias) :: Improve `comint-highlight-prompt' face
+;; #TODO(Sirthias) :: Need to add cscope for C and maybe Scala?
+;; #TODO(Sirthias) :: Put `fixup-whitespace` on some convenient keybinding
+;; #TODO(Sirthias) :: Change the background color for comments
 
+;; #TODO(4lex1v, 08/22/17) :: Need to fix this stupid delete button
+;; #TODO(4lex1v, 08/23/17) :: Play with persp-mode. Though my emacs-mac has support for tabs which seems to be fine, it might be helpful in Windows version
+;; #TODO(4lex1v, 08/23/17) :: Figure out why my Emacs for Windows has some weird flickering
+;; #NOTE(4lex1v, 08/23/17) :: I can probably improve the notes / todo snippets by matching the mode 
+
+;; #TODO(4lex1v, 08/23/17) :: Add some temp log snippet for Scala that insert an interpolated string with the file name
 ;; #NOTE(4lex1v) :: interesting repo https://github.com/alphapapa/highlight-function-calls
 (eval-and-compile
   (add-to-list 'load-path
@@ -31,7 +38,7 @@
 (fnd:module behaviour      "All-things-navigation & movement")
 (fnd:module editor         "A lot of things to improve editing experience")
 
-;(fnd:module extensions     "A set of custom configurations and definitions to be created after Emacs has been configured, but before other modules are loaded")
+(fnd:module extensions     "A set of custom configurations and definitions to be created after Emacs has been configured, but before other modules are loaded" :ignore t)
 
 ;;
 ;;; Modules: Languages
@@ -42,6 +49,7 @@
 (fnd:module haskell        "Haskell programming language support")
 (fnd:module native         "C/C++ support")
 (fnd:module csharp         "C# support, mostly to work with Unity3D engine on Mac... or Windows")
+(fnd:module rust           "Rust-lang support")
 (fnd:module clojure        "Clojure programming language support")
 (fnd:module racket         "Support for the Racket programming language")
 (fnd:module python         "Emacs support for Python ecosystem")
@@ -59,7 +67,7 @@
 (fnd:module infra          "DevOps related stuff, e.g Docker")
 (fnd:module formats        "Minor formats like Markdown & YAML support")
 (fnd:module web            "Web & Frontend engineering stuff")
-(fnd:module communications "Slack, Jabber, etc...")
+(fnd:module communications "Slack, Jabber, etc..." :ignore t)
 (fnd:module reader         "PDF reading tools")
 (fnd:module statistics     "Configuration package for math & statistics related tasks")
 
@@ -67,6 +75,6 @@
 ;;; Modules: Projects & Work
 ;;
 
-;;(fnd:module work           "Additional configuration to wire Emacs for work related projects")
+(fnd:module work           "Additional configuration to wire Emacs for work related projects")
 
 (setq gc-cons-threshold 100000)

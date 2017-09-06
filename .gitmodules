@@ -247,3 +247,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/appearance/themes/the_boring_one"]
 	path = modules/appearance/themes/the_boring_one
 	url = git@github.com:4lex1v/the_boring_one.git
+[submodule "modules/rust/rust-mode"]
+	path = modules/rust/rust-mode
+	url = git@github.com:rust-lang/rust-mode.git
