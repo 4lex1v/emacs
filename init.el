@@ -23,8 +23,9 @@
 ;; #TODO(4lex1v, 08/23/17) :: Add some temp log snippet for Scala that insert an interpolated string with the file name
 ;; #NOTE(4lex1v) :: interesting repo https://github.com/alphapapa/highlight-function-calls
 (eval-and-compile
-  (add-to-list 'load-path
-               (expand-file-name "foundation" user-emacs-directory))
+  (setq user-init-file (or load-file-name (buffer-file-name)))
+  (setq user-emacs-directory (file-name-directory user-init-file))
+  (add-to-list 'load-path (expand-file-name "foundation" user-emacs-directory))
   (require 'foundation))
 
 ;;
