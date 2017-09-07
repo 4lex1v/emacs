@@ -121,9 +121,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/essentials/use-package"]
 	path = modules/essentials/use-package
 	url = git@github.com:jwiegley/use-package.git
-[submodule "platform/editor/expand-region"]
-	path = modules/editor/expand-region
-	url = git@github.com:magnars/expand-region.el.git
 [submodule "foundation"]
 	path = foundation
 	url = git@github.com:4lex1v/foundation.git
@@ -145,15 +142,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/groovy/groovy-emacs-modes"]
 	path = modules/groovy/groovy-emacs-mode
 	url = git@github.com:Groovy-Emacs-Modes/groovy-emacs-modes.git
-[submodule "platform/vim/evil-args"]
-	path = modules/editor/evil-args
-	url = git@github.com:wcsmith/evil-args.git
-[submodule "platform/vim/evil-mc"]
-	path = modules/editor/evil-mc
-	url = git@github.com:gabesoft/evil-mc.git
-[submodule "platform/vim/evil-surround"]
-	path = modules/editor/evil-surround
-	url = git@github.com:timcharper/evil-surround.git
 [submodule "modules/vcs/evil-magit"]
 	path = modules/vcs/evil-magit
 	url = git@github.com:emacs-evil/evil-magit.git
@@ -169,9 +157,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/behaviour/hydra"]
 	path = modules/behaviour/hydra
 	url = git@github.com:abo-abo/hydra.git
-[submodule "modules/editor/evil-smartparens"]
-	path = modules/editor/evil-smartparens
-	url = git@github.com:expez/evil-smartparens.git
 [submodule "modules/racket/racket-mode"]
 	path = modules/racket/racket-mode
 	url = git@github.com:greghendershott/racket-mode.git
