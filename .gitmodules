@@ -67,9 +67,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/web"]
 	path = modules/web/web-mode
 	url = git@github.com:fxbois/web-mode.git
-[submodule "packages/yaml"]
-	path = modules/formats/yaml
-	url = https://github.com/yoshiki/yaml-mode.git
 [submodule "packages/idris"]
 	path = modules/idris/idris-mode
 	url = git@github.com:idris-hackers/idris-mode.git
@@ -151,9 +148,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/communications/slack"]
 	path = modules/communications/slack
 	url = git@github.com:yuya373/emacs-slack.git
-[submodule "modules/formats/pandoc-mode"]
-	path = modules/formats/pandoc-mode
-	url = git@github.com:joostkremers/pandoc-mode.git
 [submodule "modules/web/restclient"]
 	path = modules/web/restclient
 	url = git@github.com:pashky/restclient.el.git
@@ -178,12 +172,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "platform/vim/evil-mc"]
 	path = modules/editor/evil-mc
 	url = git@github.com:gabesoft/evil-mc.git
-[submodule "modules/org/org-ref"]
-	path = modules/org/org-ref
-	url = git@github.com:jkitchin/org-ref.git
-[submodule "modules/org/org-screenshot"]
-	path = modules/org/org-screenshot
-	url = git@github.com:dfeich/org-screenshot.git
 [submodule "platform/vim/evil-surround"]
 	path = modules/editor/evil-surround
 	url = git@github.com:timcharper/evil-surround.git
@@ -202,9 +190,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/behaviour/hydra"]
 	path = modules/behaviour/hydra
 	url = git@github.com:abo-abo/hydra.git
-[submodule "modules/org/org-reveal"]
-	path = modules/org/org-reveal
-	url = git@github.com:yjwen/org-reveal.git
 [submodule "modules/editor/evil-smartparens"]
 	path = modules/editor/evil-smartparens
 	url = git@github.com:expez/evil-smartparens.git
@@ -214,9 +199,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/racket/ob-racket"]
 	path = modules/racket/ob-racket
 	url = git@github.com:wallyqs/ob-racket.git
-[submodule "modules/formats/plantuml-mode"]
-	path = modules/formats/plantuml-mode
-	url = git@github.com:skuro/plantuml-mode.git
 [submodule "modules/scripting/lua-mode"]
 	path = modules/lua/lua-mode
 	url = git@github.com:immerrr/lua-mode.git
