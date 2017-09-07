@@ -46,15 +46,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/helm/helm-core"]
 	path = modules/behaviour/helm-core
 	url = git@github.com:emacs-helm/helm.git
-[submodule "core/helm/helm-ag"]
-	path = modules/behaviour/helm-ag
-	url = git@github.com:syohex/emacs-helm-ag.git
-[submodule "core/helm/helm-swoop"]
-	path = modules/behaviour/helm-swoop
-	url = git@github.com:ShingoFukuyama/helm-swoop.git
-[submodule "core/helm/helm-descbinds"]
-	path = modules/behaviour/helm-descbinds
-	url = git@github.com:emacs-helm/helm-descbinds.git
 [submodule "core/docker"]
 	path = modules/infra/docker
 	url = git@github.com:Silex/docker.el.git
@@ -157,9 +148,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/reader/pdf-tools"]
 	path = modules/reader/pdf-tools
 	url = git@github.com:politza/pdf-tools.git
-[submodule "platform/behaviour/helm-dash"]
-	path = modules/behaviour/helm-dash
-	url = https://github.com/areina/helm-dash
 [submodule "modules/groovy/groovy-emacs-modes"]
 	path = modules/groovy/groovy-emacs-mode
 	url = git@github.com:Groovy-Emacs-Modes/groovy-emacs-modes.git
@@ -211,9 +199,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/native/company-irony"]
 	path = modules/native/company-irony
 	url = git@github.com:Sarcasm/company-irony.git
-[submodule "modules/behaviour/helm-gtags"]
-	path = modules/behaviour/helm-gtags
-	url = git@github.com:syohex/emacs-helm-gtags.git
 [submodule "modules/native/cedet"]
 	path = modules/native/cedet
 	url = https://git.code.sf.net/p/cedet/git
