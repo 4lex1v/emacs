@@ -121,12 +121,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/essentials/use-package"]
 	path = modules/essentials/use-package
 	url = git@github.com:jwiegley/use-package.git
-[submodule "platform/editor/ace-window"]
-	path = modules/behaviour/ace-window
-	url = git@github.com:abo-abo/ace-window.git
-[submodule "platform/editor/avy"]
-	path = modules/behaviour/avy
-	url = git@github.com:abo-abo/avy.git
 [submodule "platform/editor/expand-region"]
 	path = modules/editor/expand-region
 	url = git@github.com:magnars/expand-region.el.git
@@ -214,3 +208,18 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/rust/rust-mode"]
 	path = modules/rust/rust-mode
 	url = git@github.com:rust-lang/rust-mode.git
+[submodule "modules/rust/emacs-racer"]
+	path = modules/rust/emacs-racer
+	url = git@github.com:racer-rust/emacs-racer.git
+[submodule "modules/vcs/ghub"]
+	path = modules/vcs/ghub
+	url = git@github.com:magit/ghub.git
+[submodule "modules/vcs/ghub-plus"]
+	path = modules/vcs/ghub-plus
+	url = git@github.com:vermiculus/ghub-plus.git
+[submodule "modules/vcs/apiwrap"]
+	path = modules/vcs/apiwrap
+	url = git@github.com:vermiculus/apiwrap.el.git
+[submodule "modules/reader/novel"]
+	path = modules/reader/novel
+	url = git@github.com:wasamasa/nov.el.git

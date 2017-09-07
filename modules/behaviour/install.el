@@ -14,7 +14,7 @@
   :config
   (which-key-mode))
 
-;; TODO(4lex1v) :: This is used in scala i guess i need to change this behaviour
+;; #TODO(4lex1v) :: This is used in scala i guess i need to change this behaviour
 (use-package imenu)
 
 (use-package general
@@ -22,7 +22,7 @@
   (setq general-default-states  'normal
         general-default-prefix  "<SPC>"))
 
-;; NOTE :: Some movement keybinds are defined in Editor/Smartparens
+;; #NOTE(4lex1v, 08/24/17) :: Some movement keybinds are defined in Editor/Smartparens
 (use-package evil
   :after general ;; To enable evil-leader in initial buffers
   :init
@@ -137,6 +137,7 @@
   (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
 (use-package helm-swoop
+  :ensure t
   :commands helm-swoop
 
   :bind
@@ -159,6 +160,7 @@
         helm-swoop-use-line-number-face t))
 
 (use-package helm-descbinds
+  :ensure t
   :commands helm-descbinds
   :bind (:map helm-command-map
          ("b" . helm-descbinds))
@@ -167,6 +169,7 @@
   (setq helm-descbinds-window-style 'same-window))
 
 (use-package helm-ag
+  :ensure t
   :commands helm-projectile-ag
   :init
   (setq helm-ag-insert-at-point 'symbol
@@ -287,9 +290,11 @@
                        :action 'ranger)
             :buffer "*helm ranger bookmarks*"))))
 
-(use-package helm-dash)
+(use-package helm-dash :ensure t :defer t
+  :commands (helm-dash helm-dash-at-point))
 
 (use-package avy
+  :ensure t
   :bind
   (("C-c SPC" . avy-goto-char)
    ("C-c j c" . avy-goto-char)
@@ -299,12 +304,14 @@
   (general-define-key "j" #'avy-goto-char))
 
 (use-package ace-window
+  :ensure t
   :bind
   (("C-'"  . ace-window))
   :general
   ("wj" 'ace-window))
 
 (use-package helm-gtags
+  :ensure t
   :after helm
   :init
   (setq helm-gtags-auto-update t
