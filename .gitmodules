@@ -130,9 +130,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/essentials/use-package"]
 	path = modules/essentials/use-package
 	url = git@github.com:jwiegley/use-package.git
-[submodule "platform/system/exec-path-from-shell"]
-	path = modules/system/exec-path-from-shell
-	url = git@github.com:purcell/exec-path-from-shell.git
 [submodule "platform/editor/ace-window"]
 	path = modules/behaviour/ace-window
 	url = git@github.com:abo-abo/ace-window.git

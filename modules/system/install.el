@@ -4,6 +4,7 @@
 (defconst IS_WINDOWS (eq system-type 'windows-nt))
 
 (use-package exec-path-from-shell
+  :ensure t
   :if (or IS_MAC IS_LINUX)
   :commands exec-path-from-shell-getenv
   :init
