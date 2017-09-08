@@ -22,6 +22,12 @@
         magit-diff-options '("--word-diff")
         magit-diff-refine-hunk 'all) ;; experimental
   
+  (defun magit-diff-visit-file-other-window (file)
+    (interactive (list (--if-let (magit-file-at-point)
+                           (expand-file-name it)
+                         (user-error "No file at point"))))
+    (magit-diff-visit-file file t))
+  
   :general 
   ("m" '(:ignore t :which-key "Magit")
    "ms"  'magit-status
@@ -38,15 +44,16 @@
    "mlc" 'magit-log-current)
 
   :config
-
-  ;; diminish magit-auto-revert-mode
-  
   (evil-set-initial-state 'magit-submodule-list-mode 'emacs)
   
   (add-to-list 'magit-log-arguments "--color")
 
   (magit-define-popup-action 'magit-submodule-popup   
-    ?l "List" 'magit-list-submodules))
+    ?l "List" 'magit-list-submodules)
+
+  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
+  
+  )
 
 (use-package with-editor
   :after magit
@@ -72,19 +79,10 @@
   (setenv "SSH_ASKPASS" "git-gui--askpass")
   (ssh-agency-ensure))
 
-;; (use-package diff-hl
-;;   :after magit
-;;   :config
-;;   (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
-;;   (global-diff-hl-mode 1))
+(use-package magithub
+  :ensure t
+  :after magit
+  :config
+  (magithub-feature-autoinject t))
 
-; (use-package diff-hl-flydiff
-;   :after diff-hl
-;   :config 
-;   (diff-hl-flydiff-mode)
-;   )
 
-;; (use-package magithub
-;;   :after magit
-;;   :config
-;;   (magithub-feature-autoinject t))

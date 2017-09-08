@@ -16,11 +16,16 @@
             "ed" '(:ignore t :which-key "Docs & Help")
             "eda" #'helm-apropos)
   
+  :init
+  (setq-mode-local emacs-lisp-mode comment-note-comment-prefix ";;")
+  
   :config
   (load "elisp-defuns")
   
+  (setq company-backends '((company-abbrev company-dabbrev)))
+  
   (add-hook 'emacs-lisp-mode-hook
-            (company-add-mode-backends 'company-elisp)
+            (company-add-mode-backends '(company-elisp company-yasnippet company-capf company-files))
             t)
   
   (add-hook 'emacs-lisp-mode-hook #'4lex1v:fix-elisp-indentation)

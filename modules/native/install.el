@@ -3,9 +3,13 @@
   :mode ("\\.h\\'" . c-mode)
   
   :general
-  (:prefix "," :keymaps '(c-mode-map c++-mode-map)
+  (:prefix "," :keymaps '(c-mode-map c++-mode-map objc-mode-map)
    "a" 'projectile-find-other-file
    "A" 'projectile-find-other-file-other-window)
+  
+  (:prefix "" :keymaps '(c-mode-map c++-mode-map objc-mode-map)  
+   "C-S-j" #'next-error
+   "C-S-k" #'previous-error)
   
   :init
   (setq org-babel-C-compiler "clang"
@@ -24,12 +28,12 @@
   (with-eval-after-load "org"
     (add-to-list 'org-babel-load-languages '(C . t))))
 
-(use-package cmake-mode :defer t :after cc-mode)
+(use-package cmake-mode :ensure t :defer t :after cc-mode)
 
 (use-package disaster
   :after cc-mode
   :commands disaster
-  :general (:prefix "," :keymaps '(c-mode-map c++-mode-map) "d" 'disaster))
+  :general (:prefix "," :keymaps '(c-mode-map c++-mode-map objc-mode-map) "d" 'disaster))
 
 (use-package irony
   :after cc-mode

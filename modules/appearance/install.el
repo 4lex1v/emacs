@@ -5,9 +5,9 @@
 ;; TODO :: add line / column number 
 
 ;(defconst theme-to-load 'dracula)
-;(defconst theme-to-load 'spacemacs)
-;; (defconst theme-to-load 'sirthias)
-(defconst theme-to-load 'the_boring_one)
+;; (defconst theme-to-load 'spacemacs)
+(defconst theme-to-load 'sirthias)
+;; (defconst theme-to-load 'the_boring_one)
 ;; (defconst theme-to-load 'default)
 
 (use-package dracula-theme
@@ -131,5 +131,5 @@
       (set-face-attribute 'fringe nil :background nil)
       (with-eval-after-load "eshell"
         (lambda ()
-          (set-face-attribute 'eshell-prompt nil :foreground "blue")))))
+          (set-face-attribute 'eshell-prompt nil :foreground "#000080")))))
 

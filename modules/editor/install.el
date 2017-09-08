@@ -55,8 +55,6 @@
   (sp-pair "[" "]" :wrap "s-[")
   (sp-pair "{" "}" :wrap "C-{"))
 
-
-
 (defun anyfin:inject-global-backend (backend)
   (let ((active-backends (copy-tree company-backends)))
     (message "Active backends :: %s" active-backends)
@@ -86,6 +84,7 @@
   (yas-reload-all)) 
 
 (use-package company
+  :diminish (company-mode . " C")
   :commands company-mode
 
   ;; @NOTE :: For some reason can't make this work with general??
@@ -95,8 +94,8 @@
   ;; Though perfectly works via `define-key'
   :bind
   (:map company-active-map
-   ("C-j" . company-select-next)
-   ("C-k" . company-select-previous)
+   ("C-j" . company-select-next-or-abort)
+   ("C-k" . company-select-previous-or-abort)
    ("C-d" . company-show-doc-buffer))
   
   :general
@@ -193,6 +192,7 @@
   (hideshowvis-enable))
 
 (use-package expand-region
+  :ensure t
   :bind ("C-=" . er/expand-region))
 
 (use-package centered-cursor-mode
@@ -230,11 +230,13 @@
   :bind ("M-/" . undo-tree-visualize))
 
 (use-package evil-surround
+  :ensure t
   :after evil
   :config
   (global-evil-surround-mode 1))
 
 (use-package evil-args
+  :ensure t
   :after evil
   :config
   (add-to-list 'evil-args-delimiters " ")
