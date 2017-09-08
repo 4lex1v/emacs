@@ -4,4 +4,5 @@
   :mode ("\\.rs\\'" . rust-mode))
 
 (use-package racer
+  :ensure t
   :after rust-mode)

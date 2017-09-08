@@ -166,18 +166,3 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/rust/rust-mode"]
 	path = modules/rust/rust-mode
 	url = git@github.com:rust-lang/rust-mode.git
-[submodule "modules/rust/emacs-racer"]
-	path = modules/rust/emacs-racer
-	url = git@github.com:racer-rust/emacs-racer.git
-[submodule "modules/vcs/ghub"]
-	path = modules/vcs/ghub
-	url = git@github.com:magit/ghub.git
-[submodule "modules/vcs/ghub-plus"]
-	path = modules/vcs/ghub-plus
-	url = git@github.com:vermiculus/ghub-plus.git
-[submodule "modules/vcs/apiwrap"]
-	path = modules/vcs/apiwrap
-	url = git@github.com:vermiculus/apiwrap.el.git
-[submodule "modules/reader/novel"]
-	path = modules/reader/novel
-	url = git@github.com:wasamasa/nov.el.git
