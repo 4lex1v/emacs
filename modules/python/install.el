@@ -1,4 +1,5 @@
 (use-package python
+  :defer t
   :mode ("\\.py" . python-mode)
   :after hideshowvis
   
@@ -12,7 +13,9 @@
   (add-hook 'python-mode-hook #'hs-minor-mode))
 
 ;; Get from Melpa
-(use-package pythonic :ensure t :after python)
+(use-package pythonic
+  :ensure t
+  :after python)
 
 (use-package anaconda-mode
   :after (python pythonic))

@@ -33,7 +33,8 @@
         org-agenda-files '("~/Sandbox/GTD/main.org")
 
         ;; Templates configuration
-        org-capture-templates '(("t" "Task"    entry (file+headline "~/Sandbox/GTD/main.org" "Tasks")    "* %i%?")
+        org-capture-templates '(("a" "Article" entry (file+headline "~/Sandbox/Articles/Articles.org" "Article") "* %i%?")
+                                ("t" "Task"    entry (file+headline "~/Sandbox/GTD/main.org" "Tasks")    "* %i%?")
                                 ("p" "Project" entry (file+headline "~/Sandbox/GTD/main.org" "Projects") "* %i%?"))
 
         ;; Keywords
@@ -57,4 +58,3 @@
   :config
   (load-theme 'org-beautify t))
 
-(use-package org-attach-screenshot :after org)

@@ -30,4 +30,6 @@
 (load "configuration")
 (load "async")
 
+(use-package mode-local)
+
 (add-hook 'after-init-hook #'(lambda () (server-start)))

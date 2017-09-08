@@ -1,3 +1,4 @@
+;; #TODO(4lex1v, 08/28/17) :: For some reason Scala marks `=` as a keyword and highlights it... this needs to be fixed
 (use-package scala-mode
   :defer t
   :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
@@ -12,11 +13,15 @@
    "C-<backspace>"  #'contextual-backspace)
 
   (:keymaps 'scala-mode-map :states '(normal) :prefix ""
+   "C-S-j" #'next-error
+   "C-S-k" #'previous-error
    "J" #'scala-join-lines)
 
   :init
   (setq scala-indent:use-javadoc-style t
         scala-mode:debug-messages nil)
+  
+  (setq-mode-local scala-mode comment-note-comment-prefix "//")
 
   (with-eval-after-load "org"
     (add-to-list 'org-babel-load-languages '(scala . t))
@@ -31,6 +36,10 @@
   :config
   (load "scala-defs")
 
+  (add-hook 'scala-mode-hook
+            (company-add-mode-backends '(company-capf company-yasnippet company-keywords company-files))
+            t)
+  
   (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist))
 
 (use-package smartparens-scala
@@ -51,14 +60,16 @@
    "c" '(4lex1v:sbt-compile-command :which-key "compile"))
   
   (:keymaps 'scala-mode-map :prefix ","
-   "c" '(4lex1v:sbt-compile-command :which-key "compile"))
+   "c" '(4lex1v:sbt-compile-command :which-key "compile")
+   "p" 'sbt-run-previous-command)
   
   (:keymaps 'sbt-mode-map :states '(normal insert) :prefix ""
    "C-j" 'compilation-next-error
    "C-k" 'compilation-previous-error)
-  
+
   :config
   (load "sbt-defuns")
+  (toggle-truncate-lines t)
   (evil-set-initial-state 'sbt-mode 'normal))
 
 ;; TODO :: override the major mode segment for Ensime activated projects
