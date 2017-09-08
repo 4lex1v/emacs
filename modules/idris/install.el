@@ -1,5 +1,5 @@
 (use-package prop-menu
-  :defer
+  :defer t
   :ensure t)
 
-(use-package idris-mode :after prop-menu) 
+(use-package idris-mode :ensure t :after prop-menu) 

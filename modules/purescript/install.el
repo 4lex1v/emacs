@@ -1,2 +1,2 @@
-(use-package psc-ide :defer)
+(use-package psc-ide :ensure t :defer t )
   

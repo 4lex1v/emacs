@@ -1,6 +1,4 @@
-(load-file (expand-file-name "modules/clojure/custom.el" user-emacs-directory))
-
-(use-package clojure-mode
+(use-package clojure-mode :ensure t
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode)
          ("\\.boot\\'" . clojure-mode)
@@ -31,6 +29,7 @@
             (define-clojure-indent (facts 1))))
 
 (use-package cider
+  :ensure t
   :load-path "modules/clojure/cider"
   :after clojure-mode
   :commands cider-mode

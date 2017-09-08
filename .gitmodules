@@ -37,12 +37,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/elisp/macrostep"]
 	path = modules/elisp/macrostep
 	url = git@github.com:joddie/macrostep.git
-[submodule "packages/clojure/packages/clojure/clojure-mode"]
-	path = modules/clojure/clojure-mode
-	url = git@github.com:clojure-emacs/clojure-mode.git
-[submodule "packages/clojure/cider"]
-	path = modules/clojure/cider
-	url = git@github.com:clojure-emacs/cider.git
 [submodule "core/helm/helm-core"]
 	path = modules/behaviour/helm-core
 	url = git@github.com:emacs-helm/helm.git
@@ -58,9 +52,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/web"]
 	path = modules/web/web-mode
 	url = git@github.com:fxbois/web-mode.git
-[submodule "packages/idris"]
-	path = modules/idris/idris-mode
-	url = git@github.com:idris-hackers/idris-mode.git
 [submodule "core/undo-tree"]
 	path = modules/editor/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
@@ -85,9 +76,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/markdown-mode"]
 	path = modules/formats/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
-[submodule "packages/purescript"]
-	path = modules/purescript/purescript-mode
-	url = git@github.com:epost/psc-ide-emacs.git
 [submodule "packages/idris-mode"]
 	path = packages/idris-mode
 	url = git@github.com:idris-hackers/idris-mode.git
@@ -139,9 +127,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/reader/pdf-tools"]
 	path = modules/reader/pdf-tools
 	url = git@github.com:politza/pdf-tools.git
-[submodule "modules/groovy/groovy-emacs-modes"]
-	path = modules/groovy/groovy-emacs-mode
-	url = git@github.com:Groovy-Emacs-Modes/groovy-emacs-modes.git
 [submodule "modules/vcs/evil-magit"]
 	path = modules/vcs/evil-magit
 	url = git@github.com:emacs-evil/evil-magit.git
@@ -163,9 +148,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/racket/ob-racket"]
 	path = modules/racket/ob-racket
 	url = git@github.com:wallyqs/ob-racket.git
-[submodule "modules/scripting/lua-mode"]
-	path = modules/lua/lua-mode
-	url = git@github.com:immerrr/lua-mode.git
 [submodule "modules/native/omnisharp-emacs"]
 	path = modules/csharp/omnisharp-emacs
 	url = git@github.com:OmniSharp/omnisharp-emacs.git
