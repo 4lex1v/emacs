@@ -69,8 +69,6 @@
 (fnd:module formats        "Minor formats like Markdown & YAML support")
 (fnd:module web            "Web & Frontend engineering stuff")
 (fnd:module communications "Slack, Jabber, etc..." :ignore t)
-(fnd:module reader         "PDF reading tools")
-(fnd:module statistics     "Configuration package for math & statistics related tasks")
 
 ;;
 ;;; Modules: Projects & Work

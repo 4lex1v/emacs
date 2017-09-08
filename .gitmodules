@@ -49,9 +49,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/which-key"]
 	path = modules/behaviour/which-key
 	url = git@github.com:justbur/emacs-which-key.git
-[submodule "packages/web"]
-	path = modules/web/web-mode
-	url = git@github.com:fxbois/web-mode.git
 [submodule "core/undo-tree"]
 	path = modules/editor/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
@@ -118,15 +115,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/web/restclient"]
 	path = modules/web/restclient
 	url = git@github.com:pashky/restclient.el.git
-[submodule "modules/statistics/ess"]
-	path = modules/statistics/ess
-	url = git@github.com:emacs-ess/ESS.git
 [submodule "platform/evil/evil-core"]
 	path = modules/behaviour/evil-core
 	url = git@github.com:emacs-evil/evil.git
-[submodule "modules/reader/pdf-tools"]
-	path = modules/reader/pdf-tools
-	url = git@github.com:politza/pdf-tools.git
 [submodule "modules/vcs/evil-magit"]
 	path = modules/vcs/evil-magit
 	url = git@github.com:emacs-evil/evil-magit.git
