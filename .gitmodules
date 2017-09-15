@@ -100,9 +100,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/python/emacs-ipython-notebook"]
 	path = modules/python/emacs-ipython-notebook
 	url = git@github.com:millejoh/emacs-ipython-notebook.git
-[submodule "packages/vcs/magithub"]
-	path = modules/vcs/magithub
-	url = https://github.com/vermiculus/magithub
 [submodule "modules/essentials/use-package"]
 	path = modules/essentials/use-package
 	url = git@github.com:jwiegley/use-package.git
@@ -163,3 +160,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/rust/rust-mode"]
 	path = modules/rust/rust-mode
 	url = git@github.com:rust-lang/rust-mode.git
+[submodule "modules/reader/novel"]
+	path = modules/reader/novel
+	url = git@github.com:wasamasa/nov.el.git
