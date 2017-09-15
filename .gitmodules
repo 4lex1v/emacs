@@ -133,9 +133,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/behaviour/hydra"]
 	path = modules/behaviour/hydra
 	url = git@github.com:abo-abo/hydra.git
-[submodule "modules/racket/racket-mode"]
-	path = modules/racket/racket-mode
-	url = git@github.com:greghendershott/racket-mode.git
 [submodule "modules/racket/ob-racket"]
 	path = modules/racket/ob-racket
 	url = git@github.com:wallyqs/ob-racket.git
