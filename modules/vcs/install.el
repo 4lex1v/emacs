@@ -81,6 +81,7 @@
 
 (use-package magithub
   :ensure t
+  :disabled t
   :after magit
   :config
   (magithub-feature-autoinject t))
