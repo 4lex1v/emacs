@@ -76,9 +76,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/expand-region"]
 	path = core/expand-region
 	url = git@github.com:magnars/expand-region.el.git
-[submodule "core/diff-hl"]
-	path = modules/vcs/diff-hl
-	url = git@github.com:dgutov/diff-hl.git
 [submodule "packages/emacs-request"]
 	path = modules/elisp/request
 	url = git@github.com:tkf/emacs-request.git
