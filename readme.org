@@ -7,9 +7,24 @@ Emacs configuration
 
 * Installing Emacs
 ** Mac
+*** Emacs for MacOsX port
+    This is the version is use the most. 
+
+**** Notable issues
+ - In fullscreen mode closing a frame (created with =make-frame=) terminates the entire app
+
+**** Installing
+    #+BEGIN_EXAMPLE sh
+    brew cask install emacs
+    #+END_EXAMPLE
+    
 *** Yamamoto's Emacs 
     Official repository on BitBucket: https://bitbucket.org/mituharu/emacs-mac
     
+**** Notable issues
+ - Has a much worse integration with macOs then =Emacs for macOs= port
+    
+**** Installing 
     #+BEGIN_EXAMPLE sh
       VERSION=emacs-25.2-mac-6.5
       OPTIONS=(--with-ctags --with-modern-icon --with-natural-title-bar)
@@ -26,11 +41,6 @@ Emacs configuration
 
     #+BEGIN_EXAMPLE sh
     brew install emacs --with-cocoa --with-ctags 
-    #+END_EXAMPLE
-   
-*** Emacs for MacOsX port
-    #+BEGIN_EXAMPLE sh
-    brew cask install emacs
     #+END_EXAMPLE
     
 ** Windows
