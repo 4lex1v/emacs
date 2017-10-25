@@ -197,10 +197,11 @@
 
 (use-package helm-projectile
   :after (helm projectile)
-  :init (setq projectile-completion-system 'helm)
+  
   :bind
   (("M-1" . helm-projectile-find-file)
    ("M-4" . projectile-switch-project))
+  
   :general
   ("p" '(:ignore t :which-key "Projectile")
    "pp" 'helm-projectile-switch-project
@@ -216,6 +217,11 @@
    "pr" 'projectile-replace
    
    "pi" 'projectile-invalidate-cache)
+  
+  :init
+  (setq projectile-completion-system 'helm
+        projectile-enable-caching     t)
+  
   :config (helm-projectile-on))
 
 (use-package ibuffer-projectile
