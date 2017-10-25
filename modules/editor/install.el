@@ -218,10 +218,9 @@
   :config (unbind-key "C-." flyspell-mode-map))
 
 (use-package undo-tree
-  :load-path "core/undo-tree"
   :diminish undo-tree-mode
-  :config (global-undo-tree-mode)
-  :bind ("M-/" . undo-tree-visualize))
+  :bind ("M-/" . undo-tree-visualize)
+  :config (global-undo-tree-mode))
 
 (use-package evil-surround
   :ensure t
