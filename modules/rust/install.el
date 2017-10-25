@@ -30,6 +30,7 @@
   :after rust-mode
   :general
   (:prefix "," :keymaps 'rust-mode-map
+   "c" '(:ignore t :which-key "Cargo")
    "c." 'cargo-process-repeat
    "cC" 'cargo-process-clean
    "cX" 'cargo-process-run-example
