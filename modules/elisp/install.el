@@ -33,7 +33,10 @@
   (add-hook 'emacs-lisp-mode-hook #'company-mode)
   (add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
   (add-hook 'emacs-lisp-mode-hook #'hideshowvis-enable)
-  (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode)) 
+  (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode)
+
+  (sp-with-modes 'emacs-lisp-mode
+    (sp-local-pair "'" nil :actions nil))))
 
 (use-package macrostep
   :after elisp-mode
