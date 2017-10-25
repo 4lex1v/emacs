@@ -1,5 +1,12 @@
 
-(use-package rust-mode :defer t)
+(use-package rust-mode :defer t
+  :init 
+  (setq rust-indent-offset 2)
+  
+  :config
+  (sp-with-modes 'rust-mode
+    (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
+    (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))))
 
 (use-package cargo :defer t :ensure t
   :after rust-mode
