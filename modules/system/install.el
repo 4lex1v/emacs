@@ -18,8 +18,7 @@
                  paths)))
      (exec-path-from-shell-setenv "PATH" path))))
 
-(use-package osx
-  :if IS_MAC
+(use-package osx :if IS_MAC
   :init
   (setq browse-url-browser-function 'browse-url-default-macosx-browser
         delete-by-moving-to-trash    t
@@ -29,7 +28,13 @@
         ns-function-modifier        'hyper
         ns-use-native-fullscreen     t
         frame-resize-pixelwise       t)
+  
   :config
+  (defun run-shell-command (&rest cmd)
+    (replace-regexp-in-string "\r?\n\\'" ""
+                              (shell-command-to-string
+                               (mapconcat 'identity cmd " "))))
+  
   (register-path-folders "/usr/local/homebrew/bin" "/usr/local/bin")
   (message "Current path :: %s" (getenv "PATH"))
 
