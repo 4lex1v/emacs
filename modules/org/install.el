@@ -30,12 +30,13 @@
         org-babel-load-languages      '((sql . t))
         
         ;; Agenda files to cycle
-        org-agenda-files '("~/Sandbox/GTD/main.org")
+        org-agenda-files '("~/Sandbox/GTD/game_dev.org"
+                           "~/Sandbox/GTD/work.org")
 
         ;; Templates configuration
         org-capture-templates '(("a" "Article" entry (file+headline "~/Sandbox/Articles/Articles.org" "Article") "* %i%?")
-                                ("t" "Task"    entry (file+headline "~/Sandbox/GTD/main.org" "Tasks")    "* %i%?")
-                                ("p" "Project" entry (file+headline "~/Sandbox/GTD/main.org" "Projects") "* %i%?"))
+                                ("t" "Task"    entry (file+headline "~/Sandbox/GTD/inbox.org" "Tasks")    "* %i%?")
+                                ("p" "Project" entry (file+headline "~/Sandbox/GTD/inbox.org" "Projects") "* %i%?"))
 
         ;; Keywords
         org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
