@@ -78,8 +78,23 @@
     ("0" (text-scale-set 0) :bind nil :exit t)
     ("1" (text-scale-set 0) nil :bind nil :exit t)))
 
-(use-package helm-config)
+(use-package helm-config
+  :init 
+  (setq helm-idle-delay                        0.0
+        helm-input-idle-delay                  0.01
+        helm-quick-update                      t
+        helm-split-window-in-side-p            t
+        helm-buffers-fuzzy-matching            t
+        helm-ff-fuzzy-matching                 t
+        helm-move-to-line-cycle-in-source      t
+        helm-scroll-amount                     8
+        helm-ff-search-library-in-sexp         t
+        helm-ff-file-name-history-use-recentf  t
+        helm-follow-mode-persistent            t))
+
+;; Can't drop this one, helm-ff functionality depends on this one
 (use-package helm-mode)
+
 (use-package helm
   :diminish helm-mode
   :commands helm-mode
@@ -113,19 +128,6 @@
   :general
   (:prefix ""
    "ga"  'helm-apropos)
-  
-  :init
-  (setq helm-idle-delay                        0.0
-        helm-input-idle-delay                  0.01
-        helm-quick-update                      t
-        helm-split-window-in-side-p            t
-        helm-buffers-fuzzy-matching            t
-        helm-ff-fuzzy-matching                 t
-        helm-move-to-line-cycle-in-source      t
-        helm-scroll-amount                     8
-        helm-ff-search-library-in-sexp         t
-        helm-ff-file-name-history-use-recentf  t
-        helm-follow-mode-persistent            t)
   
   :config 
   (helm-autoresize-mode)
