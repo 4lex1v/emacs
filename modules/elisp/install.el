@@ -1,5 +1,5 @@
 (use-package elisp-mode
-  :after       (yasnippet company which-key)
+  :after       (yasnippet company which-key smartparens-mode)
   :interpreter ("emacs" . emacs-lisp-mode)
   :mode        (("\\.el$" . emacs-lisp-mode)
                 ("Cask"   . emacs-lisp-mode))
@@ -36,7 +36,7 @@
   (add-hook 'emacs-lisp-mode-hook #'hs-minor-mode)
 
   (sp-with-modes 'emacs-lisp-mode
-    (sp-local-pair "'" nil :actions nil))))
+    (sp-local-pair "'" nil :actions nil)))
 
 (use-package macrostep
   :after elisp-mode
