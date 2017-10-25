@@ -10,8 +10,11 @@
           yas-minor-mode
           smartparens-mode
           company-mode)
+  
   :init 
-  (setq rust-indent-offset 2)
+  (setq rust-indent-offset  2
+        rust-format-on-save t
+        rust-toolchain-path (run-shell-command "rustc --print sysroot"))
   
   :config
   (sp-with-modes 'rust-mode
@@ -45,6 +48,10 @@
 
 (use-package racer :defer t :ensure t
   :after rust-mode
+  
+  :init
+  (setq racer-rust-src-path (concat rust-toolchain-path "/lib/rustlib/src/rust/src"))
+  
   :config
   (add-hook 'racer-mode-hook #'eldoc-mode))
 
