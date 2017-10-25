@@ -21,9 +21,6 @@
    ("C-M-k"            . sp-kill-sexp)
    ("C-M-w"            . sp-copy-sexp)
    ("C-M-t"            . sp-transpose-sexp)
-   
-   ("M-<delete>"       . sp-unwrap-sexp)
-   ("M-<backspace>"    . sp-backward-unwrap-sexp)
 
    ("M-<left>"         . sp-forward-slurp-sexp)
    ("C-M-<left>"       . sp-forward-barf-sexp)
@@ -31,9 +28,6 @@
    ("C-M-<right>"      . sp-backward-barf-sexp)
 
    ("M-D"              . sp-splice-sexp)
-   ("C-M-<delete>"     . sp-splice-sexp-killing-forward)
-   ("C-M-<backspace>"  . sp-splice-sexp-killing-backward)
-   ("C-S-<backspace>"  . sp-splice-sexp-killing-around)
 
    ("C-M-["            . sp-select-previous-thing)
    ("C-M-]"            . sp-select-next-thing)
