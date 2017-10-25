@@ -185,7 +185,6 @@
 (use-package projectile
   :defer t
   :commands projectile-project-root
-  :diminish projectile-mode
   :bind-keymap ("C-c p" . projectile-command-map)
 
   :init
