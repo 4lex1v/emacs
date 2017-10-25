@@ -1,7 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package smartparens-config
-  :defer t
   :init
   (setq sp-autoinsert-if-followed-by-word t
         sp-autoskip-closing-pair 'always-end
