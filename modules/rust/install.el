@@ -13,7 +13,7 @@
   
   :init 
   (setq rust-indent-offset  2
-        rust-format-on-save t
+        rust-format-on-save nil
         rust-toolchain-path (run-shell-command "rustc --print sysroot"))
   
   :config
