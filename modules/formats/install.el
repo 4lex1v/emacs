@@ -8,8 +8,8 @@
   (setq markdown-command "markdown"
         markdown-open-command "grip -b"))
 
-(use-package yaml-mode :ensure t
-  :mode ("\\.yml\\|\\.yaml$" . yaml-mode))
+(use-package yaml-mode :defer t :ensure t)
+(use-package toml-mode :defer t :ensure t)
 
 (use-package plantuml-mode :defer t :ensure t)
 (use-package esxml :defer t :ensure t)
