@@ -45,7 +45,7 @@
    "cs" 'cargo-process-search
    "cu" 'cargo-process-update
    "cx" 'cargo-process-run
-   "t" 'cargo-process-test)))
+   "t" 'cargo-process-test))
 
 (use-package racer :defer t :ensure t
   :after rust-mode
