@@ -50,11 +50,18 @@
 (use-package racer :defer t :ensure t
   :after rust-mode
   
+  :general
+  (:prefix "" :keymaps 'racer-mode-map
+   "g." 'racer-find-definition)
+  
   :init
   (setq racer-rust-src-path (concat rust-toolchain-path "/lib/rustlib/src/rust/src"))
   
   :config
   (add-hook 'racer-mode-hook #'eldoc-mode))
+
+(use-package company-racer :defer t :ensure t
+  :after (racer company))
 
 (use-package flycheck-rust :defer t :ensure t
   :after (rust-mode flycheck-mode)
