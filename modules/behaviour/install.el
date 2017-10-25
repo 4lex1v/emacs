@@ -120,6 +120,7 @@
         helm-quick-update                      t
         helm-split-window-in-side-p            t
         helm-buffers-fuzzy-matching            t
+        helm-ff-fuzzy-matching                 t
         helm-move-to-line-cycle-in-source      t
         helm-scroll-amount                     8
         helm-ff-search-library-in-sexp         t
