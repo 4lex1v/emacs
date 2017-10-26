@@ -41,7 +41,10 @@
    "C-k" 'evil-backward-paragraph
    "g,"  'evil-jump-backward
    "g."  'find-function-at-point
-   "C-q" '4lex1v/close-buffer)
+   "C-q" '4lex1v/close-buffer
+
+   ;; Navigation keys
+   "C-S-o" #'evil-jump-forward)
 
   (:states '(normal)
    "f"   '(:ignore t :which-key "Files")
@@ -55,7 +58,7 @@
   :config
   (general-evil-setup t)
 
-  (evil-set-initial-state 'prog-mode 'normal)
+  (evil-set-initial-state 'prog-mode   'normal)
   (evil-set-initial-state 'comint-mode 'normal)
 
   ;; Use `§' key to switch between emacs and normal state
