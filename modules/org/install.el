@@ -21,7 +21,10 @@
         org-src-fontify-natively       t
         org-descriptive-links          t
         org-startup-with-inline-images t
+        
+        ;; Std "..." don't look that good...
         org-ellipsis                   "⬎"
+        
         org-hide-leading-stars         nil
         org-startup-indented           nil
         org-line-spacing               5
@@ -34,12 +37,14 @@
                            "~/Sandbox/GTD/work.org")
 
         ;; Templates configuration
-        org-capture-templates '(("a" "Article" entry (file+headline "~/Sandbox/Articles/Articles.org" "Article") "* %i%?")
-                                ("t" "Task"    entry (file+headline "~/Sandbox/GTD/inbox.org" "Tasks")    "* %i%?")
-                                ("p" "Project" entry (file+headline "~/Sandbox/GTD/inbox.org" "Projects") "* %i%?"))
+        org-capture-templates '(("t" "Task"    entry (file+headline "~/Sandbox/GTD/inbox.org" "Tasks")    "* TODO %t %i%?")
+                                ("w" "Work"    entry (file+headline "~/Sandbox/GTD/work.org"  "Tasks")    "* TODO %t %i%?") 
+                                ("i" "Ideas"   entry (file+headline "~/Sandbox/GTD/inbox.org" "Ideas")    "* %i%?")
+                                ("p" "Project" entry (file+headline "~/Sandbox/GTD/inbox.org" "Projects") "* %i%?")
+                                ("n" "Notes"   entry (file+headline "~/Sandbox/GTD/inbox.org" "Notes")    "* %i%?"))
 
         ;; Keywords
-        org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
 
   :config
   ;; Since this config depends on the runtime value, this should be configured in this section
