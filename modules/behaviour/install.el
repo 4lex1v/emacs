@@ -44,7 +44,9 @@
    "C-q" '4lex1v/close-buffer
 
    ;; Navigation keys
-   "C-S-o" #'evil-jump-forward)
+   "C-S-o" #'evil-jump-forward
+   "C-M-j" #'next-error
+   "C-M-k" #'previous-error)
 
   (:states '(normal)
    "f"   '(:ignore t :which-key "Files")
