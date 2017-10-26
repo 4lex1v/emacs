@@ -7,10 +7,10 @@
   
   :general
   ;; Global Org-mode fucntionality
-  ("eo" '(:ignore t :which-key "Global Org")
-   "eoc" 'org-capture
-   "eol" 'org-store-link
-   "eoa" 'org-agenda) 
+  ("o" '(:ignore t :which-key "Global Org")
+   "oc" 'org-capture
+   "ol" 'org-store-link
+   "oa" 'org-agenda) 
 
   (:prefix "" :keymaps 'org-mode-map
    "C-M-j" 'org-metadown
