@@ -48,11 +48,6 @@
   (sp-pair "[" "]" :wrap "s-[")
   (sp-pair "{" "}" :wrap "C-{"))
 
-(defun anyfin:inject-global-backend (backend)
-  (let ((active-backends (copy-tree company-backends)))
-    (message "Active backends :: %s" active-backends)
-    (setq company-backends (append (list backend) active-backends))))
-
 (use-package yasnippet
   :diminish (yas-minor-mode . " Y")
   :commands yas-minor-mode
@@ -96,10 +91,6 @@
    "C-SPC" 'company-complete)
 
   :init 
-  
-  (defconst company-default-backends
-    "A set of default backends used in all major-mode where company is activated")
-
   (setq company-dabbrev-ignore-case nil
         company-dabbrev-code-ignore-case nil
         company-dabbrev-downcase nil
@@ -110,43 +101,19 @@
         company-selection-wrap-around t
         company-tooltip-align-annotations t
 
-        company-transformers '(company-sort-by-occurrence)
+        company-transformers '(company-sort-by-occurrence))
 
-        ;; NOTE :: no point moving this to a default var. This set will be
-        ;;         extended further with other default modes like yasnippet.
-        company-backends     '(company-yasnippet company-files
-                              (company-abbrev company-dabbrev)
-                               company-keywords company-capf))
-
-  ;; (defun anyfin:inject-company-backends (backends-set)
-  ;;   ;; default backends in this case should include all initial backends
-  ;;   ;; plus additional default backends injected by minor mode like yasnippet.
-  ;;   ;; On the other hand it shouldn't include other backends from major modes,
-  ;;   ;; those should be buffer local by design.
-  ;;   (let (default-backends (copy-tree company-backends))
-  ;;     ;; Create a new buffer-local variable
-  ;;     (make-local-variable 'company-backends)
-
-  ;;     ;; TODO :: Investigate how the following code works
-  ;;     (setq company-backends default-backends)
-  ;;     (setf (car company-backends)
-  ;;           (append backends-set (car company-backends)))))
-  
-  (defun company-add-mode-backends (backends-to-inject)
-    (lambda ()
-      (make-local-variable 'company-backends)
-      (setq company-backends (copy-tree company-backends))
-      
-      ;;(setq company-backends (cons backends company-backends))
-
-      ;; (setf (car company-backends)
-      ;;       (append backends-to-inject (car company-backends)))
-
-      (add-to-list 'company-backends backends-to-inject)))
+  (cl-defmacro configure-company-backends-for-mode (mode backends)
+    (declare (indent 1))
+    `(add-hook
+      ',(intern (concat (symbol-name mode) "-hook"))
+      (lambda ()
+        (make-local-variable 'company-backends)
+        (setq company-backends ,backends))))
   
   :config
-  (add-hook 'after-init-hook #'anyfin:build-company-backends)
-  (add-hook 'text-mode-hook #'company-mode))
+  (add-hook 'text-mode-hook #'company-mode)
+  (setq company-backends '()))
 
 (use-package flycheck :defer t :ensure t)
 
