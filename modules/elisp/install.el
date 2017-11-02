@@ -44,8 +44,10 @@
   :mode ("\\*.el\\'" . emacs-lisp-mode)
   
   :general
-  (:keymaps 'macrostep-keymap
-    "q" #'macrostep-collapse-all)
+  ;; Support Macrostep in Evil mode
+  (:keymaps 'macrostep-keymap :prefix ""
+    "q" #'macrostep-collapse-all
+    "e" #'macrostep-expand)
 
   (general-define-key :keymaps 'emacs-lisp-mode-map
    "em" #'macrostep-expand))
