@@ -22,11 +22,8 @@
   :config
   (load "elisp-defuns")
   
-  (setq company-backends '((company-abbrev company-dabbrev)))
-  
-  (add-hook 'emacs-lisp-mode-hook
-            (company-add-mode-backends '(company-elisp company-yasnippet company-capf company-files))
-            t)
+  (configure-company-backends-for-mode emacs-lisp-mode
+    '(company-elisp company-yasnippet company-capf company-files))
   
   (add-hook 'emacs-lisp-mode-hook #'4lex1v:fix-elisp-indentation)
   (add-hook 'emacs-lisp-mode-hook #'yas-minor-mode)
