@@ -6,7 +6,7 @@
   
   :general
   (:keymaps 'scala-mode-map
-   "s"               '(:ignore t :which-key "Scala"))
+   "s" '(:ignore t :which-key "Scala"))
   
   (:keymaps 'scala-mode-map :states '(normal insert) :prefix ""
    "<C-return>"     #'newline-or-comment
@@ -36,9 +36,12 @@
   :config
   (load "scala-defs")
 
-  (add-hook 'scala-mode-hook
-            (company-add-mode-backends '(company-capf company-yasnippet company-keywords company-files))
-            t)
+  (configure-company-backends-for-mode scala-mode
+    '(company-dabbrev
+      company-keywords
+      company-yasnippet
+      company-capf
+      company-files))
   
   (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist))
 
@@ -67,6 +70,9 @@
    "C-j" 'compilation-next-error
    "C-k" 'compilation-previous-error)
 
+  :init
+  (setq sbt:program-name "sbt -mem 2048 -v")
+  
   :config
   (load "sbt-defuns")
   (toggle-truncate-lines t)
