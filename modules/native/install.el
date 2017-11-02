@@ -21,7 +21,14 @@
   (add-hook 'c-mode-hook 'smartparens-mode)
   (add-hook 'c-mode-hook 'company-mode)
   (add-hook 'c-mode-hook 'yas-minor-mode)
-  (add-hook 'c-mode-hook (company-add-mode-backends 'company-clang))
+  
+  (configure-company-backends-for-mode c-mode
+    '(company-dabbrev
+      company-keywords
+      company-clang
+      company-yasnippet
+      company-capf
+      company-files))
 
   (c-toggle-auto-newline t)
   
@@ -56,16 +63,14 @@
   :after (irony company)
   :config
   (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-  ;(add-hook 'irony-mode-hook (company-add-mode-backends 'company-irony))
-  )
+  (configure-company-backends-for-mode irony-mode
+    (add-to-list 'company-backends 'company-irony)))
 
-;; (use-package company-irony-c-headers
-;;   :ensure t
-;;   :after company
-;;   :config (progn
-;;             (setq company-irony-c-headers--compiler-executable (executable-find "clang++"))
-;;             ;; group with company-irony but beforehand so we get first pick
-;;             (add-to-list 'company-backends '(company-irony-c-headers company-irony))))
+(use-package company-irony-c-headers
+  :after company
+  :config 
+  (add-to-list 'company-backends company-irony-c-headers)
+  (setq company-irony-c-headers--compiler-executable (executable-find "clang++")))
 
 (use-package semantic
   :after cc-mode
@@ -76,12 +81,13 @@
                                     global-semantic-idle-local-symbol-highlight-mode
                                     global-semantic-highlight-func-mode
                                     global-semantic-idle-completions-mode
-                                    global-semantic-decoration-mode))
-  
+                                    global-semantic-decoration-mode)))
+
+(use-package company-semantic
+  :after (semantic company)
   :config
-  ;; Some dependencies
-  (use-package company-semantic :after company :commands company-semantic)
-  (add-hook 'c-mode-hook (company-add-mode-backends 'company-semantic)))
+  (configure-company-backends-for-mode semantic-mode
+    (add-to-list 'company-backends 'company-semantic)))
 
 ;; Configure semantic
 (add-hook 'change-major-mode-hook
