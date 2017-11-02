@@ -19,7 +19,14 @@
   :config
   (sp-with-modes 'rust-mode
     (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
-    (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))))
+    (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
+
+  (configure-company-backends-for-mode rust-mode
+    '(company-dabbrev
+      company-keywords
+      company-yasnippet
+      company-capf
+      company-files)))
 
 (use-package smartparens-rust
   :after (rust-mode smartparens-mode)
@@ -34,7 +41,8 @@
    "c." 'cargo-process-repeat
    "cC" 'cargo-process-clean
    "cX" 'cargo-process-run-example
-   "cc" 'cargo-process-build
+   "cb" 'cargo-process-build
+   "cc" 'cargo-process-check
    "cd" 'cargo-process-doc
    "ce" 'cargo-process-bench
    "cf" 'cargo-process-current-test
@@ -52,16 +60,36 @@
   
   :general
   (:prefix "" :keymaps 'racer-mode-map
-   "g." 'racer-find-definition)
+   "gd" 'racer-find-definition
+   "g." 'racer-find-definition-other-window)
   
   :init
   (setq racer-rust-src-path (concat rust-toolchain-path "/lib/rustlib/src/rust/src"))
   
   :config
+  (defun racer-find-definition-other-window ()
+    "Run the racer find-definition command and process the results in other window."
+    (interactive)
+    (-if-let (match (--first (s-starts-with? "MATCH" it)
+                             (racer--call-at-point "find-definition")))
+        (-let [(_name line col file _matchtype _ctx)
+               (s-split-up-to "," (s-chop-prefix "MATCH " match) 5)]
+          (if (fboundp 'xref-push-marker-stack)
+              (xref-push-marker-stack)
+            (with-no-warnings
+              (ring-insert find-tag-marker-ring (point-marker))))
+          (switch-to-buffer-other-window file)
+          (save-selected-window
+            (racer--find-file file (string-to-number line) (string-to-number col))))
+      (error "No definition found")))
+  
   (add-hook 'racer-mode-hook #'eldoc-mode))
 
 (use-package company-racer :defer t :ensure t
-  :after (racer company))
+  :after (racer company)
+  :config
+  (configure-company-backends-for-mode racer-mode
+    (add-to-list 'company-backends 'company-racer)))
 
 (use-package flycheck-rust :defer t :ensure t
   :after (rust-mode flycheck-mode)
