@@ -26,7 +26,6 @@
 
 (load "functions")
 (load "macros")
-(load "keys")
 (load "configuration")
 (load "async")
 
