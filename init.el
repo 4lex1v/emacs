@@ -16,6 +16,7 @@
 ;; #TODO(Sirthias) :: Change the background color for comments
 
 ;; #TODO(4lex1v, 08/22/17) :: Need to fix this stupid delete button
+;; #TODO(4lex1v, 08/22/17) :: Consolidate general keybindings in a single place?
 ;; #TODO(4lex1v, 08/23/17) :: Play with persp-mode. Though my emacs-mac has support for tabs which seems to be fine, it might be helpful in Windows version
 ;; #TODO(4lex1v, 08/23/17) :: Figure out why my Emacs for Windows has some weird flickering
 ;; #NOTE(4lex1v, 08/23/17) :: I can probably improve the notes / todo snippets by matching the mode 
@@ -39,7 +40,7 @@
 (fnd:module behaviour      "All-things-navigation & movement")
 (fnd:module editor         "A lot of things to improve editing experience")
 
-(fnd:module extensions     "A set of custom configurations and definitions to be created after Emacs has been configured, but before other modules are loaded" :ignore t)
+(fnd:module extensions     "A set of custom configurations and definitions to be created after Emacs has been configured, but before other modules are loaded")
 
 ;;
 ;;; Modules: Languages
