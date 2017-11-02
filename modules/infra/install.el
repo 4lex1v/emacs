@@ -19,7 +19,7 @@
   :config
   (evil-set-initial-state #'docker-machine-mode 'emacs))
 
-(use-package eshell
+(use-package eshell :defer t
   :init
   (defun 4lex1v:helm-eshell-history ()
     (eshell-cmpl-initialize)
@@ -32,10 +32,13 @@
      ">> " ;; User's input
      ))
   
+  (setq eshell-prompt-function #'4lex1v:eshell-prompt
+        eshell-prompt-regexp "^>>+ ")
+  
   :hooks (4lex1v:helm-eshell-history
           ansi-color-for-comint-mode-on)
   
   :config
-  (setq eshell-prompt-function #'4lex1v:eshell-prompt
-        eshell-prompt-regexp "^>>+ "))
+  (with-eval-after-load "em-term"
+    (add-to-list 'eshell-visual-commands "htop")))
 
