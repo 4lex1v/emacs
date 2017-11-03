@@ -10,7 +10,8 @@
   ("o" '(:ignore t :which-key "Global Org")
    "oc" 'org-capture
    "ol" 'org-store-link
-   "oa" 'org-agenda) 
+   "oa" 'org-agenda
+   "oq" 'org-make-quick-note) 
 
   (:prefix "" :keymaps 'org-mode-map
    "C-M-j" 'org-metadown
@@ -25,16 +26,21 @@
         ;; Std "..." don't look that good...
         org-ellipsis                   "⬎"
         
-        org-hide-leading-stars         nil
         org-startup-indented           nil
+        org-adapt-indentation          nil
+        
+        org-hide-leading-stars         nil
         org-line-spacing               5
         org-notes-font                "Menlo"
         
-        org-babel-load-languages      '((sql . t))
+        org-babel-load-languages      '((sql . t)
+                                        (shell . t))
         
         ;; Agenda files to cycle
         org-agenda-files '("~/Sandbox/GTD/game_dev.org"
                            "~/Sandbox/GTD/work.org")
+        
+        org-quick-note-folder "~/Sandbox/Notes/quick_notes/"
 
         ;; Templates configuration
         org-capture-templates '(("t" "Task"    entry (file+headline "~/Sandbox/GTD/inbox.org" "Tasks")    "* TODO %t %i%?")
@@ -44,8 +50,18 @@
                                 ("n" "Notes"   entry (file+headline "~/Sandbox/GTD/inbox.org" "Notes")    "* %i%?"))
 
         ;; Keywords
-        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+        
+        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "CANCELLED(c)")
+                            (sequence "REVISE(r)" "|" "DONE(d)")
+                            (sequence "WAITING(w)" "|" "CANCELLED(c)")))
 
+  (defun org-make-quick-note (name)
+    (interactive "B")
+    (let ((note-path (concat org-quick-note-folder name ".org")))
+      (unless (not (file-exists-p note-path))
+        (write-region "" nil note-path))
+      (find-file note-path)))
+  
   :config
   ;; Since this config depends on the runtime value, this should be configured in this section
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
