@@ -19,14 +19,23 @@
 
   (setq magit-last-seen-setup-instructions "2.3.2"
         magit-status-show-hashes-in-headers t
+        
+        ;; Magit Diff configs
         magit-diff-options '("--word-diff")
-        magit-diff-refine-hunk 'all) ;; experimental
+        magit-diff-refine-hunk 'all)
   
   (defun magit-diff-visit-file-other-window (file)
     (interactive (list (--if-let (magit-file-at-point)
                            (expand-file-name it)
                          (user-error "No file at point"))))
     (magit-diff-visit-file file t))
+  
+  
+  ;; This function was added to speed up my PR review workflow in a way that i can diff current branch
+  ;; with master by a single keystroke...
+  (defun magit-diff-branch-with-master ()
+    (interactive)
+    (magit-diff (format "master...%s" (magit-get-current-branch))))
   
   :general 
   ("m" '(:ignore t :which-key "Magit")
@@ -37,6 +46,8 @@
    "my"  'magit-show-refs-popup
    "me"  'magit-ediff-popup
    "mp"  'magit-push-popup
+   "md"  'magit-diff-popup
+   "mD"  'magit-diff-branch-with-master
    "mf"  'magit-pull-popup
    "ml" '(:ignore t :which-key "Logging")
    "mll" 'magit-log-all
@@ -47,13 +58,12 @@
   (evil-set-initial-state 'magit-submodule-list-mode 'emacs)
   
   (add-to-list 'magit-log-arguments "--color")
+  (add-to-list 'magit-diff-arguments "--ignore-space-change")
 
   (magit-define-popup-action 'magit-submodule-popup   
     ?l "List" 'magit-list-submodules)
 
-  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
-  
-  )
+  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window))
 
 (use-package with-editor
   :after magit
