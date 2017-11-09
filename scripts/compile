@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+":"; exec emacs --quick --script "$0" "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
+
+(load "~/.emacs.d/scripted/scripted.el")
+
+(setq modules-root "/Users/aleksandrivanov/.emacs.d/modules"
+      modules      '(;; Behavious modules
+                     "behaviour/evil-core"
+                     "behaviour/projectile"
+                     ("behaviour/hydra" . "compile")
+                     "behaviour/helm-core"
+                     ("behaviour/ranger" . "compile")))
+
+(defun compile-module (path &optional command)
+  (let ((module-path (concat modules-root "/" path)))
+    (message "Compiling module: %s with '%s'" module-path command)))
+
+(-each modules
+  (lambda (module)
+    (pcase module
+      (`(,path . ,command) (compile-module path command))
+      (path (compile-module path)))))
+
