@@ -145,9 +145,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/native/disaster"]
 	path = modules/native/disaster
 	url = git@github.com:jart/disaster.git
-[submodule "snippets"]
-	path = snippets
-	url = ./snippets
 [submodule "modules/appearance/themes/the_boring_one"]
 	path = modules/appearance/themes/the_boring_one
 	url = git@github.com:4lex1v/the_boring_one.git
@@ -157,3 +154,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/reader/novel"]
 	path = modules/reader/novel
 	url = git@github.com:wasamasa/nov.el.git
+[submodule "snippets"]
+	path = snippets
+	url = git@github.com:4lex1v/emacs-snippets.git
+[submodule "scripted"]
+	path = scripted
+	url = git@github.com:4lex1v/scripted.el.git
