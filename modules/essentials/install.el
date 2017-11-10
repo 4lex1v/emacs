@@ -2,9 +2,7 @@
 
 (setq package-enable-at-startup nil
       package--init-file-ensured t
-      package-archives '(("melpa"     . "https://melpa.org/packages/")
-                  			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			                   ("gnu"       . "http://elpa.gnu.org/packages/")))
+      package-archives '(("melpa"     . "https://melpa.org/packages/")))
 
 (package-initialize)
 
@@ -18,6 +16,7 @@
 
 ;; Vendor packages
 (use-package diminish :ensure t)
+(use-package async :ensure t :pin "melpa")
 
 ;; Use-Package Extensions
 (use-package upe-hooks)
@@ -32,7 +31,7 @@
 (load "functions")
 (load "macros")
 (load "configuration")
-(load "async")
+
 
 (use-package mode-local)
 
