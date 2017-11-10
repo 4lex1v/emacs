@@ -53,6 +53,9 @@
    "mll" 'magit-log-all
    "mlb" 'magit-log-buffer-file
    "mlc" 'magit-log-current)
+  
+  (:prefix "" :keymaps 'magit-diff-mode-map
+   "gf" 'magit-diff-visit-file-other-window)
 
   :config
   (evil-set-initial-state 'magit-submodule-list-mode 'emacs)
