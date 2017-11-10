@@ -17,7 +17,7 @@
      ("L>P" 3 magit-repolist-column-unpushed-to-pushremote
       ((:right-align t))))))
 
-  (setq magit-last-seen-setup-instructions "2.3.2"
+  (setq magit-last-seen-setup-instructions "2.11.0"
         magit-status-show-hashes-in-headers t
         
         ;; Magit Diff configs
@@ -36,7 +36,9 @@
   ;; with master by a single keystroke...
   (defun magit-diff-branch-with-master ()
     (interactive)
-    (magit-diff (format "master...%s" (magit-get-current-branch))))
+    (magit-diff
+     (format "master...%s" (magit-get-current-branch))
+     (magit-diff-arguments)))
   
   :general 
   ("m" '(:ignore t :which-key "Magit")
