@@ -54,7 +54,7 @@
 (fnd:module rust           "Rust-lang support")
 (fnd:module clojure        "Clojure programming language support")
 (fnd:module racket         "Support for the Racket programming language")
-(fnd:module python         "Emacs support for Python ecosystem")
+(fnd:module python         "Emacs support for Python ecosystem" :ignore t)
 (fnd:module lua            "Emacs module with support for Lua programming language")
 (fnd:module groovy         "Support for Groovy programming language")
 (fnd:module idris          "Idris programming language support")
