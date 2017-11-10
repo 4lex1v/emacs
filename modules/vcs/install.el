@@ -1,6 +1,6 @@
-(use-package magit
-  :load-path "modules/vcs/magit/lisp"
-  :defer
+(use-package magit :defer t :load-path "modules/vcs/magit/lisp"
+  :commands magit-diff
+  
   :init
   (setq-default
    magit-submodule-list-columns
@@ -21,8 +21,9 @@
         magit-status-show-hashes-in-headers t
         
         ;; Magit Diff configs
-        magit-diff-options '("--word-diff")
-        magit-diff-refine-hunk 'all)
+        magit-diff-options          '("--stat" "--no-ext-diff" "--word-diff")
+        magit-diff-refine-hunk      'all
+        magit-diff-paint-whitespace 'status)
   
   (defun magit-diff-visit-file-other-window (file)
     (interactive (list (--if-let (magit-file-at-point)
