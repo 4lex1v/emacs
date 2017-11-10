@@ -14,14 +14,6 @@
   :config
   (which-key-mode))
 
-;; #TODO(4lex1v) :: This is used in scala i guess i need to change this behaviour
-(use-package imenu)
-
-(use-package general
-  :init
-  (setq general-default-states  'normal
-        general-default-prefix  "<SPC>"))
-
 ;; #NOTE(4lex1v, 08/24/17) :: Some movement keybinds are defined in Editor/Smartparens
 (use-package evil
   :after general ;; To enable evil-leader in initial buffers
@@ -170,11 +162,22 @@
 (use-package helm-descbinds
   :ensure t
   :commands helm-descbinds
-  :bind (:map helm-command-map
-         ("b" . helm-descbinds))
+  :general
+  (:keymaps 'helm-command-map :prefix ""
+   "b" 'helm-descbinds)
+  ("eb" '(helm-descbinds :which-key "Bindings"))
+  
   :init
-  (fset 'describe-bindings 'helm-descbinds)
-  (setq helm-descbinds-window-style 'same-window))
+  (setq helm-descbinds-window-style 'split-window)
+  
+  :config
+  (unbind-key "\C-h b")
+  (unbind-key "<f1> b")
+  (unbind-key "<help> b")
+  (unbind-key "C-c h b")
+  (unbind-key "C-x c b")
+
+  (fset 'describe-bindings 'helm-descbinds))
 
 (use-package helm-ag
   :ensure t
@@ -184,6 +187,7 @@
         helm-ag-fuzzy-match     t))
 
 (use-package foundation-helm
+  :commands fnd:helm-list-modules 
   :general
   ("el" '(fnd:helm-list-modules :which-key "Modules")))
 
