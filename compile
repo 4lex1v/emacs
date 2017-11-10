@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+modules_root=/Users/aleksandrivanov/.emacs.d/modules
+
+declare -a modules=(
+    ## Behaviour modules
+    "behaviour/evil-core"
+    "behaviour/general"
+    "behaviour/projectile"
+    "behaviour/hydra"
+    "behaviour/helm-core"
+    
+    ##
+)
+
+for module in "${modules[@]}"; do
+    module_path="$modules_root/$module"
+    if [[ -d "$module_path" ]]; then
+        echo "Compiling module: $module_path"
+        cd $module_path
+        if [[ -f "$module_path/Makefile" ]]; then
+            make
+        else
+            echo "No 'make' file found for the module $module_path, please resolve before proceeding"
+            exit 1
+        fi
+    else
+        echo "Couldn't find module: $module_path. Terminating..."
+        exit 1
+    fi
+done
