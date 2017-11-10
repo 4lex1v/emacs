@@ -22,6 +22,11 @@
 ;; Use-Package Extensions
 (use-package upe-hooks)
 
+(use-package general
+  :init
+  (setq general-default-states  'normal
+        general-default-prefix  "<SPC>"))
+
 (unbind-key "C-x b")
 
 (load "functions")

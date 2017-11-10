@@ -119,7 +119,7 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/appearance/powerline
 	url = git@github.com:milkypostman/powerline.git
 [submodule "modules/behaviour/general"]
-	path = modules/behaviour/general
+	path = modules/essentials/general
 	url = git@github.com:noctuid/general.el.git
 [submodule "modules/behaviour/hydra"]
 	path = modules/behaviour/hydra
