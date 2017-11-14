@@ -1,5 +1,5 @@
 (use-package magit :defer t :load-path "modules/vcs/magit/lisp"
-  :commands magit-diff
+  :commands (magit-diff magit-clone)
   
   :init
   (setq-default
