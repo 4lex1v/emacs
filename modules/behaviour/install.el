@@ -327,9 +327,14 @@
   :general
   ("wj" 'ace-window))
 
-(use-package helm-gtags
-  :ensure t
+(use-package helm-gtags :ensure t
   :after helm
+  
+  :general
+  (:prefix ""
+   "C-]"   'helm-gtags-dwim
+   "C-M-]" 'helm-gtags-select)
+  
   :init
   (setq helm-gtags-auto-update t
         helm-gtags-use-input-at-cursor t
