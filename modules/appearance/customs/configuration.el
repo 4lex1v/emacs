@@ -59,9 +59,7 @@
 ;; slow when i'm using Windows. Pretty sure there's a better solution
 (if IS_WINDOWS
     (progn
-      (set-face-attribute 'default nil
-                          :font "PragmataPro"
-                          :height (* default-font-size 10)))
+      (set-face-attribute 'default nil :height (* default-font-size 12)))
 
   ;; Will be configured for Mac or Linux
   (let ((frame-font (format "%s-%d"
@@ -72,9 +70,6 @@
     (set-face-attribute 'default nil :height (* default-font-size 10))
     (4lex1v:gui:frame :transparency '(100 . 100)
                       :cursor       '(box . bar))))
-
-;; #NOTE(4lex1v, 08/24/17) :: Split the window from the very begging
-(split-window-right)
 
 ;; #NOTE(4lex1v, 08/24/17) :: Initial frame configuration
 ;; #TODO(4lex1v, 08/24/17) :: Wonder if i should have this setup for any Emacs of
