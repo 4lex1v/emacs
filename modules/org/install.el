@@ -55,8 +55,7 @@
         ;; Keywords
         
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "CANCELLED(c)")
-                            (sequence "REVISE(r)" "|" "DONE(d)")
-                            (sequence "WAITING(w)" "|" "CANCELLED(c)")))
+                            (sequence "WAITING(w)" "|" "SOMEDAY(s)" "CANCELLED(c)")))
 
   (defun org-make-quick-note (name)
     (interactive "B")
