@@ -179,8 +179,7 @@
 
   (fset 'describe-bindings 'helm-descbinds))
 
-(use-package helm-ag
-  :ensure t
+(use-package helm-ag :ensure t
   :commands helm-projectile-ag
   :init
   (setq helm-ag-insert-at-point 'symbol
@@ -213,6 +212,12 @@
    ("M-4" . projectile-switch-project))
   
   :general
+  ;; Global Bindings
+  (:prefix ""
+   ;; Buffers
+   "C-M-3" 'helm-projectile-switch-to-buffer)
+  
+  ;;  Projectile-only bindings
   ("p" '(:ignore t :which-key "Projectile")
    "pp" 'helm-projectile-switch-project
    "pk" 'projectile-kill-buffers
