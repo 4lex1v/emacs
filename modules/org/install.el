@@ -32,6 +32,7 @@
         org-hide-leading-stars         nil
         org-line-spacing               5
         org-notes-font                "Menlo"
+        org-tags-column               0 ;; Have tags next to the title
         
         org-babel-load-languages      '((sql . t)
                                         (shell . t)
