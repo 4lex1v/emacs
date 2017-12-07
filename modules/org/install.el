@@ -38,6 +38,7 @@
         
         org-hide-leading-stars         nil
         org-line-spacing               5
+        org-tags-column               0 ;; Have tags next to the title
         
         org-babel-load-languages      '((sql . t)
                                         (shell . t)
