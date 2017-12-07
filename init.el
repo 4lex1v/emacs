@@ -75,6 +75,7 @@
 ;;; Modules: Projects & Work
 ;;
 
+(fnd:module projects       "Custom configuration for all-things-projects, i.e detailed org-mode config")
 (fnd:module work           "Additional configuration to wire Emacs for work related projects")
 
 (setq gc-cons-threshold 100000)
