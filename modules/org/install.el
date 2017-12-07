@@ -59,9 +59,9 @@
         
         ;; Keywords
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "CANCELLED(c)")
-                            (sequence "WAITING(w)" "|" "SOMEDAY(s)" "CANCELLED(c)"))
+                            (sequence "WAITING(w)" "SOMEDAY(s)" "|" "CANCELLED(c)"))
         
-        org-todo-keyword-faces '(("SOMEDAY" . "gray") ("WAITING" . "yellow")))
+        org-todo-keyword-faces '(("SOMEDAY" . "yellow") ("WAITING" . "yellow")))
 
   (defun org-make-quick-note (name)
     (interactive "B")
