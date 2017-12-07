@@ -6,6 +6,10 @@
   :bind* ("C-'"  . ace-window)
   
   :general
+  ;; Global Org-mode related keybindings
+  (:prefix ""
+   "C-#"   'helm-org-list-agenda-files)
+  
   ;; Global Org-mode fucntionality
   ("o" '(:ignore t :which-key "Global Org")
    "oc" 'org-capture
@@ -14,49 +18,47 @@
    "oq" 'org-make-quick-note) 
 
   (:prefix "" :keymaps 'org-mode-map
+   "C-j" 'org-next-visible-heading
+   "C-k" 'org-previous-visible-heading
+
    "C-M-j" 'org-metadown
    "C-M-k" 'org-metaup)
   
   :init
-  (setq org-log-done                   t
+  (setq org-log-done                   'note ;; When completing a task, prompt for a closing note...
         org-src-fontify-natively       t
         org-descriptive-links          t
         org-startup-with-inline-images t
+        org-tags-column 0
         
-        ;; Std "..." don't look that good...
-        org-ellipsis                   "⬎"
+        org-catch-invisible-edits      'error
         
         org-startup-indented           nil
         org-adapt-indentation          nil
         
         org-hide-leading-stars         nil
         org-line-spacing               5
-        org-notes-font                "Menlo"
         
         org-babel-load-languages      '((sql . t)
                                         (shell . t)
                                         (plantuml . t))
         
-        org-plantuml-jar-path         "/usr/local/Cellar/plantuml/1.2017.19/libexec/plantuml.jar"
-        
-        ;; Agenda files to cycle
-        org-agenda-files '("~/Sandbox/GTD/game_dev.org"
-                           "~/Sandbox/GTD/work.org")
-        
+        ;; System dependant?
         org-quick-note-folder "~/Sandbox/Notes/quick_notes/"
 
-        ;; Templates configuration
-        org-capture-templates '(("t" "Task"    entry (file+headline "~/Sandbox/GTD/inbox.org" "Tasks")    "* TODO %t %i%?")
-                                ("w" "Work"    entry (file+headline "~/Sandbox/GTD/work.org"  "Tasks")    "* TODO %t %i%?") 
-                                ("i" "Ideas"   entry (file+headline "~/Sandbox/GTD/inbox.org" "Ideas")    "* %i%?")
-                                ("p" "Project" entry (file+headline "~/Sandbox/GTD/inbox.org" "Projects") "* %i%?")
-                                ("n" "Notes"   entry (file+headline "~/Sandbox/GTD/inbox.org" "Notes")    "* %i%?"))
-
-        ;; Keywords
+        ;; Agenda Configuration
+        org-agenda-start-on-weekday 6 ;; Saturday
         
+        
+        ;; Templates configuration
+        org-capture-templates '(("t" "Task"    entry (file+headline "~/Sandbox/planning/inbox.org" "Tasks")    "* TODO %t %i%?")
+                                ("i" "Ideas"   entry (file+headline "~/Sandbox/planning/inbox.org" "Ideas")    "* %i%?")
+                                ("p" "Project" entry (file+headline "~/Sandbox/planning/inbox.org" "Projects") "* %i%?")
+                                ("n" "Notes"   entry (file+headline "~/Sandbox/planning/inbox.org" "Notes")    "* %i%?"))
+        
+        ;; Keywords
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "CANCELLED(c)")
-                            (sequence "REVISE(r)" "|" "DONE(d)")
-                            (sequence "WAITING(w)" "|" "CANCELLED(c)")))
+                            (sequence "WAITING(w)" "|" "SOMEDAY(s)" "CANCELLED(c)")))
 
   (defun org-make-quick-note (name)
     (interactive "B")
@@ -65,7 +67,15 @@
         (write-region "" nil note-path))
       (find-file note-path)))
   
+  (defun helm-org-list-agenda-files ()
+    (interactive)
+    (helm :sources (helm-build-sync-source "Org-mode Agenda Files:"
+                     :candidates 'org-agenda-files
+                     :fuzzy-match t
+                     :action 'find-file)))
+  
   :config
+  (evil-set-initial-state 'org-agenda-mode 'motion)
   
   ;; Since there's a default Org that comes with emacs, adding this dummy check to ensure that
   ;; whenever I'm using a fresh emacs installation i have the correct package installed
@@ -82,10 +92,4 @@
   (add-hook 'org-mode-hook #'toggle-truncate-lines))
 
 (use-package ob :after org)
-
-(use-package org-beautify
-  :after org
-  :ensure org-beautify-theme
-  :config
-  (load-theme 'org-beautify t))
 
