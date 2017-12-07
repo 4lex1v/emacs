@@ -52,10 +52,13 @@
         
         
         ;; Templates configuration
-        org-capture-templates '(("t" "Task"    entry (file+headline "~/Sandbox/planning/inbox.org" "Tasks")    "* TODO %t %i%?")
+        org-capture-templates '(("t" "Task"    entry (file+headline "~/Sandbox/planning/inbox.org" "Tasks")    "* TODO %i%?")
                                 ("i" "Ideas"   entry (file+headline "~/Sandbox/planning/inbox.org" "Ideas")    "* %i%?")
                                 ("p" "Project" entry (file+headline "~/Sandbox/planning/inbox.org" "Projects") "* %i%?")
                                 ("n" "Notes"   entry (file+headline "~/Sandbox/planning/inbox.org" "Notes")    "* %i%?"))
+        
+        ;; Refile configuration
+        org-refile-targets '((org-agenda-files :maxlevel . 1))
         
         ;; Keywords
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "CANCELLED(c)")
