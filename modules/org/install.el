@@ -1,5 +1,4 @@
-(use-package org
-  :defer t
+(use-package org :demand t
   :load-path "modules/org/org-mode/lisp"
   :after flyspell
   
@@ -98,4 +97,8 @@
   (add-hook 'org-mode-hook #'toggle-truncate-lines))
 
 (use-package ob :after org)
+
+(use-package org-annotate-file :after org
+  :init
+  (setq org-annotate-file-storage-file "~/Sandbox/planning/annotations.el"))
 
