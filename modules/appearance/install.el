@@ -1,5 +1,9 @@
 (load "functions")
-(load "fonts/pretty-pragmata")
+
+;; #TODO(4lex1v) :: Should this check for the pragmata fonts?
+(if (not IS_WINDOWS)
+    (load "fonts/pretty-pragmata"))
+
 (load "configuration")
 
 ;; TODO :: add line / column number 
