@@ -20,4 +20,8 @@
             (next-line 1)
             (indent-according-to-mode)))
 
+
+(general-emacs-define-key 'global
+  "ei" 'clone-indirect-buffer-other-window)
+
 (provide 'keys)
