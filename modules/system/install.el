@@ -4,7 +4,8 @@
 (defconst IS_WINDOWS (eq system-type 'windows-nt))
 
 (use-package exec-path-from-shell :ensure t
-  :commands exec-path-from-shell-getenv
+  :commands (exec-path-from-shell-getenv
+            exec-path-from-shell-setenv)
   
   :init
   ;; Under certain conditions this can be nicely used withing Windows environment as well...
@@ -52,9 +53,7 @@
   (setq win32-system-include-paths '("c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/shared"
                                      "c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/ucrt"
                                      "c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/um"
-                                     "c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/winrt"))
-  :config
-  )
+                                     "c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/winrt")))
 
 (use-package term
   :config

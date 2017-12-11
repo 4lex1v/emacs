@@ -35,7 +35,9 @@
   (c-toggle-auto-newline t)
   
   (with-eval-after-load "org"
-    (add-to-list 'org-babel-load-languages '(C . t))))
+    (add-to-list 'org-babel-load-languages '(C . t)))
+  
+  (sp-local-pair 'c++-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
 
 (use-package cmake-mode :ensure t :defer t
   :after cc-mode

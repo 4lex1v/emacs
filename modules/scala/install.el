@@ -48,9 +48,7 @@
 (use-package smartparens-scala
   :after scala-mode
   :config
-  (add-hook 'scala-mode-hook #'smartparens-mode)
-  (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
-  (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
+  (add-hook 'scala-mode-hook #'smartparens-mode))
 
 (use-package sbt-mode
   :after scala-mode
