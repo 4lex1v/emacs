@@ -1,23 +1,5 @@
 (setq gc-cons-threshold 10000000)
 
-;; [TODOs]
-;; Foundation :: Log warning if the module doesn't exist
-
-;; Behaviour  :: Need to configure some tagging system, etags or ggtags
-
-;; Appearance :: Add line / column number 
-;; Appearance :: Change cursor's color, fix mode-line colors
-;; Appearance :: Rework modeline style (inspired by https://github.com/hlissner/.emacs.d/blob/master/modules/ui/doom-modeline/config.el)
-
-;; #TODO(Sirthias) :: Need to add cscope for C and maybe Scala?
-;; #TODO(Sirthias) :: Change the background color for comments
-
-;; #TODO(4lex1v, 08/22/17) :: Need to fix this stupid delete button
-;; #TODO(4lex1v, 08/23/17) :: Play with persp-mode. Though my emacs-mac has support for tabs which seems to be fine, it might be helpful in Windows version
-;; #NOTE(4lex1v, 08/23/17) :: I can probably improve the notes / todo snippets by matching the mode 
-
-;; #TODO(4lex1v, 08/23/17) :: Add some temp log snippet for Scala that insert an interpolated string with the file name
-;; #NOTE(4lex1v) :: interesting repo https://github.com/alphapapa/highlight-function-calls
 (eval-and-compile
   (setq user-init-file (or load-file-name (buffer-file-name)))
   (setq user-emacs-directory (file-name-directory user-init-file))
