@@ -44,5 +44,8 @@ Emacs configuration
     #+END_EXAMPLE
     
 ** Windows
-
-
+* Conventions
+** Mnemonic Bindings
+To improve the efficiency in working with Emacs in conjunction with the Evil mode, this configuration tries its best to maintain mnemonic key-chords under certain keys, like =G= to work with =Git= (via Magit), =E= for Emacs, =M= for Mode-specific settings, etc...
+** Upper-case (Shift) keystrokes for alternative form
+For convenience, some bindings follow the convention to use a an upper-case (=Shift=) key for command that provide some alternative, like a set of command to show the execution in =-other-window=
