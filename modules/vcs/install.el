@@ -41,21 +41,21 @@
       (magit-diff diff-cmd args)))
   
   :general 
-  ("m" '(:ignore t :which-key "Magit")
-   "ms"  'magit-status
-   "mm"  'magit-dispatch-popup
-   "mb"  'magit-blame
-   "mo"  'magit-submodule-popup
-   "my"  'magit-show-refs-popup
-   "me"  'magit-ediff-popup
-   "mp"  'magit-push-popup
-   "md"  'magit-diff-popup
-   "mD"  'magit-diff-branch-with-master
-   "mf"  'magit-pull-popup
-   "ml" '(:ignore t :which-key "Logging")
-   "mll" 'magit-log-all
-   "mlb" 'magit-log-buffer-file
-   "mlc" 'magit-log-current)
+  ("g" '(:ignore t :which-key "Magit")
+   "gs"  'magit-status
+   "gm"  'magit-dispatch-popup
+   "gb"  'magit-blame
+   "go"  'magit-submodule-popup
+   "gy"  'magit-show-refs-popup
+   "ge"  'magit-ediff-popup
+   "gp"  'magit-push-popup
+   "gd"  'magit-diff-popup
+   "gD"  'magit-diff-branch-with-master
+   "gf"  'magit-pull-popup
+   "gl" '(:ignore t :which-key "Logging")
+   "gll" 'magit-log-all
+   "glb" 'magit-log-buffer-file
+   "glc" 'magit-log-current)
   
   (:prefix "" :keymaps 'magit-diff-mode-map
    "gf" 'magit-diff-visit-file-other-window)
