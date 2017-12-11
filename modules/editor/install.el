@@ -72,7 +72,6 @@
   (yas-reload-all)) 
 
 (use-package company
-  :diminish (company-mode . " C")
   :commands company-mode
 
   ;; @NOTE :: For some reason can't make this work with general??
