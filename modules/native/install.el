@@ -52,36 +52,6 @@
   :commands disaster
   :general (:prefix "," :keymaps '(c-mode-map c++-mode-map objc-mode-map) "d" 'disaster))
 
-(use-package irony
-  :after cc-mode
-  :init
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'objc-mode-hook 'irony-mode)
-  
-  (defun setup-c-clang-options ()
-    (setq irony-additional-clang-options (quote ("-std=c11"))))
-
-  (defun setup-cpp-clang-options ()
-    (setq irony-additional-clang-options (quote ("-std=c++14" "-stdlib=libc++"))))
-  
-  :config
-  (add-hook 'c++-mode-hook 'setup-cpp-clang-options)
-  (add-hook 'c-mode-hook 'setup-c-clang-options))
-
-(use-package company-irony
-  :after (irony company)
-  :config
-  (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-  (configure-company-backends-for-mode irony-mode
-    (add-to-list 'company-backends 'company-irony)))
-
-(use-package company-irony-c-headers
-  :after company
-  :config 
-  (add-to-list 'company-backends company-irony-c-headers)
-  (setq company-irony-c-headers--compiler-executable (executable-find "clang++")))
-
 (use-package semantic
   :after cc-mode
   :load-path "modules/native/cedet/lisp/cedet"

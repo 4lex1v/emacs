@@ -133,12 +133,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/native/csharp-mode"]
 	path = modules/csharp/csharp-mode
 	url = git@github.com:josteink/csharp-mode.git
-[submodule "modules/native/irony-mode"]
-	path = modules/native/irony-mode
-	url = git@github.com:Sarcasm/irony-mode.git
-[submodule "modules/native/company-irony"]
-	path = modules/native/company-irony
-	url = git@github.com:Sarcasm/company-irony.git
 [submodule "modules/native/cedet"]
 	path = modules/native/cedet
 	url = https://git.code.sf.net/p/cedet/git
