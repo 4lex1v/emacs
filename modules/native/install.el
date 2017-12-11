@@ -3,10 +3,12 @@
   :mode ("\\.h\\'" . c-mode)
   
   :general
-  (:prefix "," :keymaps '(c-mode-map c++-mode-map objc-mode-map)
-   "a" 'projectile-find-other-file
-   "A" 'projectile-find-other-file-other-window)
+  (:keymaps '(c-mode-map c++-mode-map objc-mode-map)
+   "m"  '(:ignore t :which-key "Native")
+   "ma" 'projectile-find-other-file
+   "mA" 'projectile-find-other-file-other-window)
   
+  ;; #TODO :: Check if this could be defined in the global configuration or it needs to be overriden for these modes?
   (:prefix "" :keymaps '(c-mode-map c++-mode-map objc-mode-map)  
    "C-S-j" #'next-error
    "C-S-k" #'previous-error)
