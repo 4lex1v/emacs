@@ -35,7 +35,15 @@
   (with-eval-after-load "org"
     (add-to-list 'org-babel-load-languages '(C . t))))
 
-(use-package cmake-mode :ensure t :defer t :after cc-mode)
+(use-package cmake-mode :ensure t :defer t
+  :after cc-mode
+  :hooks (company-mode)
+  :config
+  (configure-company-backends-for-mode cmake-mode
+    '(company-dabbrev
+      company-yasnippet
+      company-cmake
+      company-capf)))
 
 (use-package disaster
   :after cc-mode
