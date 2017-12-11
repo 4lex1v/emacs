@@ -9,16 +9,11 @@
 ;; Appearance :: Change cursor's color, fix mode-line colors
 ;; Appearance :: Rework modeline style (inspired by https://github.com/hlissner/.emacs.d/blob/master/modules/ui/doom-modeline/config.el)
 
-;; #TODO(Sirthias) :: Improve `org-verbatim' face
-;; #TODO(Sirthias) :: Improve `comint-highlight-prompt' face
 ;; #TODO(Sirthias) :: Need to add cscope for C and maybe Scala?
-;; #TODO(Sirthias) :: Put `fixup-whitespace` on some convenient keybinding
 ;; #TODO(Sirthias) :: Change the background color for comments
 
 ;; #TODO(4lex1v, 08/22/17) :: Need to fix this stupid delete button
-;; #TODO(4lex1v, 08/22/17) :: Consolidate general keybindings in a single place?
 ;; #TODO(4lex1v, 08/23/17) :: Play with persp-mode. Though my emacs-mac has support for tabs which seems to be fine, it might be helpful in Windows version
-;; #TODO(4lex1v, 08/23/17) :: Figure out why my Emacs for Windows has some weird flickering
 ;; #NOTE(4lex1v, 08/23/17) :: I can probably improve the notes / todo snippets by matching the mode 
 
 ;; #TODO(4lex1v, 08/23/17) :: Add some temp log snippet for Scala that insert an interpolated string with the file name
