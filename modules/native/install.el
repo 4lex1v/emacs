@@ -28,10 +28,13 @@
   (add-hook 'c-mode-common-hook 'company-mode)
   
   (configure-company-backends-for-mode c-mode-common
-    `(company-dabbrev company-keywords
-          ;; #TODO :: Need to do some additional configuration on Windows to make this work...
-          ,(if (not IS_WINDOWS) company-clang)
-          company-yasnippet company-capf company-files))
+    `(company-dabbrev
+      company-keywords
+      ;; #TODO :: Need to do some additional configuration on Windows to make this work...
+      ,(if (not IS_WINDOWS) 'company-clang)
+      company-yasnippet
+      company-capf
+      company-files))
 
   (c-toggle-auto-newline t)
   
