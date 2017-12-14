@@ -3,13 +3,13 @@
   :mode ("\\.h\\'" . c-mode)
   
   :general
-  (:keymaps '(c-mode-map c++-mode-map objc-mode-map)
+  (:keymaps '(c-mode-base-map)
    "m"  '(:ignore t :which-key "Native")
    "ma" 'projectile-find-other-file
    "mA" 'projectile-find-other-file-other-window)
   
   ;; #TODO :: Check if this could be defined in the global configuration or it needs to be overriden for these modes?
-  (:prefix "" :keymaps '(c-mode-map c++-mode-map objc-mode-map)  
+  (:prefix "" :keymaps '(c-mode-base-map)  
    "C-S-j" #'next-error
    "C-S-k" #'previous-error)
   
@@ -18,19 +18,20 @@
         org-babel-C++-compiler "clang++")
   
   :config
-  (add-hook 'c-mode-hook 'hs-minor-mode)
-  (add-hook 'c-mode-hook 'hideshowvis-minor-mode)
-  (add-hook 'c-mode-hook 'smartparens-mode)
-  (add-hook 'c-mode-hook 'company-mode)
-  (add-hook 'c-mode-hook 'yas-minor-mode)
+  ;; #NOTE :: Using common hook might not be the best idea unless all these functions are valid
+  ;;          for other modes (e.g Java) as well...
   
-  (configure-company-backends-for-mode c-mode
-    '(company-dabbrev
-      company-keywords
-      company-clang
-      company-yasnippet
-      company-capf
-      company-files))
+  (add-hook 'c-mode-common-hook 'hs-minor-mode)
+  (add-hook 'c-mode-common-hook 'hideshowvis-minor-mode)
+  (add-hook 'c-mode-common-hook 'smartparens-mode)
+  (add-hook 'c-mode-common-hook 'yas-minor-mode)
+  (add-hook 'c-mode-common-hook 'company-mode)
+  
+  (configure-company-backends-for-mode c-mode-common
+    `(company-dabbrev company-keywords
+          ;; #TODO :: Need to do some additional configuration on Windows to make this work...
+          ,(if (not IS_WINDOWS) company-clang)
+          company-yasnippet company-capf company-files))
 
   (c-toggle-auto-newline t)
   
@@ -39,7 +40,7 @@
   
   (sp-local-pair 'c++-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
 
-(use-package cmake-mode :ensure t :defer t
+(use-package cmake-mode :ensure t 
   :after cc-mode
   :hooks (company-mode)
   :config
@@ -52,18 +53,36 @@
 (use-package disaster
   :after cc-mode
   :commands disaster
-  :general (:prefix "," :keymaps '(c-mode-map c++-mode-map objc-mode-map) "d" 'disaster))
+  :general
+  (:prefix "m" :keymaps '(c-mode-base-map)
+   "d" 'disaster))
 
 (use-package semantic
   :after cc-mode
   :load-path "modules/native/cedet/lisp/cedet"
+  
+  :general
+  (:prefix "" :keymaps '(c-mode-base-map)
+   "g." 'semantic-ia-fast-jump)
+  
   :init
   (setq semantic-default-submodes '(global-semanticdb-minor-mode
                                     global-semantic-idle-scheduler-mode
                                     global-semantic-idle-local-symbol-highlight-mode
                                     global-semantic-highlight-func-mode
                                     global-semantic-idle-completions-mode
-                                    global-semantic-decoration-mode)))
+                                    global-semantic-decoration-mode))
+
+  ;; #TODO :: Decide what to do with this... For now the performance on Windows is terrible =(
+  ;;(add-hook 'c-mode-common-hook 'semantic-mode)
+
+  :config
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (if IS_WINDOWS
+                  (-each win32-system-include-paths 'semantic-add-system-include)))))
+
+(use-package helm-semantic :after (semantic helm))
 
 (use-package company-semantic
   :after (semantic company)
