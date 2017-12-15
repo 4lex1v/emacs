@@ -1,49 +1,8 @@
-(load "functions")
 
-;; #TODO(4lex1v) :: Should this check for the pragmata fonts?
-(if (not IS_WINDOWS)
-    (load "fonts/pretty-pragmata"))
-
-(load "configuration")
-
-;; TODO :: add line / column number 
-
-;(defconst theme-to-load 'dracula)
-;; (defconst theme-to-load 'spacemacs)
-(defconst theme-to-load 'sirthias)
-;; (defconst theme-to-load 'the_boring_one)
-;; (defconst theme-to-load 'default)
-
-(use-package dracula-theme
-  :if (and (display-graphic-p)
-           (eq theme-to-load 'dracula))
-  :load-path "modules/appearance/themes/dracula"
-  :config
-  (load-theme 'dracula t))
-
-(use-package spacemacs-light-theme
-  :if (and (display-graphic-p)
-           (eq theme-to-load 'spacemacs))
-  :load-path "modules/appearance/themes/spacemacs"
+(use-package appearance
   :init
-  (setq spacemacs-theme-comment-italic t)
-
-  :config
-  (set-face-attribute 'font-lock-constant-face nil :weight 'bold)
-  (load-theme 'spacemacs-light t))
-
-(use-package sirthias-theme
-  :if (and (display-graphic-p)
-           (eq theme-to-load 'sirthias))
-  :load-path "modules/appearance/themes/sirthias"
-  :config
-  (load-theme 'sirthias t))
-
-(use-package the_boring_one-theme
-  :if (eq theme-to-load 'the_boring_one)
-  :load-path "modules/appearance/themes/the_boring_one"
-  :config
-  (load-theme 'the_boring_one t))
+  (setq default-font-name "Ayuthaya"
+        theme-to-load     'sirthias))
 
 (use-package spaceline-config :if IS_MAC)
 (use-package spaceline :if IS_MAC
@@ -129,11 +88,5 @@
 ;; TODO :: need to check this one out
 (use-package hide-mode-line)
 
-;; Set of custom hack of the default theme to make it a bit prettier
-(if (eq theme-to-load 'default)
-    (progn 
-      (set-face-attribute 'fringe nil :background nil)
-      (with-eval-after-load "eshell"
-        (lambda ()
-          (set-face-attribute 'eshell-prompt nil :foreground "#000080")))))
+
 
