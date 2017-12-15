@@ -37,4 +37,6 @@
 
 (use-package mode-local)
 
+(use-package helpful :ensure t :after elisp-refs)
+
 (add-hook 'after-init-hook #'(lambda () (server-start)))

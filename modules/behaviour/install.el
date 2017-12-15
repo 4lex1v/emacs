@@ -348,10 +348,6 @@
         helm-gtags-pulse-at-cursor t
         helm-gtags-ignore-case t))
 
-;; #TODO :: Should the elisp package be in here? If not what to do with the helpful package?
-(use-package elisp-refs :ensure t)
-(use-package helpful :ensure t :after elisp-refs)
-
 ;; Need to organize this to avoid disambiguity and not to forget
 (delete-selection-mode t)
 (global-auto-revert-mode t)

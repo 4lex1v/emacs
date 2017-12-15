@@ -58,3 +58,5 @@
   (use-package request-deferred :after deferred)
   (setq request-log-level 'debug
         request-message-level 'warn))
+
+(use-package elisp-refs :ensure t)
