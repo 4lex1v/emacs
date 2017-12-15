@@ -55,9 +55,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/ranger"]
 	path = modules/behaviour/ranger
 	url = git@github.com:ralesi/ranger.el.git
-[submodule "core/helm/helm-projectile"]
-	path = modules/behaviour/helm-projectile
-	url = git@github.com:bbatsov/helm-projectile.git
 [submodule "themes/dracula"]
 	path = modules/appearance/themes/dracula
 	url = git@github.com:dracula/emacs.git

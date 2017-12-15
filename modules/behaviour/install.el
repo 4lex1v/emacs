@@ -206,7 +206,7 @@
   :config
   (projectile-global-mode))
 
-(use-package helm-projectile
+(use-package helm-projectile :ensure t
   :after (helm projectile)
   
   :bind
