@@ -54,6 +54,8 @@
 
   (evil-set-initial-state 'prog-mode   'normal)
   (evil-set-initial-state 'comint-mode 'normal)
+  
+  (evil-set-initial-state 'package-menu-mode 'motion)
 
   ;; Use `§' key to switch between emacs and normal state
   (evil-global-set-key 'normal "§" #'evil-emacs-state)
@@ -345,6 +347,10 @@
         helm-gtags-use-input-at-cursor t
         helm-gtags-pulse-at-cursor t
         helm-gtags-ignore-case t))
+
+;; #TODO :: Should the elisp package be in here? If not what to do with the helpful package?
+(use-package elisp-refs :ensure t)
+(use-package helpful :ensure t :after elisp-refs)
 
 ;; Need to organize this to avoid disambiguity and not to forget
 (delete-selection-mode t)
