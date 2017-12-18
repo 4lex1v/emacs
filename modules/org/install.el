@@ -57,7 +57,7 @@
                                 ("n" "Notes"   entry (file+headline "~/Sandbox/planning/inbox.org" "Notes")    "* %i%?"))
         
         ;; Refile configuration
-        org-refile-targets '((org-agenda-files :maxlevel . 1))
+        org-refile-targets '((org-agenda-files  :tag . "project"))
         
         ;; Keywords
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "CANCELLED(c)")
