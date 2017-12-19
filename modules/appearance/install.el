@@ -1,8 +1,10 @@
 
 (use-package appearance
   :init
-  (setq default-font-name "Ayuthaya"
-        theme-to-load     'sirthias))
+  (setq default-font-name "PragmataPro"
+        theme-to-load     'sirthias)
+  :config
+  (reload-view))
 
 (use-package spaceline-config :if IS_MAC)
 (use-package spaceline :if IS_MAC

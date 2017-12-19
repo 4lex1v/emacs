@@ -37,6 +37,23 @@
   (setq font-size value)
   (4lex1v:gui:font font-name :size value))
 
+(defun reload-view ()
+  ;; For some reason i need this workaround otherwise Emacs is tooooo
+  ;; slow when i'm using Windows. Pretty sure there's a better solution
+  (if IS_WINDOWS
+      (progn
+        (set-face-attribute 'default nil :height (* default-font-size 12)))
+
+    ;; Will be configured for Mac or Linux
+    (let ((frame-font (format "%s-%d"
+                              default-font-name
+                              default-font-size)))
+      (set-frame-font frame-font)
+      (add-to-list 'default-frame-alist (cons 'font frame-font))
+      (set-face-attribute 'default nil :height (* default-font-size 10))
+      (4lex1v:gui:frame :transparency '(100 . 100)
+                        :cursor       '(box . bar)))))
+
 (setq-default
  mode-line-default-help-echo nil ; turn-off tooltips on cursor hover-over
  tab-width           2 ;; Though i'm not using tabs
@@ -67,22 +84,6 @@
 (add-hook 'window-configuration-change-hook
           (lambda ()
             (set-window-margins (get-buffer-window (current-buffer) nil) 5 3)))
-
-;; For some reason i need this workaround otherwise Emacs is tooooo
-;; slow when i'm using Windows. Pretty sure there's a better solution
-(if IS_WINDOWS
-    (progn
-      (set-face-attribute 'default nil :height (* default-font-size 12)))
-
-  ;; Will be configured for Mac or Linux
-  (let ((frame-font (format "%s-%d"
-                            default-font-name
-                            default-font-size)))
-    (set-frame-font frame-font)
-    (add-to-list 'default-frame-alist (cons 'font frame-font))
-    (set-face-attribute 'default nil :height (* default-font-size 10))
-    (4lex1v:gui:frame :transparency '(100 . 100)
-                      :cursor       '(box . bar))))
 
 ;; #NOTE(4lex1v, 08/24/17) :: Initial frame configuration
 ;; #TODO(4lex1v, 08/24/17) :: Wonder if i should have this setup for any Emacs of
@@ -162,6 +163,8 @@
       (with-eval-after-load "eshell"
         (lambda ()
           (set-face-attribute 'eshell-prompt nil :foreground "#000080")))))
+
+(reload-view)
 
 (provide 'appearance)
 
