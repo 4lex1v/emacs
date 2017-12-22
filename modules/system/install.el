@@ -50,7 +50,8 @@
   (message "Loading Windows OS system configuration")
   
   ;; #NOTE(4lex1v) :: Not sure if these paths should be defined here or in Native modules configuration
-  (setq win32-system-include-paths '("c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/shared"
+  (setq default-directory (expand-file-name "~/")
+        win32-system-include-paths '("c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/shared"
                                      "c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/ucrt"
                                      "c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/um"
                                      "c:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/winrt")))
