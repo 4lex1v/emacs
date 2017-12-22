@@ -61,9 +61,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/haskell/haskell-mode"]
 	path = modules/haskell/haskell-mode
 	url = git@github.com:haskell/haskell-mode.git
-[submodule "packages/emacs-jabber"]
-	path = modules/communications/jabber
-	url = git@github.com:legoscia/emacs-jabber.git
 [submodule "packages/org/org-mode"]
 	path = modules/org/org-mode
 	url = git://orgmode.org/org-mode.git
@@ -97,9 +94,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "foundation"]
 	path = foundation
 	url = git@github.com:4lex1v/foundation.git
-[submodule "modules/communications/slack"]
-	path = modules/communications/slack
-	url = git@github.com:yuya373/emacs-slack.git
 [submodule "modules/web/restclient"]
 	path = modules/web/restclient
 	url = git@github.com:pashky/restclient.el.git
