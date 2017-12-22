@@ -90,7 +90,7 @@
 (use-package ssh-agency :if IS_WINDOWS :ensure t
   :after magit
   :init
-  (setq ssh-agency-keys '("c:/Users/aleksandrivanov/.ssh/github_rsa"))
+  (setq ssh-agency-keys (list (expand-file-name "~/.ssh/github_rsa")))
   
   :config
   (setenv "SSH_ASKPASS" "git-gui--askpass")

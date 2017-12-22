@@ -2,7 +2,7 @@
 (use-package appearance
   :init
   (setq default-font-name "PragmataPro"
-        theme-to-load     'sirthias)
+        theme-to-load     (if IS_WINDOWS 'the_boring_one 'sirthias))
   :config
   (reload-view))
 
