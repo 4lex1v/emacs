@@ -49,9 +49,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/which-key"]
 	path = modules/behaviour/which-key
 	url = git@github.com:justbur/emacs-which-key.git
-[submodule "core/undo-tree"]
-	path = modules/editor/undo-tree
-	url = http://www.dr-qubit.org/git/undo-tree.git
 [submodule "core/ranger"]
 	path = modules/behaviour/ranger
 	url = git@github.com:ralesi/ranger.el.git
