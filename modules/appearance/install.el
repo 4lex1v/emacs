@@ -7,14 +7,13 @@
   (reload-view))
 
 (use-package spaceline-config :if IS_MAC)
-(use-package spaceline :if IS_MAC
-  :disabled t
+(use-package spaceline :disabled t :if IS_MAC
   :after spaceline-config
   
   :init
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
-        powerline-image-apple-rgb t
-        powerline-default-separator 'arrow)
+        powerline-image-apple-rgb (if IS_MAC t)
+        powerline-default-separator 'bar)
   
   ;; TODO :: the problem with this functiona is that
   ;; it's rather often that magit is not loaded

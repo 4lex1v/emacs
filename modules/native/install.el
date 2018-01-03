@@ -31,7 +31,7 @@
     `(company-dabbrev
       company-keywords
       ;; #TODO :: Need to do some additional configuration on Windows to make this work...
-      ,(if (not IS_WINDOWS) 'company-clang)
+      ,@(if (not IS_WINDOWS) 'company-clang)
       company-yasnippet
       company-capf
       company-files))
@@ -40,6 +40,9 @@
   
   (with-eval-after-load "org"
     (add-to-list 'org-babel-load-languages '(C . t)))
+  
+  ;; Something helpful in Handmade Hero... Not sure if i'm going to use it in other projects...
+  (font-lock-add-keywords 'c++-mode '(("\\<\\(internal\\|global_var\\|local_persist\\)\\>" 1 font-lock-keyword-face)))
   
   (sp-local-pair 'c++-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
 

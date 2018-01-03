@@ -38,21 +38,13 @@
   (4lex1v:gui:font font-name :size value))
 
 (defun reload-view ()
-  ;; For some reason i need this workaround otherwise Emacs is tooooo
-  ;; slow when i'm using Windows. Pretty sure there's a better solution
-  (if IS_WINDOWS
-      (progn
-        (set-face-attribute 'default nil :height (* default-font-size 12)))
-
-    ;; Will be configured for Mac or Linux
-    (let ((frame-font (format "%s-%d"
-                              default-font-name
-                              default-font-size)))
-      (set-frame-font frame-font)
-      (add-to-list 'default-frame-alist (cons 'font frame-font))
-      (set-face-attribute 'default nil :height (* default-font-size 10))
-      (4lex1v:gui:frame :transparency '(100 . 100)
-                        :cursor       '(box . bar)))))
+  ;; Configure proper font
+  (let ((frame-font (format "%s-%d" default-font-name default-font-size)))
+    (set-frame-font frame-font)
+    (add-to-list 'default-frame-alist (cons 'font frame-font)))
+  
+  (set-face-attribute 'default nil :height (* default-font-size 12))
+  (4lex1v:gui:frame :transparency '(100 . 100) :cursor '(box . bar)))
 
 (setq-default
  mode-line-default-help-echo nil ; turn-off tooltips on cursor hover-over
@@ -163,8 +155,6 @@
       (with-eval-after-load "eshell"
         (lambda ()
           (set-face-attribute 'eshell-prompt nil :foreground "#000080")))))
-
-(reload-view)
 
 (provide 'appearance)
 
