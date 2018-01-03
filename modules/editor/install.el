@@ -182,7 +182,7 @@
      ("C-c i r" . ispell-region)))
   :config (unbind-key "C-." flyspell-mode-map))
 
-(use-package undo-tree
+(use-package undo-tree :ensure t
   :diminish undo-tree-mode
   :bind ("M-/" . undo-tree-visualize)
   :config (global-undo-tree-mode))

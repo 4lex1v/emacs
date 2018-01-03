@@ -73,7 +73,6 @@
   
   :config
   (load "sbt-defuns")
-  (toggle-truncate-lines t)
   (evil-set-initial-state 'sbt-mode 'normal))
 
 ;; TODO :: override the major mode segment for Ensime activated projects

@@ -12,7 +12,15 @@
         which-key-side-window-location 'bottom) 
   
   :config
-  (which-key-mode))
+  (which-key-mode)
+  
+  ;; #NOTE :: For some reason it doesn't work as a `use-pacakge' directive
+  (general-define-key
+   :keymaps 'which-key-C-h-map
+   :prefix ""
+   :states nil
+    "l" 'which-key-show-next-page-cycle
+    "j" 'which-key-show-previous-page-cycle))
 
 ;; #NOTE(4lex1v, 08/24/17) :: Some movement keybinds are defined in Editor/Smartparens
 (use-package evil

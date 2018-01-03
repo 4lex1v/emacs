@@ -22,6 +22,6 @@
 
 
 (general-emacs-define-key 'global
-  "ei" 'clone-indirect-buffer-other-window)
+  "ei" '(clone-indirect-buffer-other-window :which-key "Indirect Buffer"))
 
 (provide 'keys)

@@ -87,6 +87,13 @@
   :config
   (evil-magit-init))
 
+(use-package git-undo
+  :general
+  (:states '(normal visual)
+   "g" '(:ignore t :which-key "Git")
+   "gu" 'git-undo
+   "gU" 'git-undo-browse))
+
 (use-package ssh-agency :if IS_WINDOWS :ensure t
   :after magit
   :init
