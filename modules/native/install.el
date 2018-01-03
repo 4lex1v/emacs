@@ -93,6 +93,9 @@
   (configure-company-backends-for-mode semantic-mode
     (add-to-list 'company-backends 'company-semantic)))
 
+(use-package sourcetrail :ensure t
+  :after cc-mode)
+
 ;; Configure semantic
 (add-hook 'change-major-mode-hook
           #'(lambda ()
