@@ -8,32 +8,38 @@
 
 (package-initialize)
 
+(eval-when-compile 
 ;; `use-package' configuration
 (setq use-package-verbose               t
       use-package-enable-imenu-support  t
       use-package-check-before-init     t
+      use-package-expand-minimally      nil
       use-package-minimum-reported-time 0.1)
 
+(require 'use-package-core)
 (require 'use-package)
-
-;; Vendor packages
-(use-package diminish :ensure t)
-(use-package async :ensure t :pin "melpa")
-
-;; Use-Package Extensions
-(use-package upe-hooks)
 
 (use-package general
   :init
   (setq general-default-states  'normal
-        general-default-prefix  "<SPC>"))
+        general-default-prefix  "<SPC>")
+  :config
+  (general-evil-setup t))
+
+;; Use-Package Extensions
+(use-package upe-hooks)
+
+)
+
+;; Vendor packages
+(use-package diminish :ensure t)
+(use-package async :ensure t :pin "melpa")
 
 (unbind-key "C-x b")
 
 (load "functions")
 (load "macros")
 (load "configuration")
-
 
 (use-package mode-local)
 

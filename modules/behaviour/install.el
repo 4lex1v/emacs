@@ -23,7 +23,7 @@
     "j" 'which-key-show-previous-page-cycle))
 
 ;; #NOTE(4lex1v, 08/24/17) :: Some movement keybinds are defined in Editor/Smartparens
-(use-package evil
+(use-package evil :demand t
   :after general ;; To enable evil-leader in initial buffers
   :init
   (setq evil-default-cursor             t
@@ -58,7 +58,6 @@
    "er"  'revert-buffer)
   
   :config
-  (general-evil-setup t)
 
   (evil-set-initial-state 'prog-mode   'normal)
   (evil-set-initial-state 'comint-mode 'normal)
@@ -189,19 +188,13 @@
 
   (fset 'describe-bindings 'helm-descbinds))
 
-(use-package helm-ag :ensure t
-  :commands helm-projectile-ag
-  :init
-  (setq helm-ag-insert-at-point 'symbol
-        helm-ag-fuzzy-match     t))
-
 (use-package foundation-helm
+  :after helm
   :commands fnd:helm-list-modules 
   :general
-  ("el" '(fnd:helm-list-modules :which-key "Modules")))
+  ("fm" '(fnd:helm-list-modules :which-key "Modules")))
 
-(use-package projectile
-  :defer t
+(use-package projectile :defer t
   :commands projectile-project-root
   :bind-keymap ("C-c p" . projectile-command-map)
 
@@ -214,8 +207,8 @@
   :config
   (projectile-global-mode))
 
-(use-package helm-projectile :ensure t
-  :after (helm projectile)
+(use-package helm-projectile :ensure t :defer t
+  :after helm
   
   :bind
   (("M-1" . helm-projectile-find-file)
@@ -248,6 +241,13 @@
         projectile-enable-caching     t)
   
   :config (helm-projectile-on))
+
+(use-package helm-ag :ensure t
+  :after helm-projectile
+  :commands helm-projectile-ag
+  :init
+  (setq helm-ag-insert-at-point 'symbol
+        helm-ag-fuzzy-match     t))
 
 (use-package ibuffer-projectile
   :after projectile

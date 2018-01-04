@@ -1,9 +1,7 @@
 (use-package elisp-mode
-  :after       (yasnippet company which-key smartparens-mode)
   :interpreter ("emacs" . emacs-lisp-mode)
   :mode        (("\\.el$" . emacs-lisp-mode)
                 ("Cask"   . emacs-lisp-mode))
-
   :bind
   (("M-." . find-function-at-point)
    ("M-," . find-variable-at-point)
