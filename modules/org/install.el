@@ -1,4 +1,4 @@
-(use-package org :demand t
+(use-package org
   :load-path "modules/org/org-mode/lisp"
   :after flyspell
   

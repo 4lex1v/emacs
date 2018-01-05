@@ -9,27 +9,26 @@
 (package-initialize)
 
 (eval-when-compile 
-;; `use-package' configuration
-(setq use-package-verbose               t
-      use-package-enable-imenu-support  t
-      use-package-check-before-init     t
-      use-package-expand-minimally      nil
-      use-package-minimum-reported-time 0.1)
+  ;; `use-package' configuration
+  (setq use-package-verbose               t
+        use-package-always-defer          t
+        use-package-enable-imenu-support  t
+        use-package-check-before-init     t
+        use-package-expand-minimally      t
+        use-package-minimum-reported-time 0.1)
 
-(require 'use-package-core)
-(require 'use-package)
+  (require 'use-package-core)
+  (require 'use-package)
 
-(use-package general
-  :init
-  (setq general-default-states  'normal
-        general-default-prefix  "<SPC>")
-  :config
-  (general-evil-setup t))
+  (use-package general :demand t
+    :init
+    (setq general-default-states  'normal
+          general-default-prefix  "<SPC>")
+    :config
+    (general-evil-setup t))
 
-;; Use-Package Extensions
-(use-package upe-hooks)
-
-)
+  ;; Use-Package Extensions
+  (use-package upe-hooks :demand t))
 
 ;; Vendor packages
 (use-package diminish :ensure t)
@@ -41,7 +40,7 @@
 (load "macros")
 (load "configuration")
 
-(use-package mode-local)
+(use-package mode-local :demand t)
 
 (use-package helpful :ensure t :after elisp-refs)
 

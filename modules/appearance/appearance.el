@@ -117,37 +117,6 @@
 (if (not IS_WINDOWS)
     (load "fonts/pretty-pragmata"))
 
-(use-package dracula-theme
-  :if (and (display-graphic-p)
-           (eq theme-to-load 'dracula))
-  :load-path "modules/appearance/themes/dracula"
-  :config
-  (load-theme 'dracula t))
-
-(use-package spacemacs-light-theme
-  :if (and (display-graphic-p)
-           (eq theme-to-load 'spacemacs))
-  :load-path "modules/appearance/themes/spacemacs"
-  :init
-  (setq spacemacs-theme-comment-italic t)
-
-  :config
-  (set-face-attribute 'font-lock-constant-face nil :weight 'bold)
-  (load-theme 'spacemacs-light t))
-
-(use-package sirthias-theme
-  :if (and (display-graphic-p)
-           (eq theme-to-load 'sirthias))
-  :load-path "modules/appearance/themes/sirthias"
-  :config
-  (load-theme 'sirthias t))
-
-(use-package the_boring_one-theme
-  :if (eq theme-to-load 'the_boring_one)
-  :load-path "modules/appearance/themes/the_boring_one"
-  :config
-  (load-theme 'the_boring_one t))
-
 ;; Set of custom hack of the default theme to make it a bit prettier
 (if (eq theme-to-load 'default)
     (progn 
