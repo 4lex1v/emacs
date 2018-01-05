@@ -1,12 +1,36 @@
 
-(use-package appearance
+(use-package appearance :demand t
   :init
   (setq default-font-name "PragmataPro"
         theme-to-load     (if IS_WINDOWS 'the_boring_one 'sirthias))
   :config
   (reload-view))
 
-(use-package spaceline-config :if IS_MAC)
+(use-package spacemacs-light-theme :demand t
+  :if (and (display-graphic-p)
+           (eq theme-to-load 'spacemacs))
+  :load-path "modules/appearance/themes/spacemacs"
+  :init
+  (setq spacemacs-theme-comment-italic t)
+
+  :config
+  (set-face-attribute 'font-lock-constant-face nil :weight 'bold)
+  (load-theme 'spacemacs-light t))
+
+(use-package sirthias-theme :demand t
+  :if (and (display-graphic-p)
+           (eq theme-to-load 'sirthias))
+  :load-path "modules/appearance/themes/sirthias"
+  :config
+  (load-theme 'sirthias t))
+
+(use-package the_boring_one-theme :demand t
+  :if (eq theme-to-load 'the_boring_one)
+  :load-path "modules/appearance/themes/the_boring_one"
+  :config
+  (load-theme 'the_boring_one t))
+
+(use-package spaceline-config :if IS_MAC :demand t)
 (use-package spaceline :disabled t :if IS_MAC
   :after spaceline-config
   

@@ -1,5 +1,5 @@
 ;; Goes before others to correctly load which-key-declare-prefixes
-(use-package which-key
+(use-package which-key :demand t
   :diminish which-key-mode
   :init
   (setq which-key-idle-delay 0.2
@@ -74,7 +74,7 @@
   (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-mode))
 
-(use-package hydra
+(use-package hydra :demand t
   :config
   (defhydra hydra-zoom (global-map "<f2>")
     "zoom"
@@ -84,122 +84,22 @@
     ("0" (text-scale-set 0) :bind nil :exit t)
     ("1" (text-scale-set 0) nil :bind nil :exit t)))
 
-(use-package helm-config
-  :init 
-  (setq helm-idle-delay                        0.0
-        helm-input-idle-delay                  0.01
-        helm-quick-update                      t
-        helm-split-window-in-side-p            t
-        helm-buffers-fuzzy-matching            t
-        helm-ff-fuzzy-matching                 t
-        helm-move-to-line-cycle-in-source      t
-        helm-scroll-amount                     8
-        helm-ff-search-library-in-sexp         t
-        helm-ff-file-name-history-use-recentf  t
-        helm-follow-mode-persistent            t))
-
-;; Can't drop this one, helm-ff functionality depends on this one
-(use-package helm-mode)
-
-(use-package helm
-  :diminish helm-mode
-  :commands helm-mode
-  
-  :bind* ("C-c h o" . helm-occur)
-  
-  :bind
-  (("C-c h"   . helm-command-prefix)
-   ("M-y"     . helm-show-kill-ring)
-   ("C-x b"   . helm-mini)
-   ("C-x C-f" . helm-find-files)         
-   ("M-x"     . helm-M-x)
-   ("M-:"     . helm-eval-expression-with-eldoc)
-
-   ;; Number keys
-   ("M-3"     . helm-mini)
-   ("M-6"     . helm-bookmarks)
-
-   :map helm-map
-   ("<tab>" . helm-execute-persistent-action)
-   ("C-i"   . helm-execute-persistent-action)
-   ("C-z"   . helm-select-action)
-   ("C-j"   . helm-next-line)
-   ("C-k"   . helm-previous-line)
-   ("M-j"   . helm-next-source)
-   ("M-k"   . helm-previous-source)
-
-   :map helm-find-files-map
-   ("C-h"   . helm-find-files-up-one-level))
-  
-  :general
-  (:prefix ""
-   "ga"  'helm-apropos)
-  
-  :config 
-  (helm-autoresize-mode)
-  ;(spaceline-helm-mode)
-  (which-key-declare-prefixes "<SPC> f" "Files")
-
-  (func init.el (find-file (concat user-emacs-directory "/" "init.el")))
-  (general-define-key "ff" 'helm-find-files)
-  
-  (substitute-key-definition 'find-tag 'helm-etags-select global-map))
-
-(use-package helm-swoop
-  :ensure t
-  :commands helm-swoop
-
-  :bind
-  (("M-i"     . helm-swoop)
-   ("M-I"     . helm-swoop-back-to-last-point)
-   ("C-c M-i" . helm-multi-swoop)
-   ("C-x M-i" . helm-multi-swoop-all)
-   :map isearch-mode-map
-   ("M-i" . helm-swoop-from-isearch)
-   ("M-I" . helm-multi-swoop-all-from-isearch)
-   :map helm-swoop-map
-   ("M-i" . helm-multi-swoop-all-from-helm-swoop)
-   ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop))
-
-  :init
-  (setq helm-multi-swoop-edit-save t
-        helm-swoop-split-with-multiple-windows nil
-        helm-swoop-split-direction 'split-window-vertically
-        helm-swoop-move-to-line-cycle t
-        helm-swoop-use-line-number-face t))
-
-(use-package helm-descbinds
-  :ensure t
-  :commands helm-descbinds
-  :general
-  (:keymaps 'helm-command-map :prefix ""
-   "b" 'helm-descbinds)
-  ("eb" '(helm-descbinds :which-key "Bindings"))
-  
-  :init
-  (setq helm-descbinds-window-style 'split-window)
-  
-  :config
-  (unbind-key "\C-h b")
-  (unbind-key "<f1> b")
-  (unbind-key "<help> b")
-  (unbind-key "C-c h b")
-  (unbind-key "C-x c b")
-
-  (fset 'describe-bindings 'helm-descbinds))
-
-(use-package foundation-helm
-  :after helm
-  :commands fnd:helm-list-modules 
-  :general
-  ("fm" '(fnd:helm-list-modules :which-key "Modules")))
-
-(use-package projectile :defer t
+(use-package projectile
   :commands projectile-project-root
   :bind-keymap ("C-c p" . projectile-command-map)
 
+  :general
+  (:prefix "" "M-4" 'projectile-switch-project)      
+  
+  ;;  Projectile-only bindings
+  ("p" '(:ignore t :which-key "Projectile")
+   "pk" 'projectile-kill-buffers
+   "pr" 'projectile-replace
+   "pi" 'projectile-invalidate-cache)
+  
   :init
   (setq projectile-enable-caching       nil
+        projectile-completion-system   'helm
         projectile-require-project-root t
         projectile-use-git-grep         nil
         projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
@@ -207,63 +107,10 @@
   :config
   (projectile-global-mode))
 
-(use-package helm-projectile :ensure t :defer t
-  :after helm
-  
-  :bind
-  (("M-1" . helm-projectile-find-file)
-   ("M-4" . projectile-switch-project))
-  
-  :general
-  ;; Global Bindings
-  (:prefix ""
-   ;; Buffers
-   "C-M-3" 'helm-projectile-switch-to-buffer)
-  
-  ;;  Projectile-only bindings
-  ("p" '(:ignore t :which-key "Projectile")
-   "pp" 'helm-projectile-switch-project
-   "pk" 'projectile-kill-buffers
-   
-   ;; Search
-   "ps" '(:ignore t :which-key "Search [Ag]")
-   "pss" 'helm-projectile-ag
-   "psr" 'helm-ag-project-root
-   "psa" 'helm-do-ag
-
-   ;; Refactoring
-   "pr" 'projectile-replace
-   
-   "pi" 'projectile-invalidate-cache)
-  
-  :init
-  (setq projectile-completion-system 'helm
-        projectile-enable-caching     t)
-  
-  :config (helm-projectile-on))
-
-(use-package helm-ag :ensure t
-  :after helm-projectile
-  :commands helm-projectile-ag
-  :init
-  (setq helm-ag-insert-at-point 'symbol
-        helm-ag-fuzzy-match     t))
-
-(use-package ibuffer-projectile
-  :after projectile
-  :ensure t
-  :config
-  (add-hook 'ibuffer-hook
-            (lambda ()
-              (ibuffer-projectile-set-filter-groups)
-              (unless (eq ibuffer-sorting-mode 'alphabetic)
-                (ibuffer-do-sort-by-alphabetic)))))
-
 (use-package ranger
-  :commands ranger
-  :bind
-  (("M-5"     . helm-ranger-bookmarks)
-   ("C-c C-l" . org-store-link))
+  :general
+  ("fr" 'ranger)
+  
   :init
   (setq ranger-override-dired 'ranger
         ranger-show-literal    nil ;; Turn on highlighting in ranger mode
@@ -299,9 +146,6 @@
           (drill-folder-up parent-folder)
         (ranger-find-file parent-folder))))           
   
-  :general
-  ("fr" 'ranger)
-  
   :config
   (ranger-override-dired-mode t)
   
@@ -309,38 +153,155 @@
   (add-to-list 'ranger-excluded-extensions "cs.meta")
 
   (bind-key "l" #'drill-folder-down ranger-mode-map)
-  (bind-key "h" #'drill-folder-up   ranger-mode-map)
+  (bind-key "h" #'drill-folder-up   ranger-mode-map))
 
-  (with-package helm
-    (defun helm-ranger-bookmarks ()
-      (interactive)
-      (helm :sources (helm-build-in-buffer-source "Ranger Bookmarks"
-                       :data (lambda ()
-                               (bookmark-maybe-load-default-file)
-                               (ranger--directory-bookmarks))
-                       :fuzzy-match t
-                       :action 'ranger)
-            :buffer "*helm ranger bookmarks*"))))
-
-(use-package helm-dash :ensure t :defer t
-  :commands (helm-dash helm-dash-at-point))
-
-(use-package avy
-  :ensure t
+(use-package avy :ensure t
   :bind
   (("C-c SPC" . avy-goto-char)
    ("C-c j c" . avy-goto-char)
    ("C-c j w" . avy-goto-word-1)
    ("C-c j l" . avy-goto-line))
+  
   :init
   (general-define-key "j" #'avy-goto-char))
 
-(use-package ace-window
-  :ensure t
+(use-package ace-window :ensure t
   :bind
   (("C-'"  . ace-window))
   :general
   ("wj" 'ace-window))
+
+(use-package helm :demand t
+  :general
+  (:prefix ""
+   "ga"  'helm-apropos
+   "C-c h"   'helm-command-prefix
+   "M-y"     'helm-show-kill-ring
+   "C-x b"   'helm-mini
+   "C-x C-f" 'helm-find-files         
+   "M-x"     'helm-M-x
+   "M-:"     'helm-eval-expression-with-eldoc
+
+   ;; Number keys
+   "M-3"      'helm-mini
+   "M-6"      'helm-bookmarks)
+
+  (:prefix "" :keymaps 'helm-map :states '()
+   "<tab>" 'helm-execute-persistent-action
+   "C-i"   'helm-execute-persistent-action
+   "C-z"   'helm-select-action
+   "C-j"   'helm-next-line
+   "C-k"   'helm-previous-line
+   "M-j"   'helm-next-source
+   "M-k"   'helm-previous-source)
+
+  (:prefix "" :keymaps 'helm-find-files-map :states '()
+   "C-h"   'helm-find-files-up-one-level)
+  
+  :init
+  (setq helm-idle-delay                        0.0
+        helm-input-idle-delay                  0.01
+        helm-quick-update                      t
+        helm-split-window-in-side-p            t
+        helm-buffers-fuzzy-matching            t
+        helm-ff-fuzzy-matching                 t
+        helm-move-to-line-cycle-in-source      t
+        helm-scroll-amount                     8
+        helm-ff-search-library-in-sexp         t
+        helm-ff-file-name-history-use-recentf  t
+        helm-follow-mode-persistent            t)
+  
+  (use-package helm-config :demand t)
+  
+  :config 
+  (use-package helm-mode :demand t)
+  
+  (helm-autoresize-mode)
+                                        ;(spaceline-helm-mode)
+  (which-key-declare-prefixes "<SPC> f" "Files")
+
+  (func init.el (find-file (concat user-emacs-directory "/" "init.el")))
+  (general-define-key "ff" 'helm-find-files)
+  
+  (substitute-key-definition 'find-tag 'helm-etags-select global-map))
+
+(use-package foundation-helm
+  :after helm
+  :general
+  ("fm" '(fnd:helm-list-modules :which-key "Modules")))
+
+(use-package helm-swoop :ensure t
+  :after helm
+
+  :bind
+  (("M-i"     . helm-swoop)
+   ("C-c M-i" . helm-multi-swoop)
+   ("C-x M-i" . helm-multi-swoop-all)
+   
+   :map isearch-mode-map
+   ("M-i" . helm-swoop-from-isearch)
+   ("M-I" . helm-multi-swoop-all-from-isearch)
+   
+   :map helm-swoop-map
+   ("M-i" . helm-multi-swoop-all-from-helm-swoop)
+   ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop))
+
+  :init
+  (setq helm-multi-swoop-edit-save t
+        helm-swoop-split-with-multiple-windows nil
+        helm-swoop-split-direction 'split-window-vertically
+        helm-swoop-move-to-line-cycle t
+        helm-swoop-use-line-number-face t))
+
+(use-package helm-descbinds :ensure t
+  :commands helm-descbinds
+  
+  :general
+  (:prefix "" :keymaps 'helm-command-map :states '()
+   "b" 'helm-descbinds)
+  
+  ("eb" '(helm-descbinds :which-key "Bindings"))
+  
+  :init
+  (setq helm-descbinds-window-style 'split-window)
+  
+  :config
+  (unbind-key "\C-h b")
+  (unbind-key "<f1> b")
+  (unbind-key "<help> b")
+  (unbind-key "C-c h b")
+  (unbind-key "C-x c b")
+
+  (fset 'describe-bindings 'helm-descbinds))
+
+;; #NOTE :: This package doesn't rely on Projectile cause my workflow starts with helm-projectile-switch-project
+;; So this package bootstrap the projectile loading
+(use-package helm-projectile :ensure t
+  :after helm
+  
+  :general
+  ("pp"  'helm-projectile-switch-project)
+  
+  (:prefix ""
+   "C-M-3" 'helm-projectile-switch-to-buffer
+   "M-1"   'helm-projectile-find-file)
+  
+  :config (helm-projectile-on))
+
+(use-package helm-ag :ensure t
+  :after helm-projectile
+  :general
+  ("ps"  '(:ignore t :which-key "Search [Ag]")
+   "pss" 'helm-projectile-ag
+   "psr" 'helm-ag-project-root
+   "psa" 'helm-do-ag)
+
+  :init
+  (setq helm-ag-insert-at-point 'symbol
+        helm-ag-fuzzy-match     t))
+
+(use-package helm-dash :ensure t
+  :commands (helm-dash helm-dash-at-point))
 
 (use-package helm-gtags :ensure t
   :after helm

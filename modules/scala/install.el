@@ -30,6 +30,7 @@
   :hooks (4lex1v/fix-scala-fonts
           hs-minor-mode
           hideshowvis-enable
+          smartparens-mode
           yas-minor-mode
           company-mode)
   

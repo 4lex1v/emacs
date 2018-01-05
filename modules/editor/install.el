@@ -1,49 +1,53 @@
 ;; -*- lexical-binding: t; -*-
 
-(use-package smartparens-config
+(use-package smartparens
+  :commands (smartparens-mode sp-with-modes)
+  
+  :general
+  (:prefix "" :keymaps 'sp-keymap
+   "M-F"   'sp-forward-symbol
+   "M-B"   'sp-backward-symbol
+   "C-M-k" 'sp-kill-sexp
+   "C-M-w" 'sp-copy-sexp
+   "C-M-t" 'sp-transpose-sexp
+
+   "M-<left>"    'sp-forward-slurp-sexp
+   "C-M-<left>"  'sp-forward-barf-sexp
+   "M-<right>"   'sp-backward-slurp-sexp
+   "C-M-<right>" 'sp-backward-barf-sexp
+
+   "M-D" 'sp-splice-sexp
+
+   "C-M-[" 'sp-select-previous-thing
+   "C-M-]" 'sp-select-next-thing
+
+   "C-c s u" 'sp-up-sexp
+   "C-c s d" 'sp-down-sexp
+   "C-c s t" 'sp-prefix-tag-object
+   "C-c s p" 'sp-prefix-pair-object
+   "C-c s c" 'sp-convolute-sexp
+   "C-c s a" 'sp-absorb-sexp
+   "C-c s e" 'sp-emit-sexp
+   "C-c s p" 'sp-add-to-previous-sexp
+   "C-c s n" 'sp-add-to-next-sexp
+   "C-c s j" 'sp-join-sexp
+   "C-c s s" 'sp-split-sexp)
+  
   :init
   (setq sp-autoinsert-if-followed-by-word t
         sp-autoskip-closing-pair 'always-end
-        sp-hybrid-kill-entire-symbol nil))
-
-;; TODO :: Replace bind with General
-;; TODO :: Improve some combinations with Hyndra
-;; NOTE :: Can we introduce another mode, like <S>, with defined Smartparens bindings? Ref :: Evil
-(use-package smartparens
-  :after smartparens-config
-  :commands smartparens-mode
-  :bind
-  (:map sp-keymap
-   ("M-F"              . sp-forward-symbol)
-   ("M-B"              . sp-backward-symbol)
-
-   ("C-M-k"            . sp-kill-sexp)
-   ("C-M-w"            . sp-copy-sexp)
-   ("C-M-t"            . sp-transpose-sexp)
-
-   ("M-<left>"         . sp-forward-slurp-sexp)
-   ("C-M-<left>"       . sp-forward-barf-sexp)
-   ("M-<right>"        . sp-backward-slurp-sexp)
-   ("C-M-<right>"      . sp-backward-barf-sexp)
-
-   ("M-D"              . sp-splice-sexp)
-
-   ("C-M-["            . sp-select-previous-thing)
-   ("C-M-]"            . sp-select-next-thing)
-
-   ("C-c s u"          . sp-up-sexp)
-   ("C-c s d"          . sp-down-sexp)
-   ("C-c s t"          . sp-prefix-tag-object)
-   ("C-c s p"          . sp-prefix-pair-object)
-   ("C-c s c"          . sp-convolute-sexp)
-   ("C-c s a"          . sp-absorb-sexp)
-   ("C-c s e"          . sp-emit-sexp)
-   ("C-c s p"          . sp-add-to-previous-sexp)
-   ("C-c s n"          . sp-add-to-next-sexp)
-   ("C-c s j"          . sp-join-sexp)
-   ("C-c s s"          . sp-split-sexp))
-
+        sp-hybrid-kill-entire-symbol nil)
+  
+  (defhydra hydra-smartparens (global-map "C-s")
+    "smartparens"
+    ("<left>"      sp-forward-slurp-sexp  "f-slurp")
+    ("C-<left>"    sp-forward-barf-sexp   "f-barf")
+    ("M-<right>"   sp-backward-slurp-sexp "f-slurp")
+    ("C-M-<right>" sp-backward-barf-sexp  "b-barf"))
+  
   :config
+  (use-package smartparens-config :demand t)
+  
   (sp-pair "(" ")" :wrap "C-(")
   (sp-pair "[" "]" :wrap "s-[")
   (sp-pair "{" "}" :wrap "C-{"))
@@ -55,7 +59,7 @@
   
   :general
   ("es" '(:ignore t :which-key "Snippets")
-   "esa" 'yas-new-snippet)
+   "esa" '(yas-new-snippet :which-key "Add Snippet"))
   
   :init
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"
@@ -79,16 +83,18 @@
   ;;   (general-define-key :keymaps 'company-active-map
   ;;     "C-j" 'company-select-next)
   ;; Though perfectly works via `define-key'
-  :bind
-  (:map company-active-map
-   ("C-j" . company-select-next-or-abort)
-   ("C-k" . company-select-previous-or-abort)
-   ("C-d" . company-show-doc-buffer))
   
   :general
   (:prefix "" :states '(insert)
    "C-SPC" 'company-complete)
+  
+  (:prefix "" :keymaps 'company-active-map :states '()
+   "C-j" 'company-select-next-or-abort
+   "C-k" 'company-select-previous-or-abort
+   "C-d" 'company-show-doc-buffer)
 
+  :hook text-mode
+  
   :init 
   (setq company-dabbrev-ignore-case nil
         company-dabbrev-code-ignore-case nil
@@ -100,7 +106,8 @@
         company-selection-wrap-around t
         company-tooltip-align-annotations t
 
-        company-transformers '(company-sort-by-occurrence))
+        company-transformers '(company-sort-by-occurrence)
+        company-backends '())
 
   (cl-defmacro configure-company-backends-for-mode (mode backends)
     (declare (indent 1))
@@ -108,16 +115,12 @@
       ',(intern (concat (symbol-name mode) "-hook"))
       (lambda ()
         (make-local-variable 'company-backends)
-        (setq company-backends ,backends))))
-  
-  :config
-  (add-hook 'text-mode-hook #'company-mode)
-  (setq company-backends '()))
+        (setq company-backends ,backends)))))
 
-(use-package flycheck :defer t :ensure t)
+(use-package flycheck :ensure t)
 
 (use-package hideshowvis
-  :diminish hs-minor-mode
+  :diminish (hs-minor-mode . " +/-")
   :ensure t
   :commands hideshowvis-enable
   :init
@@ -131,9 +134,7 @@
                      nil))
 
   ;; Fix HTML folding
-  (dolist (mode '(sgml-mode
-                  html-mode
-                  html-erb-mode))
+  (dolist (mode '(sgml-mode html-mode html-erb-mode))
     (add-to-list 'hs-special-modes-alist
                  (list mode
                        "<!--\\|<[^/>]*[^/]>"
@@ -154,9 +155,8 @@
   :ensure t
   :bind ("C-=" . er/expand-region))
 
-(use-package centered-cursor-mode
+(use-package centered-cursor-mode :demand t :ensure t
   :diminish centered-cursor-mode
-  :ensure t
   :init
   (setq ccm-recenter-at-end-of-file t
         ccm-ignored-commands '(mouse-drag-region
@@ -187,14 +187,12 @@
   :bind ("M-/" . undo-tree-visualize)
   :config (global-undo-tree-mode))
 
-(use-package evil-surround
-  :ensure t
+(use-package evil-surround :ensure t
   :after evil
   :config
   (global-evil-surround-mode 1))
 
-(use-package evil-args
-  :ensure t
+(use-package evil-args :ensure t
   :after evil
   :config
   (add-to-list 'evil-args-delimiters " ")

@@ -1,4 +1,4 @@
-(use-package magit :defer t :load-path "modules/vcs/magit/lisp"
+(use-package magit :load-path "modules/vcs/magit/lisp"
   :commands (magit-diff magit-clone)
   
   :init
@@ -71,9 +71,8 @@
 
   (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window))
 
-(use-package with-editor
+(use-package with-editor :ensure t :demand t
   :after magit
-  :ensure t
   :general
   (:keymaps 'with-editor-mode-map
     :prefix "" ;; don't use SPC prefix in this case
@@ -82,7 +81,7 @@
   :config
   (evil-set-initial-state 'with-editor-mode 'insert))
 
-(use-package evil-magit
+(use-package evil-magit :demand t
   :after magit-mode
   :config
   (evil-magit-init))
