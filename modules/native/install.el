@@ -42,7 +42,7 @@
     (add-to-list 'org-babel-load-languages '(C . t)))
   
   ;; Something helpful in Handmade Hero... Not sure if i'm going to use it in other projects...
-  (font-lock-add-keywords 'c++-mode '(("\\<\\(internal\\|global_var\\|local_persist\\)\\>" 1 font-lock-keyword-face)))
+  (font-lock-add-keywords 'c++-mode '(("\\<\\(assert\\|internal\\|global_var\\|local_persist\\)\\>" 1 font-lock-keyword-face)))
   
   (sp-local-pair 'c++-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
 
