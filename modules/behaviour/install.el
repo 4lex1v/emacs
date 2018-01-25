@@ -33,9 +33,11 @@
         evil-ex-interactive-search-highlight 'selected-window)
   
   :general
-  (:prefix ""
+  (:prefix "" :keymaps '(evil-motion-state-map) :states '()
    "j"   'evil-next-visual-line
-   "k"   'evil-previous-visual-line
+   "k"   'evil-previous-visual-line)
+
+  (:prefix ""
    "$"   'evil-end-of-visual-line
    "C-j" 'evil-forward-paragraph
    "C-k" 'evil-backward-paragraph
@@ -82,11 +84,15 @@
     ("l" text-scale-decrease "out")
     ("r" (text-scale-set 0) "reset")
     ("0" (text-scale-set 0) :bind nil :exit t)
-    ("1" (text-scale-set 0) nil :bind nil :exit t)))
+    ("1" (text-scale-set 0) nil :bind nil :exit t))
+
+  (defhydra hydra-error (evil-normal-state-map "C-e")
+    "error"
+    ("j" next-error "next")
+    ("k" previous-error "previous")))
 
 (use-package projectile
   :commands projectile-project-root
-  :bind-keymap ("C-c p" . projectile-command-map)
 
   :general
   (:prefix "" "M-4" 'projectile-switch-project)      
@@ -173,8 +179,10 @@
 
 (use-package helm :demand t
   :general
-  (:prefix ""
-   "ga"  'helm-apropos
+  (:prefix "" :states '(normal)
+   "ga" 'helm-apropos)
+
+  (:prefix "" :states '()
    "C-c h"   'helm-command-prefix
    "M-y"     'helm-show-kill-ring
    "C-x b"   'helm-mini
@@ -209,7 +217,11 @@
         helm-scroll-amount                     8
         helm-ff-search-library-in-sexp         t
         helm-ff-file-name-history-use-recentf  t
-        helm-follow-mode-persistent            t)
+        helm-follow-mode-persistent            t
+
+        helm-display-function                 'helm-display-buffer-in-own-frame
+        helm-display-buffer-reuse-frame        t
+        helm-use-undecorated-frame-option      t)
   
   (use-package helm-config :demand t)
   
@@ -232,7 +244,7 @@
 
 (use-package helm-swoop :ensure t
   :after helm
-
+  
   :bind
   (("M-i"     . helm-swoop)
    ("C-c M-i" . helm-multi-swoop)
