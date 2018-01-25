@@ -13,7 +13,7 @@
         ("Monaco"      14)
         ("Ayuthaya"    16)
         (t             18))
-       13)
+       16)
   "Default Font size used across all frames")
 
 (defcustom theme-to-load 'sirthias
@@ -30,21 +30,13 @@
     (set-frame-parameter (selected-frame) 'alpha (cons active inactive))
     (add-to-list 'default-frame-alist (cons 'alpha (cons active inactive)))))
 
-(defun change-font-size (value)
-  (interactive
-   (list
-    (read-number (format "Font current font size [%d] to: " font-size))))
-  (setq font-size value)
-  (4lex1v:gui:font font-name :size value))
-
 (defun reload-view ()
   ;; Configure proper font
   (let ((frame-font (format "%s-%d" default-font-name default-font-size)))
     (set-frame-font frame-font)
     (add-to-list 'default-frame-alist (cons 'font frame-font)))
   
-  (set-face-attribute 'default nil :height (* default-font-size 12))
-  (4lex1v:gui:frame :transparency '(100 . 100) :cursor '(box . bar)))
+  (set-face-attribute 'default nil :height (* default-font-size 10)))
 
 (setq-default
  mode-line-default-help-echo nil ; turn-off tooltips on cursor hover-over
@@ -80,21 +72,21 @@
 ;; #NOTE(4lex1v, 08/24/17) :: Initial frame configuration
 ;; #TODO(4lex1v, 08/24/17) :: Wonder if i should have this setup for any Emacs of
 ;;                            or for specific builds only ???
-(add-to-list 'initial-frame-alist (cons 'left 50))
+;; (add-to-list 'initial-frame-alist (cons 'left 50))
 
-(add-to-list 'initial-frame-alist
-             (cons 'height
-                   (let ((one (/ (display-pixel-height)
-                                 (frame-char-height))))
-                     (- one (/ one 2.5)))))
+;; (add-to-list 'initial-frame-alist
+;;              (cons 'height
+;;                    (let ((one (/ (display-pixel-height)
+;;                                  (frame-char-height))))
+;;                      (- one (/ one 2.5)))))
 
-(add-to-list 'initial-frame-alist
-             (cons 'width
-                   (/ (/ (ceiling (* (- (display-pixel-width)
-                                      (apply '+ (cl-remove-if (lambda (i) (not i))
-                                                              (window-fringes))))
-                                   0.99))
-                       (frame-char-width)) 3)))
+;; (add-to-list 'initial-frame-alist
+;;              (cons 'width
+;;                    (/ (/ (ceiling (* (- (display-pixel-width)
+;;                                       (apply '+ (cl-remove-if (lambda (i) (not i))
+;;                                                               (window-fringes))))
+;;                                    0.99))
+;;                        (frame-char-width)) 3)))
 
 ;; #NOTE(4lex1v, 08/24/17) :: Ref: `font-lock-keywords`
 ;; #TODO(4lex1v) :: Need to add some support in combination with projectile to see all entries in the project
