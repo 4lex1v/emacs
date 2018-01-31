@@ -25,6 +25,9 @@
     (eshell-cmpl-initialize)
     (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
     (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
+  
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'eshell))
 
   (defun git-prompt-branch-name ()
     "Get current git branch name"

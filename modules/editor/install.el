@@ -1,7 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package smartparens
-  :commands (smartparens-mode sp-with-modes)
+  :commands (smartparens-mode sp-with-modes sp-local-pairs)
+  
+  :hook ((conf-mode text-mode) . smartparens-mode)
   
   :general
   (:prefix "" :keymaps 'sp-keymap
@@ -50,11 +52,13 @@
   
   (sp-pair "(" ")" :wrap "C-(")
   (sp-pair "[" "]" :wrap "s-[")
+  (sp-pair "\"" "\"" :wrap "C-\"")
   (sp-pair "{" "}" :wrap "C-{"))
 
 (use-package yasnippet
   :diminish (yas-minor-mode . " Y")
   :commands yas-minor-mode
+  
   :mode ("\\.yasnippet" . snippet-mode)
   
   :general
@@ -77,12 +81,6 @@
 
 (use-package company
   :commands company-mode
-
-  ;; @NOTE :: For some reason can't make this work with general??
-  ;; Example config with general:
-  ;;   (general-define-key :keymaps 'company-active-map
-  ;;     "C-j" 'company-select-next)
-  ;; Though perfectly works via `define-key'
   
   :general
   (:prefix "" :states '(insert)
@@ -91,9 +89,10 @@
   (:prefix "" :keymaps 'company-active-map :states '()
    "C-j" 'company-select-next-or-abort
    "C-k" 'company-select-previous-or-abort
+   "C-o" 'company-other-backend
    "C-d" 'company-show-doc-buffer)
 
-  :hook text-mode
+  :hook ((text-mode) . company-mode)
   
   :init 
   (setq company-dabbrev-ignore-case nil
@@ -108,6 +107,9 @@
 
         company-transformers '(company-sort-by-occurrence)
         company-backends '())
+  
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'company))
 
   (cl-defmacro configure-company-backends-for-mode (mode backends)
     (declare (indent 1))
@@ -115,16 +117,19 @@
       ',(intern (concat (symbol-name mode) "-hook"))
       (lambda ()
         (make-local-variable 'company-backends)
-        (setq company-backends ,backends)))))
+        (setq company-backends (remove nil ,backends))))))
 
 (use-package flycheck :ensure t)
 
-(use-package hideshowvis
+;; #TODO :: move over to appearance?
+(use-package hideshowvis :ensure t
   :diminish (hs-minor-mode . " +/-")
-  :ensure t
   :commands hideshowvis-enable
+  
+  :hook ((conf-mode . hs-minor-mode)
+         (conf-mode . hideshowvis-minor-mode))
+  
   :init
-  (which-key-declare-prefixes "C-c @" "hideshow")
   (add-to-list 'hs-special-modes-alist
                (list 'nxml-mode
                      "<!--\\|<[^/>]*[^/]>"
@@ -148,7 +153,7 @@
     (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes))
   
   :config
-  (hideshowvis-symbols)
+  (hideshowvis-symbols)                 
   (hideshowvis-enable))
 
 (use-package expand-region

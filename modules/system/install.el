@@ -1,7 +1,7 @@
 
 (defconst IS_MAC     (eq system-type 'darwin))
-(defconst IS_LINUX   (eq system-type 'gnu/linux))
 (defconst IS_WINDOWS (eq system-type 'windows-nt))
+(defconst IS_UNIX    (not IS_WINDOWS))
 
 (use-package exec-path-from-shell :ensure t
   :commands (exec-path-from-shell-getenv

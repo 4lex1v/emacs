@@ -45,7 +45,7 @@
    "gs"  'magit-status
    "gm"  'magit-dispatch-popup
    "gb"  'magit-blame
-   "go"  'magit-submodule-popup
+   "g'"  'magit-submodule-popup
    "gy"  'magit-show-refs-popup
    "ge"  'magit-ediff-popup
    "gp"  'magit-push-popup
@@ -60,8 +60,11 @@
   (:prefix "" :keymaps 'magit-diff-mode-map
    "gf" 'magit-diff-visit-file-other-window)
 
+  (:prefix "" :keymaps 'magit-submodule-list-mode-map
+   "RET" 'magit-repolist-status)
+
   :config
-  (evil-set-initial-state 'magit-submodule-list-mode 'emacs)
+  ;; (evil-set-initial-state 'magit-submodule-list-mode 'emacs)
   
   (add-to-list 'magit-log-arguments "--color")
   (add-to-list 'magit-diff-arguments "--ignore-space-change")
@@ -69,7 +72,10 @@
   (magit-define-popup-action 'magit-submodule-popup   
     ?l "List" 'magit-list-submodules)
 
-  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window))
+  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
+
+  (add-hook 'magit-submodule-list-mode-hook
+            (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t)))))
 
 (use-package with-editor :ensure t :demand t
   :after magit
@@ -102,11 +108,17 @@
   (setenv "SSH_ASKPASS" "git-gui--askpass")
   (ssh-agency-ensure))
 
-(use-package magithub
-  :ensure t
-  :disabled t
+(use-package magithub :ensure t :disabled t
   :after magit
   :config
   (magithub-feature-autoinject t))
 
+(use-package smerge-mode
+  :general
+  (:prefix ""
+   :states nil
+   :keymaps 'smerge-mode-map
+
+   "C-M-j" 'smerge-next
+   "C-M-k" 'smerge-prev))
 

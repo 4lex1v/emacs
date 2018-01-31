@@ -45,6 +45,11 @@
 (defsubst 4lex1v/hook-into-modes (func &rest modes)
   (dolist (mode-hook modes) (add-hook mode-hook func)))
 
+(defsubst 4lex1v/mode-hooks (mode &rest funcs)
+  (declare (indent 1))
+  (dolist (f funcs)
+    (add-hook mode f)))
+
 (defun 4lex1v/multi-window-p ()
   (> (count-windows) 1))
 

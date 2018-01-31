@@ -1,3 +1,4 @@
+
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t
   :diminish which-key-mode
@@ -20,17 +21,14 @@
    :prefix ""
    :states nil
     "l" 'which-key-show-next-page-cycle
-    "j" 'which-key-show-previous-page-cycle))
+    "j" 'which-key-show-previous-page-cycle)
+
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'while-key)))
 
 ;; #NOTE(4lex1v, 08/24/17) :: Some movement keybinds are defined in Editor/Smartparens
 (use-package evil :demand t
   :after general ;; To enable evil-leader in initial buffers
-  :init
-  (setq evil-default-cursor             t
-        evil-ex-substitute-global       t
-        evil-ex-search-vim-style-regexp t
-        evil-want-C-u-scroll            t
-        evil-ex-interactive-search-highlight 'selected-window)
   
   :general
   (:prefix "" :keymaps '(evil-motion-state-map) :states '()
@@ -59,8 +57,15 @@
    "eq"  'save-buffers-kill-emacs
    "er"  'revert-buffer)
   
+  :init
+  (setq evil-default-cursor             t
+        evil-ex-substitute-global       t
+        evil-ex-search-vim-style-regexp t
+        evil-want-C-u-scroll            t
+        evil-ex-interactive-search-highlight 'selected-window
+        evil-want-integration           nil)
+  
   :config
-
   (evil-set-initial-state 'prog-mode   'normal)
   (evil-set-initial-state 'comint-mode 'normal)
   
@@ -75,6 +80,39 @@
   
   (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-mode))
+
+(use-package evil-collection :demand t
+  :after evil
+  :init
+  (setq evil-collection-setup-minibuffer t
+        evil-collection-mode-list `(bookmark
+                                    (buff-menu "buff-menu")
+                                    calendar
+                                    comint
+                                    compile
+                                    debbugs
+                                    debug
+                                    diff-mode
+                                    dired
+                                    doc-view
+                                    edebug
+                                    eval-sexp-fu
+                                    etags-select
+                                    flycheck
+                                    help
+                                    ibuffer
+                                    info
+                                    log-view
+                                    man
+                                    simple
+                                    ,@(when evil-collection-setup-minibuffer '(minibuffer))
+                                    (occur ,(if (<= emacs-major-version 25) "replace" 'replace))
+                                    (package-menu package)
+                                    rtags
+                                    (term term ansi-term multi-term)))
+  :config
+  (add-hook 'after-init-hook
+            (lambda () (evil-collection-init))))
 
 (use-package hydra :demand t
   :config
@@ -197,11 +235,7 @@
   (:prefix "" :keymaps 'helm-map :states '()
    "<tab>" 'helm-execute-persistent-action
    "C-i"   'helm-execute-persistent-action
-   "C-z"   'helm-select-action
-   "C-j"   'helm-next-line
-   "C-k"   'helm-previous-line
-   "M-j"   'helm-next-source
-   "M-k"   'helm-previous-source)
+   "C-z"   'helm-select-action)
 
   (:prefix "" :keymaps 'helm-find-files-map :states '()
    "C-h"   'helm-find-files-up-one-level)
@@ -224,6 +258,9 @@
         helm-use-undecorated-frame-option      t)
   
   (use-package helm-config :demand t)
+  
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'helm))
   
   :config 
   (use-package helm-mode :demand t)
@@ -310,7 +347,10 @@
 
   :init
   (setq helm-ag-insert-at-point 'symbol
-        helm-ag-fuzzy-match     t))
+        helm-ag-fuzzy-match     t)
+  
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'ag)))
 
 (use-package helm-dash :ensure t
   :commands (helm-dash helm-dash-at-point))

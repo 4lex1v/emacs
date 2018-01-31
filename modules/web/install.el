@@ -1,4 +1,4 @@
-(use-package web-mode :ensure t :defer t
+(use-package web-mode :ensure t
   :mode
   (("\\.html\\'" . web-mode)
    ("\\.html\\.erb\\'" . web-mode)
@@ -19,6 +19,13 @@
       "C-c C-d" "web/dom"
       "C-c C-a" "web/attribute"
       "C-c C-e" "web/element")))
+
+;; Can't get it from the repos...
+(use-package tide :ensure t :disabled t
+  :init
+  (with-eval-after-load evil-collection
+    (add-to-list 'evil-collection-mode-list 'tide)
+    (add-to-list 'evil-collection-mode-list 'typescript-mode)))
 
 (use-package restclient :defer t
   :init

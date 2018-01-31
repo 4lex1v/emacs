@@ -4,6 +4,7 @@
   (setq-default truncate-lines nil)
   (setq default-font-name "PragmataPro"
         theme-to-load     (if IS_WINDOWS 'the_boring_one 'sirthias)
+        ;; theme-to-load     'polygon
         sirthias-easy-mode (if (eq theme-to-load 'sirthias) t nil))
   :config
   (reload-view))
@@ -25,6 +26,13 @@
   :load-path "modules/appearance/themes/sirthias"
   :config
   (load-theme 'sirthias t))
+
+(use-package polygon-theme :demand t
+  :if (and (display-graphic-p)
+           (eq theme-to-load 'polygon))
+  :load-path "modules/appearance/themes/polygon"
+  :config
+  (load-theme 'polygon t))
 
 (use-package the_boring_one-theme :demand t
   :if (eq theme-to-load 'the_boring_one)

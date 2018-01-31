@@ -1,8 +1,15 @@
 ;; #TODO(4lex1v, 08/28/17) :: For some reason Scala marks `=` as a keyword and highlights it... this needs to be fixed
-(use-package scala-mode
-  :defer t
+(use-package scala-mode 
   :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
   :interpreter ("scala" . scala-mode)
+  
+  :hooks
+  (4lex1v/fix-scala-fonts
+   smartparens-mode
+   yas-minor-mode
+   company-mode
+   hs-minor-mode
+   hideshowvis-minor-mode)
   
   :general
   (:keymaps 'scala-mode-map
@@ -27,29 +34,24 @@
     (add-to-list 'org-babel-load-languages '(scala . t))
     (message "Scala added to the list of Babel"))
   
-  :hooks (4lex1v/fix-scala-fonts
-          hs-minor-mode
-          hideshowvis-enable
-          smartparens-mode
-          yas-minor-mode
-          company-mode)
-  
   :config
   (load "scala-defs")
 
-  (configure-company-backends-for-mode scala-mode
-    '(company-dabbrev
-      company-keywords
-      company-yasnippet
-      company-capf
-      company-files))
+  (with-eval-after-load 'company
+    (configure-company-backends-for-mode scala-mode
+      '(company-dabbrev
+        company-keywords
+        company-yasnippet
+        company-capf
+        company-files)))
   
-  (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist))
+  (with-eval-after-load 'hideshowvis
+    (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist)))
 
-(use-package smartparens-scala
-  :after scala-mode
+(use-package smartparens-scala :demand t
+  :after (:all smartparens scala-mode)
   :config
-  (add-hook 'scala-mode-hook #'smartparens-mode))
+  (message "Smartparens for Scala has been configured"))
 
 (use-package sbt-mode
   :after scala-mode
@@ -74,12 +76,14 @@
   
   :config
   (load "sbt-defuns")
+  (setq-default truncate-lines nil)
   (evil-set-initial-state 'sbt-mode 'normal))
 
 ;; TODO :: override the major mode segment for Ensime activated projects
 (use-package ensime
-  :defer t
+  :after scala-mode
   :commands ensime-mode
+  
   :general
   (:keymaps 'scala-mode-map :prefix "<SPC> se"
    ""  '(:ignore t :which-key "Ensime")
@@ -108,13 +112,11 @@
         ensime-startup-notification   nil
         ensime-startup-snapshot-notification nil)
 
-  (setq-local eldoc-documentation-function #'4lex1v:ensime-eldoc-support)
-
   :config
   (load "ensime-defuns")
   (unbind-key "M-p" ensime-mode-map)
-  
-  ;;(add-hook 'scala-mode-hook #'4lex1v:smart-ensime-loader)
+
+  (setq-mode-local scala-mode eldoc-documentation-function #'4lex1v:ensime-eldoc-support)
 
   ;; The one defined by the Scala-mode for integration with Ensime
   (require 'ob-scala))

@@ -145,3 +145,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/vcs/git-undo"]
 	path = modules/vcs/git-undo
 	url = git@github.com:jwiegley/git-undo-el.git
+[submodule "modules/behaviour/evil-collection"]
+	path = modules/behaviour/evil-collection
+	url = git@github.com:jojojames/evil-collection.git

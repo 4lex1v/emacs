@@ -14,8 +14,10 @@
         use-package-always-defer          t
         use-package-enable-imenu-support  t
         use-package-check-before-init     t
-        use-package-expand-minimally      t
         use-package-minimum-reported-time 0.1)
+  
+  ;; Only when the config is stable
+  (setq use-package-expand-minimally t)
 
   (require 'use-package-core)
   (require 'use-package)

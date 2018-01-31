@@ -2,15 +2,18 @@
   :load-path "modules/org/org-mode/lisp"
   :after flyspell
   
-  :bind* ("C-'"  . ace-window)
+  :hooks
+  (:org-mode-hook
+   flyspell-mode
+   toggle-truncate-lines)
   
   :general
-  ;; Global Org-mode related keybindings
   (:prefix ""
+   "C-'"   'ace-window
    "C-#"   'helm-org-list-agenda-files)
   
   ;; Global Org-mode fucntionality
-  ("o" '(:ignore t :which-key "Global Org")
+  ("o"  '(:ignore t :which-key "Global Org")
    "oc" 'org-capture
    "ol" 'org-store-link
    "oa" 'org-agenda
@@ -65,6 +68,9 @@
         
         org-todo-keyword-faces '(("SOMEDAY" . "yellow") ("WAITING" . "yellow")))
 
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'outline))
+  
   (defun org-make-quick-note (name)
     (interactive "B")
     (let ((note-path (concat org-quick-note-folder name ".org")))
@@ -80,7 +86,7 @@
                      :action 'find-file)))
   
   :config
-  (evil-set-initial-state 'org-agenda-mode 'motion)
+  (evil-set-initial-state 'magit)
   
   ;; Since there's a default Org that comes with emacs, adding this dummy check to ensure that
   ;; whenever I'm using a fresh emacs installation i have the correct package installed
@@ -90,11 +96,8 @@
   ;; Since this config depends on the runtime value, this should be configured in this section
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   
-  (add-to-list 'org-structure-template-alist '("scala" "#+BEGIN_SRC scala \n\t?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist '("scala" "#+BEGIN_SRC scala \n\t?\n#+END_SRC")))
   
-  (add-hook 'org-mode-hook #'(lambda () (setq-local line-spacing org-line-spacing)))
-  (add-hook 'org-mode-hook #'flyspell-mode)
-  (add-hook 'org-mode-hook #'toggle-truncate-lines))
 
 (use-package ob :after org)
 
