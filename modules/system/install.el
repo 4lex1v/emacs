@@ -3,10 +3,9 @@
 (defconst IS_WINDOWS (eq system-type 'windows-nt))
 (defconst IS_UNIX    (not IS_WINDOWS))
 
-(use-package exec-path-from-shell :ensure t
+(use-package exec-path-from-shell :ensure t :demand t
   :commands (exec-path-from-shell-getenv
-            exec-path-from-shell-setenv)
-  
+             exec-path-from-shell-setenv)
   :init
   ;; Under certain conditions this can be nicely used withing Windows environment as well...
   (defun run-shell-command (&rest cmd)
@@ -23,10 +22,9 @@
                  paths)))
       (exec-path-from-shell-setenv "PATH" path))))
 
-(use-package osx :if IS_MAC
+(use-package osx :if IS_MAC :demand t
+  :after exec-path-from-shell
   :init
-  (message "Loading MacOS system configuration")
-
   (setq browse-url-browser-function 'browse-url-default-macosx-browser
         delete-by-moving-to-trash    t
         mac-command-modifier        'meta
@@ -37,6 +35,8 @@
         frame-resize-pixelwise       t)
   
   :config
+  (message "[CONFIGURATION] Loading MacOS system configuration")
+
   (register-path-folders "/usr/local/homebrew/bin" "/usr/local/bin")
   (message "Current path :: %s" (getenv "PATH"))
 
