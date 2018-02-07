@@ -86,8 +86,6 @@
                      :action 'find-file)))
   
   :config
-  (evil-set-initial-state 'magit)
-  
   ;; Since there's a default Org that comes with emacs, adding this dummy check to ensure that
   ;; whenever I'm using a fresh emacs installation i have the correct package installed
   (if (not (and (boundp 'org-version) (equal org-version "9.1.2")))
