@@ -215,3 +215,25 @@
   (define-key evil-normal-state-map "K" 'evil-jump-out-args))
 
 (diminish 'auto-revert-mode)
+
+(defun 4lex1v/insert-line-and-jump (arg)
+  (interactive "p")
+  (end-of-line)
+  (open-line arg)
+  (next-line 1)
+  (indent-according-to-mode))
+
+;; #NOTE :: DOESN'T REQUIRE Prefix
+(general-evil-define-key 'insert 'global-map :prefix ""
+  ;; Editor
+  "RET"    'newline-and-indent
+  "C-S-d"  '4lex1v/duplicate-line
+  "M-o"    '4lex1v/insert-line-and-jump
+  "C-;"    'toggle-comment-on-line
+  "C-x \\" 'align-regexp
+  "C-c r"  'revert-buffer
+  "M-j"    'join-line)
+
+;; #NOTE :: REQUIRES Prefix
+(general-evil-define-key 'insert 'global-map)
+

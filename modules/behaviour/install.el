@@ -372,3 +372,22 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
 (fset 'yes-or-no-p   'y-or-n-p)
+
+;; #NOTE :: DOESN'T REQUIRE Prefix
+(general-evil-define-key 'normal 'global-map :prefix ""
+  
+  ;; Window Management
+  "M-q"    '4lex1v:w/close-other-window ;; #TODO :: Doesn't look i'm using this at all
+  
+  ;; Buffer Management
+  "C-q"    '4lex1v/close-buffer) ;; #TODO :: Evil has C-w c which seems to be very convenient
+
+;; #NOTE :: REQUIRES Prefix
+(general-evil-define-key 'normal 'global-map
+  ;; Buffer Management
+  "ei"   '(clone-indirect-buffer-other-window :which-key "Indirect Buffer"))
+
+  ;; Files
+  "f"  '(:ignore t :which-key "Files")
+  "fl" '(find-library :which-key "Find Library"))
+  
