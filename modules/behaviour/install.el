@@ -223,11 +223,6 @@
 (use-package helm :demand t
   :general
   (:prefix ""
-   :states '(normal)
-   
-   "ga" 'helm-apropos)
-
-  (:prefix ""
    :states nil
    
    "C-c h"   'helm-command-prefix
@@ -241,14 +236,21 @@
    ;; Number keys
    "M-3"      'helm-mini
    "M-6"      'helm-bookmarks)
-
+  
   (:prefix ""
+   :states '(normal)
+   
+   "ga" 'helm-apropos)
+
+  (:prefix   ""
    :keymaps 'helm-map
-   :states nil
+   :states  '(normal insert)
    
    "<tab>" 'helm-execute-persistent-action
    "C-i"   'helm-execute-persistent-action
-   "C-z"   'helm-select-action)
+   "C-z"   'helm-select-action
+   "C-j"   'helm-next-line
+   "C-k"   'helm-previous-line)
 
   (:prefix ""
    :keymaps 'helm-find-files-map
@@ -267,11 +269,7 @@
         helm-scroll-amount                     8
         helm-ff-search-library-in-sexp         t
         helm-ff-file-name-history-use-recentf  t
-        helm-follow-mode-persistent            t
-
-        helm-display-function                 'helm-display-buffer-in-own-frame
-        helm-display-buffer-reuse-frame        t
-        helm-use-undecorated-frame-option      t)
+        helm-follow-mode-persistent            t)
   
   (use-package helm-config :demand t)
   
@@ -385,7 +383,7 @@
 ;; #NOTE :: REQUIRES Prefix
 (general-evil-define-key 'normal 'global-map
   ;; Buffer Management
-  "ei"   '(clone-indirect-buffer-other-window :which-key "Indirect Buffer"))
+  "ei"   '(clone-indirect-buffer-other-window :which-key "Indirect Buffer")
 
   ;; Files
   "f"  '(:ignore t :which-key "Files")
