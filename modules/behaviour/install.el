@@ -31,11 +31,15 @@
   :after general ;; To enable evil-leader in initial buffers
   
   :general
-  (:prefix "" :keymaps '(evil-motion-state-map) :states '()
+  (:prefix   ""
+   :keymaps 'evil-motion-state-map
+   :states   nil
+   
    "j"   'evil-next-visual-line
    "k"   'evil-previous-visual-line)
 
   (:prefix ""
+   
    "$"   'evil-end-of-visual-line
    "C-j" 'evil-forward-paragraph
    "C-k" 'evil-backward-paragraph
@@ -48,7 +52,8 @@
    "C-M-j" #'next-error
    "C-M-k" #'previous-error)
 
-  (:states '(normal)
+  (:states 'normal
+   
    "f"   '(:ignore t :which-key "Files")
    "fi"  'init.el
    "fe"  'eshell
@@ -217,27 +222,38 @@
 
 (use-package helm :demand t
   :general
-  (:prefix "" :states '(normal)
+  (:prefix ""
+   :states '(normal)
+   
    "ga" 'helm-apropos)
 
-  (:prefix "" :states '()
+  (:prefix ""
+   :states nil
+   
    "C-c h"   'helm-command-prefix
    "M-y"     'helm-show-kill-ring
    "C-x b"   'helm-mini
    "C-x C-f" 'helm-find-files         
    "M-x"     'helm-M-x
    "M-:"     'helm-eval-expression-with-eldoc
+   "M-i"     'helm-occur
 
    ;; Number keys
    "M-3"      'helm-mini
    "M-6"      'helm-bookmarks)
 
-  (:prefix "" :keymaps 'helm-map :states '()
+  (:prefix ""
+   :keymaps 'helm-map
+   :states nil
+   
    "<tab>" 'helm-execute-persistent-action
    "C-i"   'helm-execute-persistent-action
    "C-z"   'helm-select-action)
 
-  (:prefix "" :keymaps 'helm-find-files-map :states '()
+  (:prefix ""
+   :keymaps 'helm-find-files-map
+   :states nil
+   
    "C-h"   'helm-find-files-up-one-level)
   
   :init
@@ -279,34 +295,14 @@
   :general
   ("fm" '(fnd:helm-list-modules :which-key "Modules")))
 
-(use-package helm-swoop :ensure t
-  :after helm
-  
-  :bind
-  (("M-i"     . helm-swoop)
-   ("C-c M-i" . helm-multi-swoop)
-   ("C-x M-i" . helm-multi-swoop-all)
-   
-   :map isearch-mode-map
-   ("M-i" . helm-swoop-from-isearch)
-   ("M-I" . helm-multi-swoop-all-from-isearch)
-   
-   :map helm-swoop-map
-   ("M-i" . helm-multi-swoop-all-from-helm-swoop)
-   ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop))
-
-  :init
-  (setq helm-multi-swoop-edit-save t
-        helm-swoop-split-with-multiple-windows nil
-        helm-swoop-split-direction 'split-window-vertically
-        helm-swoop-move-to-line-cycle t
-        helm-swoop-use-line-number-face t))
-
 (use-package helm-descbinds :ensure t
   :commands helm-descbinds
   
   :general
-  (:prefix "" :keymaps 'helm-command-map :states '()
+  (:prefix ""
+   :keymaps 'helm-command-map
+   :states nil
+   
    "b" 'helm-descbinds)
   
   ("eb" '(helm-descbinds :which-key "Bindings"))
