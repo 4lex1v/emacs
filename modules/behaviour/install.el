@@ -249,6 +249,7 @@
    "<tab>" 'helm-execute-persistent-action
    "C-i"   'helm-execute-persistent-action
    "C-z"   'helm-select-action
+   "C-o"   'helm-next-source
    "C-j"   'helm-next-line
    "C-k"   'helm-previous-line)
 

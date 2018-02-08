@@ -224,12 +224,16 @@
   (indent-according-to-mode))
 
 ;; #NOTE :: DOESN'T REQUIRE Prefix
-(general-evil-define-key 'insert 'global-map :prefix ""
+;; #TODO :: Should this work for normal & insert states?
+(general-evil-define-key '(normal insert) 'global-map
+  :prefix ""
+
   ;; Editor
-  "C-S-d"  '4lex1v/duplicate-line
-  "M-o"    '4lex1v/insert-line-and-jump
   "C-;"    'toggle-comment-on-line
   "C-x \\" 'align-regexp
   "C-c r"  'revert-buffer
-  "M-j"    'join-line)
+  "M-j"    'join-line
+  "M-o"    '4lex1v/insert-line-and-jump
+  "C-S-d"  '4lex1v/duplicate-line)
+
 
