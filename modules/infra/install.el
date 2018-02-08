@@ -48,10 +48,21 @@
   (setq eshell-prompt-function #'4lex1v:eshell-prompt
         eshell-prompt-regexp ".*>>+ ")
   
-  :hooks (4lex1v:helm-eshell-history
-          ansi-color-for-comint-mode-on)
+  :hooks
+  (:eshell-mode-hook
+   4lex1v:helm-eshell-history
+   company-mode
+   ansi-color-for-comint-mode-on)
   
   :config
-  (with-eval-after-load "em-term"
-    (add-to-list 'eshell-visual-commands "htop")))
+  (with-eval-after-load 'em-term
+    (add-to-list 'eshell-visual-commands "htop"))
+
+  (with-eval-after-load 'company
+    (add-hook 'eshell-mode-hook
+              (lambda nil
+                (make-local-variable 'company-backends)
+                (setq company-backends
+                      (remove nil
+                              '(company-files company-dabbrev)))))))
 
