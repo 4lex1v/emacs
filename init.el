@@ -17,8 +17,6 @@
 (fnd:module behaviour      "All-things-navigation & movement")
 (fnd:module editor         "A lot of things to improve editing experience")
 
-(fnd:module extensions     "A set of custom configurations and definitions to be created after Emacs has been configured, but before other modules are loaded")
-
 ;;
 ;;; Modules: Languages
 ;;
