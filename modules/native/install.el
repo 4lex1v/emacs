@@ -22,7 +22,8 @@
   ;; #TODO :: Check if this could be defined in the global configuration or it needs to be overriden for these modes?
   (:prefix "" :keymaps '(c-mode-base-map)  
    "C-S-j" #'next-error
-   "C-S-k" #'previous-error)
+   "C-S-k" #'previous-error
+   ",r"    #'recompile)
   
   :init
   (setq org-babel-C-compiler "clang"
@@ -36,6 +37,7 @@
   
   ;; Something helpful in Handmade Hero... Not sure if i'm going to use it in other projects...
   (font-lock-add-keywords 'c++-mode '(("\\<\\(assert\\|internal\\|global_var\\|local_persist\\)\\>" 1 font-lock-keyword-face)))
+  (font-lock-add-keywords 'objc-mode '(("\\<\\(assert\\|internal\\|global_var\\|local_persist\\)\\>" 1 font-lock-keyword-face)))
   
   ;; #TODO :: Add company-xcode for Objective C
   (with-eval-after-load 'company
@@ -59,7 +61,7 @@
   :hooks (company-mode)
   
   :init
-  (with-eval-after-load evil-collection
+  (with-eval-after-load 'evil-collection
     (add-to-list 'evil-collection-mode-list 'cmake-mode))
   
   :config
