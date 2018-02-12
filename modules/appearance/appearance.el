@@ -98,7 +98,7 @@
     mode
     '(("#\\<\\(TODO\\)\\>" 1 '(error :underline t) t)
       ("#\\<\\(NOTE\\)\\>" 1 '(warning :underline t) t))))
-   '(emacs-lisp-mode scala-mode c-mode c++-mode))
+   '(emacs-lisp-mode scala-mode c-mode objc-mode c++-mode))
 
 ;; #NOTE(4lex1v, 08/24/17) :: Default to an empty string that should be introduced manually
 (setq comment-note-comment-prefix "")
