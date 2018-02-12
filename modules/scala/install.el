@@ -30,7 +30,7 @@
   
   (setq-mode-local scala-mode comment-note-comment-prefix "//")
 
-  (with-eval-after-load "org"
+  (with-eval-after-load 'org
     (add-to-list 'org-babel-load-languages '(scala . t))
     (message "Scala added to the list of Babel"))
   
