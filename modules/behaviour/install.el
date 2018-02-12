@@ -88,8 +88,9 @@
 
 (use-package evil-collection :demand t
   :after evil
+  
   :init
-  (setq evil-collection-setup-minibuffer t
+  (setq evil-collection-setup-minibuffer nil
         evil-collection-mode-list `(bookmark
                                     (buff-menu "buff-menu")
                                     calendar
@@ -244,7 +245,7 @@
 
   (:prefix   ""
    :keymaps 'helm-map
-   :states  '(normal insert)
+   :states   nil
    
    "<tab>" 'helm-execute-persistent-action
    "C-i"   'helm-execute-persistent-action
@@ -273,9 +274,6 @@
         helm-follow-mode-persistent            t)
   
   (use-package helm-config :demand t)
-  
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'helm))
   
   :config 
   (use-package helm-mode :demand t)
