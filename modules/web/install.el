@@ -26,5 +26,7 @@
   (with-eval-after-load 'org
     (add-to-list 'org-babel-load-languages '(restclient . t))))
 
-(use-package ob-restclient :after (:both org restclient))
+(use-package ob-restclient :ensure t
+  :after (:both org restclient)
+  :commands org-babel-execute:restclient)
     
