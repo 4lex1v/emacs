@@ -148,3 +148,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/behaviour/evil-collection"]
 	path = modules/behaviour/evil-collection
 	url = git@github.com:jojojames/evil-collection.git
+[submodule "modules/org/org-ref"]
+	path = modules/org/org-ref
+	url = git@github.com:jkitchin/org-ref.git

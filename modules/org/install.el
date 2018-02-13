@@ -95,9 +95,21 @@
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   
   (add-to-list 'org-structure-template-alist '("scala" "#+BEGIN_SRC scala \n\t?\n#+END_SRC")))
-  
 
 (use-package ob :after org)
+
+(use-package org-ref :demand t
+  :after (:all org parsebib)
+  :init
+  (setq org-ref-notes-directory "~/Sandbox/Notes"
+        reftex-default-bibliography '("~/Sandbox/Library/library.bib")
+        org-ref-bibliography-notes "~/Sandbox/Library/library.org"
+        org-ref-default-bibliography '("~/Sandbox/Library/library.bib")))
+
+(use-package org-ref-pdf :demand t :after org-ref)
+(use-package org-ref-bibtex :demand t :after org-ref)
+(use-package org-ref-url-utils :demand t :after org-ref)
+(use-package doi-utils :demand t :after org-ref)
 
 (use-package org-annotate-file :after org
   :init
