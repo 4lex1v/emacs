@@ -4,10 +4,9 @@
 (use-package pdf-tools :ensure t
   :mode (("\\.pdf\\'" . pdf-view-mode))
   :config
-  (pdf-tools-install)
-  
   (with-eval-after-load 'evil-collection
     (require 'evil-collection-pdf)
-    (evil-collection-pdf-setup)))
-
+    (evil-collection-pdf-setup))
+  
+  (pdf-tools-install))
 
