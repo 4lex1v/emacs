@@ -151,3 +151,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/org/org-ref"]
 	path = modules/org/org-ref
 	url = git@github.com:jkitchin/org-ref.git
+[submodule "modules/org/org-noter"]
+	path = modules/org/org-noter
+	url = git@github.com:weirdNox/org-noter.git

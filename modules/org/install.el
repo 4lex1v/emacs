@@ -111,6 +111,8 @@
 (use-package org-ref-url-utils :demand t :after org-ref)
 (use-package doi-utils :demand t :after org-ref)
 
+(use-package org-noter :after org)
+
 (use-package org-annotate-file :after org
   :init
   (setq org-annotate-file-storage-file "~/Sandbox/planning/annotations.el"))
