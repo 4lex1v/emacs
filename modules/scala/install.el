@@ -107,8 +107,7 @@
    "." 'ensime-edit-definition-of-thing-at-point)
   
   :init
-  (setq ensime-server-version        "2.0.0-SNAPSHOT"
-        ensime-default-buffer-prefix "ENSIME-"
+  (setq ensime-default-buffer-prefix "ENSIME-"
         ensime-startup-notification   nil
         ensime-startup-snapshot-notification nil)
 
@@ -119,11 +118,10 @@
   (setq-mode-local scala-mode eldoc-documentation-function #'4lex1v:ensime-eldoc-support)
 
   ;; The one defined by the Scala-mode for integration with Ensime
-  (require 'ob-scala))
+  (with-eval-after-load 'org
+   (require 'ob-scala)))
 
 (use-package ensime-company
-  :after (ensime company))
+  :after (:all ensime company))
 
-(use-package popup
-  :after scala-mode
-  :ensure t)
+(use-package popup :after scala-mode :ensure t)
