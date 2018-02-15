@@ -1,11 +1,13 @@
 
 (use-package appearance :demand t
   :init
-  (setq-default truncate-lines nil)
-  (setq default-font-name "PragmataPro"
-        theme-to-load     (if IS_WINDOWS 'the_boring_one 'sirthias)
-        ;; theme-to-load     'polygon
-        sirthias-easy-mode (if (eq theme-to-load 'sirthias) t nil))
+  (setq-default truncate-lines nil
+                line-spacing 2)
+  
+  (setq default-font-name  "PragmataPro"
+        default-font-size  (if (string= default-font-name "PragmataPro") 18 16)
+        theme-to-load      (if (not IS_WINDOWS) 'sirthias 'the_boring_one)
+        sirthias-easy-mode nil)
   :config
   (reload-view))
 
