@@ -154,3 +154,12 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/org/org-noter"]
 	path = modules/org/org-noter
 	url = git@github.com:weirdNox/org-noter.git
+[submodule "modules/reader/elfeed"]
+	path = modules/reader/elfeed
+	url = git@github.com:skeeto/elfeed.git
+[submodule "modules/editor/flycheck"]
+	path = modules/editor/flycheck
+	url = git@github.com:flycheck/flycheck.git
+[submodule "modules/org/org-brain"]
+	path = modules/org/org-brain
+	url = git@github.com:Kungsgeten/org-brain.git
