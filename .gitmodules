@@ -163,3 +163,12 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/org/org-brain"]
 	path = modules/org/org-brain
 	url = git@github.com:Kungsgeten/org-brain.git
+[submodule "modules/org/evil-org-mode"]
+	path = modules/org/evil-org-mode
+	url = git@github.com:Somelauw/evil-org-mode.git
+[submodule "modules/vcs/magit-popup"]
+	path = modules/vcs/magit-popup
+	url = git@github.com:magit/magit-popup.git
+[submodule "modules/vcs/ghub"]
+	path = modules/vcs/ghub
+	url = git@github.com:magit/ghub.git
