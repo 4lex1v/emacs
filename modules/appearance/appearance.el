@@ -12,11 +12,12 @@
         ("PragmataPro" 18)
         ("Monaco"      14)
         ("Ayuthaya"    16)
+        ("Iosevka"     18)
         (t             18))
        16)
   "Default Font size used across all frames")
 
-(defcustom theme-to-load 'sirthias
+(defcustom theme-to-load 'default
   "Theme name to be loaded")
 
 (defun 4lex1v:gui:frame (&rest configs)
