@@ -1,6 +1,40 @@
 (use-package magit :load-path "modules/vcs/magit/lisp"
   :commands (magit-diff magit-clone)
   
+  :general 
+  ("g" '(:ignore t :which-key "Magit")
+   "gs"  'magit-status
+   "gm"  'magit-dispatch-popup
+   "gb"  'magit-blame
+   "g'"  'magit-submodule-popup
+   "gy"  'magit-show-refs-popup
+   "ge"  'magit-ediff-popup
+   "gp"  'magit-push-popup
+   "gd"  'magit-diff-popup
+   "gD"  'magit-diff-branch-with-master
+   "gf"  'magit-pull-popup
+   "gl" '(:ignore t :which-key "Logging")
+   "gll" 'magit-log-all
+   "glb" 'magit-log-buffer-file
+   "glc" 'magit-log-current)
+  
+  (:keymaps 'magit-status-mode-map
+   :prefix   nil
+
+   "j" 'magit-next-line
+   "k" 'magit-previous-line)
+  
+  (:keymaps 'magit-diff-mode-map
+   :prefix   nil
+   
+   "gf" 'magit-diff-visit-file-other-window)
+
+  (:keymaps 'magit-submodule-list-mode-map
+   :prefix   nil
+   
+   "RET" 'magit-repolist-status)
+
+  
   :init
   (setq-default
    magit-submodule-list-columns
@@ -40,29 +74,6 @@
            (diff-cmd (format "master...%s" (magit-get-current-branch))))
       (magit-diff diff-cmd args)))
   
-  :general 
-  ("g" '(:ignore t :which-key "Magit")
-   "gs"  'magit-status
-   "gm"  'magit-dispatch-popup
-   "gb"  'magit-blame
-   "g'"  'magit-submodule-popup
-   "gy"  'magit-show-refs-popup
-   "ge"  'magit-ediff-popup
-   "gp"  'magit-push-popup
-   "gd"  'magit-diff-popup
-   "gD"  'magit-diff-branch-with-master
-   "gf"  'magit-pull-popup
-   "gl" '(:ignore t :which-key "Logging")
-   "gll" 'magit-log-all
-   "glb" 'magit-log-buffer-file
-   "glc" 'magit-log-current)
-  
-  (:prefix "" :keymaps 'magit-diff-mode-map
-   "gf" 'magit-diff-visit-file-other-window)
-
-  (:prefix "" :keymaps 'magit-submodule-list-mode-map
-   "RET" 'magit-repolist-status)
-
   :config
   ;; (evil-set-initial-state 'magit-submodule-list-mode 'emacs)
   
@@ -76,6 +87,9 @@
 
   (add-hook 'magit-submodule-list-mode-hook
             (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t)))))
+
+(use-package magit-popup :demand t :after magit)
+(use-package ghub :demand t :after magit)
 
 (use-package with-editor :ensure t :demand t
   :after magit
@@ -99,6 +113,41 @@
    "gu" 'git-undo
    "gU" 'git-undo-browse))
 
+(use-package smerge-mode
+  :general
+  (:keymaps 'smerge-mode-map
+   :states   nil
+   :prefix   nil
+
+   "<C-m>" 'smerge-control-panel/body)
+  
+  :init
+  (define-key input-decode-map [?\C-m] [C-m])
+  
+  (defhydra smerge-control-panel (:color pink :hint nil)
+    "
+^Move^         ^Conflict^    ^Diffs^
+-------------------------------------
+_j_: Next      _b_: Base     _e_: Ediff
+_k_: Previous  _m_: Mine     _r_: Refine
+^ ^            _o_: Others   ^ ^
+-------------------------------------
+"
+    ;; Move
+    ("j" smerge-next)
+    ("k" smerge-prev)
+    
+    ;; Conflicts
+    ("b" smerge-keep-base)
+    ("m" smerge-keep-mine)
+    ("o" smerge-keep-other)
+    
+    ;; Diffs
+    ("e" smerge-ediff :color blue)
+    ("r" smerge-refine)
+    
+    ("q" nil "cancel")))
+
 (use-package ssh-agency :if IS_WINDOWS :ensure t
   :after magit
   :init
@@ -107,11 +156,6 @@
   :config
   (setenv "SSH_ASKPASS" "git-gui--askpass")
   (ssh-agency-ensure))
-
-(use-package magithub :ensure t :disabled t
-  :after magit
-  :config
-  (magithub-feature-autoinject t))
 
 (use-package smerge-mode
   :general
