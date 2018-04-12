@@ -45,7 +45,7 @@
  indent-tabs-mode    nil
  cursor-type        'box
  cursor-in-non-selected-windows 'bar
- frame-title-format " %@%b% -"
+ frame-title-format "%f"
  linum-format       "%3d "  ;; Try dynamic?
  load-prefer-newer  t
  left-fringe-width  20
@@ -105,18 +105,6 @@
 (setq comment-note-comment-prefix "")
 
 (toggle-truncate-lines nil)
-
-;; #TODO(4lex1v) :: Should this check for the pragmata fonts?
-(if (not IS_WINDOWS)
-    (load "fonts/pretty-pragmata"))
-
-;; Set of custom hack of the default theme to make it a bit prettier
-(if (eq theme-to-load 'default)
-    (progn 
-      (set-face-attribute 'fringe nil :background nil)
-      (with-eval-after-load "eshell"
-        (lambda ()
-          (set-face-attribute 'eshell-prompt nil :foreground "#000080")))))
 
 (provide 'appearance)
 

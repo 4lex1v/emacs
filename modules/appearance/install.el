@@ -19,7 +19,18 @@
           (search-forward (symbol-name face-name)))))
   
   :config
-  (reload-view))
+  (reload-view)
+  
+  (if (not IS_WINDOWS)
+      (load "fonts/pretty-pragmata"))
+  
+  ;; Set of custom hack of the default theme to make it a bit prettier
+  (if (eq theme-to-load 'default)
+    (progn 
+      (set-face-attribute 'fringe nil :background nil)
+      (with-eval-after-load "eshell"
+        (lambda ()
+          (set-face-attribute 'eshell-prompt nil :foreground "#000080"))))))
 
 (use-package spacemacs-light-theme :demand t
   :if (and (display-graphic-p)
@@ -45,9 +56,8 @@
   :config
   (load-theme 'the_boring_one t))
 
-(use-package powerline :if IS_MAC :demand t
-  :init
-
+(use-package powerline :demand t
+  :config
   ;; #TODO :: Add some colouring to the branch name?
   ;;            - Red - dirty branch
   ;;            - Green - no changes?
@@ -66,7 +76,6 @@
                      project-name
                      branch-name))))))
   
-  :config
   (setq-default
    mode-line-format
    '("%e"
