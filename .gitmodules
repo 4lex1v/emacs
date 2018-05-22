@@ -58,9 +58,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "packages/haskell/haskell-mode"]
 	path = modules/haskell/haskell-mode
 	url = git@github.com:haskell/haskell-mode.git
-[submodule "packages/org/org-mode"]
-	path = modules/org/org-mode
-	url = git://orgmode.org/org-mode.git
 [submodule "packages/idris-mode"]
 	path = packages/idris-mode
 	url = git@github.com:idris-hackers/idris-mode.git
