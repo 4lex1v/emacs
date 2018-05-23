@@ -38,7 +38,7 @@
    "j"   'evil-next-visual-line
    "k"   'evil-previous-visual-line)
 
-  (:prefix ""
+  (:prefix nil
    
    "$"   'evil-end-of-visual-line
    "C-j" 'evil-forward-paragraph
@@ -48,9 +48,7 @@
    "C-q" '4lex1v/close-buffer
 
    ;; Navigation keys
-   "C-S-o" #'evil-jump-forward
-   "C-M-j" #'next-error
-   "C-M-k" #'previous-error)
+   "C-S-o" #'evil-jump-forward)
 
   (:states 'normal
    
@@ -60,7 +58,10 @@
    
    "e"   '(:ignore t :which-key "Emacs")
    "eq"  'save-buffers-kill-emacs
-   "er"  'revert-buffer)
+   "er"  'revert-buffer
+
+   "ee"  '(:ignore t :which-key "Evil")
+   "een" '(evil-ex-nohighlight :which-key "No Highlighting"))
   
   :init
   (setq evil-default-cursor             t
@@ -70,6 +71,10 @@
         evil-ex-interactive-search-highlight 'selected-window
         evil-want-integration           nil)
   
+  ;; #NOTE :: This makes things like `just_an_example' selectable as a single word
+  (defun fix-word-def () (modify-syntax-entry ?_ "w"))
+  (add-hook #'prog-mode-hook 'fix-word-def)
+  
   :config
   (evil-set-initial-state 'prog-mode   'normal)
   (evil-set-initial-state 'comint-mode 'normal)
@@ -77,8 +82,8 @@
   (evil-set-initial-state 'package-menu-mode 'motion)
 
   ;; Use `§' key to switch between emacs and normal state
-  (evil-global-set-key 'normal "§" #'evil-emacs-state)
-  (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
+  ;; (evil-global-set-key 'normal "§" #'evil-emacs-state)
+  ;; (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
 
   (evil-ex-define-cmd "e[val]" #'eval-buffer)
   (evil-ex-define-cmd "we" #'(lambda () (interactive) (save-buffer) (eval-buffer)))
@@ -91,7 +96,8 @@
   
   :init
   (setq evil-collection-setup-minibuffer nil
-        evil-collection-mode-list `(bookmark
+        evil-collection-mode-list `(arc-mode
+                                    bookmark
                                     (buff-menu "buff-menu")
                                     calendar
                                     comint
@@ -121,34 +127,79 @@
             (lambda () (evil-collection-init))))
 
 (use-package hydra :demand t
-  :config
-  (defhydra hydra-zoom (global-map "<f2>")
-    "zoom"
-    ("g" text-scale-increase "in")
-    ("l" text-scale-decrease "out")
-    ("r" (text-scale-set 0) "reset")
-    ("0" (text-scale-set 0) :bind nil :exit t)
-    ("1" (text-scale-set 0) nil :bind nil :exit t))
+  :general
+  (:prefix nil
+   
+   "<f2>" 'hydra-zoom/body)
 
-  (defhydra hydra-error (evil-normal-state-map "C-e")
-    "error"
-    ("j" next-error "next")
-    ("k" previous-error "previous")))
+  (:prefix nil
+   :states 'normal
+
+   "C-e"  'hydra-error/body)
+  
+  :config
+  (defhydra hydra-zoom (:color pink :hint nil)
+    "
+^Zoom^
+----------
+_g_: In
+_l_: Out
+_r_: Reset
+----------
+"
+    ("g" text-scale-increase)
+    ("l" text-scale-decrease)
+    ("r" (text-scale-set 0))
+    ("q" nil "quit"))
+
+  (defhydra hydra-error (:color pink :hint nil)
+    "
+^Errors^       ^Level (cur: %`compilation-skip-threshold)^
+------------------------------
+_j_: Next      _0_: All
+_k_: Previous  _1_: Warnings
+_h_: First     _2_: Errors
+_l_: Last            
+------------------------------
+"
+    ("j" next-error)
+    ("k" previous-error)
+    ("h" first-error)
+    ("l" (condition-case err
+             (while t
+               (next-error))
+           (user-error nil)))
+    
+    ;; Messages level support
+    ("0" (compilation-set-skip-threshold 0))
+    ("1" (compilation-set-skip-threshold 1))
+    ("2" (compilation-set-skip-threshold 2))
+    
+    ("q" nil "quit")))
 
 (use-package projectile
+  ;; #NOTE :: this is configured using Spaceline, no need to duplicated in minor mode section
+  :diminish projectile-mode
+  
   :commands projectile-project-root
 
   :general
-  (:prefix "" "M-4" 'projectile-switch-project)      
+  (:prefix ""
+   
+   "M-4" 'projectile-switch-project
+   "M-!" 'projectile-run-shell-command-in-root)      
   
   ;;  Projectile-only bindings
   ("p" '(:ignore t :which-key "Projectile")
    "pk" 'projectile-kill-buffers
    "pr" 'projectile-replace
-   "pi" 'projectile-invalidate-cache)
+   "pi" 'projectile-invalidate-cache
+   "pe" 'projectile-run-eshell
+   "p&" 'projectile-run-async-shell-command-in-root
+   "pS" 'projectile-save-project-buffers)
   
   :init
-  (setq projectile-enable-caching       nil
+  (setq projectile-enable-caching       t
         projectile-completion-system   'helm
         projectile-require-project-root t
         projectile-use-git-grep         nil
@@ -223,7 +274,7 @@
 
 (use-package helm :demand t
   :general
-  (:prefix ""
+  (:prefix nil
    :states nil
    
    "C-c h"   'helm-command-prefix
@@ -238,12 +289,12 @@
    "M-3"      'helm-mini
    "M-6"      'helm-bookmarks)
   
-  (:prefix ""
+  (:prefix  nil
    :states '(normal)
    
    "ga" 'helm-apropos)
 
-  (:prefix   ""
+  (:prefix   nil
    :keymaps 'helm-map
    :states   nil
    
@@ -254,17 +305,23 @@
    "C-j"   'helm-next-line
    "C-k"   'helm-previous-line)
 
-  (:prefix ""
+  (:prefix   nil
    :keymaps 'helm-find-files-map
-   :states nil
+   :states   nil
    
    "C-h"   'helm-find-files-up-one-level)
+  
+  (:prefix   nil
+   :keymaps 'comint-mode-map
+   :states  '(normal insert)
+
+   "M-r" 'helm-comint-input-ring)
   
   :init
   (setq helm-idle-delay                        0.0
         helm-input-idle-delay                  0.01
         helm-quick-update                      t
-        helm-split-window-in-side-p            t
+        helm-split-window-inside-p             t
         helm-buffers-fuzzy-matching            t
         helm-ff-fuzzy-matching                 t
         helm-move-to-line-cycle-in-source      t
@@ -349,12 +406,20 @@
   :commands (helm-dash helm-dash-at-point))
 
 (use-package helm-gtags :ensure t
+  :diminish (helm-gtags-mode . "GT")
   :after helm
   
+  :hook (prog-mode . helm-gtags-mode)
+  
   :general
-  (:prefix ""
+  (:prefix nil
+
    "C-]"   'helm-gtags-dwim
    "C-M-]" 'helm-gtags-select)
+
+  ("t"     '(:ignore t :which-key "Tags")
+   "tt"    'helm-gtags-dwim
+   "tf"    'helm-gtags-find-tag-other-window)
   
   :init
   (setq helm-gtags-auto-update t
@@ -379,12 +444,31 @@
   ;; Buffer Management
   "C-q"    '4lex1v/close-buffer) ;; #TODO :: Evil has C-w c which seems to be very convenient
 
+(defmacro open-hff-in-folder (folder)
+  "fast way to access the the folder with helm"
+  `(lambda ()
+     (interactive)
+     (let ((default-directory ,(format "~/%s/" folder)))
+       (helm-find-files nil))))
+
+(general-evil-define-key '(normal insert) 'global-map
+  :prefix nil
+
+  "C-w i" '(clone-indirect-buffer-other-window :which-key "Indirect Buffer"))
+
 ;; #NOTE :: REQUIRES Prefix
 (general-evil-define-key 'normal 'global-map
-  ;; Buffer Management
-  "ei"   '(clone-indirect-buffer-other-window :which-key "Indirect Buffer")
+  ;; Toggles
+  "et"   '(:ignore t :which-key "Toggles")
+  "etl"  'toggle-truncate-lines
 
   ;; Files
   "f"  '(:ignore t :which-key "Files")
-  "fl" '(find-library :which-key "Find Library"))
+  "fs" `(,(open-hff-in-folder "Sanbox") :which-key "Sandbox")
+  "fd" `(,(open-hff-in-folder "Dropbox") :which-key "Dropbox")
+  "fw" `(,(open-hff-in-folder "Sandbox/Work") :which-key "Work")
+  "fl" '(find-library :which-key "Find Library")
+
+  ;; Services
+  "s" '(:ignore t :which-key "Services"))
   
