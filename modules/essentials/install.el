@@ -2,9 +2,9 @@
 
 (setq package-enable-at-startup nil
       package--init-file-ensured t
-      package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+      package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "https://marmalade-repo.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
+                         ("melpa" . "http://melpa.org/packages/")))
 
 (package-initialize)
 
