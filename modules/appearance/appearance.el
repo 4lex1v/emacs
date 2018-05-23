@@ -33,7 +33,8 @@
 
 (defun reload-view ()
   ;; Configure proper font
-  (let ((frame-font (format "%s-%d" default-font-name default-font-size)))
+  (let* ((format-string "-misc-%s-%s-normal-normal-mono-%d-*-*-*-c-*-iso8859-1")
+         (frame-font (format format-string default-font-name (symbol-name default-font-weight) default-font-size)))
     (set-frame-font frame-font)
     (add-to-list 'default-frame-alist (cons 'font frame-font)))
   
