@@ -17,9 +17,10 @@
   (defun register-path-folders (&rest paths)
     (declare (indent 1))
     (let ((path (-reduce-r-from
-                 (lambda (value acc) (format "%s:%s" value acc))
+                 (lambda (value acc) (format "%s:%s" acc value))
                  (exec-path-from-shell-getenv "PATH")
                  paths)))
+      
       (exec-path-from-shell-setenv "PATH" path))))
 
 (use-package osx :if IS_MAC :demand t
@@ -32,13 +33,17 @@
         mac-control-modifier        'control
         ns-function-modifier        'hyper
         ns-use-native-fullscreen     t
-        frame-resize-pixelwise       t)
+        frame-resize-pixelwise       t
+        shell-file-name              "/bin/sh")
   
   :config
   (message "[CONFIGURATION] Loading MacOS system configuration")
 
-  (register-path-folders "/usr/local/homebrew/bin" "/usr/local/bin")
-  (message "Current path :: %s" (getenv "PATH"))
+  (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
+  (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
+  (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
+  (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
+  (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin")
 
   (use-package em-alias
     :config

@@ -1,23 +1,14 @@
-(use-package docker
-  :diminish docker-mode
-  :defer
-  :config
-  (docker-global-mode 1))
+(use-package docker)
 
 (use-package docker-images
   :after docker
   :config
-  (evil-set-initial-state #'docker-images-mode 'emacs))
+  (evil-set-initial-state #'docker-images-mode 'motion))
 
 (use-package docker-containers
   :after docker
   :config
-  (evil-set-initial-state #'docker-containers-mode 'emacs))
-
-(use-package docker-machine
-  :after docker
-  :config
-  (evil-set-initial-state #'docker-machine-mode 'emacs))
+  (evil-set-initial-state #'docker-containers-mode 'motion))
 
 (use-package eshell :defer t
   :init
@@ -65,4 +56,5 @@
                 (setq company-backends
                       (remove nil
                               '(company-files company-dabbrev)))))))
+
 
