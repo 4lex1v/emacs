@@ -1,5 +1,5 @@
 
-(use-package rust-mode :defer t
+(use-package rust-mode 
   :hooks (;; Rust-specific modes
           cargo-minor-mode
           racer-mode
@@ -21,22 +21,26 @@
     (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
     (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
 
-  (configure-company-backends-for-mode rust-mode
-    '(company-dabbrev
-      company-keywords
-      company-yasnippet
-      company-capf
-      company-files)))
+  ;; (configure-company-backends-for-mode rust-mode
+  ;;   '(company-dabbrev
+  ;;     company-keywords
+  ;;     company-yasnippet
+  ;;     company-capf
+  ;;     company-files))
+  )
 
 (use-package smartparens-rust
   :after (rust-mode smartparens-mode)
   :config
   (add-hook 'rust-mode #'smartparens-rust))
 
-(use-package cargo :defer t :ensure t
+(use-package cargo :ensure t
   :after rust-mode
+  
   :general
-  (:prefix "," :keymaps 'rust-mode-map
+  (:prefix ","
+   :keymaps 'rust-mode-map
+   
    "c" '(:ignore t :which-key "Cargo")
    "c." 'cargo-process-repeat
    "cC" 'cargo-process-clean
@@ -55,7 +59,7 @@
    "cx" 'cargo-process-run
    "t" 'cargo-process-test))
 
-(use-package racer :defer t :ensure t
+(use-package racer :ensure t
   :after rust-mode
   
   :general
@@ -85,13 +89,17 @@
   
   (add-hook 'racer-mode-hook #'eldoc-mode))
 
-(use-package company-racer :defer t :ensure t
+(use-package company-racer :ensure t :demand t
   :after (racer company)
+  
   :config
-  (configure-company-backends-for-mode racer-mode
-    (add-to-list 'company-backends 'company-racer)))
+  (with-eval-after-load 'company
+    (configure-company-backends-for-mode rust-mode
+      '(company-dabbrev
+        company-racer
+        company-keywords))))
 
-(use-package flycheck-rust :defer t :ensure t
+(use-package flycheck-rust :ensure t
   :after (rust-mode flycheck-mode)
   :config
   (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
