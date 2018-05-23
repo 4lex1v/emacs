@@ -30,3 +30,4 @@
 (defun scala-join-lines ()
   (interactive)
   (scala-indent:join-line t))
+

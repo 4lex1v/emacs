@@ -1,4 +1,5 @@
 ;; #TODO(4lex1v, 08/28/17) :: For some reason Scala marks `=` as a keyword and highlights it... this needs to be fixed
+;; #TODO :: Turn off flycheck mode in SBT files or find a proper check extension
 (use-package scala-mode 
   :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
   :interpreter ("scala" . scala-mode)
@@ -15,24 +16,24 @@
   (:keymaps 'scala-mode-map
    "s" '(:ignore t :which-key "Scala"))
   
-  (:keymaps 'scala-mode-map :states '(normal insert) :prefix ""
+  (:keymaps 'scala-mode-map
+   :states  '(normal insert)
+   :prefix   nil
+   
    "<C-return>"     #'newline-or-comment
    "C-<backspace>"  #'contextual-backspace)
 
-  (:keymaps 'scala-mode-map :states '(normal) :prefix ""
-   "C-S-j" #'next-error
-   "C-S-k" #'previous-error
+  (:keymaps 'scala-mode-map
+   :states  'normal
+   :prefix   nil
+   
    "J" #'scala-join-lines)
 
   :init
   (setq scala-indent:use-javadoc-style t
         scala-mode:debug-messages nil)
-  
-  (setq-mode-local scala-mode comment-note-comment-prefix "//")
 
-  (with-eval-after-load 'org
-    (add-to-list 'org-babel-load-languages '(scala . t))
-    (message "Scala added to the list of Babel"))
+  (setq-mode-local scala-mode comment-note-comment-prefix "//")
   
   :config
   (load "scala-defs")
@@ -41,8 +42,8 @@
     (configure-company-backends-for-mode scala-mode
       '(company-dabbrev
         company-keywords
-        company-yasnippet
         company-capf
+        company-yasnippet
         company-files)))
   
   (with-eval-after-load 'hideshowvis
@@ -65,22 +66,20 @@
   
   (:keymaps 'scala-mode-map :prefix ","
    "c" '(4lex1v:sbt-compile-command :which-key "compile")
-   "p" 'sbt-run-previous-command)
-  
-  (:keymaps 'sbt-mode-map :states '(normal insert) :prefix ""
-   "C-j" 'compilation-next-error
-   "C-k" 'compilation-previous-error)
+   "r" 'sbt-run-previous-command
+   "i" '4lex1v/open-in-intellij)
 
   :init
-  (setq sbt:program-name "sbt -mem 2048 -v")
+  (setq sbt:program-name "sbt shell -mem 2048 -v"
+        sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*")
   
   :config
   (load "sbt-defuns")
   (setq-default truncate-lines nil)
-  (evil-set-initial-state 'sbt-mode 'normal))
+  (evil-set-initial-state 'sbt-mode 'insert))
 
 ;; TODO :: override the major mode segment for Ensime activated projects
-(use-package ensime
+(use-package ensime :disabled t
   :after scala-mode
   :commands ensime-mode
   
