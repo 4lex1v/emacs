@@ -1,59 +1,56 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package smartparens
-  :commands (smartparens-mode sp-with-modes sp-local-pairs)
+  :commands
+  (smartparens-mode
+   sp-with-modes
+   sp-local-pairs)
   
-  :hook ((conf-mode text-mode) . smartparens-mode)
+  :hook
+  ((conf-mode text-mode) . smartparens-mode)
   
   :general
-  (:prefix "" :keymaps 'sp-keymap
-   "M-F"   'sp-forward-symbol
-   "M-B"   'sp-backward-symbol
+  (:keymaps 'smartparens-mode-map
+   :prefix   nil
+   :states  '(normal)
+   
+   "M-t"   'sp-transpose-sexp
+   
    "C-M-k" 'sp-kill-sexp
    "C-M-w" 'sp-copy-sexp
-   "C-M-t" 'sp-transpose-sexp
-
-   "M-<left>"    'sp-forward-slurp-sexp
-   "C-M-<left>"  'sp-forward-barf-sexp
-   "M-<right>"   'sp-backward-slurp-sexp
-   "C-M-<right>" 'sp-backward-barf-sexp
-
-   "M-D" 'sp-splice-sexp
-
-   "C-M-[" 'sp-select-previous-thing
-   "C-M-]" 'sp-select-next-thing
-
-   "C-c s u" 'sp-up-sexp
-   "C-c s d" 'sp-down-sexp
-   "C-c s t" 'sp-prefix-tag-object
-   "C-c s p" 'sp-prefix-pair-object
-   "C-c s c" 'sp-convolute-sexp
-   "C-c s a" 'sp-absorb-sexp
-   "C-c s e" 'sp-emit-sexp
-   "C-c s p" 'sp-add-to-previous-sexp
-   "C-c s n" 'sp-add-to-next-sexp
-   "C-c s j" 'sp-join-sexp
-   "C-c s s" 'sp-split-sexp)
+  
+   "C-s" 'hydra-smartparens/body)
   
   :init
-  (setq sp-autoinsert-if-followed-by-word t
+  (setq sp-base-key-bindings nil
+        sp-autoinsert-if-followed-by-word t
         sp-autoskip-closing-pair 'always-end
         sp-hybrid-kill-entire-symbol nil)
   
-  (defhydra hydra-smartparens (global-map "C-s")
-    "smartparens"
-    ("<left>"      sp-forward-slurp-sexp  "f-slurp")
-    ("C-<left>"    sp-forward-barf-sexp   "f-barf")
-    ("M-<right>"   sp-backward-slurp-sexp "f-slurp")
-    ("C-M-<right>" sp-backward-barf-sexp  "b-barf"))
+  (defhydra hydra-smartparens (:color pink :hint nil)
+    
+    "
+^Slurp^         ^Barfs^
+--------------------
+_l_: f-slurp    _L_: f-barf
+_h_: b-slurp    _H_: b-barf
+--------------------
+"
+    
+    ("l" sp-forward-slurp-sexp)
+    ("h" sp-backward-slurp-sexp)
+    ("L" sp-forward-barf-sexp)
+    ("H" sp-backward-barf-sexp)
+    ("q" nil "cancel"))
   
   :config
   (use-package smartparens-config :demand t)
   
-  (sp-pair "(" ")" :wrap "C-(")
-  (sp-pair "[" "]" :wrap "s-[")
+  (sp-pair "(" ")"   :wrap "C-(")
+  (sp-pair "[" "]"   :wrap "s-[")
   (sp-pair "\"" "\"" :wrap "C-\"")
-  (sp-pair "{" "}" :wrap "C-{"))
+  (sp-pair "<" ">"   :wrap "C-<")
+  (sp-pair "{" "}"   :wrap "C-{"))
 
 (use-package yasnippet
   :diminish (yas-minor-mode . " Y")
@@ -62,44 +59,68 @@
   :mode ("\\.yasnippet" . snippet-mode)
   
   :general
-  ("es" '(:ignore t :which-key "Snippets")
-   "esa" '(yas-new-snippet :which-key "Add Snippet"))
+  ("es" '(hydra-yasnippet/body :which-key "Snippets"))
   
   :init
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"
                            "~/.emacs.d/modules/editor/yasnippet/snippets")
         yas-wrap-around-region t
-        yas-indent-line t)
+        yas-indent-line 'auto
+        yas-also-auto-indent-first-line t)
   
   (add-hook 'after-save-hook
             (lambda ()
               (when (eq major-mode 'snippet-mode)
                 (yas-reload-all))))
   
+  (defhydra hydra-yasnippet (:color blue :hint nil)
+  "
+^Modes^    ^Load/Visit^    ^Actions^
+--------------------------------------------
+_m_inor   _d_irectory      _i_nsert
+_e_xtra   _f_ile           _t_ryout
+^ ^       _l_ist           _n_ew
+^ ^       _a_ll
+"
+  ("d" yas-load-directory)
+  ("e" yas-activate-extra-mode)
+  ("i" yas-insert-snippet)
+  ("f" yas-visit-snippet-file)
+  ("n" yas-new-snippet)
+  ("t" yas-tryout-snippet)
+  ("l" yas-describe-tables)
+  ("m" yas/minor-mode)
+  ("a" yas-reload-all))
+  
   :config
-  (yas-reload-all)) 
+  (yas-reload-all))
 
 (use-package company
   :commands company-mode
   
   :general
-  (:prefix "" :states '(insert)
+  (:prefix  nil
+   :states '(insert)
+   
    "C-SPC" 'company-complete)
   
-  (:prefix "" :keymaps 'company-active-map :states '()
+  (:prefix   nil
+   :keymaps 'company-active-map
+   :states   nil
+   
    "C-j" 'company-select-next-or-abort
    "C-k" 'company-select-previous-or-abort
    "C-o" 'company-other-backend
+   "C-l" 'company-other-backend
    "C-d" 'company-show-doc-buffer)
 
   :hook ((text-mode) . company-mode)
   
-  :init 
+  :init
   (setq company-dabbrev-ignore-case nil
-        company-dabbrev-code-ignore-case nil
         company-dabbrev-downcase nil
         
-        company-idle-delay 0
+        company-idle-delay 0.3
         company-minimum-prefix-length 3
         
         company-selection-wrap-around t
@@ -119,15 +140,19 @@
         (make-local-variable 'company-backends)
         (setq company-backends (remove nil ,backends))))))
 
-(use-package flycheck :ensure t)
+(use-package flycheck
+  :general
+  ("ef"  '(:ignore t :which-key "Flycheck")
+   "efl" 'flycheck-list-errors))
 
 ;; #TODO :: move over to appearance?
 (use-package hideshowvis :ensure t
   :diminish (hs-minor-mode . " +/-")
   :commands hideshowvis-enable
   
-  :hook ((conf-mode . hs-minor-mode)
-         (conf-mode . hideshowvis-minor-mode))
+  :hook
+  ((conf-mode . hs-minor-mode)
+   (conf-mode . hideshowvis-minor-mode))
   
   :init
   (add-to-list 'hs-special-modes-alist
@@ -153,27 +178,24 @@
     (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes))
   
   :config
-  (hideshowvis-symbols)                 
+  (hideshowvis-symbols)
   (hideshowvis-enable))
 
-(use-package expand-region
-  :ensure t
-  :bind ("C-=" . er/expand-region))
-
-(use-package centered-cursor-mode :demand t :ensure t
-  :diminish centered-cursor-mode
-  :init
-  (setq ccm-recenter-at-end-of-file t
-        ccm-ignored-commands '(mouse-drag-region
-                               mouse-set-point
-                               widget-button-click
-                               scroll-bar-toolkit-scroll))
-  :config (global-centered-cursor-mode t))
+;; (use-package centered-cursor-mode :demand t :ensure t
+;;   :diminish centered-cursor-mode
+;;   :init
+;;   (setq ccm-recenter-at-end-of-file t
+;;         ccm-ignored-commands '(mouse-drag-region
+;;                                mouse-set-point
+;;                                widget-button-click
+;;                                scroll-bar-toolkit-scroll))
+;;   :config (global-centered-cursor-mode t))
 
 (use-package flyspell
   :bind
   (("C-c i b" . flyspell-buffer)
    ("C-c i f" . flyspell-mode))
+  
   :init
   (with-mode which-key
     (which-key-declare-prefixes "C-c i" "flyspell"))
@@ -185,22 +207,45 @@
      ("C-c i k" . ispell-kill-ispell)
      ("C-c i m" . ispell-message)
      ("C-c i r" . ispell-region)))
-  :config (unbind-key "C-." flyspell-mode-map))
+  
+  :config
+  (unbind-key "C-." flyspell-mode-map))
 
 (use-package undo-tree :ensure t
   :diminish undo-tree-mode
-  :bind ("M-/" . undo-tree-visualize)
+  
+  :general
+  (:prefix nil
+   :states 'normal
+
+   "M-/" 'undo-tree-visualize)
+  
+  (:prefix   nil
+   :keymaps 'undo-tree-visualizer-mode-map
+   :states  '(motion)
+
+   "j" 'undo-tree-visualize-redo
+   "k" 'undo-tree-visualize-undo
+   "l" 'undo-tree-visualize-switch-branch-right
+   "h" 'undo-tree-visualize-switch-branch-left)
+  
   :config (global-undo-tree-mode))
+
+(use-package string-inflection :ensure t
+  :general
+  (:prefix  nil
+   :states '(normal)
+
+   "gu" 'string-inflection-all-cycle))
 
 (use-package evil-surround :ensure t
   :after evil
   :config
   (global-evil-surround-mode 1))
 
-(use-package evil-args :ensure t
+(use-package evil-args :ensure t :demand t
   :after evil
   :config
-  (add-to-list 'evil-args-delimiters " ")
   ;; bind evil-args text objects
   (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
   (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
@@ -222,6 +267,24 @@
   (open-line arg)
   (next-line 1)
   (indent-according-to-mode))
+
+(defun 4lex1v/open-in-clion ()
+  "Open current position in Intellij Idea"
+  (interactive)
+  (let* ((line (save-excursion
+                 (beginning-of-line)
+                 (1+ (count-lines 1 (point)))))
+         (cmd (format "clion %s:%i" buffer-file-name line)))
+    (start-process-shell-command "Idea" nil cmd)))
+
+(defun 4lex1v/open-in-intellij ()
+  "Open current position in Intellij Idea"
+  (interactive)
+  (let* ((line (save-excursion
+                 (beginning-of-line)
+                 (1+ (count-lines 1 (point)))))
+         (cmd (format "idea %s:%i" buffer-file-name line)))
+    (start-process-shell-command "Idea" nil cmd)))
 
 ;; #NOTE :: DOESN'T REQUIRE Prefix
 ;; #TODO :: Should this work for normal & insert states?
