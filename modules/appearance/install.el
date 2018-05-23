@@ -4,10 +4,13 @@
   (setq-default truncate-lines nil
                 line-spacing 2)
   
-  (setq default-font-name  "Iosevka"
-        default-font-size  16
-        theme-to-load      (if (not IS_WINDOWS) 'sirthias 'spacemacs)
-        sirthias-easy-mode nil)
+  (setq default-font-name    "Iosevka"
+        default-font-weight  'light
+        default-font-size     18
+        theme-to-load        (if (not IS_WINDOWS) 'sirthias 'default)
+        theme-to-load        'sirthias
+        theme-enable-hl-line (if (eq theme-to-load 'the_boring_one) nil t)
+        sirthias-easy-mode    nil)
 
   ;; #TODO :: search fails if the buffer is opened and not at the beginning of the buffer
   (defun edit-face-at-point ()
@@ -27,6 +30,7 @@
   ;; Set of custom hack of the default theme to make it a bit prettier
   (if (eq theme-to-load 'default)
     (progn 
+      (global-hl-line-mode -1)
       (set-face-attribute 'fringe nil :background nil)
       (with-eval-after-load "eshell"
         (lambda ()
@@ -88,13 +92,17 @@
              (separator-right (intern (format "powerline-%s-%s"
                                               (powerline-current-separator)
                                               (cdr powerline-default-separator-dir))))
+             
              (lhs (list (powerline-raw evil-mode-line-tag face0)
                         (project-segment face0)
-                        (powerline-buffer-id face0)))
+                        (powerline-buffer-id face0 'l)
+                        (powerline-raw ":%l" face0)))
+             
              (rhs (list (powerline-raw "[" face0 'l)
                         (powerline-minor-modes face0)
                         (powerline-raw "]" face0 'r)
                         (powerline-major-mode face0 'r))))
+        
         (concat (powerline-render lhs)
                 (powerline-fill face0 (powerline-width rhs))
                 (powerline-render rhs)))))))
@@ -116,11 +124,6 @@
 
 (use-package rainbow-mode :ensure t)
 
-(use-package hl-line
-  :init
-  (setq global-hl-line-sticky-flag nil)
-  :config
-  (global-hl-line-mode))
 
 
 
