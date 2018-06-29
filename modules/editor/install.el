@@ -1,5 +1,105 @@
 ;; -*- lexical-binding: t; -*-
 
+;; #NOTE(4lex1v, 08/24/17) :: Some movement keybinds are defined in Editor/Smartparens
+(use-package evil :demand t
+  :after general ;; To enable evil-leader in initial buffers
+  
+  :general
+  (:prefix   ""
+   :keymaps 'evil-motion-state-map
+   :states   nil
+   
+   "j"   'evil-next-visual-line
+   "k"   'evil-previous-visual-line)
+
+  (:prefix nil
+   
+   "$"   'evil-end-of-visual-line
+   "C-j" 'evil-forward-paragraph
+   "C-k" 'evil-backward-paragraph
+   "g,"  'evil-jump-backward
+   "g."  'find-function-at-point
+   "C-q" '4lex1v/close-buffer
+
+   ;; Navigation keys
+   "C-S-o" #'evil-jump-forward)
+
+  (:states 'normal
+   
+   "f"   '(:ignore t :which-key "Files")
+   "fi"  'init.el
+   "fe"  'eshell
+   
+   "e"   '(:ignore t :which-key "Emacs")
+   "eq"  'save-buffers-kill-emacs
+   "er"  'revert-buffer
+
+   "ee"  '(:ignore t :which-key "Evil")
+   "een" '(evil-ex-nohighlight :which-key "No Highlighting"))
+  
+  :init
+  (setq evil-default-cursor             t
+        evil-ex-substitute-global       t
+        evil-ex-search-vim-style-regexp t
+        evil-want-C-u-scroll            t
+        evil-ex-interactive-search-highlight 'selected-window
+        evil-want-integration           nil)
+  
+  ;; #NOTE :: This makes things like `just_an_example' selectable as a single word
+  (defun fix-word-def () (modify-syntax-entry ?_ "w"))
+  (add-hook #'prog-mode-hook 'fix-word-def)
+  
+  :config
+  (evil-set-initial-state 'prog-mode   'normal)
+  (evil-set-initial-state 'comint-mode 'normal)
+  
+  (evil-set-initial-state 'package-menu-mode 'motion)
+
+  ;; Use `§' key to switch between emacs and normal state
+  ;; (evil-global-set-key 'normal "§" #'evil-emacs-state)
+  ;; (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
+
+  (evil-ex-define-cmd "e[val]" #'eval-buffer)
+  (evil-ex-define-cmd "we" #'(lambda () (interactive) (save-buffer) (eval-buffer)))
+  
+  (evil-select-search-module 'evil-search-module 'evil-search)
+  (evil-mode))
+
+(use-package evil-collection :demand t
+  :after evil
+  
+  :init
+  (setq evil-collection-setup-minibuffer nil
+        evil-collection-mode-list `(arc-mode
+                                    bookmark
+                                    (buff-menu "buff-menu")
+                                    calendar
+                                    comint
+                                    compile
+                                    debbugs
+                                    debug
+                                    diff-mode
+                                    dired
+                                    doc-view
+                                    edebug
+                                    eval-sexp-fu
+                                    etags-select
+                                    flycheck
+                                    help
+                                    ibuffer
+                                    info
+                                    log-view
+                                    man
+                                    simple
+                                    ,@(when evil-collection-setup-minibuffer '(minibuffer))
+                                    (occur ,(if (<= emacs-major-version 25) "replace" 'replace))
+                                    (package-menu package)
+                                    rtags
+                                    (term term ansi-term multi-term)))
+  :config
+  (add-hook 'after-init-hook
+            (lambda () (evil-collection-init))))
+
 (use-package smartparens
   :commands
   (smartparens-mode
@@ -151,8 +251,8 @@ _e_xtra   _f_ile           _t_ryout
   :commands hideshowvis-enable
   
   :hook
-  ((conf-mode . hs-minor-mode)
-   (conf-mode . hideshowvis-minor-mode))
+  (((conf-mode js-mode) . hs-minor-mode)
+   ((conf-mode js-mode) . hideshowvis-minor-mode))
   
   :init
   (add-to-list 'hs-special-modes-alist

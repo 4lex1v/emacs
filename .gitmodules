@@ -92,7 +92,7 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/web/restclient
 	url = git@github.com:pashky/restclient.el.git
 [submodule "platform/evil/evil-core"]
-	path = modules/behaviour/evil-core
+	path = modules/editor/evil-core
 	url = git@github.com:emacs-evil/evil.git
 [submodule "modules/vcs/evil-magit"]
 	path = modules/vcs/evil-magit
@@ -140,7 +140,7 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/vcs/git-undo
 	url = git@github.com:jwiegley/git-undo-el.git
 [submodule "modules/behaviour/evil-collection"]
-	path = modules/behaviour/evil-collection
+	path = modules/editor/evil-collection
 	url = git@github.com:jojojames/evil-collection.git
 [submodule "modules/org/org-ref"]
 	path = modules/org/org-ref
