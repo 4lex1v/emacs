@@ -305,11 +305,11 @@ _l_: Last
    "C-j"   'helm-next-line
    "C-k"   'helm-previous-line)
 
-  (:prefix   nil
-   :keymaps 'helm-find-files-map
-   :states   nil
+  ;; (:prefix   nil
+  ;;  :keymaps 'helm-find-files-map
+  ;;  :states   nil
    
-   "C-h"   'helm-find-files-up-one-level)
+  ;;  "C-h"   'helm-find-files-up-one-level)
   
   (:prefix   nil
    :keymaps 'comint-mode-map
@@ -464,11 +464,10 @@ _l_: Last
 
   ;; Files
   "f"  '(:ignore t :which-key "Files")
-  "fs" `(,(open-hff-in-folder "Sanbox") :which-key "Sandbox")
+  "fs" `(,(open-hff-in-folder "Sandbox") :which-key "Sandbox")
   "fd" `(,(open-hff-in-folder "Dropbox") :which-key "Dropbox")
   "fw" `(,(open-hff-in-folder "Sandbox/Work") :which-key "Work")
   "fl" '(find-library :which-key "Find Library")
 
   ;; Services
   "s" '(:ignore t :which-key "Services"))
-  
