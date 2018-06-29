@@ -1,4 +1,5 @@
-(use-package magit :load-path "modules/vcs/magit/lisp"
+(use-package magit
+  :load-path "modules/vcs/magit/lisp"
   :commands (magit-diff magit-clone)
   
   :general 
@@ -33,7 +34,6 @@
    :prefix   nil
    
    "RET" 'magit-repolist-status)
-
   
   :init
   (setq-default
@@ -82,6 +82,9 @@
 
   (magit-define-popup-action 'magit-submodule-popup   
     ?l "List" 'magit-list-submodules)
+  
+  (magit-define-popup-switch 'magit-log-popup
+    ?f "First Parent" "--first-parent")
 
   (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
 
