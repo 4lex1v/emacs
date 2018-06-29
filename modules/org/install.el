@@ -29,7 +29,9 @@
         org-src-fontify-natively       t
         org-descriptive-links          t
         org-startup-with-inline-images t
-        org-tags-column 0
+        
+        org-enforce-todo-dependencies  t
+        org-enforce-todo-checkbox-dependencies t
         
         org-catch-invisible-edits      'error
         
@@ -43,25 +45,28 @@
                                         (shell . t)
                                         (plantuml . t))
         
-        ;; System dependant?
-        org-quick-note-folder "~/Sandbox/Notes/quick_notes/"
-        
         ;; Templates configuration
-        org-capture-templates '(("t" "Task"     entry (file+headline "~/Sandbox/planning/inbox.org" "Tasks")    "* TODO %i%?")
-                                ("n" "Notes"    entry (file+headline "~/Sandbox/planning/inbox.org" "Notes")    "* %i%?"))
+        org-capture-templates '(("t" "Task"  entry (file "~/Sandbox/planning/inbox.org") "* TODO %i%?"))
         
         ;; Keywords
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
-        org-todo-keyword-faces '(("ACTIVE" . "yellow")))
+        org-todo-keyword-faces '(("ACTIVE" . "yellow"))
+
+        ;; NEW EXPERIMENTAL SETTINGS
+        org-adapt-indentation          nil)
+  
+  (setq-mode-local org evil-auto-indent nil)
   
   (defhydra org-control-panel (:color blue :hint nil)
     "
   General            Agenda         Brain
 -----------------------------------------
   _o_: Org Mode    _a_: Weekly    _b_: Org Brain
+  _c_: Capture
  ----------------------------------------
 "
     ("o" org-mode-control-panel/body)
+    ("c" org-capture)
     ("a" org-agenda-list)
     ("b" brain-control-panel/body)
     
@@ -146,6 +151,8 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
   (if (and (boundp 'org-version) (not (string= (substring org-version 0 1) "9")))
       (warn "WARNING :: Old Org-mode version is used (%s), check the configuration" org-version))
   
+  (org-indent-mode -1)
+  
   ;; Since this config depends on the runtime value, this should be configured in this section
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   
@@ -157,22 +164,17 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
 (use-package org-agenda :demand t
   :after org
   :init
-  (setq org-agenda-files '("~/Sandbox/Planning/inbox.org"
-                           "~/Sandbox/Planning/the_plan.org"
-                           "~/Sandbox/Planning/projects.org")
-        
-        org-agenda-custom-commands
+  (setq org-agenda-custom-commands
         '(("c" . "My Custom Agendas")
           ("cu"  "Unscheduled"
            ((todo ""
                   ((org-agenda-overriding-header "\nUnscheduled TODO")
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))))
            nil
            nil))
         
         org-archive-location "./archives/%s_archive::"
         org-agenda-archives-mode t
-        
 
         org-agenda-start-on-weekday 6 ;; Saturday
         org-agenda-include-diary nil
@@ -180,10 +182,8 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
         org-agenda-skip-deadline-if-done t
         
         ;; Display agenda in full window
-        org-agenda-window-setup 'current-window
-        
-        org-refile-targets '(("~/Sandbox/Planning/the_plan.org" :level . 1)
-                             ("~/Sandbox/Planning/projects.org" :level . 1)))
+        org-agenda-window-setup 'current-window)
+  
   :config
   (add-hook 'org-agenda-finalize-hook
             (lambda () (remove-text-properties
