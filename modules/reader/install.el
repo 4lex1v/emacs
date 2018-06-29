@@ -23,12 +23,13 @@
                        ("http://www.modernescpp.com/index.php/component/jaggyblog/format=feed&type=rss" C++)
                        ("http://feeds.feedburner.com/codeandgraphics" C++)
                        ("https://herbsutter.com/feed/" C++)
-                       ("https://www.meetingcpp.com/feed.xml" C++)
                        ("https://akrzemi1.wordpress.com/feed/" C++)
                        ("https://blogs.msdn.microsoft.com/vcblog/feed/" C++)
+                       ("http://blog.regehr.org/feed" C++)
                        
                        ;; Rust
                        ("https://this-week-in-rust.org/rss.xml" Rust)
+                       ("feed://smallcultfollowing.com/babysteps/atom.xml" Rust)
 
                        ;; GameDev
                        ("https://www.unrealengine.com/rss" GameDev UnrealEngine)
@@ -76,7 +77,6 @@
                        "https://blog.forrestthewoods.com/feed"
                        "https://flashypixels.wordpress.com/feed/"
                        "http://blog.duangle.com/feeds/posts/default"
-                       "http://blog.regehr.org/feed"
                        "https://emilypriceisright.com/feed/"
                        "http://www.epicshaders.com/feed/"
                        "http://fgiesen.wordpress.com/feed/"
@@ -156,7 +156,6 @@
                        "http://www.realtimerendering.com/blog/feed/"
                        "http://realtimevoxels.blogspot.com/feeds/posts/default"
                        "http://richg42.blogspot.com/feeds/posts/default"
-                       "http://www.curious-creature.org/feed/"
                        "http://msm.grumpybumpers.com/?feed=rss2"
                        "http://seblagarde.wordpress.com/feed/"
                        "http://www.palgorithm.co.uk/feed/"
@@ -195,20 +194,7 @@
                        "http://zeuxcg.org/feed/"
                        "https://colinbarrebrisebois.com/feed/"
                        "http://4gravitons.wordpress.com/feed/"
-                       "http://backreaction.blogspot.com/feeds/posts/default"
-                       "http://cqgplus.com/feed/"
-                       "http://www.science20.com/quantum_diaries_survivor/feed"
-                       "https://ensnaredinvacuum.wordpress.com/feed/"
-                       "http://blog.jessriedel.com/feed/"
-                       "http://gravityandlevity.wordpress.com/feed/"
-                       "http://feeds.feedburner.com/MattLeifer"
-                       "http://www.math.columbia.edu/~woit/wordpress/?feed=rss2"
-                       "http://profmattstrassler.com/feed/"
-                       "https://api.quantamagazine.org/feed/"
-                       "http://scottaaronson.com/blog/?feed=rss2"
-                       "http://www.preposterousuniverse.com/blog/feed/"
-                       "http://scienceblogs.com/startswithabang/index.xml"
-                       "http://glenmartin.wordpress.com/feed/")
+                       "http://backreaction.blogspot.com/feeds/posts/default")
         
         elfeed-db-directory "~/Dropbox/Приложения/elfeeddb"
         
