@@ -4,14 +4,15 @@
   (setq-default truncate-lines nil
                 line-spacing 2)
   
-  (setq default-font-name    "Iosevka"
-        default-font-weight  'light
-        default-font-size     18
-        theme-to-load        (if (not IS_WINDOWS) 'sirthias 'default)
-        theme-to-load        'sirthias
-        theme-enable-hl-line (if (eq theme-to-load 'the_boring_one) nil t)
-        sirthias-easy-mode    nil)
-
+  (setq
+   ;; default-font-ref    "-*-Iosevka-light-normal-normal-mono-18-*-*-*-m-0-iso10646-1"
+   default-font-ref       "-*-PragmataPro Mono-normal-normal-normal-18-*-*-*-*-m-0-iso10646-1"
+   
+   default-font-size     20 
+   theme-to-load         'sirthias
+   sirthias-easy-mode    t
+   sirthias-cold-mode    nil)
+  
   ;; #TODO :: search fails if the buffer is opened and not at the beginning of the buffer
   (defun edit-face-at-point ()
     "Editor face of the active theme at the point."
@@ -29,42 +30,21 @@
   
   ;; Set of custom hack of the default theme to make it a bit prettier
   (if (eq theme-to-load 'default)
-    (progn 
-      (global-hl-line-mode -1)
-      (set-face-attribute 'fringe nil :background nil)
-      (with-eval-after-load "eshell"
-        (lambda ()
-          (set-face-attribute 'eshell-prompt nil :foreground "#000080"))))))
-
-(use-package spacemacs-light-theme :demand t
-  :if (and (display-graphic-p)
-           (eq theme-to-load 'spacemacs))
-  :load-path "modules/appearance/themes/spacemacs"
-  :init
-  (setq spacemacs-theme-comment-italic t)
-
-  :config
-  (set-face-attribute 'font-lock-constant-face nil :weight 'bold)
-  (load-theme 'spacemacs-light t))
+      (progn 
+        (set-face-attribute 'fringe nil :background nil)
+        (with-eval-after-load "eshell"
+          (lambda ()
+            (set-face-attribute 'eshell-prompt nil :foreground "#000080"))))))
 
 (use-package sirthias-theme :demand t
   :if (and (display-graphic-p)
            (eq theme-to-load 'sirthias))
   :load-path "modules/appearance/themes/sirthias"
-  :config
-  (load-theme 'sirthias t))
-
-(use-package the_boring_one-theme :demand t
-  :if (eq theme-to-load 'the_boring_one)
-  :load-path "modules/appearance/themes/the_boring_one"
-  :config
-  (load-theme 'the_boring_one t))
+  :init (setq sirthias-easy-mode t)
+  :config (load-theme 'sirthias t))
 
 (use-package powerline :demand t
   :config
-  ;; #TODO :: Add some colouring to the branch name?
-  ;;            - Red - dirty branch
-  ;;            - Green - no changes?
   (defpowerline project-segment 
     (if (and (fboundp 'projectile-project-p)
              (projectile-project-p))
@@ -106,21 +86,6 @@
         (concat (powerline-render lhs)
                 (powerline-fill face0 (powerline-width rhs))
                 (powerline-render rhs)))))))
-
-(use-package beacon
-  :ensure t
-  :if (display-graphic-p)
-  :diminish beacon-mode
-  
-  ;; :init
-  ;; (setq beacon-color
-  ;;       (face-attribute
-  ;;        (if IS_MAC 'spaceline-highlight-face 'default)
-  ;;        :background nil t))
-  
-  :config
-  (add-to-list 'beacon-dont-blink-major-modes 'term-mode)
-  (beacon-mode +1))
 
 (use-package rainbow-mode :ensure t)
 

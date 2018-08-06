@@ -2,9 +2,7 @@
 (defcustom default-font-name "PragmataPro"
   "Font name used by default"
   :group 'string 
-  :options '("PragmataPro"
-             "Menlo"
-             "Ayuthaya"))
+  :options '("PragmataPro" "Menlo" "Ayuthaya"))
 
 (defcustom default-font-size
   (if (not IS_WINDOWS)
@@ -31,13 +29,18 @@
     (set-frame-parameter (selected-frame) 'alpha (cons active inactive))
     (add-to-list 'default-frame-alist (cons 'alpha (cons active inactive)))))
 
-(defun reload-view ()
-  ;; Configure proper font
-  (let* ((format-string "-misc-%s-%s-normal-normal-mono-%d-*-*-*-c-*-iso8859-1")
-         (frame-font (format format-string default-font-name (symbol-name default-font-weight) default-font-size)))
-    (set-frame-font frame-font)
-    (add-to-list 'default-frame-alist (cons 'font frame-font)))
+;; (defun reload-view ()
+;;   ;; Configure proper font
+;;   (let* ((format-string "-misc-%s-%s-normal-normal-mono-%d-*-*-*-c-*-iso8859-1")
+;;          (frame-font (format format-string default-font-name (symbol-name default-font-weight) default-font-size)))
+;;     (set-frame-font frame-font)
+;;     (add-to-list 'default-frame-alist (cons 'font frame-font)))
   
+;;   (set-face-attribute 'default nil :height (* default-font-size 10)))
+
+(defun reload-view ()
+  (set-frame-font default-font-ref)
+  (add-to-list 'default-frame-alist (cons 'font default-font-ref))
   (set-face-attribute 'default nil :height (* default-font-size 10)))
 
 (setq-default
@@ -52,7 +55,6 @@
  left-fringe-width  20
  word-wrap t)
 
-(global-hl-line-mode t)
 (show-paren-mode     t)
 (delete-selection-mode t)
 
@@ -100,7 +102,7 @@
     mode
     '(("#\\<\\(TODO\\)\\>" 1 '(error :underline t) t)
       ("#\\<\\(NOTE\\)\\>" 1 '(warning :underline t) t))))
-   '(emacs-lisp-mode scala-mode c-mode objc-mode c++-mode))
+   '(emacs-lisp-mode scala-mode c-mode objc-mode c++-mode rust-mode))
 
 ;; #NOTE(4lex1v, 08/24/17) :: Default to an empty string that should be introduced manually
 (setq comment-note-comment-prefix "")
