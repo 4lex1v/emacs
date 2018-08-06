@@ -163,3 +163,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/org/org-ql"]
 	path = modules/org/org-ql
 	url = git@github.com:alphapapa/org-agenda-ng.git
+[submodule "modules/behaviour/rg"]
+	path = modules/behaviour/rg
+	url = git@github.com:dajva/rg.el.git
+[submodule "modules/debbug/realgud-lldb"]
+	path = modules/debbug/realgud-lldb
+	url = git@github.com:realgud/realgud-lldb.git
