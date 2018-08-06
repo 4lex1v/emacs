@@ -18,8 +18,9 @@
   ;; #NOTE :: For some reason it doesn't work as a `use-pacakge' directive
   (general-define-key
    :keymaps 'which-key-C-h-map
-   :prefix ""
-   :states nil
+   :prefix   nil
+   :states   nil
+    
     "l" 'which-key-show-next-page-cycle
     "j" 'which-key-show-previous-page-cycle)
 
@@ -77,14 +78,15 @@ _l_: Last
     
     ("q" nil "quit")))
 
-(use-package projectile
+;; #TODO(4lex1v, 07/20/18) :: Would demanding projectile at the startup slowdown the process?
+(use-package projectile :demand t
   ;; #NOTE :: this is configured using Spaceline, no need to duplicated in minor mode section
   :diminish projectile-mode
   
   :commands projectile-project-root
 
   :general
-  (:prefix ""
+  (:prefix nil
    
    "M-4" 'projectile-switch-project
    "M-!" 'projectile-run-shell-command-in-root)      
@@ -108,7 +110,172 @@ _l_: Last
   :config
   (projectile-global-mode))
 
-(use-package ranger
+(use-package helm :demand t
+  :general
+  (:prefix nil
+   :states nil
+   
+   "C-c h"   'helm-command-prefix
+   "M-y"     'helm-show-kill-ring
+   "C-x b"   'helm-mini
+   "C-x C-f" 'helm-find-files         
+   "M-x"     'helm-M-x
+   "M-:"     'helm-eval-expression-with-eldoc
+   "M-i"     'helm-occur
+
+   ;; Number keys
+   "M-3"      'helm-mini
+   "M-6"      'helm-bookmarks)
+  
+  (:prefix  nil
+   :states '(normal)
+   
+   "ga" 'helm-apropos)
+
+  (:prefix   nil
+   :keymaps 'helm-map
+   :states   nil
+   
+   "<tab>" 'helm-execute-persistent-action
+   "C-i"   'helm-execute-persistent-action
+   "C-z"   'helm-select-action
+   "C-o"   'helm-next-source
+   "C-j"   'helm-next-line
+   "C-k"   'helm-previous-line)
+
+  ;; (:prefix   nil
+  ;;  :keymaps 'helm-find-files-map
+  ;;  :states   nil
+  
+  ;;  "C-h"   'helm-find-files-up-one-level)
+  
+  (:prefix   nil
+   :keymaps 'comint-mode-map
+   :states  '(normal insert)
+
+   "M-r" 'helm-comint-input-ring)
+  
+  :init
+  (setq helm-idle-delay                        0.0
+        helm-input-idle-delay                  0.01
+        helm-quick-update                      t
+        helm-split-window-inside-p             t
+        helm-buffers-fuzzy-matching            t
+        helm-ff-fuzzy-matching                 t
+        helm-move-to-line-cycle-in-source      t
+        helm-scroll-amount                     8
+        helm-ff-search-library-in-sexp         t
+        helm-ff-file-name-history-use-recentf  t
+        helm-follow-mode-persistent            t)
+  
+  (use-package helm-config :demand t)
+  
+  :config 
+  (use-package helm-mode :demand t)
+  
+  (helm-autoresize-mode)
+                                        ;(spaceline-helm-mode)
+  (which-key-declare-prefixes "<SPC> f" "Files")
+
+  (func init.el (find-file (concat user-emacs-directory "/" "init.el")))
+  (general-define-key "ff" 'helm-find-files)
+  
+  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
+
+  (use-package foundation-helm
+    :after helm
+    :general
+    ("fm" '(fnd:helm-list-modules :which-key "Modules")))
+
+  ;; #TODO(4lex1v, 07/20/18) :: Marked for removal
+  (use-package helm-descbinds :ensure t :disabled t
+    :commands helm-descbinds
+    
+    :general
+    (:prefix   nil
+     :keymaps 'helm-command-map
+     :states   nil
+     
+     "b" 'helm-descbinds)
+    
+    ("eb" '(helm-descbinds :which-key "Bindings"))
+    
+    :init
+    (setq helm-descbinds-window-style 'split-window)
+    
+    :config
+    (unbind-key "\C-h b")
+    (unbind-key "<f1> b")
+    (unbind-key "<help> b")
+    (unbind-key "C-c h b")
+    (unbind-key "C-x c b")
+
+    (fset 'describe-bindings 'helm-descbinds))
+  
+  ;; #NOTE :: This package doesn't rely on Projectile cause my workflow starts with helm-projectile-switch-project
+  ;; So this package bootstrap the projectile loading
+  (use-package helm-projectile :ensure t
+    :general
+    ("pp"  'helm-projectile-switch-project)
+    
+    (:prefix ""
+     "C-M-3" 'helm-projectile-switch-to-buffer
+     "M-1"   'helm-projectile-find-file)
+    
+    :config (helm-projectile-on))
+  
+
+  ;; #TODO(4lex1v, 07/20/18) :: Marked for removal, though might be helpful if rg is not avail.
+  (use-package helm-ag :ensure t :disabled t
+    :after helm-projectile
+    :general
+    ("ps"  '(:ignore t :which-key "Search [Ag]")
+     "pss" 'helm-projectile-ag
+     "psr" 'helm-ag-project-root
+     "psa" 'helm-do-ag)
+
+    :init
+    (setq helm-ag-insert-at-point 'symbol
+          helm-ag-fuzzy-match     t)
+    
+    (with-eval-after-load 'evil-collection
+      (add-to-list 'evil-collection-mode-list 'ag)))
+  
+  (use-package helm-dash :ensure t
+    :commands (helm-dash helm-dash-at-point))
+  
+  (use-package helm-gtags :ensure t
+    :diminish (helm-gtags-mode . "GT")
+    :after helm
+    
+    :hook (prog-mode . helm-gtags-mode)
+    
+    :general
+    (:prefix nil
+
+     "C-]"   'helm-gtags-dwim
+     "C-M-]" 'helm-gtags-select)
+
+    ("t"     '(:ignore t :which-key "Tags")
+     "tt"    'helm-gtags-dwim
+     "tf"    'helm-gtags-find-tag-other-window)
+    
+    :init
+    (setq helm-gtags-auto-update t
+          helm-gtags-use-input-at-cursor t
+          helm-gtags-pulse-at-cursor t
+          helm-gtags-ignore-case t)))
+
+(use-package rg :demand t
+  :general
+  ("ps"  '(:ignore t :which-key "Search")
+   "pss" 'rg-dwim-project-dir
+   "psr" 'rg-project
+   "psl" 'rg-literal))
+
+(use-package lsp-mode)
+
+(use-package ranger :disabled t
   :general
   ("fr" 'ranger)
   
@@ -156,7 +323,8 @@ _l_: Last
   (bind-key "l" #'drill-folder-down ranger-mode-map)
   (bind-key "h" #'drill-folder-up   ranger-mode-map))
 
-(use-package avy :ensure t
+;; #TODO(4lex1v, 07/20/18) :: Consider for removal?
+(use-package avy :ensure t :disabled t
   :bind
   (("C-c SPC" . avy-goto-char)
    ("C-c j c" . avy-goto-char)
@@ -166,177 +334,16 @@ _l_: Last
   :init
   (general-define-key "j" #'avy-goto-char))
 
-(use-package ace-window :ensure t
+;; #TODO(4lex1v, 07/20/18) :: Consider for removal?
+(use-package ace-window :ensure t :disabled t
   :bind
   (("C-'"  . ace-window))
   :general
   ("wj" 'ace-window))
 
-(use-package helm :demand t
-  :general
-  (:prefix nil
-   :states nil
-   
-   "C-c h"   'helm-command-prefix
-   "M-y"     'helm-show-kill-ring
-   "C-x b"   'helm-mini
-   "C-x C-f" 'helm-find-files         
-   "M-x"     'helm-M-x
-   "M-:"     'helm-eval-expression-with-eldoc
-   "M-i"     'helm-occur
-
-   ;; Number keys
-   "M-3"      'helm-mini
-   "M-6"      'helm-bookmarks)
-  
-  (:prefix  nil
-   :states '(normal)
-   
-   "ga" 'helm-apropos)
-
-  (:prefix   nil
-   :keymaps 'helm-map
-   :states   nil
-   
-   "<tab>" 'helm-execute-persistent-action
-   "C-i"   'helm-execute-persistent-action
-   "C-z"   'helm-select-action
-   "C-o"   'helm-next-source
-   "C-j"   'helm-next-line
-   "C-k"   'helm-previous-line)
-
-  ;; (:prefix   nil
-  ;;  :keymaps 'helm-find-files-map
-  ;;  :states   nil
-   
-  ;;  "C-h"   'helm-find-files-up-one-level)
-  
-  (:prefix   nil
-   :keymaps 'comint-mode-map
-   :states  '(normal insert)
-
-   "M-r" 'helm-comint-input-ring)
-  
-  :init
-  (setq helm-idle-delay                        0.0
-        helm-input-idle-delay                  0.01
-        helm-quick-update                      t
-        helm-split-window-inside-p             t
-        helm-buffers-fuzzy-matching            t
-        helm-ff-fuzzy-matching                 t
-        helm-move-to-line-cycle-in-source      t
-        helm-scroll-amount                     8
-        helm-ff-search-library-in-sexp         t
-        helm-ff-file-name-history-use-recentf  t
-        helm-follow-mode-persistent            t)
-  
-  (use-package helm-config :demand t)
-  
-  :config 
-  (use-package helm-mode :demand t)
-  
-  (helm-autoresize-mode)
-                                        ;(spaceline-helm-mode)
-  (which-key-declare-prefixes "<SPC> f" "Files")
-
-  (func init.el (find-file (concat user-emacs-directory "/" "init.el")))
-  (general-define-key "ff" 'helm-find-files)
-  
-  (substitute-key-definition 'find-tag 'helm-etags-select global-map))
-
-(use-package foundation-helm
-  :after helm
-  :general
-  ("fm" '(fnd:helm-list-modules :which-key "Modules")))
-
-(use-package helm-descbinds :ensure t
-  :commands helm-descbinds
-  
-  :general
-  (:prefix ""
-   :keymaps 'helm-command-map
-   :states nil
-   
-   "b" 'helm-descbinds)
-  
-  ("eb" '(helm-descbinds :which-key "Bindings"))
-  
-  :init
-  (setq helm-descbinds-window-style 'split-window)
-  
-  :config
-  (unbind-key "\C-h b")
-  (unbind-key "<f1> b")
-  (unbind-key "<help> b")
-  (unbind-key "C-c h b")
-  (unbind-key "C-x c b")
-
-  (fset 'describe-bindings 'helm-descbinds))
-
-;; #NOTE :: This package doesn't rely on Projectile cause my workflow starts with helm-projectile-switch-project
-;; So this package bootstrap the projectile loading
-(use-package helm-projectile :ensure t
-  :after helm
-  
-  :general
-  ("pp"  'helm-projectile-switch-project)
-  
-  (:prefix ""
-   "C-M-3" 'helm-projectile-switch-to-buffer
-   "M-1"   'helm-projectile-find-file)
-  
-  :config (helm-projectile-on))
-
-(use-package helm-ag :ensure t
-  :after helm-projectile
-  :general
-  ("ps"  '(:ignore t :which-key "Search [Ag]")
-   "pss" 'helm-projectile-ag
-   "psr" 'helm-ag-project-root
-   "psa" 'helm-do-ag)
-
-  :init
-  (setq helm-ag-insert-at-point 'symbol
-        helm-ag-fuzzy-match     t)
-  
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'ag)))
-
-(use-package helm-dash :ensure t
-  :commands (helm-dash helm-dash-at-point))
-
-(use-package helm-gtags :ensure t
-  :diminish (helm-gtags-mode . "GT")
-  :after helm
-  
-  :hook (prog-mode . helm-gtags-mode)
-  
-  :general
-  (:prefix nil
-
-   "C-]"   'helm-gtags-dwim
-   "C-M-]" 'helm-gtags-select)
-
-  ("t"     '(:ignore t :which-key "Tags")
-   "tt"    'helm-gtags-dwim
-   "tf"    'helm-gtags-find-tag-other-window)
-  
-  :init
-  (setq helm-gtags-auto-update t
-        helm-gtags-use-input-at-cursor t
-        helm-gtags-pulse-at-cursor t
-        helm-gtags-ignore-case t))
-
 ;; Need to organize this to avoid disambiguity and not to forget
-(delete-selection-mode t)
-(global-auto-revert-mode t)
-
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-(fset 'yes-or-no-p   'y-or-n-p)
-
 ;; #NOTE :: DOESN'T REQUIRE Prefix
-(general-evil-define-key 'normal 'global-map :prefix ""
+(general-evil-define-key 'normal 'global-map :prefix nil
   
   ;; Window Management
   "M-q"    '4lex1v:w/close-other-window ;; #TODO :: Doesn't look i'm using this at all
