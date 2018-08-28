@@ -166,3 +166,9 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/debbug/realgud-lldb"]
 	path = modules/debbug/realgud-lldb
 	url = git@github.com:realgud/realgud-lldb.git
+[submodule "modules/editor/evil-core"]
+	path = modules/editor/evil-core
+	url = git@github.com:emacs-evil/evil.git
+[submodule "modules/editor/evil-collection"]
+	path = modules/editor/evil-collection
+	url = git@github.com:jojojames/evil-collection.git
