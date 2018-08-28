@@ -20,8 +20,7 @@
    :states  '(normal insert)
    :prefix   nil
    
-   "<C-return>"     #'newline-or-comment
-   "C-<backspace>"  #'contextual-backspace)
+   "<C-return>"     #'newline-or-comment)
 
   (:keymaps 'scala-mode-map
    :states  'normal
@@ -75,7 +74,7 @@
   
   :config
   (load "sbt-defuns")
-  (setq-default truncate-lines nil)
+  (setq-default truncate-lines t)
   (evil-set-initial-state 'sbt-mode 'insert))
 
 ;; TODO :: override the major mode segment for Ensime activated projects
