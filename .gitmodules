@@ -46,9 +46,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "core/which-key"]
 	path = modules/behaviour/which-key
 	url = git@github.com:justbur/emacs-which-key.git
-[submodule "core/ranger"]
-	path = modules/behaviour/ranger
-	url = git@github.com:ralesi/ranger.el.git
 [submodule "packages/haskell/haskell-mode"]
 	path = modules/haskell/haskell-mode
 	url = git@github.com:haskell/haskell-mode.git
@@ -154,9 +151,6 @@ url=git@github.com:ensime/emacs-scala-mode.git
 [submodule "modules/vcs/ghub"]
 	path = modules/vcs/ghub
 	url = git@github.com:magit/ghub.git
-[submodule "modules/behaviour/lsp-mode"]
-	path = modules/behaviour/lsp-mode
-	url = git@github.com:emacs-lsp/lsp-mode.git
 [submodule "modules/org/org-ql"]
 	path = modules/org/org-ql
 	url = git@github.com:alphapapa/org-agenda-ng.git

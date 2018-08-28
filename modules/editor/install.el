@@ -1,5 +1,44 @@
 ;; -*- lexical-binding: t; -*-
 
+(defun 4lex1v/insert-line-and-jump (arg)
+  (interactive "p")
+  (end-of-line)
+  (open-line arg)
+  (next-line 1)
+  (indent-according-to-mode))
+
+(defun toggle-comment-on-line ()
+  (interactive)
+  (comment-or-uncomment-region
+   (line-beginning-position)
+   (line-end-position)))
+
+(defun 4lex1v/open-in-intellij ()
+  "Open current position in Intellij Idea"
+  (interactive)
+  (let* ((line (save-excursion
+                 (beginning-of-line)
+                 (1+ (count-lines 1 (point)))))
+         (cmd (format "idea %s:%i" buffer-file-name line)))
+    (start-process-shell-command "Idea" nil cmd)))
+
+(defun 4lex1v/open-in-clion ()
+  "Open current position in Intellij Idea"
+  (interactive)
+  (let* ((line (save-excursion
+                 (beginning-of-line)
+                 (1+ (count-lines 1 (point)))))
+         (cmd (format "clion %s:%i" buffer-file-name line)))
+    (start-process-shell-command "Idea" nil cmd)))
+
+(diminish 'auto-revert-mode)
+(delete-selection-mode t)
+(global-auto-revert-mode t)
+
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(fset 'yes-or-no-p   'y-or-n-p)
+
 ;; #NOTE(4lex1v, 08/24/17) :: Some movement keybinds are defined in Editor/Smartparens
 (use-package evil :demand t
   :after general ;; To enable evil-leader in initial buffers
@@ -302,6 +341,8 @@ _e_xtra   _f_ile           _t_ryout
   (hideshowvis-enable))
 
 (use-package flyspell
+  :if (not IS_WINDOWS)
+  
   :bind
   (("C-c i b" . flyspell-buffer)
    ("C-c i f" . flyspell-mode))
@@ -348,45 +389,6 @@ _e_xtra   _f_ile           _t_ryout
 
    "gu" 'string-inflection-all-cycle))
 
-(diminish 'auto-revert-mode)
-(delete-selection-mode t)
-(global-auto-revert-mode t)
-
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-(fset 'yes-or-no-p   'y-or-n-p)
-
-(defun 4lex1v/insert-line-and-jump (arg)
-  (interactive "p")
-  (end-of-line)
-  (open-line arg)
-  (next-line 1)
-  (indent-according-to-mode))
-
-(defun 4lex1v/open-in-clion ()
-  "Open current position in Intellij Idea"
-  (interactive)
-  (let* ((line (save-excursion
-                 (beginning-of-line)
-                 (1+ (count-lines 1 (point)))))
-         (cmd (format "clion %s:%i" buffer-file-name line)))
-    (start-process-shell-command "Idea" nil cmd)))
-
-(defun 4lex1v/open-in-intellij ()
-  "Open current position in Intellij Idea"
-  (interactive)
-  (let* ((line (save-excursion
-                 (beginning-of-line)
-                 (1+ (count-lines 1 (point)))))
-         (cmd (format "idea %s:%i" buffer-file-name line)))
-    (start-process-shell-command "Idea" nil cmd)))
-
-(defun toggle-comment-on-line ()
-  (interactive)
-  (comment-or-uncomment-region
-   (line-beginning-position)
-   (line-end-position)))
-
 ;; #NOTE :: DOESN'T REQUIRE Prefix
 ;; #TODO :: Should this work for normal & insert states?
 (general-evil-define-key '(normal insert) 'global-map
@@ -399,5 +401,7 @@ _e_xtra   _f_ile           _t_ryout
   "M-j"    'join-line
   "M-o"    '4lex1v/insert-line-and-jump
   "C-S-d"  '4lex1v/duplicate-line)
+
+
 
 

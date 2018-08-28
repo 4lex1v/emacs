@@ -21,6 +21,8 @@ then two windows around, provide an index number which window to close"
         (kill-buffer (current-buffer))
         (delete-window))))     
 
+;; #NOTE(4lex1v, 08/24/17) :: Default to an empty string that should be introduced manually
+(setq comment-note-comment-prefix "")
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t
@@ -296,74 +298,6 @@ _l_: Last
    "psr" 'rg-project
    "psl" 'rg-literal))
 
-(use-package lsp-mode)
-
-(use-package ranger :disabled t
-  :general
-  ("fr" 'ranger)
-  
-  :init
-  (setq ranger-override-dired 'ranger
-        ranger-show-literal    nil ;; Turn on highlighting in ranger mode
-        ranger-cleanup-eagerly t
-        ranger-show-dotfiles   t
-        ranger-ignored-extensions '())
-
-  (bind-key "M-2" #'(lambda (&optional arg)
-                      (interactive "P")
-                      (if (not arg)
-                          (ranger arg)
-                        (ranger
-                         (or (projectile-project-root)
-                             default-directory)))))
-
-  (cl-defun drill-folder-down (&optional (entry-point (dired-get-filename nil t)))
-    (interactive)
-    (if (file-directory-p entry-point)
-        (let* ((subentries (f-entries entry-point)))
-          ;; If `entry-point' contains a single folder navigate into it
-          (if (and (eq (length subentries) 1)
-                   (file-directory-p (car subentries)))
-              (drill-folder-down (car subentries))
-            (ranger-find-file entry-point)))))
-
-  (defun drill-folder-up (&optional initial)
-    (interactive)
-    (let* ((entry  (or initial default-directory))
-           (parent-folder (f-parent entry))
-           (parent-content (f-entries parent-folder))
-           (nr-of-entryies (length parent-content)))
-      (if (eq nr-of-entryies 1)
-          (drill-folder-up parent-folder)
-        (ranger-find-file parent-folder))))           
-  
-  :config
-  (ranger-override-dired-mode t)
-  
-  (add-to-list 'ranger-excluded-extensions "meta")
-  (add-to-list 'ranger-excluded-extensions "cs.meta")
-
-  (bind-key "l" #'drill-folder-down ranger-mode-map)
-  (bind-key "h" #'drill-folder-up   ranger-mode-map))
-
-;; #TODO(4lex1v, 07/20/18) :: Consider for removal?
-(use-package avy :ensure t :disabled t
-  :bind
-  (("C-c SPC" . avy-goto-char)
-   ("C-c j c" . avy-goto-char)
-   ("C-c j w" . avy-goto-word-1)
-   ("C-c j l" . avy-goto-line))
-  
-  :init
-  (general-define-key "j" #'avy-goto-char))
-
-;; #TODO(4lex1v, 07/20/18) :: Consider for removal?
-(use-package ace-window :ensure t :disabled t
-  :bind
-  (("C-'"  . ace-window))
-  :general
-  ("wj" 'ace-window))
-
 ;; Need to organize this to avoid disambiguity and not to forget
 ;; #NOTE :: DOESN'T REQUIRE Prefix
 (general-evil-define-key 'normal 'global-map :prefix nil
@@ -401,3 +335,4 @@ _l_: Last
 
   ;; Services
   "s" '(:ignore t :which-key "Services"))
+
