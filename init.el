@@ -55,22 +55,3 @@
 
 (setq gc-cons-threshold 800000)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(safe-local-variable-values
-   (quote
-    ((flycheck-clang-language-standard . "c++1z")
-     (irony-cdb-search-directory-list quote
-                                      ("build/game" "build/runtime"))
-     (project-executable-name . "Handhero")
-     (projectile-project-compilation-cmd . "cmake --build build --target ")
-     (user-ref-name . "aivanov")))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(font-lock-builtin-face ((t (:bold nil)))))
