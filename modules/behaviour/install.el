@@ -1,4 +1,27 @@
 
+(defun 4lex1v/multi-window-p ()
+  (> (count-windows) 1))
+
+(defun 4lex1v/close-buffer (&optional arg)
+  "Close active buffer if a single window environment or close buffer with corresponding window
+in multi-window environment. In order to leave the window opened provided an optional arg `leave-window'"
+  (interactive "P")
+  (kill-buffer (current-buffer))
+  (if (and (not (equal arg 'nil))
+           (4lex1v/multi-window-p))
+      (delete-window)))
+
+(defun 4lex1v:w/close-other-window ()
+  "In a multi window environment close other (i.e not active) window. If there're more
+then two windows around, provide an index number which window to close"
+  (interactive)
+  (if (4lex1v/multi-window-p)
+      (progn
+        (other-window 1)
+        (kill-buffer (current-buffer))
+        (delete-window))))     
+
+
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t
   :diminish which-key-mode

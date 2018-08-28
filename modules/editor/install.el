@@ -5,7 +5,7 @@
   :after general ;; To enable evil-leader in initial buffers
   
   :general
-  (:prefix   ""
+  (:prefix   nil
    :keymaps 'evil-motion-state-map
    :states   nil
    
@@ -63,42 +63,62 @@
   (evil-ex-define-cmd "we" #'(lambda () (interactive) (save-buffer) (eval-buffer)))
   
   (evil-select-search-module 'evil-search-module 'evil-search)
-  (evil-mode))
+  (evil-mode)
 
-(use-package evil-collection :demand t
-  :after evil
-  
-  :init
-  (setq evil-collection-setup-minibuffer nil
-        evil-collection-mode-list `(arc-mode
-                                    bookmark
-                                    (buff-menu "buff-menu")
-                                    calendar
-                                    comint
-                                    compile
-                                    debbugs
-                                    debug
-                                    diff-mode
-                                    dired
-                                    doc-view
-                                    edebug
-                                    eval-sexp-fu
-                                    etags-select
-                                    flycheck
-                                    help
-                                    ibuffer
-                                    info
-                                    log-view
-                                    man
-                                    simple
-                                    ,@(when evil-collection-setup-minibuffer '(minibuffer))
-                                    (occur ,(if (<= emacs-major-version 25) "replace" 'replace))
-                                    (package-menu package)
-                                    rtags
-                                    (term term ansi-term multi-term)))
-  :config
-  (add-hook 'after-init-hook
-            (lambda () (evil-collection-init))))
+  (use-package evil-collection :demand t
+    :after evil
+    :init
+    (setq evil-collection-setup-minibuffer nil
+          evil-collection-mode-list `(arc-mode
+                                      bookmark
+                                      (buff-menu "buff-menu")
+                                      calendar
+                                      comint
+                                      compile
+                                      debbugs
+                                      debug
+                                      diff-mode
+                                      dired
+                                      doc-view
+                                      edebug
+                                      eval-sexp-fu
+                                      etags-select
+                                      flycheck
+                                      help
+                                      ibuffer
+                                      info
+                                      log-view
+                                      man
+                                      simple
+                                      ,@(when evil-collection-setup-minibuffer '(minibuffer))
+                                      (occur ,(if (<= emacs-major-version 25) "replace" 'replace))
+                                      (package-menu package)
+                                      rtags
+                                      (term term ansi-term multi-term)))
+    :config
+    (add-hook 'after-init-hook
+              (lambda () (evil-collection-init))))
+
+  (use-package evil-surround :ensure t
+    :after evil
+    :config
+    (global-evil-surround-mode 1))
+
+  (use-package evil-args :ensure t :demand t
+    :after evil
+    :config
+    ;; bind evil-args text objects
+    (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+    (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+
+    ;; bind evil-forward/backward-args
+    (define-key evil-normal-state-map "L" 'evil-forward-arg)
+    (define-key evil-normal-state-map "H" 'evil-backward-arg)
+    (define-key evil-motion-state-map "L" 'evil-forward-arg)
+    (define-key evil-motion-state-map "H" 'evil-backward-arg)
+
+    ;; bind evil-jump-out-args
+    (define-key evil-normal-state-map "K" 'evil-jump-out-args)))
 
 (use-package smartparens
   :commands
@@ -112,7 +132,7 @@
   :general
   (:keymaps 'smartparens-mode-map
    :prefix   nil
-   :states  '(normal)
+   :states  '(normal insert)
    
    "M-t"   'sp-transpose-sexp
    
@@ -281,16 +301,6 @@ _e_xtra   _f_ile           _t_ryout
   (hideshowvis-symbols)
   (hideshowvis-enable))
 
-;; (use-package centered-cursor-mode :demand t :ensure t
-;;   :diminish centered-cursor-mode
-;;   :init
-;;   (setq ccm-recenter-at-end-of-file t
-;;         ccm-ignored-commands '(mouse-drag-region
-;;                                mouse-set-point
-;;                                widget-button-click
-;;                                scroll-bar-toolkit-scroll))
-;;   :config (global-centered-cursor-mode t))
-
 (use-package flyspell
   :bind
   (("C-c i b" . flyspell-buffer)
@@ -338,28 +348,13 @@ _e_xtra   _f_ile           _t_ryout
 
    "gu" 'string-inflection-all-cycle))
 
-(use-package evil-surround :ensure t
-  :after evil
-  :config
-  (global-evil-surround-mode 1))
-
-(use-package evil-args :ensure t :demand t
-  :after evil
-  :config
-  ;; bind evil-args text objects
-  (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-  (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-
-  ;; bind evil-forward/backward-args
-  (define-key evil-normal-state-map "L" 'evil-forward-arg)
-  (define-key evil-normal-state-map "H" 'evil-backward-arg)
-  (define-key evil-motion-state-map "L" 'evil-forward-arg)
-  (define-key evil-motion-state-map "H" 'evil-backward-arg)
-
-  ;; bind evil-jump-out-args
-  (define-key evil-normal-state-map "K" 'evil-jump-out-args))
-
 (diminish 'auto-revert-mode)
+(delete-selection-mode t)
+(global-auto-revert-mode t)
+
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(fset 'yes-or-no-p   'y-or-n-p)
 
 (defun 4lex1v/insert-line-and-jump (arg)
   (interactive "p")
@@ -385,6 +380,12 @@ _e_xtra   _f_ile           _t_ryout
                  (1+ (count-lines 1 (point)))))
          (cmd (format "idea %s:%i" buffer-file-name line)))
     (start-process-shell-command "Idea" nil cmd)))
+
+(defun toggle-comment-on-line ()
+  (interactive)
+  (comment-or-uncomment-region
+   (line-beginning-position)
+   (line-end-position)))
 
 ;; #NOTE :: DOESN'T REQUIRE Prefix
 ;; #TODO :: Should this work for normal & insert states?
