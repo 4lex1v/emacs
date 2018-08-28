@@ -25,6 +25,7 @@
 
 (use-package osx :if IS_MAC :demand t
   :after exec-path-from-shell
+  
   :init
   (setq browse-url-browser-function 'browse-url-default-macosx-browser
         delete-by-moving-to-trash    t
@@ -35,6 +36,11 @@
         ns-use-native-fullscreen     t
         frame-resize-pixelwise       t
         shell-file-name              "/bin/sh")
+  
+  :general
+  (:prefix nil
+   :states '(normal insert)
+   "M-`" 'ns-next-frame)
   
   :config
   (message "[CONFIGURATION] Loading MacOS system configuration")

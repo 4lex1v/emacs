@@ -2,9 +2,14 @@
   (dolist (mode-hook modes) (add-hook mode-hook func)))
 
 (defsubst 4lex1v/mode-hooks (mode &rest funcs)
+
   (declare (indent 1))
   (dolist (f funcs)
     (add-hook mode f)))
+
+(defsubst if-bound-f (f &optional args)
+  "Helper function to guard against unbound functions"
+  (if (fboundp ',f) (funcall ',f args)))
 
 (defmacro func (name &rest body)
   "Shortcut for basic interactive no-arg functions"
@@ -13,19 +18,10 @@
      ,@body))
 
 (defmacro -func (body)
+
   `(lambda ()
      (interactive)
      ,@body))
-
-(defsubst if-bound-f (f &optional args)
-  "Helper function to guard against unbound functions"
-  (if (fboundp ',f) (funcall ',f args)))
-
-(defun string/starts-with (string prefix)
-  "Return t if STRING starts with prefix."
-  (and (string-match (rx-to-string `(: bos ,prefix) t)
-                     string)
-       t))
 
 (defmacro with-package (pkg-name &rest body)
   (declare (indent 1))
@@ -35,6 +31,12 @@
   (declare (indent 1))
   (let ((mode-symb (intern (format "%s-mode" mode-name))))
     `(if (fboundp ',mode-symb) (progn ,@body))))
+
+(defun string/starts-with (string prefix)
+  "Return t if STRING starts with prefix."
+  (and (string-match (rx-to-string `(: bos ,prefix) t)
+                     string)
+       t))
 
 (setq-default truncate-lines t
               initial-major-mode (quote fundamental-mode))
