@@ -1,6 +1,6 @@
 [submodule "themes/sirthias"]
 	path = modules/appearance/themes/sirthias
-	url = https://github.com/4lex1v/sirthias-theme.git
+	url = git@github.com:4lex1v/sirthias-theme.git
 	branch = master
 [submodule "core/projectile"]
 	path = modules/behaviour/projectile
