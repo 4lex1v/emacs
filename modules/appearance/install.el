@@ -20,10 +20,11 @@
         (search-forward (symbol-name face-name)))))
 
 ;; #NOTE(4lex1v, 08/28/18) :: Removed on Windows configuration
-(defun reload-view ()
-  (set-frame-font default-font-ref)
-  (add-to-list 'default-frame-alist (cons 'font default-font-ref))
-  (set-face-attribute 'default nil :height (* default-font-size 10)))
+(defun reload-view (font-name font-size)
+  (let ((font-ref (format "%s %d" font-name font-size)))
+  (set-frame-font font-ref)
+  (add-to-list 'default-frame-alist (cons 'font font-ref))
+  (set-face-attribute 'default nil :font font-ref)))
 
 (setq-default
  mode-line-default-help-echo nil ; turn-off tooltips on cursor hover-over
@@ -43,7 +44,7 @@
 
 (setq
  default-font-name      "PragmataPro"
- default-font-size      16
+ default-font-size      14
  theme-to-load         'sirthias)
 
 (toggle-truncate-lines  nil)
@@ -133,7 +134,7 @@
       ("#\\<\\(NOTE\\)\\>" 1 '(warning :underline t) t))))
    '(emacs-lisp-mode scala-mode c-mode objc-mode c++-mode rust-mode))
 
-(reload-view)
+(reload-view default-font-name default-font-size)
   
 ;; #TODO(4lex1v, 08/28/18) :: Should this also double check that we are using the pragmata font as well?
 ;; #TODO(4lex1v, 08/28/18) :: Double check if it really slows down the work on windows
