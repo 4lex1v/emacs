@@ -11,8 +11,12 @@
   
   :init 
   (setq elfeed-search-filter "@1-month-ago +unread" ;; Default filter
+        elfeed-db-directory "~/Dropbox/Приложения/elfeeddb"
         elfeed-feeds '(("https://bartoszmilewski.com/feed" FP)
 
+                       ;; Engineering
+                       ("https://fgiesen.wordpress.com/feed/" Engineering)
+                       
                        ;; Emacs
                        ("http://irreal.org/blog/?feed=rss2" Emacs)
                        ("http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-and-content.xml" Emacs)
@@ -195,8 +199,6 @@
                        "https://colinbarrebrisebois.com/feed/"
                        "http://4gravitons.wordpress.com/feed/"
                        "http://backreaction.blogspot.com/feeds/posts/default")
-        
-        elfeed-db-directory "~/Dropbox/Приложения/elfeeddb"
         
         elfeed-mac-connections 10
         url-queue-timeout 30)
