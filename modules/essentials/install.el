@@ -18,7 +18,6 @@
      ,@body))
 
 (defmacro -func (body)
-
   `(lambda ()
      (interactive)
      ,@body))
@@ -55,7 +54,8 @@
       desktop-save                nil
       user-ref-name               "4lex1v"
       mouse-wheel-scroll-amount   '(1)
-      mouse-wheel-progressive-speed nil)
+      mouse-wheel-progressive-speed nil
+      inhibit-compacting-font-caches t)
 
 (if (file-exists-p "~/Sandbox")
     (setq default-directory "~/Sandbox/"))
@@ -108,6 +108,12 @@
 (use-package helpful :ensure t
   :after elisp-refs)
 
+(dolist (k '([mouse-1] [down-mouse-1] [drag-mouse-1] [double-mouse-1] [triple-mouse-1]  
+             [mouse-2] [down-mouse-2] [drag-mouse-2] [double-mouse-2] [triple-mouse-2]
+             [mouse-3] [down-mouse-3] [drag-mouse-3] [double-mouse-3] [triple-mouse-3]
+             [mouse-4] [down-mouse-4] [drag-mouse-4] [double-mouse-4] [triple-mouse-4]
+             [mouse-5] [down-mouse-5] [drag-mouse-5] [double-mouse-5] [triple-mouse-5]))
+  (global-unset-key k))
 
 
 

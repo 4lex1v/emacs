@@ -2,7 +2,7 @@
 (use-package rust-mode 
   :hooks (;; Rust-specific modes
           cargo-minor-mode
-          racer-mode
+          ;; racer-mode
           
           ;; General Modes
           hs-minor-mode
@@ -57,7 +57,10 @@
    "cs" 'cargo-process-search
    "cu" 'cargo-process-update
    "cx" 'cargo-process-run
-   "t" 'cargo-process-test))
+   "t" 'cargo-process-test)
+
+  :init
+  (setq cargo-process--enable-rust-backtrace t))
 
 (use-package racer :ensure t
   :after rust-mode
@@ -103,3 +106,14 @@
   :after (rust-mode flycheck-mode)
   :config
   (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
+
+
+
+
+
+
+
+
+
+

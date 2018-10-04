@@ -21,7 +21,7 @@
 ;;
 (fnd:module elisp          "Configuration for `emacs-lisp-mode' and other helpfull stuff to improve the experience with `ELisp'")
 (fnd:module scala          "Scala language support + Ensime language server")
-(fnd:module debbug         "Some extra stuff to improve Emacs' debbugging capabilities.")
+(fnd:module debbug         "Some extra stuff to improve Emacs' debbugging capabilities." :ignore t)
 (fnd:module native         "C/C++ support.")
 (fnd:module rust           "Rust-lang support.")
 (fnd:module csharp         "C# support, mostly to work with Unity3D engine on Mac... or Windows")
@@ -41,7 +41,7 @@
 
 (fnd:module vcs            "All-things-Magit")
 (fnd:module reader         "Support for effective PDF reading")
-(fnd:module communications "Email, Slack, Jabber and others")
+(fnd:module communications "Email, Slack, Jabber and others" :ignore t)
 (fnd:module org            "Org-mode configuration package")
 (fnd:module formats        "Minor formats like Markdown & YAML support")
 (fnd:module infra          "DevOps related stuff, e.g Docker")
@@ -50,8 +50,9 @@
 ;;; Modules: Projects & Work
 ;;
 
-(fnd:module projects       "Custom configuration for all-things-projects, i.e detailed org-mode config")
-(fnd:module work           "Additional configuration to wire Emacs for work related projects")
+(fnd:module workspace      "Custom configuration for all-things-projects, i.e detailed org-mode config")
+(fnd:module work           "Additional configuration to wire Emacs for work related projects" :ignore t)
 
-(setq gc-cons-threshold 800000)
+(setq gc-cons-threshold 1000000)
+
 

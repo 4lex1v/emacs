@@ -14,6 +14,9 @@
         elfeed-db-directory "~/Dropbox/Приложения/elfeeddb"
         elfeed-feeds '(("https://bartoszmilewski.com/feed" FP)
 
+                       ;; ADHD
+                       ("https://www.additudemag.com/feed/" ADHD)
+
                        ;; Engineering
                        ("https://fgiesen.wordpress.com/feed/" Engineering)
                        
@@ -116,7 +119,6 @@
                        "http://www.jonolick.com/2/feed"
                        "http://joostdevblog.blogspot.com/feeds/posts/default"
                        "http://www.iryoku.com/feed"
-                       "http://jvns.ca/atom.xml"
                        "http://daugaard.org/blog/?feed=rss2"
                        "https://kate.io/feed.xml"
                        "http://kosmokleaner.wordpress.com/feed/"
@@ -196,9 +198,7 @@
                        "http://kayru.org/feed.xml"
                        "http://zrusin.blogspot.com/feeds/posts/default"
                        "http://zeuxcg.org/feed/"
-                       "https://colinbarrebrisebois.com/feed/"
-                       "http://4gravitons.wordpress.com/feed/"
-                       "http://backreaction.blogspot.com/feeds/posts/default")
+                       "https://colinbarrebrisebois.com/feed/")
         
         elfeed-mac-connections 10
         url-queue-timeout 30)

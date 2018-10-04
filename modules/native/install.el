@@ -1,4 +1,5 @@
 
+
 ;; Configuration for C / C++ / Objective-C / Objective-C++ languages
 ;;(use-package cc-mode
 (use-package cc-mode
@@ -14,20 +15,32 @@
    hideshowvis-minor-mode)
   
   :general
-  (:keymaps '(c-mode-base-map)
+  (:keymaps 'c-mode-base-map
+   
    "m"  '(:ignore t :which-key "Native")
    "ma" 'projectile-find-other-file
    "mA" 'projectile-find-other-file-other-window)
   
   ;; #TODO :: Check if this could be defined in the global configuration or it needs to be overriden for these modes?
-  (:prefix "" :keymaps '(c-mode-base-map)  
+  (:prefix   nil
+   :keymaps 'c-mode-base-map  
+
    "C-S-j" #'next-error
    "C-S-k" #'previous-error
    ",r"    #'recompile)
   
   :init
-  (setq org-babel-C-compiler "clang"
-        org-babel-C++-compiler "clang++")
+  (setq 
+   org-babel-C-compiler "clang"
+   org-babel-C++-compiler "clang++")
+  
+  (if IS_WINDOWS
+      (setq
+       win32-system-include-paths '("c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/shared"
+                                    "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/ucrt"
+                                    "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/um"
+                                    "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/winrt")))
+  
   
   :config
   (c-toggle-auto-newline t)
@@ -73,33 +86,37 @@
   :after cc-mode
   :commands disaster
   :general
-  (:prefix "m" :keymaps '(c-mode-base-map)
+  (:prefix "m"
+   :keymaps 'c-mode-base-map
+
    "d" 'disaster))
 
-;; (use-package semantic
-;;   :after cc-mode
-;;   :load-path "modules/native/cedet/lisp/cedet"
+(use-package semantic
+  :after cc-mode
+  :load-path "modules/native/cedet/lisp/cedet"
   
-;;   :general
-;;   (:prefix "" :keymaps '(c-mode-base-map)
-;;    "g." 'semantic-ia-fast-jump)
+  :general
+  (:prefix   nil
+   :keymaps 'c-mode-base-map
+
+   "g." 'semantic-ia-fast-jump)
   
-;;   :init
-;;   (setq semantic-default-submodes '(global-semanticdb-minor-mode
-;;                                     global-semantic-idle-scheduler-mode
-;;                                     global-semantic-idle-local-symbol-highlight-mode
-;;                                     global-semantic-highlight-func-mode
-;;                                     global-semantic-idle-completions-mode
-;;                                     global-semantic-decoration-mode))
+  ;; :init
+  ;; (setq semantic-default-submodes '(global-semanticdb-minor-mode
+  ;;                                   global-semantic-idle-scheduler-mode
+  ;;                                   global-semantic-idle-local-symbol-highlight-mode
+  ;;                                   global-semantic-highlight-func-mode
+  ;;                                   global-semantic-idle-completions-mode
+  ;;                                   global-semantic-decoration-mode))
 
-;;   ;; #TODO :: Decide what to do with this... For now the performance on Windows is terrible =(
-;;   ;;(add-hook 'c-mode-common-hook 'semantic-mode)
+  ;; #TODO :: Decide what to do with this... For now the performance on Windows is terrible =(
+  ;;(add-hook 'c-mode-common-hook 'semantic-mode)
 
-;;   :config
-;;   (add-hook 'c-mode-common-hook
-;;             (lambda ()
-;;               (if IS_WINDOWS
-;;                   (-each win32-system-include-paths 'semantic-add-system-include)))))
+  :config
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (if IS_WINDOWS
+                  (-each win32-system-include-paths 'semantic-add-system-include)))))
 
 (use-package helm-semantic :after (semantic helm))
 
@@ -118,5 +135,6 @@
               (if (derived-mode-p 'c-mode 'c++-mode)
                   (semantic-mode 1)
                 (semantic-mode -1))))
+
 
 

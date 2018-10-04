@@ -207,7 +207,7 @@ _l_: Last
   
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
 
-  (use-package foundation-helm
+  (use-package foundation-helm :demand t
     :after helm
     :general
     ("fm" '(fnd:helm-list-modules :which-key "Modules")))
@@ -269,7 +269,9 @@ _l_: Last
   (use-package helm-dash :ensure t
     :commands (helm-dash helm-dash-at-point))
   
+  ;; #TODO(4lex1v, 09/03/18) :: Install on Windows?
   (use-package helm-gtags :ensure t
+    :if (not IS_WINDOWS)
     :diminish (helm-gtags-mode . "GT")
     :after helm
     
@@ -314,6 +316,21 @@ _l_: Last
      (interactive)
      (let ((default-directory ,(format "~/%s/" folder)))
        (helm-find-files nil))))
+
+(defun dired-dirs-first ()
+  "Sort dired listings with directories first."
+  (save-excursion
+    (let (buffer-read-only)
+      (forward-line 2) ;; beyond dir. header 
+      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+    (set-buffer-modified-p nil)))
+
+(defadvice dired-readin
+  (after dired-after-updating-hook first () activate)
+  "Sort dired listings with directories first before adding marks."
+  (dired-dirs-first))
+
+(put 'dired-find-alternate-file 'disabled nil)
 
 (general-evil-define-key '(normal insert) 'global-map
   :prefix nil

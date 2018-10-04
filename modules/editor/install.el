@@ -157,7 +157,12 @@
     (define-key evil-motion-state-map "H" 'evil-backward-arg)
 
     ;; bind evil-jump-out-args
-    (define-key evil-normal-state-map "K" 'evil-jump-out-args)))
+    (define-key evil-normal-state-map "K" 'evil-jump-out-args))
+
+  (use-package evil-exchange :ensure t
+    :config
+    (evil-exchange-install)))
+
 
 (use-package smartparens
   :commands
@@ -306,6 +311,7 @@ _e_xtra   _f_ile           _t_ryout
 
 ;; #TODO :: move over to appearance?
 (use-package hideshowvis :ensure t
+  :if (not IS_WINDOWS)
   :diminish (hs-minor-mode . " +/-")
   :commands hideshowvis-enable
   

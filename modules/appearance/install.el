@@ -39,7 +39,7 @@
  word-wrap t
  
  ;; #TODO(4lex1v, 08/28/18) :: Is this the one that should be used of the switcher?
- truncate-lines nil
+ truncate-lines t
  line-spacing 2)
 
 (setq
@@ -47,7 +47,6 @@
  default-font-size      14
  theme-to-load         'sirthias)
 
-(toggle-truncate-lines  nil)
 (show-paren-mode        t)
 (delete-selection-mode  t)
 (tooltip-mode          -1)
@@ -61,9 +60,9 @@
         window-divider-default-right-width 1)
   (window-divider-mode +1))
 
-(add-hook 'window-configuration-change-hook
-          (lambda ()
-            (set-window-margins (get-buffer-window (current-buffer) nil) 5 3)))
+;; (add-hook 'window-configuration-change-hook
+;;           (lambda ()
+;;             (set-window-margins (get-buffer-window (current-buffer) nil) 5 3)))
 
 (use-package sirthias-theme :demand t
   :load-path "modules/appearance/themes/sirthias"
@@ -83,7 +82,8 @@
              (projectile-project-p))
         (let ((project-name (projectile-project-name))
               (branch-name
-               (if (fboundp 'magit-get-current-branch)
+               (if (and (not IS_WINDOWS)
+                        (fboundp 'magit-get-current-branch))
                    (magit-get-current-branch))))
           (propertize
            (if (or (eq branch-name nil)

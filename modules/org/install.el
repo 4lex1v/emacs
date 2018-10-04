@@ -4,9 +4,7 @@
   :after flyspell
   
   :hooks
-  (:org-mode-hook
-   flyspell-mode
-   yas-minor-mode)
+  (:org-mode-hook yas-minor-mode)
   
   :general
   ;; Global Org-mode fucntionality
@@ -25,7 +23,8 @@
    "C-k"   'org-previous-visible-heading)
   
   :init
-  (setq org-log-done                   'note ;; When completing a task, prompt for a closing note...
+  (setq org-log-done                   nil ;; When completing a task, prompt for a closing note...
+        org-log-reschedule             nil
         org-src-fontify-natively       t
         org-descriptive-links          t
         org-startup-with-inline-images t
@@ -51,6 +50,9 @@
         ;; Keywords
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
         org-todo-keyword-faces '(("ACTIVE" . "yellow"))
+
+        org-refile-use-outline-path 'file
+        org-refile-targets '((org-agenda-files :maxlevel . 1))
 
         ;; NEW EXPERIMENTAL SETTINGS
         org-adapt-indentation          nil)
@@ -164,25 +166,31 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
 (use-package org-agenda :demand t
   :after org
   :init
-  (setq org-agenda-custom-commands
-        '(("c" . "My Custom Agendas")
-          ("cu"  "Unscheduled"
-           ((todo ""
-                  ((org-agenda-overriding-header "\nUnscheduled TODO")
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))))
-           nil
-           nil))
-        
-        org-archive-location "./archives/%s_archive::"
-        org-agenda-archives-mode t
+  (setq
+   org-agenda-files
+   (f-files "~/Sandbox/Planning"
+            (lambda (path)
+              (not (s-starts-with-p "_" (f-filename path)))))
+   
+   org-agenda-custom-commands
+   '(("c" . "My Custom Agendas")
+     ("cu"  "Unscheduled"
+      ((todo ""
+             ((org-agenda-overriding-header "\nUnscheduled TODO")
+              (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))))
+      nil
+      nil))
+   
+   org-archive-location "./archives/%s_archive::"
+   org-agenda-archives-mode t
 
-        org-agenda-start-on-weekday 6 ;; Saturday
-        org-agenda-include-diary nil
-        org-agenda-span 'day
-        org-agenda-skip-deadline-if-done t
-        
-        ;; Display agenda in full window
-        org-agenda-window-setup 'current-window)
+   org-agenda-start-on-weekday 6 ;; Saturday
+   org-agenda-include-diary nil
+   org-agenda-span 'day
+   org-agenda-skip-deadline-if-done t
+   
+   ;; Display agenda in full window
+   org-agenda-window-setup 'current-window)
   
   :config
   (add-hook 'org-agenda-finalize-hook
