@@ -1,120 +1,60 @@
 [submodule "themes/sirthias"]
-	path = modules/appearance/themes/sirthias
+	path = themes/sirthias
 	url = git@github.com:4lex1v/sirthias-theme.git
 	branch = master
 [submodule "core/projectile"]
-	path = modules/behaviour/projectile
+	path = modules/projectile
 	url = git@github.com:bbatsov/projectile.git
 	branch = master
 [submodule "core/magit"]
-	path = modules/vcs/magit
+	path = modules/magit
 	url = git@github.com:magit/magit.git
 	branch = master
 [submodule "core/company"]
-	path = modules/editor/company
+	path = modules/company
 	url = git@github.com:company-mode/company-mode.git
 	branch = master
 [submodule "core/yasnippet"]
-	path = modules/editor/yasnippet
+	path = modules/yasnippet
 	url = git@github.com:capitaomorte/yasnippet.git
 	branch = master
 [submodule "core/smartparens"]
-	path = modules/editor/smartparens
+	path = modules/smartparens
 	url = git@github.com:Fuco1/smartparens.git
 	branch = master
-[submodule "packages/scala/scala-mode"]
-	path = modules/scala/scala-mode
-url=git@github.com:ensime/emacs-scala-mode.git
-	branch = master
-[submodule "packages/scala/sbt-mode"]
-	path = modules/scala/sbt-mode
-	url = git@github.com:hvesalai/sbt-mode.git
-	branch = master
-[submodule "packages/scala/ensime"]
-	path = modules/scala/ensime
-	url = git@github.com:ensime/ensime-emacs.git
-	branch = master
-[submodule "packages/elisp/macrostep"]
-	path = modules/elisp/macrostep
-	url = git@github.com:joddie/macrostep.git
 [submodule "core/helm/helm-core"]
-	path = modules/behaviour/helm-core
+	path = modules/helm
 	url = git@github.com:emacs-helm/helm.git
 [submodule "core/docker"]
 	path = modules/infra/docker
 	url = git@github.com:Silex/docker.el.git
 [submodule "core/which-key"]
-	path = modules/behaviour/which-key
+	path = modules/which-key
 	url = git@github.com:justbur/emacs-which-key.git
-[submodule "packages/haskell/haskell-mode"]
-	path = modules/haskell/haskell-mode
-	url = git@github.com:haskell/haskell-mode.git
 [submodule "packages/idris-mode"]
 	path = packages/idris-mode
 	url = git@github.com:idris-hackers/idris-mode.git
 [submodule "core/expand-region"]
 	path = core/expand-region
 	url = git@github.com:magnars/expand-region.el.git
-[submodule "packages/emacs-request"]
-	path = modules/elisp/request
-	url = git@github.com:tkf/emacs-request.git
-[submodule "packages/emacs-deferred"]
-	path = modules/elisp/deferred
-	url = git@github.com:kiwanami/emacs-deferred.git
-[submodule "packages/python/anaconda-mode"]
-	path = modules/python/anaconda-mode
-	url = git@github.com:proofit404/anaconda-mode.git
-[submodule "packages/python/elpy"]
-	path = modules/python/elpy
-	url = git@github.com:jorgenschaefer/elpy.git
-[submodule "packages/python/emacs-jedi"]
-	path = modules/python/emacs-jedi
-	url = https://github.com/tkf/emacs-jedi
-[submodule "packages/python/emacs-ipython-notebook"]
-	path = modules/python/emacs-ipython-notebook
-	url = git@github.com:millejoh/emacs-ipython-notebook.git
 [submodule "modules/essentials/use-package"]
-	path = modules/essentials/use-package
+	path = modules/use-package
 	url = git@github.com:jwiegley/use-package.git
 [submodule "foundation"]
 	path = foundation
 	url = git@github.com:4lex1v/foundation.git
-[submodule "modules/web/restclient"]
-	path = modules/web/restclient
-	url = git@github.com:pashky/restclient.el.git
 [submodule "platform/evil/evil-core"]
 	path = modules/editor/evil-core
 	url = git@github.com:emacs-evil/evil.git
-[submodule "modules/vcs/evil-magit"]
-	path = modules/vcs/evil-magit
-	url = git@github.com:emacs-evil/evil-magit.git
-[submodule "platform/appearance/powerline"]
-	path = modules/appearance/powerline
-	url = git@github.com:milkypostman/powerline.git
 [submodule "modules/behaviour/general"]
-	path = modules/essentials/general
+	path = modules/general
 	url = git@github.com:noctuid/general.el.git
 [submodule "modules/behaviour/hydra"]
-	path = modules/behaviour/hydra
+	path = modules/hydra
 	url = git@github.com:abo-abo/hydra.git
-[submodule "modules/racket/ob-racket"]
-	path = modules/racket/ob-racket
-	url = git@github.com:wallyqs/ob-racket.git
-[submodule "modules/native/omnisharp-emacs"]
-	path = modules/csharp/omnisharp-emacs
-	url = git@github.com:OmniSharp/omnisharp-emacs.git
-[submodule "modules/native/csharp-mode"]
-	path = modules/csharp/csharp-mode
-	url = git@github.com:josteink/csharp-mode.git
 [submodule "modules/native/cedet"]
-	path = modules/native/cedet
+	path = modules/cedet
 	url = https://git.code.sf.net/p/cedet/git
-[submodule "modules/native/disaster"]
-	path = modules/native/disaster
-	url = git@github.com:jart/disaster.git
-[submodule "modules/rust/rust-mode"]
-	path = modules/rust/rust-mode
-	url = git@github.com:rust-lang/rust-mode.git
 [submodule "modules/reader/novel"]
 	path = modules/reader/novel
 	url = git@github.com:wasamasa/nov.el.git
@@ -134,35 +74,23 @@ url=git@github.com:ensime/emacs-scala-mode.git
 	path = modules/org/org-noter
 	url = git@github.com:weirdNox/org-noter.git
 [submodule "modules/reader/elfeed"]
-	path = modules/reader/elfeed
+	path = modules/elfeed
 	url = git@github.com:skeeto/elfeed.git
-[submodule "modules/editor/flycheck"]
-	path = modules/editor/flycheck
-	url = git@github.com:flycheck/flycheck.git
 [submodule "modules/org/org-brain"]
 	path = modules/org/org-brain
 	url = git@github.com:Kungsgeten/org-brain.git
 [submodule "modules/org/evil-org-mode"]
 	path = modules/org/evil-org-mode
 	url = git@github.com:Somelauw/evil-org-mode.git
-[submodule "modules/vcs/magit-popup"]
-	path = modules/vcs/magit-popup
-	url = git@github.com:magit/magit-popup.git
-[submodule "modules/vcs/ghub"]
-	path = modules/vcs/ghub
-	url = git@github.com:magit/ghub.git
 [submodule "modules/org/org-ql"]
 	path = modules/org/org-ql
 	url = git@github.com:alphapapa/org-agenda-ng.git
-[submodule "modules/behaviour/rg"]
-	path = modules/behaviour/rg
-	url = git@github.com:dajva/rg.el.git
 [submodule "modules/debbug/realgud-lldb"]
 	path = modules/debbug/realgud-lldb
 	url = git@github.com:realgud/realgud-lldb.git
 [submodule "modules/editor/evil-core"]
-	path = modules/editor/evil-core
+	path = modules/evil
 	url = git@github.com:emacs-evil/evil.git
-[submodule "modules/editor/evil-collection"]
-	path = modules/editor/evil-collection
-	url = git@github.com:jojojames/evil-collection.git
+[submodule "modules/org/org-super-agenda"]
+	path = modules/org/org-super-agenda
+	url = git@github.com:alphapapa/org-super-agenda.git
