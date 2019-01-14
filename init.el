@@ -1,21 +1,10 @@
-;; -*- lexical-binding: t; -*-
+(setq gc-cons-threshold 10000000)
 
-(defconst IS_MAC     (eq system-type 'darwin))
-(defconst IS_WINDOWS (eq system-type 'windows-nt))
-(defconst IS_UNIX    (not IS_WINDOWS))
-
-(setq
- gc-cons-threshold 10000000
- user-init-file (or load-file-name (buffer-file-name))
- user-emacs-directory (file-name-directory user-init-file))
-
-(defsubst 4lex1v/hook-into-modes (func &rest modes)
-  (dolist (mode-hook modes) (add-hook mode-hook func)))
-
-(defsubst 4lex1v/mode-hooks (mode &rest funcs)
-  (declare (indent 1))
-  (dolist (f funcs)
-    (add-hook mode f)))
+(defconst IS-MAC               (eq system-type 'darwin))
+(defconst IS-WINDOWS           (eq system-type 'windows-nt))
+(defconst IS-UNIX              (not IS-WINDOWS))
+(defconst USER-INIT-FILE       (or load-file-name (buffer-file-name)))
+(defconst USER-EMACS-DIRECTORY (file-name-directory USER-INIT-FILE))
 
 (defmacro func (name &rest body)
   "Shortcut for basic interactive no-arg functions"
@@ -32,17 +21,6 @@
   (declare (indent 1))
   `(if (fboundp ',pkg-name) (progn ,@body)))
 
-(defmacro with-mode (_mode_name &rest body)
-  (declare (indent 1))
-  (let ((mode-symb (intern (format "%s-mode" _mode_name))))
-    `(if (fboundp ',mode-symb) (progn ,@body))))
-
-(defun string/starts-with (string prefix)
-  "Return t if STRING starts with prefix."
-  (and (string-match (rx-to-string `(: bos ,prefix) t)
-                     string)
-       t))
-
 ;; #TODO :: search fails if the buffer is opened and not at the beginning of the buffer
 (defun edit-face-at-point ()
   "Editor face of the active theme at the point."
@@ -51,6 +29,42 @@
              (theme-file-buffer (find-library (concat (symbol-name theme-to-load) "-theme"))))
       (with-current-buffer theme-file-buffer
         (search-forward (symbol-name face-name)))))
+
+(defun 4lex1v/multi-window-p ()
+  (> (count-windows) 1))
+
+(defun 4lex1v/close-buffer (&optional arg)
+  "Close active buffer if a single window environment or close buffer with corresponding window
+in multi-window environment. In order to leave the window opened provided an optional arg `leave-window'"
+  (interactive "P")
+  (kill-buffer (current-buffer))
+  (if (and (not (equal arg 'nil))
+           (4lex1v/multi-window-p))
+      (delete-window)))
+
+(defun 4lex1v:w/close-other-window ()
+  "In a multi window environment close other (i.e not active) window. If there're more
+then two windows around, provide an index number which window to close"
+  (interactive)
+  (if (4lex1v/multi-window-p)
+      (progn
+        (other-window 1)
+        (kill-buffer (current-buffer))
+        (delete-window))))     
+
+(defun 4lex1v:gui:frame (&rest configs)
+  "Helper function for simpler frame configuration"
+  (pcase-let* ((`(,active . ,inactive) (plist-get configs :transparency))
+               (`(,active-cursor . ,inactive-cursor) (plist-get configs :cursor)))
+    
+    (setq-default cursor-type active-cursor
+                  cursor-in-non-selected-windows inactive-cursor)
+
+    (set-frame-parameter (selected-frame) 'alpha (cons active inactive))
+    (add-to-list 'default-frame-alist (cons 'alpha (cons active inactive)))))
+
+;; #NOTE(4lex1v, 08/24/17) :: Default to an empty string that should be introduced manually
+(setq comment-note-comment-prefix "")
 
 (setq-default
  truncate-lines t
@@ -71,26 +85,28 @@
  show-paren-delay            0.0
  ring-bell-function         'ignore
  tramp-default-method       "ssh"
- make-backup-files           nil
- auto-save-default           nil
- inhibit-startup-message     t
- initial-scratch-message     nil
- kill-do-not-save-duplicates t
- ad-redefinition-action     'accept
- next-line-add-newlines      t
- desktop-save-mode           nil
- desktop-save                nil
- user-ref-name               "4lex1v"
- mouse-wheel-scroll-amount   '(1)
- mouse-wheel-progressive-speed nil
+ make-backup-files              nil
+ auto-save-default              nil
+ inhibit-startup-message        t
+ initial-scratch-message        nil
+ kill-do-not-save-duplicates    t
+ ad-redefinition-action        'accept
+ next-line-add-newlines         t
+ desktop-save-mode              nil
+ desktop-save                   nil
+ user-ref-name                 "4lex1v"
+ mouse-wheel-scroll-amount     '(1)
+ mouse-wheel-progressive-speed  nil
  inhibit-compacting-font-caches t
  
  default-font-name           "PragmataPro"
- default-font-size           16
+ default-font-size           14
  default-font-setting        (format "%s %d" default-font-name default-font-size)
  
+ default-directory           "~/Sandbox"
+ 
  theme-to-load               'sirthias
- search-upper-case           nil)
+ search-upper-case            nil)
 
 (show-paren-mode        t)
 (delete-selection-mode  t)
@@ -106,6 +122,7 @@
 (delete-selection-mode t)
 (global-auto-revert-mode t)
 
+(put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
 (fset 'yes-or-no-p   'y-or-n-p)
@@ -134,7 +151,7 @@
 ;; Only when the config is stable
 (setq use-package-expand-minimally t)
 
-(add-to-list 'load-path (expand-file-name "modules/use-package" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "modules/use-package" USER-EMACS-DIRECTORY))
 
 (require 'bind-key)
 (require 'use-package)
@@ -143,23 +160,29 @@
   :config
   (diminish 'auto-revert-mode))
 
-(use-package s :ensure t :demand t) ;; Strings manipulation library
-(use-package f :ensure t :demand t) ;; Files manipulation library
+(use-package s    :ensure t :demand t) ;; Strings manipulation library
+(use-package f    :ensure t :demand t) ;; Files manipulation library
 (use-package dash :ensure t :demand t) ;; List manipulation library
 
 (use-package sirthias-theme :load-path "themes/sirthias" :demand t
-  :if (and (display-graphic-p) (eq theme-to-load 'sirthias))
+  :if (eq theme-to-load 'sirthias)
   
   :init
   (setq
-   sirthias-easy-mode    t
-   sirthias-cold-mode    nil)
+   sirthias-easy-mode t
+   sirthias-cold-mode nil)
   
-  :config (load-theme 'sirthias t))
+  (add-hook 'after-make-frame-functions
+                (lambda (frame)
+                  (select-frame frame)
+                  (load-theme 'sirthias t)))
+  
+  :config
+  (load-theme 'sirthias t))
 
 ;; #TODO(4lex1v, 08/28/18) :: Should this also double check that we are using the pragmata font as well?
 ;; #TODO(4lex1v, 08/28/18) :: Double check if it really slows down the work on windows
-;; (if (not IS_WINDOWS)
+;; (if (not IS-WINDOWS)
 ;;     (load "fonts/pretty-pragmata"))
 
 ;; Set of custom hack of the default theme to make it a bit prettier
@@ -170,24 +193,21 @@
         (lambda ()
           (set-face-attribute 'eshell-prompt nil :foreground "#000080")))))
 
-;; (when (boundp 'window-divider-mode)
-;;   (setq window-divider-default-places t
-;;         window-divider-default-bottom-width 1
-;;         window-divider-default-right-width 1)
-;;   (window-divider-mode +1))
-
 (use-package general :demand t :load-path "modules/general"
   :init
   (setq general-default-states  'normal
         general-default-prefix  "<SPC>")
+  
   :config
-  (general-evil-setup t))
+  (with-eval-after-load 'evil
+    (general-evil-setup t)))
 
-;;(unbind-key "C-x b")
-
-;; #NOTE(4lex1v, 08/24/17) :: Some movement keybinds are defined in Editor/Smartparens
 (use-package evil :load-path "modules/evil" :demand t
   :after general ;; To enable evil-leader in initial buffers
+  
+  :functions (prog-mode-hook)
+  
+  :hooks hs-minor-mode
   
   :preface
   (setq 
@@ -196,36 +216,37 @@
   
   :general
   (:prefix   nil
-             :keymaps 'evil-motion-state-map
-             :states   nil
-             
-             "j"   'evil-next-visual-line
-             "k"   'evil-previous-visual-line)
+   :keymaps 'evil-motion-state-map
+   :states   nil
+   
+   "j"   'evil-next-visual-line
+   "k"   'evil-previous-visual-line)
 
   (:prefix nil
-           
-           "$"   'evil-end-of-visual-line
-           "C-j" 'evil-forward-paragraph
-           "C-k" 'evil-backward-paragraph
-           "g,"  'evil-jump-backward
-           "g."  'find-function-at-point
-           "C-q" '4lex1v/close-buffer
+   
+   "$"   'evil-end-of-visual-line
+   "C-j" 'evil-forward-paragraph
+   "C-k" 'evil-backward-paragraph
+   "g,"  'evil-jump-backward
+   "g."  'find-function-at-point
+   "C-q" '4lex1v/close-buffer
+   "zl"  'hs-hide-level
 
-           ;; Navigation keys
-           "C-S-o" #'evil-jump-forward)
+   ;; Navigation keys
+   "C-S-o" #'evil-jump-forward)
 
   (:states 'normal
-           
-           "f"   '(:ignore t :which-key "Files")
-           "fi"  'init.el
-           "fe"  'eshell
-           
-           "e"   '(:ignore t :which-key "Emacs")
-           "eq"  'save-buffers-kill-emacs
-           "er"  'revert-buffer
+   
+   "f"   '(:ignore t :which-key "Files")
+   "fi"  'init.el
+   "fe"  'eshell
+   
+   "e"   '(:ignore t :which-key "Emacs")
+   "eq"  'save-buffers-kill-emacs
+   "er"  'revert-buffer
 
-           "ee"  '(:ignore t :which-key "Evil")
-           "een" '(evil-ex-nohighlight :which-key "No Highlighting"))
+   "ee"  '(:ignore t :which-key "Evil")
+   "een" '(evil-ex-nohighlight :which-key "No Highlighting"))
   
   :init
   (setq evil-default-cursor             t
@@ -257,6 +278,7 @@
 
   (use-package evil-collection :ensure t :demand t
     :after evil
+    :commands evil-collection-init
     :init
     (setq evil-collection-setup-minibuffer nil
           evil-collection-mode-list `(arc-mode
@@ -285,12 +307,14 @@
                                       (package-menu package)
                                       rtags
                                       (term term ansi-term multi-term)))
+
     :config
     (add-hook 'after-init-hook
               (lambda () (evil-collection-init))))
 
   (use-package evil-surround :ensure t
     :after evil
+    :commands global-evil-surround-mode
     :config
     (global-evil-surround-mode 1))
 
@@ -304,11 +328,32 @@
     ;; bind evil-forward/backward-args
     (define-key evil-normal-state-map "L" 'evil-forward-arg)
     (define-key evil-normal-state-map "H" 'evil-backward-arg)
-    (define-key evil-motion-state-map "L" 'evil-forward-arg)
-    (define-key evil-motion-state-map "H" 'evil-backward-arg)
 
     ;; bind evil-jump-out-args
-    (define-key evil-normal-state-map "K" 'evil-jump-out-args)))
+    (define-key evil-normal-state-map "K" 'evil-jump-out-args))
+
+  (general-evil-define-key 'normal 'global-map
+    "et"   '(:ignore t :which-key "Toggles")
+    "etl"  'toggle-truncate-lines
+    "f"    '(:ignore t :which-key "Files")
+    "fs"   `(,(open-hff-in-folder "Sandbox") :which-key "Sandbox")
+    "fd"   `(,(open-hff-in-folder "Dropbox") :which-key "Dropbox")
+    "fw"   `(,(open-hff-in-folder "Sandbox/Work") :which-key "Work")
+    "fl"   '(find-library :which-key "Find Library")
+    "s"    '(:ignore t :which-key "Services"))
+  
+  (general-evil-define-key 'normal 'global-map :prefix nil
+    "M-q"    '4lex1v:w/close-other-window
+    "C-q"    '4lex1v/close-buffer)
+  
+  (general-evil-define-key '(normal insert) 'global-map :prefix nil
+    "C-;"    'toggle-comment-on-line
+    "C-x \\" 'align-regexp
+    "C-c r"  'revert-buffer
+    "M-j"    'join-line
+    "M-o"    '4lex1v/insert-line-and-jump
+    "C-S-d"  '4lex1v/duplicate-line
+    "C-w i"  '(clone-indirect-buffer-other-window :which-key "Indirect Buffer")))
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t
@@ -343,45 +388,50 @@
 (use-package helm :load-path "modules/helm" :demand t
   :general
   (:prefix nil
-           :states nil
+   :states nil
            
-           "C-c h"   'helm-command-prefix
-           "M-y"     'helm-show-kill-ring
-           "C-x b"   'helm-mini
-           "C-x C-f" 'helm-find-files         
-           "M-x"     'helm-M-x
-           "M-:"     'helm-eval-expression-with-eldoc
-           "M-i"     'helm-occur
+   "C-c h"   'helm-command-prefix
+   "M-y"     'helm-show-kill-ring
+   "C-x b"   'helm-mini
+   "C-x C-f" 'helm-find-files         
+   "M-x"     'helm-M-x
+   "M-:"     'helm-eval-expression-with-eldoc
+   "M-i"     'helm-occur
 
-           ;; Number keys
-           "M-3"      'helm-mini
-           "M-6"      'helm-bookmarks)
+   ;; Number keys
+   "M-3"      'helm-mini
+   "M-6"      'helm-bookmarks)
   
   (:prefix  nil
-            :states '(normal)
-            
-            ;; #NOTE(4lex1v, 01/09/19) :: Bad idea, searches from the first line, doesn't make an auto-jump to the first occurence.
-            ;;                            much better on its own.
-            ;; "/"  'helm-occur
-            "ga" 'helm-apropos)
+   :states '(normal)
+   
+   ;; #NOTE(4lex1v, 01/09/19) :: Bad idea, searches from the first line, doesn't make an auto-jump to the first occurence.
+   ;;                            much better on its own.
+   ;; "/"  'helm-occur
+   "ga" 'helm-apropos)
   
+  (:prefix   nil
+   :keymaps 'helm-find-files-map
+   :states   nil
+   
+   "C-<backspace>"   'backward-kill-word)
 
   (:prefix   nil
-             :keymaps 'helm-map
-             :states   nil
-             
-             "<tab>" 'helm-execute-persistent-action
-             "C-i"   'helm-execute-persistent-action
-             "C-z"   'helm-select-action
-             "C-o"   'helm-next-source
-             "C-j"   'helm-next-line
-             "C-k"   'helm-previous-line)
+   :keymaps 'helm-map
+   :states   nil
+   
+   "<tab>" 'helm-execute-persistent-action
+   "C-i"   'helm-execute-persistent-action
+   "C-z"   'helm-select-action
+   "C-o"   'helm-next-source
+   "C-j"   'helm-next-line
+   "C-k"   'helm-previous-line)
 
   (:prefix   nil
-             :keymaps 'comint-mode-map
-             :states  '(normal insert)
+   :keymaps 'comint-mode-map
+   :states  '(normal insert)
 
-             "M-r" 'helm-comint-input-ring)
+   "M-r" 'helm-comint-input-ring)
   
   :init
   (setq helm-idle-delay                        0.0
@@ -403,7 +453,7 @@
   
   (helm-autoresize-mode)
 
-  (func init.el (find-file (concat user-emacs-directory "/" "init.el")))
+  (func init.el (find-file (concat USER-EMACS-DIRECTORY "/" "init.el")))
   (general-define-key "ff" 'helm-find-files)
   
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
@@ -414,10 +464,10 @@
     
     :general
     (:prefix   nil
-               :keymaps 'helm-command-map
-               :states   nil
-               
-               "b" 'helm-descbinds)
+     :keymaps 'helm-command-map
+     :states   nil
+     
+     "b" 'helm-descbinds)
     
     ("eb" '(helm-descbinds :which-key "Bindings"))
     
@@ -436,16 +486,18 @@
   ;; #NOTE :: This package doesn't rely on Projectile cause my workflow starts with helm-projectile-switch-project
   ;; So this package bootstrap the projectile loading
   (use-package helm-projectile :ensure t
+    :commands helm-projectile-on
     :general
     ("pp"  'helm-projectile-switch-project)
     
-    (:prefix ""
-             "C-M-3" 'helm-projectile-switch-to-buffer
-             "M-1"   'helm-projectile-find-file)
+    (:prefix nil
+
+     "C-M-3" 'helm-projectile-switch-to-buffer
+     "M-1"   'helm-projectile-find-file)
     
     :config (helm-projectile-on))
 
-  ;; #TODO(4lex1v, 07/20/18) :: Marked for removal, though might be helpful if rg is not avail.
+  ;; #TODO(4lex1v, 07/20/18>) :: Marked for removal, though might be helpful if rg is not avail.
   (use-package helm-ag :ensure t :disabled t
     :after helm-projectile
     :general
@@ -466,7 +518,7 @@
   
   ;; #TODO(4lex1v, 09/03/18) :: Install on Windows?
   (use-package helm-gtags :ensure t
-    :if (not IS_WINDOWS)
+    :if (not IS-WINDOWS)
     :diminish (helm-gtags-mode . "GT")
     :after helm
     
@@ -516,17 +568,17 @@
         projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
 
   :config
-  (projectile-global-mode))
+  (projectile-mode))
 
 (use-package magit :defer 2
   :load-path "modules/magit/lisp"
-  :commands (magit magit-status magit-diff magit-clone)
+  :commands (magit magit-status magit-diff-range magit-clone)
   
   :general 
   ("g" '(:ignore t :which-key "Magit")
    "gs"  'magit-status
    "gm"  'magit-dispatch-popup
-   "gb"  'magit-blame
+   "gb"  'magit-addition-blame
    "g'"  'magit-submodule-popup
    "gy"  'magit-show-refs-popup
    "ge"  'magit-ediff-popup
@@ -592,11 +644,9 @@
     (interactive)
     (let* ((args (magit-diff-arguments))
            (diff-cmd (format "master...%s" (magit-get-current-branch))))
-      (magit-diff diff-cmd args)))
+      (magit-diff-range diff-cmd args)))
   
   :config
-  ;; (evil-set-initial-state 'magit-submodule-list-mode 'emacs)
-  
   (add-to-list 'magit-log-arguments "--color")
   (add-to-list 'magit-diff-arguments "--ignore-space-change")
 
@@ -622,19 +672,14 @@
               "RET"    'with-editor-finish
               [escape] 'with-editor-cancel)
     :config
-    (evil-set-initial-state 'with-editor-mode 'insert))
+    (with-eval-after-load 'evil
+     (evil-set-initial-state 'with-editor-mode 'insert)))
 
-  (use-package evil-magit :ensure t
-    :after magit-mode
+  (use-package evil-magit :ensure t :demand t
+    :after (evil magit-mode)
+    :commands evil-magit-init
     :config
     (evil-magit-init)))
-
-(dolist (k '([mouse-1] [down-mouse-1] [drag-mouse-1] [double-mouse-1] [triple-mouse-1]  
-             [mouse-2] [down-mouse-2] [drag-mouse-2] [double-mouse-2] [triple-mouse-2]
-             [mouse-3] [down-mouse-3] [drag-mouse-3] [double-mouse-3] [triple-mouse-3]
-             [mouse-4] [down-mouse-4] [drag-mouse-4] [double-mouse-4] [triple-mouse-4]
-             [mouse-5] [down-mouse-5] [drag-mouse-5] [double-mouse-5] [triple-mouse-5]))
-  (global-unset-key k))
 
 (use-package exec-path-from-shell :ensure t :demand t
   :commands (exec-path-from-shell-getenv
@@ -656,118 +701,152 @@
       
       (exec-path-from-shell-setenv "PATH" path))))
 
-;; (use-package osx :if IS_MAC :demand t
-;;   :after exec-path-from-shell
+(use-package osx :if IS-MAC :demand t
+  :after exec-path-from-shell
+  :defines
+  (mac-command-modifier
+   mac-option-modifier
+   mac-control-modifier
+   ns-function-modifier
+   ns-use-native-fullscreen)
+  
+  :init
+  (setq browse-url-browser-function 'browse-url-default-macosx-browser
+        delete-by-moving-to-trash    t
+        mac-command-modifier        'meta
+        mac-option-modifier         'super
+        mac-control-modifier        'control
+        ns-function-modifier        'hyper
+        ns-use-native-fullscreen     t
+        frame-resize-pixelwise       t
+        shell-file-name              "/bin/sh")
 
-;;   :init
-;;   (setq browse-url-browser-function 'browse-url-default-macosx-browser
-;;         delete-by-moving-to-trash    t
-;;         mac-command-modifier        'meta
-;;         mac-option-modifier         'super
-;;         mac-control-modifier        'control
-;;         ns-function-modifier        'hyper
-;;         ns-use-native-fullscreen     t
-;;         frame-resize-pixelwise       t
-;;         shell-file-name              "/bin/sh")
+  :general
+  (:prefix nil
+   :states '(normal insert)
+   
+   "M-`" 'ns-next-frame)
 
-;;   :general
-;;   (:prefix nil
-;;    :states '(normal insert)
-;;    "M-`" 'ns-next-frame)
+  :config
+  (message "[CONFIGURATION] Loading MacOS system configuration")
 
-;;   :config
-;;   (message "[CONFIGURATION] Loading MacOS system configuration")
+  (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
+  (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
+  (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
+  (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
+  (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin")
 
-;;   (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
-;;   (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
-;;   (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
-;;   (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
-;;   (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin")
+  (use-package em-alias
+    :config
+    (eshell/alias "bubu" "brew update && brew upgrade")
+    (eshell/alias "sshs" "ssh-add ~/.ssh/github_rsa")))
 
-;;   (use-package em-alias
-;;     :config
-;;     (eshell/alias "bubu" "brew update && brew upgrade")
-;;     (eshell/alias "sshs" "ssh-add ~/.ssh/github_rsa")))
-
-(use-package windows :if IS_WINDOWS
+(use-package windows :if IS-WINDOWS
   :init
   (message "[CONFIGURATION] Loading Windows OS system configuration")
   
   ;; #NOTE(4lex1v) :: Not sure if these paths should be defined here or in Native modules configuration
-  (setq default-directory (expand-file-name "~/")))
+  )
 
-;;
-;;; Platform Configuration
-;; Unlike other modules, these should be loaded sequentially in a given order
-;; 
-
-(defun 4lex1v:gui:frame (&rest configs)
-  "Helper function for simpler frame configuration"
-  (pcase-let* ((`(,active . ,inactive) (plist-get configs :transparency))
-               (`(,active-cursor . ,inactive-cursor) (plist-get configs :cursor)))
-    
-    (setq-default cursor-type active-cursor
-                  cursor-in-non-selected-windows inactive-cursor)
-
-    (set-frame-parameter (selected-frame) 'alpha (cons active inactive))
-    (add-to-list 'default-frame-alist (cons 'alpha (cons active inactive)))))
-
-(use-package powerline :ensure t :demand t
-  :config
-  (defpowerline project-segment 
-    (if (and (fboundp 'projectile-project-p)
-             (projectile-project-p))
-        (let ((project-name (projectile-project-name))
-              (branch-name
-               (if (and (not IS_WINDOWS)
-                        (fboundp 'magit-get-current-branch))
-                   (magit-get-current-branch))))
-          (propertize
-           (if (or (eq branch-name nil)
-                   (string-empty-p branch-name))
-               (format "[%s]" project-name)
-             (format "[%s @ %s]"
-                     project-name
-                     branch-name))))))
+;; (use-package powerline :ensure t :demand t :disabled t
+;;   :config
+;;   (defpowerline project-segment 
+;;     (if (and (fboundp 'projectile-project-p)
+;;              (projectile-project-p))
+;;         (let ((project-name (projectile-project-name))
+;;               (branch-name
+;;                (if (and (not IS-WINDOWS)
+;;                         (fboundp 'magit-get-current-branch))
+;;                    (magit-get-current-branch))))
+;;           (propertize
+;;            (if (or (eq branch-name nil)
+;;                    (string-empty-p branch-name))
+;;                (format "[%s]" project-name)
+;;              (format "[%s @ %s]"
+;;                      project-name
+;;                      branch-name))))))
   
-  (setq-default
-   mode-line-format
-   '("%e"
-     (:eval
-      (let* ((active (powerline-selected-window-active))
-             (face0 (if active 'powerline-active0 'powerline-inactive0))
-             (separator-left (intern (format "powerline-%s-%s"
-                                             (powerline-current-separator)
-                                             (car powerline-default-separator-dir))))
-             (separator-right (intern (format "powerline-%s-%s"
-                                              (powerline-current-separator)
-                                              (cdr powerline-default-separator-dir))))
+;;   (setq-default
+;;    mode-line-format
+;;    '("%e"
+;;      (:eval
+;;       (let* ((active (powerline-selected-window-active))
+;;              (face0 (if active 'powerline-active0 'powerline-inactive0))
+;;              (separator-left (intern (format "powerline-%s-%s"
+;;                                              (powerline-current-separator)
+;;                                              (car powerline-default-separator-dir))))
+;;              (separator-right (intern (format "powerline-%s-%s"
+;;                                               (powerline-current-separator)
+;;                                               (cdr powerline-default-separator-dir))))
              
-             (lhs (list (powerline-raw evil-mode-line-tag face0)
-                        (project-segment face0)
-                        (powerline-buffer-id face0 'l)
-                        (powerline-raw ":%l" face0)))
+;;              (lhs (list (powerline-raw evil-mode-line-tag face0)
+;;                         (project-segment face0)
+;;                         (powerline-buffer-id face0 'l)
+;;                         (powerline-raw ":%l" face0)))
              
-             (rhs (list (powerline-raw "[" face0 'l)
-                        (powerline-minor-modes face0)
-                        (powerline-raw "]" face0 'r)
-                        (powerline-major-mode face0 'r))))
+;;              (rhs (list (powerline-raw "[" face0 'l)
+;;                         (powerline-minor-modes face0)
+;;                         (powerline-raw "]" face0 'r)
+;;                         (powerline-major-mode face0 'r))))
         
-        (concat (powerline-render lhs)
-                (powerline-fill face0 (powerline-width rhs))
-                (powerline-render rhs)))))))
+;;         (concat (powerline-render lhs)
+;;                 (powerline-fill face0 (powerline-width rhs))
+;;                 (powerline-render rhs)))))))
 
+;; #TODO(4lex1v, 01/11/19):
+;;   - Need to work more on keybindings, hitting SPC W for an access is too slow for this, though maybe with time this would become easeier / faster
+;;   - Would be nice to add a function that would allow me to open a file from Helm's FF in a new workspace
+(use-package eyebrowse :ensure t
+  :after hydra 
+  
+  :commands
+  (eyebrowse-create-window-config
+   eyebrowse-close-window-config
+   eyebrowse-prev-window-config
+   eyebrowse-next-window-config
+   eyebrowse-switch-to-window-config-0
+   eyebrowse-switch-to-window-config-1
+   eyebrowse-switch-to-window-config-2
+   eyebrowse-switch-to-window-config-3)
+  
+  :general
+  ("w"  'hydra-eyebrowse/body)
+  
+  :config
+  (defhydra hydra-eyebrowse (:color pink :hint nil)
+    "
+   ^Configs^      ^Navigation^
+-----------------------------
+ _1_: Config 1    _c_: Create
+ _2_: Config 2    _k_: Close Current 
+ _3_: Config 3    _j_: Previous
+ _4_: Config 4    _l_: Next
+-----------------------------
+"
+    ("c" eyebrowse-create-window-config :color blue)
+    ("k" eyebrowse-close-window-config :color blue)
+    ("j" eyebrowse-prev-window-config)
+    ("l" eyebrowse-next-window-config)
+    
+    ("1" eyebrowse-switch-to-window-config-0)
+    ("2" eyebrowse-switch-to-window-config-1)
+    ("3" eyebrowse-switch-to-window-config-2)
+    ("4" eyebrowse-switch-to-window-config-3)
+    
+    ("q" nil "quit"))
+
+  (eyebrowse-mode))
 
 (use-package hydra :load-path "modules/hydra" :demand t 
   :general
   (:prefix nil
            
-           "<f2>" 'hydra-zoom/body)
+   "<f2>" 'hydra-zoom/body)
 
   (:prefix nil
-           :states 'normal
+   :states 'normal
 
-           "C-e"  'hydra-error/body)
+   "C-e"  'hydra-error/body)
   
   :config
   (defhydra hydra-zoom (:color pink :hint nil)
@@ -816,130 +895,15 @@ _l_: Last
    "psr" 'rg-project
    "psl" 'rg-literal))
 
-;; #NOTE(4lex1v, 08/24/17) :: Ref: `font-lock-keywords`
-;; #NOTE(4lex1v) :: Wonder if i can simple use `prog-mode` to enable the highliting everywhere?
-;; #TODO(4lex1v) :: Need to add some support in combination with projectile to see all entries in the project
-;; #TODO(4lex1v) :: Need to update the visual repr of these things
-(mapc
- (lambda (mode)
-   (font-lock-add-keywords ;;`font-lock-keywords`
-    mode
-    '(("#\\<\\(TODO\\)\\>" 1 '(error :underline t) t)
-      ("#\\<\\(NOTE\\)\\>" 1 '(warning :underline t) t))))
- '(emacs-lisp-mode lua-mode scala-mode c-mode objc-mode c++-mode rust-mode))
-
-(defun 4lex1v/multi-window-p ()
-  (> (count-windows) 1))
-
-(defun 4lex1v/close-buffer (&optional arg)
-  "Close active buffer if a single window environment or close buffer with corresponding window
-in multi-window environment. In order to leave the window opened provided an optional arg `leave-window'"
-  (interactive "P")
-  (kill-buffer (current-buffer))
-  (if (and (not (equal arg 'nil))
-           (4lex1v/multi-window-p))
-      (delete-window)))
-
-(defun 4lex1v:w/close-other-window ()
-  "In a multi window environment close other (i.e not active) window. If there're more
-then two windows around, provide an index number which window to close"
-  (interactive)
-  (if (4lex1v/multi-window-p)
-      (progn
-        (other-window 1)
-        (kill-buffer (current-buffer))
-        (delete-window))))     
-
-;; #NOTE(4lex1v, 08/24/17) :: Default to an empty string that should be introduced manually
-(setq comment-note-comment-prefix "")
-
-;; Need to organize this to avoid disambiguity and not to forget
-;; #NOTE :: DOESN'T REQUIRE Prefix
-(general-evil-define-key 'normal 'global-map :prefix nil
-                         
-                         ;; Window Management
-                         "M-q"    '4lex1v:w/close-other-window ;; #TODO :: Doesn't look i'm using this at all
-                         
-                         ;; Buffer Management
-                         "C-q"    '4lex1v/close-buffer) ;; #TODO :: Evil has C-w c which seems to be very convenient
-
-(defmacro open-hff-in-folder (folder)
-  "fast way to access the the folder with helm"
-  `(lambda ()
-     (interactive)
-     (let ((default-directory ,(format "~/%s/" folder)))
-       (helm-find-files nil))))
-
-(defun dired-dirs-first ()
-  "Sort dired listings with directories first."
-  (save-excursion
-    (let (buffer-read-only)
-      (forward-line 2) ;; beyond dir. header 
-      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-    (set-buffer-modified-p nil)))
-
-(defadvice dired-readin
-    (after dired-after-updating-hook first () activate)
-  "Sort dired listings with directories first before adding marks."
-  (dired-dirs-first))
-
-(put 'dired-find-alternate-file 'disabled nil)
-
-(general-evil-define-key '(normal insert) 'global-map
-  :prefix nil
-
-  "C-w i" '(clone-indirect-buffer-other-window :which-key "Indirect Buffer"))
-
-;; #NOTE :: REQUIRES Prefix
-(general-evil-define-key 'normal 'global-map
-  ;; Toggles
-  "et"   '(:ignore t :which-key "Toggles")
-  "etl"  'toggle-truncate-lines
-
-  ;; Files
-  "f"  '(:ignore t :which-key "Files")
-  "fs" `(,(open-hff-in-folder "Sandbox") :which-key "Sandbox")
-  "fd" `(,(open-hff-in-folder "Dropbox") :which-key "Dropbox")
-  "fw" `(,(open-hff-in-folder "Sandbox/Work") :which-key "Work")
-  "fl" '(find-library :which-key "Find Library")
-
-  ;; Services
-  "s" '(:ignore t :which-key "Services"))
-
-(defun 4lex1v/insert-line-and-jump (arg)
-  (interactive "p")
-  (end-of-line)
-  (open-line arg)
-  (forward-line 1)
-  (indent-according-to-mode))
-
-(defun toggle-comment-on-line ()
-  (interactive)
-  (comment-or-uncomment-region
-   (line-beginning-position)
-   (line-end-position)))
-
-(defun 4lex1v/open-in-intellij ()
-  "Open current position in Intellij Idea"
-  (interactive)
-  (let* ((line (save-excursion
-                 (beginning-of-line)
-                 (1+ (count-lines 1 (point)))))
-         (cmd (format "idea %s:%i" buffer-file-name line)))
-    (start-process-shell-command "Idea" nil cmd)))
-
-(defun 4lex1v/open-in-clion ()
-  "Open current position in Intellij Idea"
-  (interactive)
-  (let* ((line (save-excursion
-                 (beginning-of-line)
-                 (1+ (count-lines 1 (point)))))
-         (cmd (format "clion %s:%i" buffer-file-name line)))
-    (start-process-shell-command "Idea" nil cmd)))
-
 (use-package smartparens :load-path "modules/smartparens"
   :commands
-  (smartparens-mode
+  (sp-forward-slurp-sexp
+   sp-backward-slurp-sexp
+   sp-forward-barf-sexp
+   sp-backward-barf-sexp
+   sp-pair
+   sp-local-pair
+   smartparens-mode
    sp-with-modes
    sp-local-pairs)
   
@@ -993,7 +957,17 @@ _h_: b-slurp    _H_: b-barf
 
 (use-package yasnippet :load-path "modules/yasnippet"
   :diminish (yas-minor-mode . " Y")
-  :commands yas-minor-mode
+
+  :commands
+  (yas-minor-mode
+   yas-load-directory
+   yas-activate-extra-mode
+   yas-insert-snippet
+   yas-visit-snippet-file
+   yas-new-snippet
+   yas-tryout-snippet
+   yas-describe-tables
+   yas-reload-all)
   
   :mode ("\\.yasnippet" . snippet-mode)
   
@@ -1035,6 +1009,8 @@ _e_xtra   _f_ile           _t_ryout
 
 (use-package company :load-path "modules/company"
   :commands company-mode
+  
+  :functions (company-clang)
   
   :general
   (:prefix  nil
@@ -1078,57 +1054,17 @@ _e_xtra   _f_ile           _t_ryout
         (make-local-variable 'company-backends)
         (setq company-backends (list (remove nil ,backends)))))))
 
-(use-package flycheck :ensure t :if IS_UNIX
+(use-package flycheck :ensure t :if IS-UNIX
   :general
   ("ef"  '(:ignore t :which-key "Flycheck")
    "efl" 'flycheck-list-errors))
 
-;; #TODO :: move over to appearance?
-(use-package hideshowvis :ensure t :disabled t
-  :diminish (hs-minor-mode . " +/-")
-  :commands hideshowvis-enable
-  
-  :hook
-  (((conf-mode js-mode) . hs-minor-mode)
-   ((conf-mode js-mode) . hideshowvis-minor-mode))
-  
-  :init
-  (add-to-list 'hs-special-modes-alist
-               (list 'nxml-mode
-                     "<!--\\|<[^/>]*[^/]>"
-                     "-->\\|</[^/>]*[^/]>"
-                     "<!--"
-                     'nxml-forward-element
-                     nil))
-
-  ;; Fix HTML folding
-  (dolist (mode '(sgml-mode html-mode html-erb-mode))
-    (add-to-list 'hs-special-modes-alist
-                 (list mode
-                       "<!--\\|<[^/>]*[^/]>"
-                       "-->\\|</[^/>]*[^/]>"
-                       "<!--"
-                       'sgml-skip-tag-forward
-                       nil)))
-
-  (let ((modes '(nxml-mode-hook)))
-    (apply #'4lex1v/hook-into-modes #'hideshowvis-enable modes)
-    (apply #'4lex1v/hook-into-modes #'hs-minor-mode modes))
-  
-  :config
-  (hideshowvis-symbols)
-  (hideshowvis-enable))
-
-(use-package flyspell :ensure t :if IS_UNIX
-  
+(use-package flyspell :ensure t :if IS-UNIX
   :bind
   (("C-c i b" . flyspell-buffer)
    ("C-c i f" . flyspell-mode))
   
   :init
-  (with-mode which-key
-    (which-key-declare-prefixes "C-c i" "flyspell"))
-  
   (use-package ispell
     :bind
     (("C-c i c" . ispell-comments-and-strings)
@@ -1142,7 +1078,7 @@ _e_xtra   _f_ile           _t_ryout
 
 (use-package undo-tree :ensure t
   :diminish undo-tree-mode
-  
+  :commands global-undo-tree-mode
   :general
   (:prefix nil
            :states 'normal
@@ -1167,32 +1103,19 @@ _e_xtra   _f_ile           _t_ryout
 
             "gu" 'string-inflection-all-cycle))
 
-;; #NOTE :: DOESN'T REQUIRE Prefix
-;; #TODO :: Should this work for normal & insert states?
-(general-evil-define-key '(normal insert) 'global-map
-  :prefix ""
-
-  ;; Editor
-  "C-;"    'toggle-comment-on-line
-  "C-x \\" 'align-regexp
-  "C-c r"  'revert-buffer
-  "M-j"    'join-line
-  "M-o"    '4lex1v/insert-line-and-jump
-  "C-S-d"  '4lex1v/duplicate-line)
-
 (use-package elisp-mode
   :interpreter ("emacs" . emacs-lisp-mode)
   :mode        (("\\.el$" . emacs-lisp-mode)
                 ("Cask"   . emacs-lisp-mode))
   
-  ;; :hooks
-  ;; (:emacs-lisp-mode-hook
-  ;;  ;; 4lex1v:fix-elisp-indentation
-  ;;  ;; yas-minor-mode
-  ;;  ;; company-mode
-  ;;  ;; smartparens-mode
-  ;;  hideshowvis-enable
-  ;;  hs-minor-mode)
+  :functions (emacs-lisp-mode-hook)
+  
+  :hooks
+  (:emacs-lisp-mode-hook
+   yas-minor-mode
+   company-mode
+   smartparens-mode
+   hs-minor-mode)
   
   :general
   (:prefix ""
@@ -1219,43 +1142,47 @@ _e_xtra   _f_ile           _t_ryout
 
   (with-eval-after-load 'smartparens
     (sp-with-modes 'emacs-lisp-mode
-                   (sp-local-pair "'" nil :actions nil))))
+      (sp-local-pair "'" nil :actions nil)))
 
-(use-package macrostep :ensure t
-  :after elisp-mode
-  :commands macrostep-expand
-  :mode ("\\*.el\\'" . emacs-lisp-mode)
+  (use-package macrostep :ensure t
+    :after elisp-mode
+    :commands macrostep-expand
+    :mode ("\\*.el\\'" . emacs-lisp-mode)
+    
+    :general
+    ;; Support Macrostep in Evil mode
+    (:keymaps 'macrostep-keymap :prefix ""
+              "q" #'macrostep-collapse-all
+              "e" #'macrostep-expand)
+
+    (general-define-key :keymaps 'emacs-lisp-mode-map
+                        "em" #'macrostep-expand)
+    
+    :init
+    (with-eval-after-load 'evil-collection
+      (add-to-list 'evil-collection-mode-list 'macrostep)))
+
+  (use-package deferred :ensure t :disabled t
+    :after elisp-mode)
+
+  (use-package request :ensure t :disabled t
+    :after (elisp-mode deferred)
+    :init
+    (use-package request-deferred :after deferred)
+    (setq request-log-level 'debug
+          request-message-level 'warn))
+
+  (use-package elisp-refs :ensure t :disabled t
+    :init
+    (with-eval-after-load 'evil-collection
+      (add-to-list 'evil-collection-mode-list 'elisp-refs)))
   
-  :general
-  ;; Support Macrostep in Evil mode
-  (:keymaps 'macrostep-keymap :prefix ""
-            "q" #'macrostep-collapse-all
-            "e" #'macrostep-expand)
+  (add-hook 'after-save-hook 
+            (lambda ()
+              (if (string= (buffer-file-name)
+                           USER-INIT-FILE)
+                  (byte-recompile-file USER-INIT-FILE)))))
 
-  (general-define-key :keymaps 'emacs-lisp-mode-map
-                      "em" #'macrostep-expand)
-  
-  :init
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'macrostep)))
-
-(use-package deferred :ensure t :disabled t
-  :after elisp-mode)
-
-(use-package request :ensure t :disabled t
-  :after (elisp-mode deferred)
-  :init
-  (use-package request-deferred :after deferred)
-  (setq request-log-level 'debug
-        request-message-level 'warn))
-
-(use-package elisp-refs :ensure t :disabled t
-  :init
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'elisp-refs)))
-
-;; #TODO(4lex1v, 08/28/17) :: For some reason Scala marks `=` as a keyword and highlights it... this needs to be fixed
-;; #TODO :: Turn off flycheck mode in SBT files or find a proper check extension
 (use-package scala-mode :disabled t
   :load-path "modules/scala-mode"
   :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
@@ -1266,8 +1193,7 @@ _e_xtra   _f_ile           _t_ryout
    smartparens-mode
    yas-minor-mode
    company-mode
-   hs-minor-mode
-   hideshowvis-minor-mode)
+   hs-minor-mode)
   
   :general
   (:keymaps 'scala-mode-map
@@ -1302,9 +1228,6 @@ _e_xtra   _f_ile           _t_ryout
         company-yasnippet
         company-files)))
   
-  (with-eval-after-load 'hideshowvis
-    (push '(scala-mode "\\({\\|(\\)" "\\(}\\|)\\)" "/[*/]" nil nil) hs-special-modes-alist))
-
   (use-package smartparens-scala
     :after (:all smartparens scala-mode)
     :config
@@ -1333,19 +1256,23 @@ _e_xtra   _f_ile           _t_ryout
     :config
     (load "sbt-defuns")
     (setq-default truncate-lines t)
-    (evil-set-initial-state 'sbt-mode 'insert)))
+    
+    (with-eval-after-load 'evil
+      (evil-set-initial-state 'sbt-mode 'insert))))
 
 (use-package cc-mode
   :mode (("\\.h\\'"  . c++-mode)
          ("\\.mm\\'" . objc-mode))
+  
+  :commands c-toggle-auto-newline
+  :defines (c-mode-common-hook)
   
   :hooks
   (:c-mode-common-hook
    smartparens-mode
    yas-minor-mode
    company-mode
-   hs-minor-mode
-   hideshowvis-minor-mode)
+   hs-minor-mode)
   
   :general
   (:keymaps 'c-mode-base-map
@@ -1355,9 +1282,7 @@ _e_xtra   _f_ile           _t_ryout
             "mA" 'projectile-find-other-file-other-window)
   
   ;; #TODO :: Check if this could be defined in the global configuration or it needs to be overriden for these modes?
-  (:prefix   nil
-             :keymaps 'c-mode-base-map  
-
+  (:prefix nil :keymaps 'c-mode-base-map  
              "C-S-j" #'next-error
              "C-S-k" #'previous-error
              ",r"    #'recompile)
@@ -1369,7 +1294,7 @@ _e_xtra   _f_ile           _t_ryout
    org-babel-C-compiler "clang"
    org-babel-C++-compiler "clang++")
   
-  (if IS_WINDOWS
+  (if IS-WINDOWS
       (setq
        win32-system-include-paths '("c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/shared"
                                     "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/ucrt"
@@ -1394,7 +1319,7 @@ _e_xtra   _f_ile           _t_ryout
         company-keywords
         company-yasnippet
         company-files
-        ,(if (and IS_UNIX (require 'company-clang nil t))
+        ,(if (and IS-UNIX (require 'company-clang nil t))
              (function company-clang)))))
   
   (with-eval-after-load 'smartparens
@@ -1429,9 +1354,7 @@ _e_xtra   _f_ile           _t_ryout
     :after cc-mode
     
     :general
-    (:prefix   nil
-               :keymaps 'c-mode-base-map
-
+    (:prefix nil :keymaps 'c-mode-base-map
                "g." 'semantic-ia-fast-jump)
     
     ;; :init
@@ -1448,7 +1371,7 @@ _e_xtra   _f_ile           _t_ryout
     :config
     (add-hook 'c-mode-common-hook
               (lambda ()
-                (if IS_WINDOWS
+                (if IS-WINDOWS
                     (-each win32-system-include-paths 'semantic-add-system-include))))
 
     ;; Configure semantic
@@ -1475,10 +1398,7 @@ _e_xtra   _f_ile           _t_ryout
   :hooks (;; Rust-specific modes
           cargo-minor-mode
           ;; racer-mode
-          
-          ;; General Modes
           hs-minor-mode
-          hideshowvis-enable
           yas-minor-mode
           smartparens-mode
           company-mode)
@@ -1615,8 +1535,9 @@ _e_xtra   _f_ile           _t_ryout
 
   (use-package ob-restclient :ensure t :after (:both org restclient) :commands org-babel-execute:restclient))
 
-(use-package ssh-agency :if IS_WINDOWS :ensure t
+(use-package ssh-agency :if IS-WINDOWS :ensure t
   :after magit
+  :commands ssh-agency-ensure
   :init
   (let ((sysroot (getenv "SystemRoot")))
     (setq ssh-agency-keys (list
@@ -1635,6 +1556,7 @@ _e_xtra   _f_ile           _t_ryout
 
 (use-package elfeed
   :load-path "modules/elfeed"
+  :commands elfeed-update
   :general
   ("se" 'elfeed)
 
@@ -2051,7 +1973,7 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
                           (point-min) (point-max) '(mouse-face t)))))
 
   (use-package evil-org
-    :after org
+    :after (evil org)
     :hook (org-mode . evil-org-mode)
     
     :config
@@ -2132,9 +2054,10 @@ _v_: Visualize
 
 (use-package plantuml-mode :ensure t :disabled t)
 
-(use-package esxml :ensure t :disabled t)
-
-(use-package eshell :defer t
+(use-package eshell
+  :defines (eshell-visual-commands eshell-mode-hook)
+  :functions (eshell/alias eshell/pwd eshell-cmpl-initialize)
+  
   :init
   (defun 4lex1v:helm-eshell-history ()
     (eshell-cmpl-initialize)
@@ -2181,4 +2104,13 @@ _v_: Visualize
                       (remove nil
                               '(company-files company-dabbrev)))))))
 
+(mapc
+ (lambda (mode)
+   (font-lock-add-keywords ;;`font-lock-keywords`
+    mode
+    '(("#\\<\\(TODO\\)\\>" 1 '(error :underline t) t)
+      ("#\\<\\(NOTE\\)\\>" 1 '(warning :underline t) t))))
+ '(emacs-lisp-mode lua-mode scala-mode c-mode objc-mode c++-mode rust-mode))
+
 (setq gc-cons-threshold 1000000)
+

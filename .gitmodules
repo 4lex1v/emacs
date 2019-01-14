@@ -40,9 +40,6 @@
 [submodule "modules/essentials/use-package"]
 	path = modules/use-package
 	url = git@github.com:jwiegley/use-package.git
-[submodule "foundation"]
-	path = foundation
-	url = git@github.com:4lex1v/foundation.git
 [submodule "platform/evil/evil-core"]
 	path = modules/editor/evil-core
 	url = git@github.com:emacs-evil/evil.git
