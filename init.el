@@ -52,12 +52,23 @@
 
  default-directory           "~/Sandbox"
 
- ;; default-font-setting        "PragmataPro 16"
- default-font-setting        "Iosevka SS08 Semibold 16"
+ default-font-setting        (if IS-MAC "Monaco 16" "Iosevka SS08 Semibold 16")
 
  theme-to-load               'sirthias
 
  search-upper-case            nil)
+
+(if IS-MAC
+    (setq
+     browse-url-browser-function 'browse-url-default-macosx-browser
+     delete-by-moving-to-trash    t
+     mac-command-modifier        'meta
+     mac-option-modifier         'super
+     mac-control-modifier        'control
+     ns-function-modifier        'hyper
+     ns-use-native-fullscreen     t
+     frame-resize-pixelwise       t
+     shell-file-name              "/bin/sh"))
 
 (show-paren-mode       -1)
 (delete-selection-mode  t)
@@ -331,99 +342,99 @@
    :prefix   nil
    :states  '(normal insert)
    
-   "M-t"   'sp-transpose-sexp
-   
-   "C-M-k" 'sp-kill-sexp
-   "C-M-w" 'sp-copy-sexp
-   
-   "C-s" 'hydra-smartparens/body)
-  
-  :init
-  (setq sp-base-key-bindings nil
-        sp-autoinsert-if-followed-by-word t
-        sp-autoskip-closing-pair 'always-end
-        sp-hybrid-kill-entire-symbol nil)
-  
-  (with-eval-after-load 'hydra
-    (defhydra hydra-smartparens (:color pink :hint nil)
-      
-      "
-^Slurp^         ^Barfs^
---------------------
-_l_: f-slurp    _L_: f-barf
-_h_: b-slurp    _H_: b-barf
---------------------
-"
-      
-      ("l" sp-forward-slurp-sexp)
-      ("h" sp-backward-slurp-sexp)
-      ("L" sp-forward-barf-sexp)
-      ("H" sp-backward-barf-sexp)
-      ("q" nil "cancel")))
-  
-  :config
-  (use-package smartparens-config :demand t)
-  (sp-use-smartparens-bindings)
-  
-  (sp-pair "(" ")"   :wrap "C-(")
-  (sp-pair "[" "]"   :wrap "s-[") ;; This one doesn't work as expected
-  
-  (sp-pair "{" "}"   :wrap "C-{")
-  (sp-local-pair '(c++-mode) "{" "};"))
-
-;; Goes before others to correctly load which-key-declare-prefixes
-(use-package which-key :demand t
-  :load-path "modules/which-key"
-  :diminish which-key-mode
-  :init
-  (setq which-key-idle-delay 0.2
-        which-key-sort-order 'which-key-prefix-then-key-order-reverse
-        which-key-show-operator-state-maps t ;; Hack to make this work with Evil
-        which-key-prefix-prefix ""
-        which-key-side-window-max-width 0.5
-
-        which-key-popup-type           'side-window 
-        which-key-side-window-location 'bottom) 
-  
-  :config
-  (which-key-mode)
-  
-  ;; #NOTE :: For some reason it doesn't work as a `use-pacakge' directive
-  (general-define-key
-   :keymaps 'which-key-C-h-map
-   :prefix   nil
-   :states   nil
-   
-   "l" 'which-key-show-next-page-cycle
-   "j" 'which-key-show-previous-page-cycle)
-
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'while-key)))
-
-(use-package helm :load-path "modules/helm" :demand t
-  :general
-  (:prefix nil
-   :states nil
-           
-   "C-c h"   'helm-command-prefix
-   "M-y"     'helm-show-kill-ring
-   "C-x b"   'helm-mini
-   "C-x C-f" 'helm-find-files         
-   "M-x"     'helm-M-x
-   "M-:"     'helm-eval-expression-with-eldoc
-   "M-i"     'helm-occur
-
-   ;; Number keys
-   "M-3"      'helm-mini
-   "M-6"      'helm-bookmarks)
+   "M-t"   'sp-transpose-sexp
+   
+   "C-M-k" 'sp-kill-sexp
+   "C-M-w" 'sp-copy-sexp
+   
+   "C-s" 'hydra-smartparens/body)
   
-  (:prefix  nil
-   :states '(normal)
+  :init
+  (setq sp-base-key-bindings nil
+        sp-autoinsert-if-followed-by-word t
+        sp-autoskip-closing-pair 'always-end
+        sp-hybrid-kill-entire-symbol nil)
+  
+  (with-eval-after-load 'hydra
+    (defhydra hydra-smartparens (:color pink :hint nil)
+      
+      "
+^Slurp^         ^Barfs^
+--------------------
+_l_: f-slurp    _L_: f-barf
+_h_: b-slurp    _H_: b-barf
+--------------------
+"
+      
+      ("l" sp-forward-slurp-sexp)
+      ("h" sp-backward-slurp-sexp)
+      ("L" sp-forward-barf-sexp)
+      ("H" sp-backward-barf-sexp)
+      ("q" nil "cancel")))
+  
+  :config
+  (use-package smartparens-config :demand t)
+  (sp-use-smartparens-bindings)
+  
+  (sp-pair "(" ")"   :wrap "C-(")
+  (sp-pair "[" "]"   :wrap "s-[") ;; This one doesn't work as expected
+  
+  (sp-pair "{" "}"   :wrap "C-{")
+  (sp-local-pair '(c++-mode) "{" "};"))
 
-   ;; #NOTE(4lex1v, 01/09/19) :: Bad idea, searches from the first line, doesn't make an auto-jump to the first occurence.
-   ;;                            much better on its own.
-   ;; "/"  'helm-occur
-   "ga" 'helm-apropos)
+;; Goes before others to correctly load which-key-declare-prefixes
+(use-package which-key :demand t
+  :load-path "modules/which-key"
+  :diminish which-key-mode
+  :init
+  (setq which-key-idle-delay 0.2
+        which-key-sort-order 'which-key-prefix-then-key-order-reverse
+        which-key-show-operator-state-maps t ;; Hack to make this work with Evil
+        which-key-prefix-prefix ""
+        which-key-side-window-max-width 0.5
+
+        which-key-popup-type           'side-window 
+        which-key-side-window-location 'bottom) 
+  
+  :config
+  (which-key-mode)
+  
+  ;; #NOTE :: For some reason it doesn't work as a `use-pacakge' directive
+  (general-define-key
+   :keymaps 'which-key-C-h-map
+   :prefix   nil
+   :states   nil
+   
+   "l" 'which-key-show-next-page-cycle
+   "j" 'which-key-show-previous-page-cycle)
+
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'while-key)))
+
+(use-package helm :load-path "modules/helm" :demand t
+  :general
+  (:prefix nil
+   :states nil
+           
+   "C-c h"   'helm-command-prefix
+   "M-y"     'helm-show-kill-ring
+   "C-x b"   'helm-mini
+   "C-x C-f" 'helm-find-files         
+   "M-x"     'helm-M-x
+   "M-:"     'helm-eval-expression-with-eldoc
+   "M-i"     'helm-occur
+
+   ;; Number keys
+   "M-3"      'helm-mini
+   "M-6"      'helm-bookmarks)
+  
+  (:prefix  nil
+   :states '(normal)
+
+   ;; #NOTE(4lex1v, 01/09/19) :: Bad idea, searches from the first line, doesn't make an auto-jump to the first occurence.
+   ;;                            much better on its own.
+   ;; "/"  'helm-occur
+   "ga" 'helm-apropos)
 
   (:prefix   nil
    :keymaps 'helm-find-files-map
@@ -431,584 +442,551 @@ _h_: b-slurp    _H_: b-barf
 
    "C-<backspace>"   'backward-kill-word)
 
-  (:prefix   nil
-   :keymaps 'helm-map
-   :states   nil
-   
-   "<tab>" 'helm-execute-persistent-action
-   "C-i"   'helm-execute-persistent-action
-   "C-z"   'helm-select-action
-   "C-o"   'helm-next-source
-   "C-j"   'helm-next-line
-   "C-k"   'helm-previous-line)
-
-  (:prefix   nil
-   :keymaps 'comint-mode-map
-   :states  '(normal insert)
-
-   "M-r" 'helm-comint-input-ring)
-  
-  :init
-  (setq helm-idle-delay                        0.0
-        helm-input-idle-delay                  0.01
-        helm-quick-update                      t
-        helm-split-window-inside-p             t
-        helm-buffers-fuzzy-matching            t
-        helm-ff-fuzzy-matching                 t
-        helm-move-to-line-cycle-in-source      t
-        helm-scroll-amount                     8
-        helm-ff-search-library-in-sexp         t
-        helm-ff-file-name-history-use-recentf  t
-        helm-follow-mode-persistent            t
-        helm-show-completion-display-function  nil)
-  
-  (use-package async :ensure t)
-  (use-package helm-config :demand t)
-  
-  :config 
-  (use-package helm-mode :demand t)
-  
-  (helm-autoresize-mode)
-
-  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-
-  ;; #NOTE :: This package doesn't rely on Projectile cause my workflow starts with helm-projectile-switch-project
-  ;; So this package bootstrap the projectile loading
-  (use-package helm-projectile :ensure t
-    :commands helm-projectile-on
-    :general
-    ("pp"  'helm-projectile-switch-project)
-    
-    (:prefix nil
-
-     "C-M-3" 'helm-projectile-switch-to-buffer
-     "M-1"   'helm-projectile-find-file)
-    
-    :config (helm-projectile-on))
-
-  ;; #TODO(4lex1v, 09/03/18) :: Install on Windows?
-  (use-package helm-gtags :ensure t
-    :if (not IS-WINDOWS)
-    :diminish (helm-gtags-mode . "GT")
-    :after helm
-    
-    :hook (prog-mode . helm-gtags-mode)
-    
-    :general
-    (:prefix nil
-
-             "C-]"   'helm-gtags-dwim
-             "C-M-]" 'helm-gtags-select)
-
-    ("t"     '(:ignore t :wk "Tags")
-     "tt"    'helm-gtags-dwim
-     "tf"    'helm-gtags-find-tag-other-window)
-    
-    :init
-    (setq helm-gtags-auto-update t
-          helm-gtags-use-input-at-cursor t
-          helm-gtags-pulse-at-cursor t
-          helm-gtags-ignore-case t)))
-
-(use-package projectile :load-path "modules/projectile" :demand t   
-  :diminish projectile-mode
-  :commands projectile-project-root
-
-  :general
-  (:prefix nil
-           
-   "M-4" 'projectile-switch-project
-   "M-!" 'projectile-run-shell-command-in-root)      
-  
-  ;;  Projectile-only bindings
-  ("p" '(:ignore t :wk "Projectile")
-   "pk" 'projectile-kill-buffers
-   "pr" 'projectile-replace
-   "pi" 'projectile-invalidate-cache
-   "pe" 'projectile-run-eshell
-   "p&" 'projectile-run-async-shell-command-in-root
-   "pS" 'projectile-save-project-buffers)
-  
-  :init
-  (setq projectile-enable-caching       t
-        projectile-completion-system   'helm
-        projectile-require-project-root t
-        projectile-use-git-grep         nil
-        projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
-
-  :config
-  (projectile-mode))
-
-(use-package magit :defer 2
-  :load-path "modules/magit/lisp"
-  :commands (magit magit-status magit-diff-range magit-clone)
-  
-  :general 
-  ("g" '(:ignore t :wk "Magit")
-   "gs"  'magit-status
-   "gm"  'magit-dispatch-popup
-   "gb"  'magit-addition-blame
-   "g'"  'magit-submodule-popup
-   "gy"  'magit-show-refs-popup
-   "ge"  'magit-ediff-popup
-   "gp"  'magit-push-popup
-   "gd"  'magit-diff-popup
-   "gD"  'magit-diff-branch-with-master
-   "gf"  'magit-pull-popup
-   "gl" '(:ignore t :wk "Logging")
-   "gll" 'magit-log-all
-   "glb" 'magit-log-buffer-file
-   "glc" 'magit-log-current)
-  
-  (:keymaps 'magit-status-mode-map
-            :prefix   nil
-
-            "j" 'magit-next-line
-            "k" 'magit-previous-line)
-  
-  (:keymaps 'magit-diff-mode-map
-            :prefix   nil
-            
-            "gf" 'magit-diff-visit-file-other-window)
-
-  (:keymaps 'magit-submodule-list-mode-map
-            :prefix   nil
-            
-            "RET" 'magit-repolist-status)
-  
-  :init
-  (setq-default
-   magit-submodule-list-columns
-   (quote
-    (("Path" 50 magit-modulelist-column-path nil)
-     ("Version" 35 magit-repolist-column-version nil)
-     ("Branch" 20 magit-repolist-column-branch nil)
-     ("L<U" 3 magit-repolist-column-unpulled-from-upstream
-      ((:right-align t)))
-     ("L>U" 3 magit-repolist-column-unpushed-to-upstream
-      ((:right-align t)))
-     ("L<P" 3 magit-repolist-column-unpulled-from-pushremote
-      ((:right-align t)))
-     ("L>P" 3 magit-repolist-column-unpushed-to-pushremote
-      ((:right-align t))))))
-
-  (setq magit-last-seen-setup-instructions "2.11.0"
-        magit-status-show-hashes-in-headers t
-        
-        ;; Magit Diff configs
-        magit-diff-options          '("--stat" "--no-ext-diff" "--word-diff")
-        magit-diff-refine-hunk      'all
-        magit-diff-paint-whitespace 'status)
-  
-  (defun magit-diff-visit-file-other-window (file)
-    (interactive (list (--if-let (magit-file-at-point)
-                           (expand-file-name it)
-                         (user-error "No file at point"))))
-    (magit-diff-visit-file file t))
-  
-  
-  ;; This function was added to speed up my PR review workflow in a way that i can diff current branch
-  ;; with master by a single keystroke...
-  (defun magit-diff-branch-with-master ()
-    (interactive)
-    (let* ((args (magit-diff-arguments))
-           (diff-cmd (format "master...%s" (magit-get-current-branch))))
-      (magit-diff-range diff-cmd args)))
-  
-  :config
-  (add-to-list 'magit-log-arguments "--color")
-  (add-to-list 'magit-diff-arguments "--ignore-space-change")
-
-  (magit-define-popup-action 'magit-submodule-popup   
-                             ?l "List" 'magit-list-submodules)
-  
-  (magit-define-popup-switch 'magit-log-popup
-                             ?f "First Parent" "--first-parent")
-
-  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
-
-  (add-hook 'magit-submodule-list-mode-hook
-            (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t))))
-
-  (use-package magit-popup :ensure t :after magit)
-  (use-package ghub :ensure t :after magit)
-
-  (use-package with-editor :ensure t 
-    :after magit
-    :general
-    (:keymaps 'with-editor-mode-map
-              :prefix "" ;; don't use SPC prefix in this case
-              "RET"    'with-editor-finish
-              [escape] 'with-editor-cancel)
-    :config
-    (with-eval-after-load 'evil
-     (evil-set-initial-state 'with-editor-mode 'insert)))
-
-  (use-package evil-magit :ensure t :demand t
-    :after (evil magit-mode)
-    :commands evil-magit-init
-    :config
-    (evil-magit-init)))
-
-(use-package exec-path-from-shell :ensure t :demand t
-  :commands (exec-path-from-shell-getenv
-             exec-path-from-shell-setenv)
-  :init
-  ;; Under certain conditions this can be nicely used withing Windows environment as well...
-  (defun run-shell-command (&rest cmd)
-    (replace-regexp-in-string "\r?\n\\'" ""
-                              (shell-command-to-string
-                               (mapconcat 'identity cmd " ")))) 
-  
-  ;; TODO :: Check if it works on Windows
-  (defun register-path-folders (&rest paths)
-    (declare (indent 1))
-    (let ((path (-reduce-r-from
-                 (lambda (value acc) (format "%s:%s" acc value))
-                 (exec-path-from-shell-getenv "PATH")
-                 paths)))
-      
-      (exec-path-from-shell-setenv "PATH" path))))
-
-(use-package osx :if IS-MAC :demand t
-  :after exec-path-from-shell
-  :defines
-  (mac-command-modifier
-   mac-option-modifier
-   mac-control-modifier
-   ns-function-modifier
-   ns-use-native-fullscreen)
-  
-  :init
-  (setq browse-url-browser-function 'browse-url-default-macosx-browser
-        delete-by-moving-to-trash    t
-        mac-command-modifier        'meta
-        mac-option-modifier         'super
-        mac-control-modifier        'control
-        ns-function-modifier        'hyper
-        ns-use-native-fullscreen     t
-        frame-resize-pixelwise       t
-        shell-file-name              "/bin/sh")
-
-  :general
-  (:prefix nil
-   :states '(normal insert)
-   
-   "M-`" 'ns-next-frame)
-
-  :config
-  (message "[CONFIGURATION] Loading MacOS system configuration")
-
-  (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
-  (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
-  (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
-  (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
-  (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin")
-
-  (use-package em-alias
-    :config
-    (eshell/alias "bubu" "brew update && brew upgrade")
-    (eshell/alias "sshs" "ssh-add ~/.ssh/github_rsa")))
+  (:prefix   nil
+   :keymaps 'helm-map
+   :states   nil
+   
+   "<tab>" 'helm-execute-persistent-action
+   "C-i"   'helm-execute-persistent-action
+   "C-z"   'helm-select-action
+   "C-o"   'helm-next-source
+   "C-j"   'helm-next-line
+   "C-k"   'helm-previous-line)
 
-(use-package hydra :load-path "modules/hydra" :demand t 
-  :general
-  (:prefix nil
-           
-   "<f2>" 'hydra-zoom/body)
-
-  (:prefix nil
-   :states 'normal
-
-   "C-e"  'hydra-error/body)
-  
-  :config
-  (defhydra hydra-zoom (:color pink :hint nil)
-    "
-^Zoom^
-----------
-_g_: In
-_l_: Out
-_r_: Reset
-----------
-"
-    ("g" text-scale-increase)
-    ("l" text-scale-decrease)
-    ("r" (text-scale-set 0))
-    ("q" nil "quit"))
-
-  (defhydra hydra-error (:color pink :hint nil)
-    "
-^Errors^       ^Level (cur: %`compilation-skip-threshold)^
-------------------------------
-_j_: Next      _0_: All
-_k_: Previous  _1_: Warnings
-_h_: First     _2_: Errors
-_l_: Last            
-------------------------------
-"
-    ("j" next-error)
-    ("k" previous-error)
-    ("h" first-error)
-    ("l" (condition-case err
-             (while t
-               (next-error))
-           (user-error nil)))
-    
-    ;; Messages level support
-    ("0" (compilation-set-skip-threshold 0))
-    ("1" (compilation-set-skip-threshold 1))
-    ("2" (compilation-set-skip-threshold 2))
-    
-    ("q" nil "quit")))
-
-(use-package yasnippet :load-path "modules/yasnippet"
-  :diminish (yas-minor-mode . " Y")
-
-  :commands
-  (yas-minor-mode
-   yas-load-directory
-   yas-activate-extra-mode
-   yas-insert-snippet
-   yas-visit-snippet-file
-   yas-new-snippet
-   yas-tryout-snippet
-   yas-describe-tables
-   yas-reload-all)
-  
-  :mode ("\\.yasnippet" . snippet-mode)
-  
-  :general
-  ("es" '(hydra-yasnippet/body :wk "Snippets"))
-  
-  :init
-  (setq yas-snippet-dirs '("~/.emacs.d/snippets")
-        yas-wrap-around-region t
-        yas-indent-line 'auto
-        yas-also-auto-indent-first-line t)
-  
-  (add-hook 'after-save-hook
-            (lambda ()
-              (when (eq major-mode 'snippet-mode)
-                (yas-reload-all))))
-  
-  (defhydra hydra-yasnippet (:color blue :hint nil)
-    "
-^Modes^    ^Load/Visit^    ^Actions^
---------------------------------------------
-_m_inor   _d_irectory      _i_nsert
-_e_xtra   _f_ile           _t_ryout
-^ ^       _l_ist           _n_ew
-^ ^       _a_ll
-"
-    ("d" yas-load-directory)
-    ("e" yas-activate-extra-mode)
-    ("i" yas-insert-snippet)
-    ("f" yas-visit-snippet-file)
-    ("n" yas-new-snippet)
-    ("t" yas-tryout-snippet)
-    ("l" yas-describe-tables)
-    ("m" yas-minor-mode)
-    ("a" yas-reload-all))
-  
-  :config
-  (yas-reload-all))
-
-(use-package company :load-path "modules/company"
-  :commands company-mode
-  
-  :functions (company-clang)
-  
-  :general
-  (:prefix  nil
-            :states '(insert)
-            
-            "C-SPC" 'company-complete)
-  
-  (:prefix   nil
-             :keymaps 'company-active-map
-             :states   nil
-             
-             "C-j" 'company-select-next-or-abort
-             "C-k" 'company-select-previous-or-abort
-             "C-o" 'company-other-backend
-             "C-l" 'company-other-backend
-             "C-d" 'company-show-doc-buffer)
-
-  :hook ((text-mode) . company-mode)
-  
-  :init
-  (setq company-dabbrev-ignore-case nil
-        company-dabbrev-downcase nil
-        
-        company-idle-delay 0.3
-        company-minimum-prefix-length 3
-        
-        company-selection-wrap-around t
-        company-tooltip-align-annotations t
-
-        company-transformers '(company-sort-by-occurrence)
-        company-backends '())
-  
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'company))
-
-  (cl-defmacro configure-company-backends-for-mode (mode backends)
-    (declare (indent 1))
-    `(add-hook
-      ',(intern (concat (symbol-name mode) "-hook"))
-      (lambda ()
-        (make-local-variable 'company-backends)
-        (setq company-backends (list (remove nil ,backends)))))))
-
-(use-package undo-tree :ensure t
-  :diminish undo-tree-mode
-  :commands global-undo-tree-mode
-  :general
-  (:prefix nil
-           :states 'normal
-
-           "M-/" 'undo-tree-visualize)
-  
-  (:prefix   nil
-             :keymaps 'undo-tree-visualizer-mode-map
-             :states  '(motion)
-
-             "j" 'undo-tree-visualize-redo
-             "k" 'undo-tree-visualize-undo
-             "l" 'undo-tree-visualize-switch-branch-right
-             "h" 'undo-tree-visualize-switch-branch-left)
-  
-  :config (global-undo-tree-mode))
-
-(use-package string-inflection :ensure t
-  :general
-  (:prefix  nil
-            :states '(normal)
-
-            "gu" 'string-inflection-all-cycle))
-
-(use-package elisp-mode
-  :interpreter ("emacs" . emacs-lisp-mode)
-  :mode        (("\\.el$" . emacs-lisp-mode)
-                ("Cask"   . emacs-lisp-mode))
-  
-  :defines (emacs-lisp-mode-hook)
-  
-  :hooks
-  (:emacs-lisp-mode-hook
-   yas-minor-mode
-   company-mode
-   smartparens-mode
-   hs-minor-mode)
-  
-  :general
-  (:prefix nil
-   "M-."     'find-function-at-point
-   "M-,"     'find-variable-at-point
-   "C-c e r" 'eval-region)
-  
-  (:keymaps 'emacs-lisp-mode-map
-   "e"  '(:ignore t :wk "Emacs")
-   "ev" '(:ignore t :wk "Describe Variable")
-   "ed" '(:ignore t :wk "Docs & Help")
-   "eda" #'helm-apropos)
-  
-  :config
-  (setq-mode-local emacs-lisp-mode comment-note-comment-prefix ";;")
-
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'elisp-mode))
-
-  (with-eval-after-load 'company
-    (configure-company-backends-for-mode emacs-lisp-mode
-      '(company-elisp company-capf company-files company-yasnippet)))
-
-  (with-eval-after-load 'smartparens
-    (sp-with-modes 'emacs-lisp-mode
-      (sp-local-pair "'" nil :actions nil)))
-
-  (use-package macrostep :ensure t
-    :commands macrostep-expand
-    :mode ("\\*.el\\'" . emacs-lisp-mode)
-    
-    :general
-    (:keymaps 'macrostep-keymap
-     :prefix   nil
-     "q" #'macrostep-collapse-all
-     "e" #'macrostep-expand)
-
-    (:keymaps 'emacs-lisp-mode-map
-     "em" #'macrostep-expand)
-    
-    :config
-    (with-eval-after-load 'evil-collection
-      (add-to-list 'evil-collection-mode-list 'macrostep)))
-  
-  (add-hook 'after-save-hook 
-            (lambda ()
-              (if (string= (buffer-file-name)
-                           USER-INIT-FILE)
-                  (byte-recompile-file USER-INIT-FILE)))))
-
-(use-package scala-mode :ensure t
-  :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
-  :interpreter ("scala" . scala-mode)
-  
-  :hooks
-  (4lex1v/fix-scala-fonts
-   smartparens-mode
-   yas-minor-mode
-   company-mode
-   hs-minor-mode)
-  
-  :general
-  (:keymaps 'scala-mode-map
-   "s" '(:ignore t :wk "Scala"))
-  
-  (:keymaps 'scala-mode-map
-   :states  '(normal insert)
-   :prefix   nil
-   
-   "<C-return>"     #'newline-or-comment)
-
-  (:keymaps 'scala-mode-map
-   :states  'normal
-   :prefix   nil
-   
-   "J" #'scala-join-lines)
-
-  :init
-  (setq scala-indent:use-javadoc-style t
-        scala-mode:debug-messages nil)
-
-  (setq-mode-local scala-mode comment-note-comment-prefix "//")
-  
-  :config
-  (with-eval-after-load 'company
-    (configure-company-backends-for-mode scala-mode
-      '(company-dabbrev
-        company-keywords
-        company-capf
-        company-yasnippet
-        company-files)))
-  
-  (use-package sbt-mode :ensure t
-    :general
-    (:keymaps 'scala-mode-map :prefix "<SPC> sb"
-     ""  '(:ignore t :wk "SBT")
-     "b" '(4lex1v:open-sbt-build-file :wk "build.sbt")
-     "s" 'sbt-start
-     "r" 'sbt-command
-     "c" '(4lex1v:sbt-compile-command :wk "compile"))
-    
-    (:keymaps 'scala-mode-map :prefix ","
-     "c" '(4lex1v:sbt-compile-command :wk "compile")
-     "r" 'sbt-run-previous-command
-     "i" '4lex1v/open-in-intellij)
-
-    :init
-    (setq sbt:program-name "sbt shell -mem 2048 -v"
-          sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*")))
+  (:prefix   nil
+   :keymaps 'comint-mode-map
+   :states  '(normal insert)
+
+   "M-r" 'helm-comint-input-ring)
+  
+  :init
+  (setq helm-idle-delay                        0.0
+        helm-input-idle-delay                  0.01
+        helm-quick-update                      t
+        helm-split-window-inside-p             t
+        helm-buffers-fuzzy-matching            t
+        helm-ff-fuzzy-matching                 t
+        helm-move-to-line-cycle-in-source      t
+        helm-scroll-amount                     8
+        helm-ff-search-library-in-sexp         t
+        helm-ff-file-name-history-use-recentf  t
+        helm-follow-mode-persistent            t
+        helm-show-completion-display-function  nil)
+  
+  (use-package async :ensure t)
+  (use-package helm-config :demand t)
+  
+  :config 
+  (use-package helm-mode :demand t)
+  
+  (helm-autoresize-mode)
+
+  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
+
+  ;; #NOTE :: This package doesn't rely on Projectile cause my workflow starts with helm-projectile-switch-project
+  ;; So this package bootstrap the projectile loading
+  (use-package helm-projectile :ensure t
+    :commands helm-projectile-on
+    :general
+    ("pp"  'helm-projectile-switch-project)
+    
+    (:prefix nil
+
+     "C-M-3" 'helm-projectile-switch-to-buffer
+     "M-1"   'helm-projectile-find-file)
+    
+    :config (helm-projectile-on))
+
+  ;; #TODO(4lex1v, 09/03/18) :: Install on Windows?
+  (use-package helm-gtags :ensure t
+    :if (not IS-WINDOWS)
+    :diminish (helm-gtags-mode . "GT")
+    :after helm
+    
+    :hook (prog-mode . helm-gtags-mode)
+    
+    :general
+    (:prefix nil
+
+             "C-]"   'helm-gtags-dwim
+             "C-M-]" 'helm-gtags-select)
+
+    ("t"     '(:ignore t :wk "Tags")
+     "tt"    'helm-gtags-dwim
+     "tf"    'helm-gtags-find-tag-other-window)
+    
+    :init
+    (setq helm-gtags-auto-update t
+          helm-gtags-use-input-at-cursor t
+          helm-gtags-pulse-at-cursor t
+          helm-gtags-ignore-case t)))
+
+(use-package projectile :load-path "modules/projectile" :demand t   
+  :diminish projectile-mode
+  :commands projectile-project-root
+
+  :general
+  (:prefix nil
+           
+   "M-4" 'projectile-switch-project
+   "M-!" 'projectile-run-shell-command-in-root)      
+  
+  ;;  Projectile-only bindings
+  ("p" '(:ignore t :wk "Projectile")
+   "pk" 'projectile-kill-buffers
+   "pr" 'projectile-replace
+   "pi" 'projectile-invalidate-cache
+   "pe" 'projectile-run-eshell
+   "p&" 'projectile-run-async-shell-command-in-root
+   "pS" 'projectile-save-project-buffers)
+  
+  :init
+  (setq projectile-enable-caching       t
+        projectile-completion-system   'helm
+        projectile-require-project-root t
+        projectile-use-git-grep         nil
+        projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
+
+  :config
+  (projectile-mode))
+
+(use-package magit :defer 2
+  :load-path "modules/magit/lisp"
+  :commands (magit magit-status magit-diff-range magit-clone)
+  
+  :general 
+  ("g" '(:ignore t :wk "Magit")
+   "gs"  'magit-status
+   "gm"  'magit-dispatch-popup
+   "gb"  'magit-addition-blame
+   "g'"  'magit-submodule-popup
+   "gy"  'magit-show-refs-popup
+   "ge"  'magit-ediff-popup
+   "gp"  'magit-push-popup
+   "gd"  'magit-diff-popup
+   "gD"  'magit-diff-branch-with-master
+   "gf"  'magit-pull-popup
+   "gl" '(:ignore t :wk "Logging")
+   "gll" 'magit-log-all
+   "glb" 'magit-log-buffer-file
+   "glc" 'magit-log-current)
+  
+  (:keymaps 'magit-status-mode-map
+            :prefix   nil
+
+            "j" 'magit-next-line
+            "k" 'magit-previous-line)
+  
+  (:keymaps 'magit-diff-mode-map
+            :prefix   nil
+            
+            "gf" 'magit-diff-visit-file-other-window)
+
+  (:keymaps 'magit-submodule-list-mode-map
+            :prefix   nil
+            
+            "RET" 'magit-repolist-status)
+  
+  :init
+  (setq-default
+   magit-submodule-list-columns
+   (quote
+    (("Path" 50 magit-modulelist-column-path nil)
+     ("Version" 35 magit-repolist-column-version nil)
+     ("Branch" 20 magit-repolist-column-branch nil)
+     ("L<U" 3 magit-repolist-column-unpulled-from-upstream
+      ((:right-align t)))
+     ("L>U" 3 magit-repolist-column-unpushed-to-upstream
+      ((:right-align t)))
+     ("L<P" 3 magit-repolist-column-unpulled-from-pushremote
+      ((:right-align t)))
+     ("L>P" 3 magit-repolist-column-unpushed-to-pushremote
+      ((:right-align t))))))
+
+  (setq magit-last-seen-setup-instructions "2.11.0"
+        magit-status-show-hashes-in-headers t
+        
+        ;; Magit Diff configs
+        magit-diff-options          '("--stat" "--no-ext-diff" "--word-diff")
+        magit-diff-refine-hunk      'all
+        magit-diff-paint-whitespace 'status)
+  
+  (defun magit-diff-visit-file-other-window (file)
+    (interactive (list (--if-let (magit-file-at-point)
+                           (expand-file-name it)
+                         (user-error "No file at point"))))
+    (magit-diff-visit-file file t))
+  
+  
+  ;; This function was added to speed up my PR review workflow in a way that i can diff current branch
+  ;; with master by a single keystroke...
+  (defun magit-diff-branch-with-master ()
+    (interactive)
+    (let* ((args (magit-diff-arguments))
+           (diff-cmd (format "master...%s" (magit-get-current-branch))))
+      (magit-diff-range diff-cmd args)))
+  
+  :config
+  (add-to-list 'magit-log-arguments "--color")
+  (add-to-list 'magit-diff-arguments "--ignore-space-change")
+
+  (magit-define-popup-action 'magit-submodule-popup   
+                             ?l "List" 'magit-list-submodules)
+  
+  (magit-define-popup-switch 'magit-log-popup
+                             ?f "First Parent" "--first-parent")
+
+  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
+
+  (add-hook 'magit-submodule-list-mode-hook
+            (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t))))
+
+  (use-package magit-popup :ensure t :after magit)
+  (use-package ghub :ensure t :after magit)
+
+  (use-package with-editor :ensure t 
+    :after magit
+    :general
+    (:keymaps 'with-editor-mode-map
+              :prefix "" ;; don't use SPC prefix in this case
+              "RET"    'with-editor-finish
+              [escape] 'with-editor-cancel)
+    :config
+    (with-eval-after-load 'evil
+     (evil-set-initial-state 'with-editor-mode 'insert)))
+
+  (use-package evil-magit :ensure t :demand t
+    :after (evil magit-mode)
+    :commands evil-magit-init
+    :config
+    (evil-magit-init)))
+
+(use-package exec-path-from-shell :ensure t :demand t
+  :commands (exec-path-from-shell-getenv
+             exec-path-from-shell-setenv)
+  :init
+  ;; Under certain conditions this can be nicely used withing Windows environment as well...
+  (defun run-shell-command (&rest cmd)
+    (replace-regexp-in-string "\r?\n\\'" ""
+                              (shell-command-to-string
+                               (mapconcat 'identity cmd " ")))) 
+  
+  ;; TODO :: Check if it works on Windows
+  (defun register-path-folders (&rest paths)
+    (declare (indent 1))
+    (let ((path (-reduce-r-from
+                 (lambda (value acc) (format "%s:%s" acc value))
+                 (exec-path-from-shell-getenv "PATH")
+                 paths)))
+      (exec-path-from-shell-setenv "PATH" path)))
+  :config
+  (if IS-MAC
+      (progn
+        (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
+        (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
+        (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
+        (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
+        (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin"))))
+
+(use-package hydra :load-path "modules/hydra" :demand t 
+  :general
+  (:prefix nil
+           
+   "<f2>" 'hydra-zoom/body)
+
+  (:prefix nil
+   :states 'normal
+
+   "C-e"  'hydra-error/body)
+  
+  :config
+  (defhydra hydra-zoom (:color pink :hint nil)
+    "
+^Zoom^
+----------
+_g_: In
+_l_: Out
+_r_: Reset
+----------
+"
+    ("g" text-scale-increase)
+    ("l" text-scale-decrease)
+    ("r" (text-scale-set 0))
+    ("q" nil "quit"))
+
+  (defhydra hydra-error (:color pink :hint nil)
+    "
+^Errors^       ^Level (cur: %`compilation-skip-threshold)^
+------------------------------
+_j_: Next      _0_: All
+_k_: Previous  _1_: Warnings
+_h_: First     _2_: Errors
+_l_: Last            
+------------------------------
+"
+    ("j" next-error)
+    ("k" previous-error)
+    ("h" first-error)
+    ("l" (condition-case err
+             (while t
+               (next-error))
+           (user-error nil)))
+    
+    ;; Messages level support
+    ("0" (compilation-set-skip-threshold 0))
+    ("1" (compilation-set-skip-threshold 1))
+    ("2" (compilation-set-skip-threshold 2))
+    
+    ("q" nil "quit")))
+
+(use-package yasnippet :load-path "modules/yasnippet"
+  :diminish (yas-minor-mode . " Y")
+
+  :commands
+  (yas-minor-mode
+   yas-load-directory
+   yas-activate-extra-mode
+   yas-insert-snippet
+   yas-visit-snippet-file
+   yas-new-snippet
+   yas-tryout-snippet
+   yas-describe-tables
+   yas-reload-all)
+  
+  :mode ("\\.yasnippet" . snippet-mode)
+  
+  :general
+  ("es" '(hydra-yasnippet/body :wk "Snippets"))
+  
+  :init
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets")
+        yas-wrap-around-region t
+        yas-indent-line 'auto
+        yas-also-auto-indent-first-line t)
+  
+  (add-hook 'after-save-hook
+            (lambda ()
+              (when (eq major-mode 'snippet-mode)
+                (yas-reload-all))))
+  
+  (defhydra hydra-yasnippet (:color blue :hint nil)
+    "
+^Modes^    ^Load/Visit^    ^Actions^
+--------------------------------------------
+_m_inor   _d_irectory      _i_nsert
+_e_xtra   _f_ile           _t_ryout
+^ ^       _l_ist           _n_ew
+^ ^       _a_ll
+"
+    ("d" yas-load-directory)
+    ("e" yas-activate-extra-mode)
+    ("i" yas-insert-snippet)
+    ("f" yas-visit-snippet-file)
+    ("n" yas-new-snippet)
+    ("t" yas-tryout-snippet)
+    ("l" yas-describe-tables)
+    ("m" yas-minor-mode)
+    ("a" yas-reload-all))
+  
+  :config
+  (yas-reload-all))
+
+(use-package company :load-path "modules/company"
+  :commands company-mode
+  
+  :functions (company-clang)
+  
+  :general
+  (:prefix  nil
+            :states '(insert)
+            
+            "C-SPC" 'company-complete)
+  
+  (:prefix   nil
+             :keymaps 'company-active-map
+             :states   nil
+             
+             "C-j" 'company-select-next-or-abort
+             "C-k" 'company-select-previous-or-abort
+             "C-o" 'company-other-backend
+             "C-l" 'company-other-backend
+             "C-d" 'company-show-doc-buffer)
+
+  :hook ((text-mode) . company-mode)
+  
+  :init
+  (setq company-dabbrev-ignore-case nil
+        company-dabbrev-downcase nil
+        
+        company-idle-delay 0.3
+        company-minimum-prefix-length 3
+        
+        company-selection-wrap-around t
+        company-tooltip-align-annotations t
+
+        company-transformers '(company-sort-by-occurrence)
+        company-backends '())
+  
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'company))
+
+  (cl-defmacro configure-company-backends-for-mode (mode backends)
+    (declare (indent 1))
+    `(add-hook
+      ',(intern (concat (symbol-name mode) "-hook"))
+      (lambda ()
+        (make-local-variable 'company-backends)
+        (setq company-backends (list (remove nil ,backends)))))))
+
+(use-package undo-tree :ensure t
+  :diminish undo-tree-mode
+  :commands global-undo-tree-mode
+  :general
+  (:prefix nil
+           :states 'normal
+
+           "M-/" 'undo-tree-visualize)
+  
+  (:prefix   nil
+             :keymaps 'undo-tree-visualizer-mode-map
+             :states  '(motion)
+
+             "j" 'undo-tree-visualize-redo
+             "k" 'undo-tree-visualize-undo
+             "l" 'undo-tree-visualize-switch-branch-right
+             "h" 'undo-tree-visualize-switch-branch-left)
+  
+  :config (global-undo-tree-mode))
+
+(use-package string-inflection :ensure t
+  :general
+  (:prefix  nil
+            :states '(normal)
+
+            "gu" 'string-inflection-all-cycle))
+
+(use-package elisp-mode
+  :interpreter ("emacs" . emacs-lisp-mode)
+  :mode        (("\\.el$" . emacs-lisp-mode)
+                ("Cask"   . emacs-lisp-mode))
+  
+  :defines (emacs-lisp-mode-hook)
+  
+  :hooks
+  (:emacs-lisp-mode-hook
+   yas-minor-mode
+   company-mode
+   smartparens-mode
+   hs-minor-mode)
+  
+  :general
+  (:prefix nil
+   "M-."     'find-function-at-point
+   "M-,"     'find-variable-at-point
+   "C-c e r" 'eval-region)
+  
+  (:keymaps 'emacs-lisp-mode-map
+   "e"  '(:ignore t :wk "Emacs")
+   "ev" '(:ignore t :wk "Describe Variable")
+   "ed" '(:ignore t :wk "Docs & Help")
+   "eda" #'helm-apropos)
+  
+  :config
+  (setq-mode-local emacs-lisp-mode comment-note-comment-prefix ";;")
+
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'elisp-mode))
+
+  (with-eval-after-load 'company
+    (configure-company-backends-for-mode emacs-lisp-mode
+      '(company-elisp company-capf company-files company-yasnippet)))
+
+  (with-eval-after-load 'smartparens
+    (sp-with-modes 'emacs-lisp-mode
+      (sp-local-pair "'" nil :actions nil)))
+
+  (use-package macrostep :ensure t
+    :commands macrostep-expand
+    :mode ("\\*.el\\'" . emacs-lisp-mode)
+    
+    :general
+    (:keymaps 'macrostep-keymap
+     :prefix   nil
+     "q" #'macrostep-collapse-all
+     "e" #'macrostep-expand)
+
+    (:keymaps 'emacs-lisp-mode-map
+     "em" #'macrostep-expand)
+    
+    :config
+    (with-eval-after-load 'evil-collection
+      (add-to-list 'evil-collection-mode-list 'macrostep)))
+  
+  (add-hook 'after-save-hook 
+            (lambda ()
+              (if (string= (buffer-file-name)
+                           USER-INIT-FILE)
+                  (byte-recompile-file USER-INIT-FILE)))))
+
+(use-package scala-mode :ensure t
+  :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
+  :interpreter ("scala" . scala-mode)
+  
+  :hooks
+  (4lex1v/fix-scala-fonts
+   smartparens-mode
+   yas-minor-mode
+   company-mode
+   hs-minor-mode)
+  
+  :general
+  (:keymaps 'scala-mode-map
+   "s" '(:ignore t :wk "Scala"))
+  
+  (:keymaps 'scala-mode-map
+   :states  '(normal insert)
+   :prefix   nil
+   
+   "<C-return>"     #'newline-or-comment)
+
+  (:keymaps 'scala-mode-map
+   :states  'normal
+   :prefix   nil
+   
+   "J" #'scala-join-lines)
+
+  :init
+  (setq scala-indent:use-javadoc-style t
+        scala-mode:debug-messages nil)
+
+  (setq-mode-local scala-mode comment-note-comment-prefix "//")
+  
+  :config
+  (with-eval-after-load 'company
+    (configure-company-backends-for-mode scala-mode
+      '(company-dabbrev
+        company-keywords
+        company-capf
+        company-yasnippet
+        company-files)))
+  
+  (use-package sbt-mode :ensure t
+    :general
+    (:keymaps 'scala-mode-map :prefix "<SPC> sb"
+     ""  '(:ignore t :wk "SBT")
+     "b" '(4lex1v:open-sbt-build-file :wk "build.sbt")
+     "s" 'sbt-start
+     "r" 'sbt-command
+     "c" '(4lex1v:sbt-compile-command :wk "compile"))
+    
+    (:keymaps 'scala-mode-map :prefix ","
+     "c" '(4lex1v:sbt-compile-command :wk "compile")
+     "r" 'sbt-run-previous-command
+     "i" '4lex1v/open-in-intellij)
+
+    :init
+    (setq sbt:program-name "sbt shell -mem 2048 -v"
+          sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*")))
 
 (use-package cc-mode
   :mode (("\\.h\\'"  . c++-mode)
@@ -1094,128 +1072,128 @@ _e_xtra   _f_ile           _t_ryout
       (configure-company-backends-for-mode cmake-mode
         '(company-cmake company-files company-dabbrev company-capf)))))
 
-(use-package rust-mode :disabled t
-  :hooks (cargo-minor-mode
-          hs-minor-mode
-          yas-minor-mode
-          smartparens-mode
-          company-mode)
-  
-  :init 
-  (setq rust-indent-offset  2
-        rust-format-on-save nil
-        rust-toolchain-path (run-shell-command "rustc --print sysroot"))
-  
-  :config
-  (sp-with-modes 'rust-mode
-                 (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
-                 (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
-
-  ;; (configure-company-backends-for-mode rust-mode
-  ;;   '(company-dabbrev
-  ;;     company-keywords
-  ;;     company-yasnippet
-  ;;     company-capf
-  ;;     company-files))
-  
-  (use-package smartparens-rust
-    :after (rust-mode smartparens-mode)
-    :config
-    (add-hook 'rust-mode #'smartparens-rust))
-
-  (use-package cargo :ensure t
-    :after rust-mode
-    
-    :general
-    (:prefix ","
-             :keymaps 'rust-mode-map
-             
-             "c" '(:ignore t :wk "Cargo")
-             "c." 'cargo-process-repeat
-             "cC" 'cargo-process-clean
-             "cX" 'cargo-process-run-example
-             "cb" 'cargo-process-build
-             "cc" 'cargo-process-check
-             "cd" 'cargo-process-doc
-             "ce" 'cargo-process-bench
-             "cf" 'cargo-process-current-test
-             "cf" 'cargo-process-fmt
-             "ci" 'cargo-process-init
-             "cn" 'cargo-process-new
-             "co" 'cargo-process-current-file-tests
-             "cs" 'cargo-process-search
-             "cu" 'cargo-process-update
-             "cx" 'cargo-process-run
-             "t" 'cargo-process-test)
-
-    :init
-    (setq cargo-process--enable-rust-backtrace t))
-
-  (use-package racer :ensure t
-    :after rust-mode
-    
-    :general
-    (:prefix "" :keymaps 'racer-mode-map
-             "gd" 'racer-find-definition
-             "g." 'racer-find-definition-other-window)
-    
-    :init
-    (setq racer-rust-src-path (concat rust-toolchain-path "/lib/rustlib/src/rust/src"))
-    
-    :config
-    (defun racer-find-definition-other-window ()
-      "Run the racer find-definition command and process the results in other window."
-      (interactive)
-      (-if-let (match (--first (s-starts-with? "MATCH" it)
-                               (racer--call-at-point "find-definition")))
-          (-let [(_name line col file _matchtype _ctx)
-                 (s-split-up-to "," (s-chop-prefix "MATCH " match) 5)]
-            (if (fboundp 'xref-push-marker-stack)
-                (xref-push-marker-stack)
-              (with-no-warnings
-                (ring-insert find-tag-marker-ring (point-marker))))
-            (switch-to-buffer-other-window file)
-            (save-selected-window
-              (racer--find-file file (string-to-number line) (string-to-number col))))
-        (error "No definition found")))
-    
-    (add-hook 'racer-mode-hook #'eldoc-mode))
-
-  (use-package company-racer :ensure t :demand t
-    :after (racer company)
-    
-    :config
-    (with-eval-after-load 'company
-      (configure-company-backends-for-mode rust-mode
-        '(company-dabbrev
-          company-racer
-          company-keywords))))
-
-  (use-package flycheck-rust :ensure t
-    :after (rust-mode flycheck-mode)
-    :config
-    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
-
-  (use-package toml-mode :ensure t
-    :mode ("/\\(Cargo.lock\\|\\.cargo/config\\)\\'" . toml-mode)))
+(use-package rust-mode :disabled t
+  :hooks (cargo-minor-mode
+          hs-minor-mode
+          yas-minor-mode
+          smartparens-mode
+          company-mode)
+  
+  :init 
+  (setq rust-indent-offset  2
+        rust-format-on-save nil
+        rust-toolchain-path (run-shell-command "rustc --print sysroot"))
+  
+  :config
+  (sp-with-modes 'rust-mode
+                 (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
+                 (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
+
+  ;; (configure-company-backends-for-mode rust-mode
+  ;;   '(company-dabbrev
+  ;;     company-keywords
+  ;;     company-yasnippet
+  ;;     company-capf
+  ;;     company-files))
+  
+  (use-package smartparens-rust
+    :after (rust-mode smartparens-mode)
+    :config
+    (add-hook 'rust-mode #'smartparens-rust))
+
+  (use-package cargo :ensure t
+    :after rust-mode
+    
+    :general
+    (:prefix ","
+             :keymaps 'rust-mode-map
+             
+             "c" '(:ignore t :wk "Cargo")
+             "c." 'cargo-process-repeat
+             "cC" 'cargo-process-clean
+             "cX" 'cargo-process-run-example
+             "cb" 'cargo-process-build
+             "cc" 'cargo-process-check
+             "cd" 'cargo-process-doc
+             "ce" 'cargo-process-bench
+             "cf" 'cargo-process-current-test
+             "cf" 'cargo-process-fmt
+             "ci" 'cargo-process-init
+             "cn" 'cargo-process-new
+             "co" 'cargo-process-current-file-tests
+             "cs" 'cargo-process-search
+             "cu" 'cargo-process-update
+             "cx" 'cargo-process-run
+             "t" 'cargo-process-test)
+
+    :init
+    (setq cargo-process--enable-rust-backtrace t))
+
+  (use-package racer :ensure t
+    :after rust-mode
+    
+    :general
+    (:prefix "" :keymaps 'racer-mode-map
+             "gd" 'racer-find-definition
+             "g." 'racer-find-definition-other-window)
+    
+    :init
+    (setq racer-rust-src-path (concat rust-toolchain-path "/lib/rustlib/src/rust/src"))
+    
+    :config
+    (defun racer-find-definition-other-window ()
+      "Run the racer find-definition command and process the results in other window."
+      (interactive)
+      (-if-let (match (--first (s-starts-with? "MATCH" it)
+                               (racer--call-at-point "find-definition")))
+          (-let [(_name line col file _matchtype _ctx)
+                 (s-split-up-to "," (s-chop-prefix "MATCH " match) 5)]
+            (if (fboundp 'xref-push-marker-stack)
+                (xref-push-marker-stack)
+              (with-no-warnings
+                (ring-insert find-tag-marker-ring (point-marker))))
+            (switch-to-buffer-other-window file)
+            (save-selected-window
+              (racer--find-file file (string-to-number line) (string-to-number col))))
+        (error "No definition found")))
+    
+    (add-hook 'racer-mode-hook #'eldoc-mode))
+
+  (use-package company-racer :ensure t :demand t
+    :after (racer company)
+    
+    :config
+    (with-eval-after-load 'company
+      (configure-company-backends-for-mode rust-mode
+        '(company-dabbrev
+          company-racer
+          company-keywords))))
+
+  (use-package flycheck-rust :ensure t
+    :after (rust-mode flycheck-mode)
+    :config
+    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
+  (use-package toml-mode :ensure t
+    :mode ("/\\(Cargo.lock\\|\\.cargo/config\\)\\'" . toml-mode)))
 
 (use-package ssh-agency :if IS-WINDOWS :ensure t
-  :after magit
-  :commands ssh-agency-ensure
-  :init
-  (let ((sysroot (getenv "SystemRoot")))
-    (setq ssh-agency-keys (list
-                           (expand-file-name "~/.ssh/github_rsa")
-                           (expand-file-name "~/.ssh/bamtech"))
-          
-          ssh-agency-add-executable (expand-file-name
-                                     (format "%s/%s" sysroot "System32\\OpenSSH\\ssh-add.exe"))
-          
-          ssh-agency-agent-executable (expand-file-name
-                                       (format "%s/%s" sysroot "System32\\OpenSSH\\ssh-agent.exe"))))
-  
-  :config
-  (setenv "SSH_ASKPASS" "git-gui--askpass")
+  :after magit
+  :commands ssh-agency-ensure
+  :init
+  (let ((sysroot (getenv "SystemRoot")))
+    (setq ssh-agency-keys (list
+                           (expand-file-name "~/.ssh/github_rsa")
+                           (expand-file-name "~/.ssh/bamtech"))
+          
+          ssh-agency-add-executable (expand-file-name
+                                     (format "%s/%s" sysroot "System32\\OpenSSH\\ssh-add.exe"))
+          
+          ssh-agency-agent-executable (expand-file-name
+                                       (format "%s/%s" sysroot "System32\\OpenSSH\\ssh-agent.exe"))))
+  
+  :config
+  (setenv "SSH_ASKPASS" "git-gui--askpass")
   (ssh-agency-ensure))
 
 (use-package org :ensure t :pin gnu
@@ -1491,6 +1469,12 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
   :config
   (with-eval-after-load 'em-term
     (add-to-list 'eshell-visual-commands "htop"))
+
+  (use-package em-alias
+    :if IS-MAC
+    :config
+    (eshell/alias "bubu" "brew update && brew upgrade")
+    (eshell/alias "sshs" "ssh-add ~/.ssh/github_rsa"))
 
   (with-eval-after-load 'company
     (add-hook 'eshell-mode-hook
