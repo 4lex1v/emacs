@@ -440,7 +440,11 @@ _h_: b-slurp    _H_: b-barf
    :keymaps 'helm-find-files-map
    :states   nil
 
-   "C-<backspace>"   'backward-kill-word)
+   "C-<backspace>"   'backward-kill-word
+   "C-d"             '(lambda ()
+                        (interactive)
+                        (helm-exit-and-execute-action
+                         'helm-point-file-in-dired)))
 
   (:prefix   nil
    :keymaps 'helm-map
