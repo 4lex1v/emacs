@@ -47,16 +47,11 @@
  mouse-wheel-scroll-amount     '(1)
  mouse-wheel-progressive-speed  nil
  inhibit-compacting-font-caches t
-
  comment-note-comment-prefix    ""
-
- default-directory           "~/Sandbox"
-
- default-font-setting        (if IS-MAC "Monaco 16" "Iosevka SS08 Semibold 16")
-
- theme-to-load               'sirthias
-
- search-upper-case            nil)
+ default-directory              "~/Sandbox"
+ default-font-setting           (if IS-MAC "Monaco 16" "Iosevka SS08 Semibold 16")
+ theme-to-load                 'sirthias
+ search-upper-case              nil)
 
 (if IS-MAC
     (setq
@@ -189,6 +184,9 @@
    "g,"  'evil-jump-backward
    "g."  'find-function-at-point
    "zl"  'hs-hide-level
+
+   "<M-wheel-up>" 'text-scale-increase
+   "<M-wheel-down>" 'text-scale-decrease
 
    ;; Navigation keys
    "C-S-o" #'evil-jump-forward)
@@ -382,6 +380,15 @@ _h_: b-slurp    _H_: b-barf
   (sp-pair "{" "}"   :wrap "C-{")
   (sp-local-pair '(c++-mode) "{" "};"))
 
+(defadvice dired-sort-directories-first
+  (after dired-after-updating-hook first () activate)
+  "Sort dired listings with directories first before adding marks."
+  (save-excursion
+    (let (buffer-read-only)
+      (forward-line 2) ;; beyond dir. header 
+      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+    (set-buffer-modified-p nil)))
+
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t
   :load-path "modules/which-key"
@@ -431,9 +438,6 @@ _h_: b-slurp    _H_: b-barf
   (:prefix  nil
    :states '(normal)
 
-   ;; #NOTE(4lex1v, 01/09/19) :: Bad idea, searches from the first line, doesn't make an auto-jump to the first occurence.
-   ;;                            much better on its own.
-   ;; "/"  'helm-occur
    "ga" 'helm-apropos)
 
   (:prefix   nil
@@ -1497,22 +1501,3 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
  '(emacs-lisp-mode lua-mode scala-mode c-mode objc-mode c++-mode rust-mode))
 
 (setq gc-cons-threshold 1000000)
-
-
-
-
-
-
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(helm-source-names-using-follow (quote ("Occur"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
