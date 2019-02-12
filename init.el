@@ -15,6 +15,15 @@
       (with-current-buffer theme-file-buffer
         (search-forward (symbol-name face-name)))))
 
+(defun adjust-frame-size ()
+  "Resets current frame width to 120 columns"
+  (interactive)
+  (if (not window-system)
+      (error "Can only adjust a frame-based Emacs instance")
+    (let ((desirable-size 120))
+      (cl-loop
+       for window in (window-list (selected-frame) nil)
+       do (adjust-window-trailing-edge window (- desirable-size (window-width)) t)))))
 (setq-default
  truncate-lines t
  initial-major-mode (quote fundamental-mode)
@@ -40,7 +49,7 @@
  initial-scratch-message        nil
  kill-do-not-save-duplicates    t
  ad-redefinition-action        'accept
- next-line-add-newlines         t
+ next-line-add-newlines         nil
  desktop-save-mode              nil
  desktop-save                   nil
  user-ref-name                 "4lex1v"
@@ -49,7 +58,7 @@
  inhibit-compacting-font-caches t
  comment-note-comment-prefix    ""
  default-directory              "~/Sandbox"
- default-font-setting           (if IS-MAC "Monaco 16" "Iosevka SS08 Semibold 16")
+ default-font-setting           (format "Iosevka %i" (if IS-MAC 18 16))
  theme-to-load                 'sirthias
  search-upper-case              nil)
 
@@ -683,10 +692,11 @@ _h_: b-slurp    _H_: b-barf
   (defun register-path-folders (&rest paths)
     (declare (indent 1))
     (let ((path (-reduce-r-from
-                 (lambda (value acc) (format "%s:%s" acc value))
+                 (lambda (value acc) (format "%s:%s" value acc))
                  (exec-path-from-shell-getenv "PATH")
                  paths)))
       (exec-path-from-shell-setenv "PATH" path)))
+
   :config
   (if IS-MAC
       (progn
@@ -746,6 +756,15 @@ _l_: Last
     ("2" (compilation-set-skip-threshold 2))
     
     ("q" nil "quit")))
+
+(defhydra frame-control (:color pink)
+  ("r" frame-width))
+
+(general-define-key
+ :keymaps 'global-map
+ :states   nil
+
+ "ef" 'frame-control)
 
 (use-package yasnippet :load-path "modules/yasnippet"
   :diminish (yas-minor-mode . " Y")
@@ -1080,7 +1099,7 @@ _e_xtra   _f_ile           _t_ryout
       (configure-company-backends-for-mode cmake-mode
         '(company-cmake company-files company-dabbrev company-capf)))))
 
-(use-package rust-mode :disabled t
+(use-package rust-mode
   :hooks (cargo-minor-mode
           hs-minor-mode
           yas-minor-mode
@@ -1167,7 +1186,7 @@ _e_xtra   _f_ile           _t_ryout
     
     (add-hook 'racer-mode-hook #'eldoc-mode))
 
-  (use-package company-racer :ensure t :demand t
+  (use-package company-racer :ensure t :demand t :disabled t
     :after (racer company)
     
     :config
@@ -1176,11 +1195,6 @@ _e_xtra   _f_ile           _t_ryout
         '(company-dabbrev
           company-racer
           company-keywords))))
-
-  (use-package flycheck-rust :ensure t
-    :after (rust-mode flycheck-mode)
-    :config
-    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
   (use-package toml-mode :ensure t
     :mode ("/\\(Cargo.lock\\|\\.cargo/config\\)\\'" . toml-mode)))
