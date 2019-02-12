@@ -250,11 +250,15 @@
    :prefix   nil
 
    "C-;"    'comment-line
-
    "C-x \\" 'align-regexp
    "C-c r"  'revert-buffer
    "M-j"    'join-line
-   "M-o"    '4lex1v/insert-line-and-jump
+   "M-o"    '(lambda (arg)
+               (interactive "p")
+               (end-of-line)
+               (open-line arg)
+               (next-line 1)
+               (indent-according-to-mode))
    "C-S-d"  '4lex1v/duplicate-line
    "C-w i"  '(clone-indirect-buffer-other-window :wk "Indirect Buffer"))
 
@@ -704,7 +708,11 @@ _h_: b-slurp    _H_: b-barf
         (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
         (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
         (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
-        (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin"))))
+        (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin")))
+  (if IS-WINDOWS
+      (progn
+        ;; Original value was "dumb"
+        (exec-path-from-shell-setenv "TERM" "xterm-color"))))
 
 (use-package hydra :load-path "modules/hydra" :demand t 
   :general
@@ -953,6 +961,7 @@ _e_xtra   _f_ile           _t_ryout
             (lambda ()
               (if (string= (buffer-file-name)
                            USER-INIT-FILE)
+                  (eval-buffer)
                   (byte-recompile-file USER-INIT-FILE)))))
 
 (use-package scala-mode :ensure t
@@ -980,14 +989,22 @@ _e_xtra   _f_ile           _t_ryout
    :states  'normal
    :prefix   nil
    
-   "J" #'scala-join-lines)
+   "J" '(lambda () (interactive) (scala-indent:join-line t)))
 
   :init
   (setq scala-indent:use-javadoc-style t
         scala-mode:debug-messages nil)
 
   (setq-mode-local scala-mode comment-note-comment-prefix "//")
-  
+
+  (defun 4lex1v/fix-scala-fonts ()
+    (interactive)
+    (mapc
+     (lambda (kw)
+       (let ((face-ref (intern (format "scala-font-lock:%s-face" kw))))
+         (copy-face font-lock-keyword-face face-ref)))
+     '("final" "private" "protected" "implicit" "abstract" "sealed" "lazy" "override" "inline")))
+
   :config
   (with-eval-after-load 'company
     (configure-company-backends-for-mode scala-mode
@@ -1017,6 +1034,7 @@ _e_xtra   _f_ile           _t_ryout
 
 (use-package cc-mode
   :mode (("\\.h\\'"  . c++-mode)
+         ("\\.glsl\\'" . c++-mode)
          ("\\.mm\\'" . objc-mode))
   
   :commands c-toggle-auto-newline
