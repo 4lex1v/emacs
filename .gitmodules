@@ -91,3 +91,6 @@
 [submodule "modules/org/org-super-agenda"]
 	path = modules/org/org-super-agenda
 	url = git@github.com:alphapapa/org-super-agenda.git
+[submodule "modules/evil-org-mode"]
+	path = modules/evil-org-mode
+	url = git@github.com:Somelauw/evil-org-mode.git

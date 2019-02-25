@@ -24,6 +24,7 @@
       (cl-loop
        for window in (window-list (selected-frame) nil)
        do (adjust-window-trailing-edge window (- desirable-size (window-width)) t)))))
+
 (setq-default
  truncate-lines t
  initial-major-mode (quote fundamental-mode)
@@ -40,9 +41,9 @@
  line-spacing 2)
 
 (setq
- show-paren-delay              0.0
- ring-bell-function           'ignore
- tramp-default-method         "ssh"
+ show-paren-delay               0.0
+ ring-bell-function            'ignore
+ tramp-default-method          "ssh"
  make-backup-files              nil
  auto-save-default              nil
  inhibit-startup-message        t
@@ -58,9 +59,10 @@
  inhibit-compacting-font-caches t
  comment-note-comment-prefix    ""
  default-directory              "~/Sandbox"
- default-font-setting           (format "Iosevka %i" (if IS-MAC 18 16))
+ default-font-setting           (format "Iosevka %i" (if IS-MAC 18 18))
  theme-to-load                 'sirthias
- search-upper-case              nil)
+ search-upper-case              nil
+ safe-local-variable-values (quote ((user-ref-name . aivanov))))
 
 (if IS-MAC
     (setq
@@ -73,6 +75,10 @@
      ns-use-native-fullscreen     t
      frame-resize-pixelwise       t
      shell-file-name              "/bin/sh"))
+
+(if IS-WINDOWS
+    (setq
+     shell-file-name "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))
 
 (show-paren-mode       -1)
 (delete-selection-mode  t)
@@ -389,9 +395,9 @@ _h_: b-slurp    _H_: b-barf
   
   (sp-pair "(" ")"   :wrap "C-(")
   (sp-pair "[" "]"   :wrap "s-[") ;; This one doesn't work as expected
+  (sp-pair "\"" "\"" :wrap "C-\"")
   
-  (sp-pair "{" "}"   :wrap "C-{")
-  (sp-local-pair '(c++-mode) "{" "};"))
+  (sp-pair "{" "}"   :wrap "C-{"))
 
 (defadvice dired-sort-directories-first
   (after dired-after-updating-hook first () activate)
@@ -472,7 +478,8 @@ _h_: b-slurp    _H_: b-barf
    "C-z"   'helm-select-action
    "C-o"   'helm-next-source
    "C-j"   'helm-next-line
-   "C-k"   'helm-previous-line)
+   "C-k"   'helm-previous-line
+   "C-f"   'helm-toggle-full-frame)
 
   (:prefix   nil
    :keymaps 'comint-mode-map
@@ -518,9 +525,7 @@ _h_: b-slurp    _H_: b-barf
     
     :config (helm-projectile-on))
 
-  ;; #TODO(4lex1v, 09/03/18) :: Install on Windows?
   (use-package helm-gtags :ensure t
-    :if (not IS-WINDOWS)
     :diminish (helm-gtags-mode . "GT")
     :after helm
     
@@ -528,9 +533,10 @@ _h_: b-slurp    _H_: b-barf
     
     :general
     (:prefix nil
+     :states '(normal)
 
-             "C-]"   'helm-gtags-dwim
-             "C-M-]" 'helm-gtags-select)
+     "C-]"   'helm-gtags-dwim
+     "C-M-]" 'helm-gtags-select)
 
     ("t"     '(:ignore t :wk "Tags")
      "tt"    'helm-gtags-dwim
@@ -709,10 +715,10 @@ _h_: b-slurp    _H_: b-barf
         (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
         (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
         (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin")))
+
   (if IS-WINDOWS
       (progn
-        ;; Original value was "dumb"
-        (exec-path-from-shell-setenv "TERM" "xterm-color"))))
+        (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
 
 (use-package hydra :load-path "modules/hydra" :demand t 
   :general
@@ -764,15 +770,6 @@ _l_: Last
     ("2" (compilation-set-skip-threshold 2))
     
     ("q" nil "quit")))
-
-(defhydra frame-control (:color pink)
-  ("r" frame-width))
-
-(general-define-key
- :keymaps 'global-map
- :states   nil
-
- "ef" 'frame-control)
 
 (use-package yasnippet :load-path "modules/yasnippet"
   :diminish (yas-minor-mode . " Y")
@@ -1021,16 +1018,20 @@ _e_xtra   _f_ile           _t_ryout
      "b" '(4lex1v:open-sbt-build-file :wk "build.sbt")
      "s" 'sbt-start
      "r" 'sbt-command
-     "c" '(4lex1v:sbt-compile-command :wk "compile"))
+     "c" '((lambda () (interactive) (sbt-command "compile")) :wk "compile")
+     "t" '((lambda () (interactive) (sbt-command "test")) :wk "test")
+     )
     
     (:keymaps 'scala-mode-map :prefix ","
-     "c" '(4lex1v:sbt-compile-command :wk "compile")
+     "c" '((lambda () (interactive) (sbt-command "compile")) :wk "compile")
+     "t" '((lambda () (interactive) (sbt-command "test")) :wk "test")
      "r" 'sbt-run-previous-command
      "i" '4lex1v/open-in-intellij)
 
     :init
-    (setq sbt:program-name "sbt shell -mem 2048 -v"
-          sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*")))
+    (setq
+     sbt:program-options nil
+     sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*")))
 
 (use-package cc-mode
   :mode (("\\.h\\'"  . c++-mode)
@@ -1125,14 +1126,15 @@ _e_xtra   _f_ile           _t_ryout
           company-mode)
   
   :init 
-  (setq rust-indent-offset  2
-        rust-format-on-save nil
-        rust-toolchain-path (run-shell-command "rustc --print sysroot"))
+  (setq
+   rust-indent-offset  2
+   rust-format-on-save nil
+   rust-toolchain-path (run-shell-command "rustc --print sysroot"))
   
   :config
   (sp-with-modes 'rust-mode
-                 (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
-                 (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
+    (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
+    (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
 
   ;; (configure-company-backends-for-mode rust-mode
   ;;   '(company-dabbrev
@@ -1151,25 +1153,25 @@ _e_xtra   _f_ile           _t_ryout
     
     :general
     (:prefix ","
-             :keymaps 'rust-mode-map
-             
-             "c" '(:ignore t :wk "Cargo")
-             "c." 'cargo-process-repeat
-             "cC" 'cargo-process-clean
-             "cX" 'cargo-process-run-example
-             "cb" 'cargo-process-build
-             "cc" 'cargo-process-check
-             "cd" 'cargo-process-doc
-             "ce" 'cargo-process-bench
-             "cf" 'cargo-process-current-test
-             "cf" 'cargo-process-fmt
-             "ci" 'cargo-process-init
-             "cn" 'cargo-process-new
-             "co" 'cargo-process-current-file-tests
-             "cs" 'cargo-process-search
-             "cu" 'cargo-process-update
-             "cx" 'cargo-process-run
-             "t" 'cargo-process-test)
+     :keymaps 'rust-mode-map
+     
+     "c" '(:ignore t :wk "Cargo")
+     "c." 'cargo-process-repeat
+     "cC" 'cargo-process-clean
+     "cX" 'cargo-process-run-example
+     "cb" 'cargo-process-build
+     "cc" 'cargo-process-check
+     "cd" 'cargo-process-doc
+     "ce" 'cargo-process-bench
+     "cf" 'cargo-process-current-test
+     "cf" 'cargo-process-fmt
+     "ci" 'cargo-process-init
+     "cn" 'cargo-process-new
+     "co" 'cargo-process-current-file-tests
+     "cs" 'cargo-process-search
+     "cu" 'cargo-process-update
+     "cx" 'cargo-process-run
+     "t" 'cargo-process-test)
 
     :init
     (setq cargo-process--enable-rust-backtrace t))
@@ -1421,6 +1423,15 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
   (with-eval-after-load 'evil-collection
     (add-to-list 'evil-collection-mode-list 'outline))
   
+  (with-eval-after-load 'evil
+    (use-package evil-org :demand t :after org
+      :load-path "modules/evil-org-mode"
+      :hook (org-mode . evil-org-mode)
+      :config
+      (require 'evil-org-agenda)
+      (evil-set-initial-state 'org-agenda-mode 'motion)
+      (evil-org-agenda-set-keys)))
+
   (defun org-make-quick-note (name)
     (interactive "B")
     (let ((note-path (concat org-quick-note-folder name ".org")))
@@ -1440,8 +1451,6 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
   ;; whenever I'm using a fresh emacs installation i have the correct package installed
   (if (and (boundp 'org-version) (not (string= (substring org-version 0 1) "9")))
       (warn "WARNING :: Old Org-mode version is used (%s), check the configuration" org-version))
-  
-  (evil-set-initial-state 'org-agenda-mode 'motion)
 
   (org-indent-mode -1)
   
@@ -1533,3 +1542,18 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
  '(emacs-lisp-mode lua-mode scala-mode c-mode objc-mode c++-mode rust-mode))
 
 (setq gc-cons-threshold 1000000)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(helm-source-names-using-follow (quote ("Imenu")))
+ '(org-agenda-files
+   (quote
+    ("c:/Users/Aleksandr/Sandbox/Planning/fast_framework.org" "c:/Users/Aleksandr/Sandbox/Planning/inbox.org" "c:/Users/Aleksandr/Sandbox/Planning/mindfulness.org" "c:/Users/Aleksandr/Sandbox/Planning/one_thing_a_month.org" "c:/Users/Aleksandr/Sandbox/Planning/reading_list.org" "c:/Users/Aleksandr/Sandbox/Planning/rever.org" "c:/Users/Aleksandr/Sandbox/Planning/tetris.org" "c:/Users/Aleksandr/Sandbox/Planning/universe.org"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
