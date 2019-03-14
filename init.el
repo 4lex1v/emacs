@@ -59,7 +59,7 @@
  inhibit-compacting-font-caches t
  comment-note-comment-prefix    ""
  default-directory              "~/Sandbox"
- default-font-setting           (format "Iosevka %i" (if IS-MAC 18 18))
+ default-font-setting           (if IS-MAC "Iosevka Light 20" "Iosevka 18")
  theme-to-load                 'sirthias
  search-upper-case              nil
  safe-local-variable-values (quote ((user-ref-name . aivanov))))
@@ -499,7 +499,8 @@ _h_: b-slurp    _H_: b-barf
         helm-ff-search-library-in-sexp         t
         helm-ff-file-name-history-use-recentf  t
         helm-follow-mode-persistent            t
-        helm-show-completion-display-function  nil)
+        helm-show-completion-display-function  nil
+        helm-grep-ag-command "rg --color=always --smart-case --no-heading --line-number %s %s %s")
   
   (use-package async :ensure t)
   (use-package helm-config :demand t)
@@ -565,7 +566,11 @@ _h_: b-slurp    _H_: b-barf
    "pi" 'projectile-invalidate-cache
    "pe" 'projectile-run-eshell
    "p&" 'projectile-run-async-shell-command-in-root
-   "pS" 'projectile-save-project-buffers)
+   "pS" 'projectile-save-project-buffers
+   "ps" '((lambda (arg)
+            (interactive "P")
+            (helm-grep-ag (projectile-project-root) arg))
+          :wk "Search"))
   
   :init
   (setq projectile-enable-caching       t
