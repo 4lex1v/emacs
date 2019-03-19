@@ -59,7 +59,7 @@
  inhibit-compacting-font-caches t
  comment-note-comment-prefix    ""
  default-directory              "~/Sandbox"
- default-font-setting           (if IS-MAC "Iosevka Light 20" "Iosevka 18")
+ default-font-setting           (if IS-MAC "Iosevka Light 20" "Iosevka 16")
  theme-to-load                 'sirthias
  search-upper-case              nil
  safe-local-variable-values (quote ((user-ref-name . aivanov))))
@@ -957,14 +957,7 @@ _e_xtra   _f_ile           _t_ryout
     
     :config
     (with-eval-after-load 'evil-collection
-      (add-to-list 'evil-collection-mode-list 'macrostep)))
-  
-  (add-hook 'after-save-hook 
-            (lambda ()
-              (if (string= (buffer-file-name)
-                           USER-INIT-FILE)
-                  (eval-buffer)
-                  (byte-recompile-file USER-INIT-FILE)))))
+      (add-to-list 'evil-collection-mode-list 'macrostep))))
 
 (use-package scala-mode :ensure t
   :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
@@ -1320,7 +1313,7 @@ _e_xtra   _f_ile           _t_ryout
         org-babel-load-languages      '((sql . t) (shell . t) (plantuml . t))
         
         ;; Templates configuration
-        org-capture-templates '(("t" "Task"  entry (file "~/Sandbox/planning/inbox.org") "* TODO %i%?"))
+        org-capture-templates '(("t" "Task"  entry (file "~/Sandbox/planning/universe.org") "* TODO %i%?"))
         
         ;; Keywords
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
@@ -1328,6 +1321,7 @@ _e_xtra   _f_ile           _t_ryout
 
         org-refile-use-outline-path 'file
         org-refile-targets '((org-agenda-files :maxlevel . 1))
+        org-refile-target-verify-function #'(lambda () (member "project" (org-get-local-tags)))
 
         ;; NEW EXPERIMENTAL SETTINGS
         org-adapt-indentation nil
@@ -1547,18 +1541,4 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
  '(emacs-lisp-mode lua-mode scala-mode c-mode objc-mode c++-mode rust-mode))
 
 (setq gc-cons-threshold 1000000)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(helm-source-names-using-follow (quote ("Imenu")))
- '(org-agenda-files
-   (quote
-    ("c:/Users/Aleksandr/Sandbox/Planning/fast_framework.org" "c:/Users/Aleksandr/Sandbox/Planning/inbox.org" "c:/Users/Aleksandr/Sandbox/Planning/mindfulness.org" "c:/Users/Aleksandr/Sandbox/Planning/one_thing_a_month.org" "c:/Users/Aleksandr/Sandbox/Planning/reading_list.org" "c:/Users/Aleksandr/Sandbox/Planning/rever.org" "c:/Users/Aleksandr/Sandbox/Planning/tetris.org" "c:/Users/Aleksandr/Sandbox/Planning/universe.org"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
