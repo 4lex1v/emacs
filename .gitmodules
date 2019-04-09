@@ -2,95 +2,50 @@
 	path = themes/sirthias
 	url = git@github.com:4lex1v/sirthias-theme.git
 	branch = master
-[submodule "core/projectile"]
+[submodule "modules/projectile"]
 	path = modules/projectile
 	url = git@github.com:bbatsov/projectile.git
 	branch = master
-[submodule "core/magit"]
+[submodule "modules/magit"]
 	path = modules/magit
 	url = git@github.com:magit/magit.git
 	branch = master
-[submodule "core/company"]
+[submodule "modules/company"]
 	path = modules/company
 	url = git@github.com:company-mode/company-mode.git
 	branch = master
-[submodule "core/yasnippet"]
+[submodule "modules/yasnippet"]
 	path = modules/yasnippet
 	url = git@github.com:capitaomorte/yasnippet.git
 	branch = master
-[submodule "core/smartparens"]
+[submodule "modules/smartparens"]
 	path = modules/smartparens
 	url = git@github.com:Fuco1/smartparens.git
 	branch = master
-[submodule "core/helm/helm-core"]
+[submodule "modules/helm"]
 	path = modules/helm
 	url = git@github.com:emacs-helm/helm.git
-[submodule "core/docker"]
-	path = modules/infra/docker
-	url = git@github.com:Silex/docker.el.git
-[submodule "core/which-key"]
+[submodule "modules/which-key"]
 	path = modules/which-key
 	url = git@github.com:justbur/emacs-which-key.git
-[submodule "packages/idris-mode"]
-	path = packages/idris-mode
-	url = git@github.com:idris-hackers/idris-mode.git
-[submodule "core/expand-region"]
-	path = core/expand-region
-	url = git@github.com:magnars/expand-region.el.git
-[submodule "modules/essentials/use-package"]
+[submodule "modules/use-package"]
 	path = modules/use-package
 	url = git@github.com:jwiegley/use-package.git
-[submodule "platform/evil/evil-core"]
-	path = modules/editor/evil-core
+[submodule "modules/evil"]
+	path = modules/evil
 	url = git@github.com:emacs-evil/evil.git
-[submodule "modules/behaviour/general"]
+[submodule "modules/general"]
 	path = modules/general
 	url = git@github.com:noctuid/general.el.git
-[submodule "modules/behaviour/hydra"]
+[submodule "modules/hydra"]
 	path = modules/hydra
 	url = git@github.com:abo-abo/hydra.git
-[submodule "modules/native/cedet"]
-	path = modules/cedet
-	url = https://git.code.sf.net/p/cedet/git
-[submodule "modules/reader/novel"]
-	path = modules/reader/novel
-	url = git@github.com:wasamasa/nov.el.git
 [submodule "snippets"]
 	path = snippets
 	url = git@github.com:4lex1v/emacs-snippets.git
 [submodule "scripted"]
 	path = scripted
 	url = git@github.com:4lex1v/scripted.el.git
-[submodule "modules/behaviour/evil-collection"]
-	path = modules/editor/evil-collection
-	url = git@github.com:jojojames/evil-collection.git
-[submodule "modules/org/org-ref"]
-	path = modules/org/org-ref
-	url = git@github.com:jkitchin/org-ref.git
-[submodule "modules/org/org-noter"]
-	path = modules/org/org-noter
-	url = git@github.com:weirdNox/org-noter.git
-[submodule "modules/reader/elfeed"]
-	path = modules/elfeed
-	url = git@github.com:skeeto/elfeed.git
-[submodule "modules/org/org-brain"]
-	path = modules/org/org-brain
-	url = git@github.com:Kungsgeten/org-brain.git
-[submodule "modules/org/evil-org-mode"]
-	path = modules/org/evil-org-mode
-	url = git@github.com:Somelauw/evil-org-mode.git
-[submodule "modules/org/org-ql"]
-	path = modules/org/org-ql
-	url = git@github.com:alphapapa/org-agenda-ng.git
-[submodule "modules/debbug/realgud-lldb"]
-	path = modules/debbug/realgud-lldb
-	url = git@github.com:realgud/realgud-lldb.git
-[submodule "modules/editor/evil-core"]
-	path = modules/evil
-	url = git@github.com:emacs-evil/evil.git
-[submodule "modules/org/org-super-agenda"]
-	path = modules/org/org-super-agenda
-	url = git@github.com:alphapapa/org-super-agenda.git
 [submodule "modules/evil-org-mode"]
 	path = modules/evil-org-mode
 	url = git@github.com:Somelauw/evil-org-mode.git
