@@ -1314,7 +1314,7 @@ _e_xtra   _f_ile           _t_ryout
         org-babel-load-languages      '((sql . t) (shell . t) (plantuml . t))
         
         ;; Templates configuration
-        org-capture-templates '(("t" "Task"  entry (file "~/Sandbox/org/universe.org") "* TODO %i%?"))
+        org-capture-templates '(("t" "Task"  entry (file "~/Sandbox/Library/Org/universe.org") "* TODO %i%?"))
         
         ;; Keywords
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
@@ -1326,10 +1326,9 @@ _e_xtra   _f_ile           _t_ryout
 
         ;; NEW EXPERIMENTAL SETTINGS
         org-adapt-indentation nil
-        org-agenda-files (f-files "~/Sandbox/org"
-                                  (lambda (path)
-                                    (and (f-ext? path "org")
-                                         (not (s-starts-with-p "_" (f-filename path))))))
+        org-agenda-files (f-files "~/Sandbox/Library/Org" (lambda (path)
+                                                            (and (f-ext? path "org")
+                                                                 (not (s-starts-with-p "_" (f-filename path))))))
         
         org-agenda-custom-commands '(("c" . "My Custom Agendas")
                                      ("cu"  "Unscheduled"
