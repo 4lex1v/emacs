@@ -896,7 +896,23 @@ _e_xtra   _f_ile           _t_ryout
   
   :config (global-undo-tree-mode))
 
+(use-package avy :ensure t
+  :general
+  (:keymaps 'global
+   :states 'normal
+
+   "jj" 'avy-goto-char
+   "jl" 'avy-goto-line)
+
+  (:keymaps 'global
+   :prefix nil
+   :states 'normal
+
+   "C-M-j" 'hydra-avy/body))
+
+;; #TODO(4lex1v, 05/30/19) :: Marked for cleanup
 (use-package string-inflection :ensure t
+  :disabled t
   :general
   (:prefix  nil
             :states '(normal)
@@ -959,6 +975,14 @@ _e_xtra   _f_ile           _t_ryout
     :config
     (with-eval-after-load 'evil-collection
       (add-to-list 'evil-collection-mode-list 'macrostep))))
+
+(use-package rye-lang-mode
+  :load-path "modules/rye"
+  :mode "\\.rye\\'"
+  :hooks
+  (yas-minor-mode
+   company-mode
+   hs-minor-mode))
 
 (use-package scala-mode :ensure t
   :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
