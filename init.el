@@ -103,6 +103,8 @@
 (put 'narrow-to-page 'disabled nil)
 (fset 'yes-or-no-p   'y-or-n-p)
 
+(global-unset-key (kbd "C-h"))
+
 (setq package-enable-at-startup nil
       package--init-file-ensured t
       package-archives '(("gnu"          . "http://elpa.gnu.org/packages/")
