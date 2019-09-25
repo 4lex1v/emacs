@@ -56,10 +56,13 @@
  user-ref-name                 "4lex1v"
  mouse-wheel-scroll-amount     '(1)
  mouse-wheel-progressive-speed  nil
+
+ ;; Performance related settings
  inhibit-compacting-font-caches t
- comment-note-comment-prefix    ""
+ jit-lock-defer-time 0
+ fast-but-imprecise-scrolling t
+
  default-directory              "~/Sandbox"
- default-font-setting           (if IS-MAC "Iosevka Light 20" "Iosevka 16")
  theme-to-load                 'sirthias
  search-upper-case              nil
  safe-local-variable-values (quote ((user-ref-name . aivanov))))
@@ -80,30 +83,29 @@
     (setq
      shell-file-name "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))
 
-(show-paren-mode       -1)
-(delete-selection-mode  t)
-(tooltip-mode          -1)
-(tool-bar-mode         -1)
-(menu-bar-mode         -1)
-(scroll-bar-mode       -1)
+(if (display-graphic-p)
+    (progn
+      (show-paren-mode       -1)
+      (delete-selection-mode  t)
+      (tooltip-mode          -1)
+      (tool-bar-mode         -1)
+      (menu-bar-mode         -1)
+      (scroll-bar-mode       -1)))
 
-(set-frame-font default-font-setting)
-(add-to-list 'default-frame-alist (cons 'font default-font-setting))
-(set-face-attribute 'default nil :font default-font-setting)
+(let ((font-setting "PragmataPro-20:antialias=subpixel"))
+  (add-to-list 'default-frame-alist (cons 'font font-setting))
+  (set-frame-font font-setting))
 
 (delete-selection-mode t)
 (global-auto-revert-mode t)
-
-(require 'mode-local)
-(require 'package)
-(require 'dired)
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
 (fset 'yes-or-no-p   'y-or-n-p)
 
-(global-unset-key (kbd "C-h"))
+(require 'dired)
+(require 'mode-local)
 
 (setq package-enable-at-startup nil
       package--init-file-ensured t
@@ -113,8 +115,8 @@
 
 ;; https://www.reddit.com/r/emacs/comments/53zpv9/how_do_i_get_emacs_to_stop_adding_custom_fields/
 (defun package--save-selected-packages (&rest opt) nil)
-
-(package-initialize)
+(when (require 'package nil 'noerror)
+  (package-initialize))
 
 ;; Use-Package
 (setq use-package-verbose               t
@@ -130,11 +132,11 @@
 
 (require 'bind-key)
 (require 'use-package)
+
 (use-package upe-hooks :demand t :load-path "modules/upe-hooks")
 (use-package diminish :ensure t :demand t
   :config
   (diminish 'auto-revert-mode))
-
 (use-package s    :ensure t :demand t) ;; Strings manipulation library
 (use-package f    :ensure t :demand t) ;; Files manipulation library
 (use-package dash :ensure t :demand t) ;; List manipulation library
@@ -171,6 +173,10 @@
   :config
   (with-eval-after-load 'evil
     (general-evil-setup t)))
+
+(use-package hideshow :demand t
+  :hook
+  ((text-mode prog-mode) . hs-minor-mode))
 
 (use-package evil :load-path "modules/evil" :demand t
   :after general ;; To enable evil-leader in initial buffers
@@ -623,6 +629,18 @@ _h_: b-slurp    _H_: b-barf
             "RET" 'magit-repolist-status)
   
   :init
+  (use-package ghub :ensure t :after magit)
+  (use-package with-editor :ensure t :after magit
+    :general
+    (:keymaps 'with-editor-mode-map
+              :prefix "" ;; don't use SPC prefix in this case
+              "RET"    'with-editor-finish
+              [escape] 'with-editor-cancel)
+    :config
+    (with-eval-after-load 'evil
+      (evil-set-initial-state 'with-editor-mode 'insert)))
+  (use-package magit-popup :ensure t :after magit)
+
   (setq-default
    magit-submodule-list-columns
    (quote
@@ -652,7 +670,6 @@ _h_: b-slurp    _H_: b-barf
                          (user-error "No file at point"))))
     (magit-diff-visit-file file t))
   
-  
   ;; This function was added to speed up my PR review workflow in a way that i can diff current branch
   ;; with master by a single keystroke...
   (defun magit-diff-branch-with-master ()
@@ -676,19 +693,7 @@ _h_: b-slurp    _H_: b-barf
   (add-hook 'magit-submodule-list-mode-hook
             (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t))))
 
-  (use-package magit-popup :ensure t :after magit)
-  (use-package ghub :ensure t :after magit)
 
-  (use-package with-editor :ensure t 
-    :after magit
-    :general
-    (:keymaps 'with-editor-mode-map
-              :prefix "" ;; don't use SPC prefix in this case
-              "RET"    'with-editor-finish
-              [escape] 'with-editor-cancel)
-    :config
-    (with-eval-after-load 'evil
-     (evil-set-initial-state 'with-editor-mode 'insert)))
 
   (use-package evil-magit :ensure t :demand t
     :after (evil magit-mode)
@@ -831,7 +836,9 @@ _e_xtra   _f_ile           _t_ryout
   :config
   (yas-reload-all))
 
-(use-package company :load-path "modules/company"
+(use-package abbrev :demand t)
+
+(use-package company :load-path "modules/company" :disabled t
   :commands company-mode
   
   :functions (company-clang)
@@ -852,7 +859,7 @@ _e_xtra   _f_ile           _t_ryout
              "C-l" 'company-other-backend
              "C-d" 'company-show-doc-buffer)
 
-  :hook ((text-mode) . company-mode)
+  :hook ((text-mode prog-mode) . company-mode)
   
   :init
   (setq company-dabbrev-ignore-case nil
@@ -928,13 +935,6 @@ _e_xtra   _f_ile           _t_ryout
   
   :defines (emacs-lisp-mode-hook)
   
-  :hooks
-  (:emacs-lisp-mode-hook
-   yas-minor-mode
-   company-mode
-   smartparens-mode
-   hs-minor-mode)
-  
   :general
   (:prefix nil
    "M-."     'find-function-at-point
@@ -980,22 +980,14 @@ _e_xtra   _f_ile           _t_ryout
 
 (use-package rye-lang-mode
   :load-path "modules/rye"
-  :mode "\\.rye\\'"
-  :hooks
-  (yas-minor-mode
-   company-mode
-   hs-minor-mode))
+  :mode "\\.rye\\'")
 
 (use-package scala-mode :ensure t
   :mode        ("\\.\\(scala\\|sbt\\|sc\\)\\'" . scala-mode)
   :interpreter ("scala" . scala-mode)
   
   :hooks
-  (4lex1v/fix-scala-fonts
-   smartparens-mode
-   yas-minor-mode
-   company-mode
-   hs-minor-mode)
+  (4lex1v/fix-scala-fonts)
   
   :general
   (:keymaps 'scala-mode-map
@@ -1054,9 +1046,9 @@ _e_xtra   _f_ile           _t_ryout
      "i" '4lex1v/open-in-intellij)
 
     :init
-    (setq
-     sbt:program-options nil
-     sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*")))
+    (setq sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*")
+    :config
+    (add-to-list 'sbt:program-options "-Dsbt.supershell=false")))
 
 (use-package cc-mode
   :mode (("\\.h\\'"  . c++-mode)
@@ -1065,13 +1057,6 @@ _e_xtra   _f_ile           _t_ryout
   
   :commands c-toggle-auto-newline
   :defines (c-mode-common-hook)
-  
-  :hooks
-  (:c-mode-common-hook
-   smartparens-mode
-   yas-minor-mode
-   company-mode
-   hs-minor-mode)
   
   :general
   (:keymaps 'c-mode-base-map
@@ -1132,7 +1117,6 @@ _e_xtra   _f_ile           _t_ryout
 
   (use-package cmake-mode :ensure t :disabled t
     :after cc-mode
-    :hooks (company-mode)
     
     :init
     (with-eval-after-load 'evil-collection
@@ -1144,11 +1128,7 @@ _e_xtra   _f_ile           _t_ryout
         '(company-cmake company-files company-dabbrev company-capf)))))
 
 (use-package rust-mode
-  :hooks (cargo-minor-mode
-          hs-minor-mode
-          yas-minor-mode
-          smartparens-mode
-          company-mode)
+  :hooks (cargo-minor-mode)
   
   :init 
   (setq
@@ -1540,7 +1520,6 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
   :hooks
   (:eshell-mode-hook
    4lex1v:helm-eshell-history
-   company-mode
    ansi-color-for-comint-mode-on)
   
   :config
