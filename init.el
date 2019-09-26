@@ -26,33 +26,13 @@
        do (adjust-window-trailing-edge window (- desirable-size (window-width)) t)))))
 
 (setq-default
+ auto-window-vscroll nil
  truncate-lines t
  initial-major-mode (quote fundamental-mode)
  mode-line-default-help-echo nil ; turn-off tooltips on cursor hover-over
  tab-width           2 ;; Though i'm not using tabs
  indent-tabs-mode    nil
  cursor-type        'box
- cursor-in-non-selected-windows 'bar
- frame-title-format "%f"
- linum-format       "%3d "  ;; Try dynamic?
- load-prefer-newer  t
- left-fringe-width  20
- word-wrap t
- line-spacing 2)
-
-(setq
- show-paren-delay               0.0
- ring-bell-function            'ignore
- tramp-default-method          "ssh"
- make-backup-files              nil
- auto-save-default              nil
- inhibit-startup-message        t
- initial-scratch-message        nil
- kill-do-not-save-duplicates    t
- ad-redefinition-action        'accept
- next-line-add-newlines         nil
- desktop-save-mode              nil
- desktop-save                   nil
  user-ref-name                 "4lex1v"
  mouse-wheel-scroll-amount     '(1)
  mouse-wheel-progressive-speed  nil
@@ -94,6 +74,7 @@
         (add-to-list 'default-frame-alist (cons 'font font-setting))
         (set-frame-font font-setting))))
 
+(blink-cursor-mode     -1)
 (show-paren-mode       -1)
 (menu-bar-mode         -1)
 (delete-selection-mode t)
@@ -196,8 +177,8 @@
    :keymaps 'evil-motion-state-map
    :states   nil
    
-   "j"   'evil-next-visual-line
-   "k"   'evil-previous-visual-line)
+   "j"   'next-line ;;'evil-next-visual-line
+   "k"   'previous-line);;'evil-previous-visual-line)
 
   (:prefix nil
    
