@@ -83,19 +83,19 @@
     (setq
      shell-file-name "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))
 
+
 (if (display-graphic-p)
     (progn
-      (show-paren-mode       -1)
-      (delete-selection-mode  t)
       (tooltip-mode          -1)
       (tool-bar-mode         -1)
-      (menu-bar-mode         -1)
-      (scroll-bar-mode       -1)))
+      (scroll-bar-mode       -1)
 
-(let ((font-setting "PragmataPro-20:antialias=subpixel"))
-  (add-to-list 'default-frame-alist (cons 'font font-setting))
-  (set-frame-font font-setting))
+      (let ((font-setting "PragmataPro-20:antialias=subpixel"))
+        (add-to-list 'default-frame-alist (cons 'font font-setting))
+        (set-frame-font font-setting))))
 
+(show-paren-mode       -1)
+(menu-bar-mode         -1)
 (delete-selection-mode t)
 (global-auto-revert-mode t)
 
@@ -142,7 +142,7 @@
 (use-package dash :ensure t :demand t) ;; List manipulation library
 
 (use-package sirthias-theme :load-path "themes/sirthias" :demand t
-  :if (eq theme-to-load 'sirthias)
+  :if (and (eq theme-to-load 'sirthias) (display-graphic-p))
   
   :init
   (setq
@@ -361,7 +361,7 @@
    sp-local-pairs)
   
   :hook
-  ((conf-mode text-mode) . smartparens-mode)
+  ((conf-mode text-mode prog-mode) . smartparens-mode)
   
   :general
   (:keymaps 'smartparens-mode-map
@@ -799,6 +799,9 @@ _l_: Last
    yas-reload-all)
   
   :mode ("\\.yasnippet" . snippet-mode)
+
+  :hook
+  ((prog-mode) . yas-minor-mode)
   
   :general
   ("es" '(hydra-yasnippet/body :wk "Snippets"))
