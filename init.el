@@ -1,5 +1,7 @@
 (setq gc-cons-threshold 10000000)
 
+(defconst THEME_TO_LOAD 'paladin)
+
 (defconst IS-MAC               (eq system-type 'darwin))
 (defconst IS-WINDOWS           (eq system-type 'windows-nt))
 (defconst IS-UNIX              (not IS-WINDOWS))
@@ -7,15 +9,15 @@
 (defconst USER-INIT-FILE       (concat USER-EMACS-DIRECTORY "init.el"))
 
 ;; #TODO :: search fails if the buffer is opened and not at the beginning of the buffer
-(defun edit-face-at-point ()
+(defun 4l/edit-face-at-point ()
   "Editor face of the active theme at the point."
   (interactive)
   (-if-let* ((face-name (face-at-point))
-             (theme-file-buffer (find-library (concat (symbol-name theme-to-load) "-theme"))))
+             (theme-file-buffer (find-library (concat (symbol-name THEME_TO_LOAD) "-theme"))))
       (with-current-buffer theme-file-buffer
         (search-forward (symbol-name face-name)))))
 
-(defun adjust-frame-size ()
+(defun 4l/adjust-frame-size ()
   "Resets current frame width to 120 columns"
   (interactive)
   (if (not window-system)
@@ -25,6 +27,17 @@
        for window in (window-list (selected-frame) nil)
        do (adjust-window-trailing-edge window (- desirable-size (window-width)) t)))))
 
+(defun 4l/insert-block (end-with-semicolon-p)
+  (interactive "P")
+  (insert "{")
+  (newline-and-indent)
+  (newline)
+  (insert (if end-with-semicolon-p "};" "}"))
+  (beginning-of-line)
+  (indent-according-to-mode)
+  (previous-line)
+  (indent-according-to-mode))
+
 (setq-default
  auto-window-vscroll nil
  truncate-lines t
@@ -33,6 +46,27 @@
  tab-width           2 ;; Though i'm not using tabs
  indent-tabs-mode    nil
  cursor-type        'box
+ cursor-in-non-selected-windows 'bar
+ frame-title-format "%f"
+ linum-format       "%3d "  ;; Try dynamic?
+ load-prefer-newer  t
+ left-fringe-width  20
+ word-wrap t
+ line-spacing 2)
+
+(setq
+ show-paren-delay               0.0
+ ring-bell-function            'ignore
+ tramp-default-method          "ssh"
+ make-backup-files              nil
+ auto-save-default              nil
+ inhibit-startup-message        t
+ initial-scratch-message        nil
+ kill-do-not-save-duplicates    t
+ ad-redefinition-action        'accept
+ next-line-add-newlines         nil
+ desktop-save-mode              nil
+ desktop-save                   nil
  user-ref-name                 "4lex1v"
  mouse-wheel-scroll-amount     '(1)
  mouse-wheel-progressive-speed  nil
@@ -43,26 +77,27 @@
  fast-but-imprecise-scrolling t
 
  default-directory              "~/Sandbox"
- theme-to-load                 'sirthias
  search-upper-case              nil
  safe-local-variable-values (quote ((user-ref-name . aivanov))))
 
 (if IS-MAC
-    (setq
-     browse-url-browser-function 'browse-url-default-macosx-browser
-     delete-by-moving-to-trash    t
-     mac-command-modifier        'meta
-     mac-option-modifier         'super
-     mac-control-modifier        'control
-     ns-function-modifier        'hyper
-     ns-use-native-fullscreen     t
-     frame-resize-pixelwise       t
-     shell-file-name              "/bin/sh"))
+    (progn
+      (setq
+       browse-url-browser-function 'browse-url-default-macosx-browser
+       delete-by-moving-to-trash    t
+       mac-command-modifier        'meta
+       mac-option-modifier         'super
+       mac-control-modifier        'control
+       ns-function-modifier        'hyper
+       ns-use-native-fullscreen     t
+       frame-resize-pixelwise       t
+       shell-file-name              "/bin/sh")
+      (global-set-key (kbd "M-`") #'other-frame)
+      ))
 
 (if IS-WINDOWS
     (setq
      shell-file-name "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))
-
 
 (if (display-graphic-p)
     (progn
@@ -70,9 +105,38 @@
       (tool-bar-mode         -1)
       (scroll-bar-mode       -1)
 
+      (eval-and-compile
+        (add-to-list 'load-path "/Users/aleksandrivanov/.emacs.d/themes/sirthias")
+        (add-to-list 'load-path "/Users/aleksandrivanov/.emacs.d/themes/paladin"))
+      
       (let ((font-setting "PragmataPro-20:antialias=subpixel"))
         (add-to-list 'default-frame-alist (cons 'font font-setting))
-        (set-frame-font font-setting))))
+        (set-frame-font font-setting))
+
+      (cond ((eq THEME_TO_LOAD 'sirthias)
+             (when (locate-library "sirthias-theme")
+               (setq sirthias-easy-mode t sirthias-cold-mode nil)
+               (add-hook 'after-make-frame-functions
+                         (lambda (frame)
+                           (select-frame frame)
+                           (load-theme 'sirthias t)))
+               (require 'sirthias-theme nil nil)
+               (load-theme 'sirthias t)))
+            ((eq THEME_TO_LOAD 'paladin)
+             (when (locate-library "paladin-theme")
+               (setq paladin-easy-mode t paladin-cold-mode nil)
+               (add-hook 'after-make-frame-functions
+                         (lambda (frame)
+                           (select-frame frame)
+                           (load-theme 'paladin t)))
+               (require 'paladin-theme nil nil)
+               (load-theme 'paladin t)))
+            ((eq THEME_TO_LOAD 'default)
+             (progn 
+               (set-face-attribute 'fringe nil :background nil)
+               (with-eval-after-load "eshell"
+                 (lambda ()
+                   (set-face-attribute 'eshell-prompt nil :foreground "#000080"))))))))
 
 (blink-cursor-mode     -1)
 (show-paren-mode       -1)
@@ -85,8 +149,17 @@
 (put 'narrow-to-page 'disabled nil)
 (fset 'yes-or-no-p   'y-or-n-p)
 
-(require 'dired)
-(require 'mode-local)
+(require 'abbrev)
+
+(when (and (require 'ls-lisp) (require 'dired))
+  (setq
+   ls-lisp-dirs-first t
+   ls-lisp-use-insert-directory-program nil))
+
+(when (and (>= 24 emacs-major-version) (require 'mode-local))
+  (setq-mode-local scala-mode comment-note-comment-prefix "//")
+  (setq-mode-local org evil-auto-indent nil)
+  (setq-mode-local emacs-lisp-mode comment-note-comment-prefix ";;"))
 
 (setq package-enable-at-startup nil
       package--init-file-ensured t
@@ -115,36 +188,45 @@
 (require 'use-package)
 
 (use-package upe-hooks :demand t :load-path "modules/upe-hooks")
-(use-package diminish :ensure t :demand t
-  :config
-  (diminish 'auto-revert-mode))
+(use-package diminish :ensure t :demand t)
 (use-package s    :ensure t :demand t) ;; Strings manipulation library
 (use-package f    :ensure t :demand t) ;; Files manipulation library
 (use-package dash :ensure t :demand t) ;; List manipulation library
 
-(use-package sirthias-theme :load-path "themes/sirthias" :demand t
-  :if (and (eq theme-to-load 'sirthias) (display-graphic-p))
-  
-  :init
-  (setq
-   sirthias-easy-mode t
-   sirthias-cold-mode nil)
-  
-  (add-hook 'after-make-frame-functions
-                (lambda (frame)
-                  (select-frame frame)
-                  (load-theme 'sirthias t)))
-  
-  :config
-  (load-theme 'sirthias t))
+(when (require 'hideshow nil nil)
+  (add-hook 'text-mode-hook #'hs-minor-mode)
+  (add-hook 'prog-mode-hook #'hs-minor-mode))
 
-;; Set of custom hack of the default theme to make it a bit prettier
-(if (eq theme-to-load 'default)
-    (progn 
-      (set-face-attribute 'fringe nil :background nil)
-      (with-eval-after-load "eshell"
-        (lambda ()
-          (set-face-attribute 'eshell-prompt nil :foreground "#000080")))))
+(use-package exec-path-from-shell :ensure t :demand t
+  :commands (exec-path-from-shell-getenv
+             exec-path-from-shell-setenv)
+  :init
+  ;; Under certain conditions this can be nicely used withing Windows environment as well...
+  (defun run-shell-command (&rest cmd)
+    (replace-regexp-in-string "\r?\n\\'" ""
+                              (shell-command-to-string
+                               (mapconcat 'identity cmd " ")))) 
+  
+  (defun register-path-folders (&rest paths)
+    (declare (indent 1))
+    (let ((path (-reduce-r-from
+                 (lambda (value acc) (format "%s:%s" value acc))
+                 (exec-path-from-shell-getenv "PATH")
+                 paths)))
+      (exec-path-from-shell-setenv "PATH" path)))
+
+  :config
+  (if IS-MAC
+      (progn
+        (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
+        (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
+        (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
+        (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
+        (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin")))
+
+  (if IS-WINDOWS
+      (progn
+        (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
 
 (use-package general :demand t :load-path "modules/general"
   :init
@@ -155,17 +237,11 @@
   (with-eval-after-load 'evil
     (general-evil-setup t)))
 
-(use-package hideshow :demand t
-  :hook
-  ((text-mode prog-mode) . hs-minor-mode))
-
 (use-package evil :load-path "modules/evil" :demand t
   :after general ;; To enable evil-leader in initial buffers
   
   :defines (evil-hook)
   :functions (prog-mode-hook)
-  
-  :hooks hs-minor-mode
   
   :preface
   (setq 
@@ -173,15 +249,11 @@
    evil-collection-company-use-tng nil)
   
   :general
-  (:prefix   nil
-   :keymaps 'evil-motion-state-map
-   :states   nil
-   
-   "j"   'next-line ;;'evil-next-visual-line
-   "k"   'previous-line);;'evil-previous-visual-line)
+  (:prefix nil :states nil :keymaps 'evil-motion-state-map
+   "j"   'next-line
+   "k"   'previous-line)
 
   (:prefix nil
-   
    "$"   'evil-end-of-visual-line
    "C-j" 'evil-forward-paragraph
    "C-k" 'evil-backward-paragraph
@@ -201,6 +273,7 @@
    "e"   '(:ignore t :wk "Emacs")
    "eq"  'save-buffers-kill-emacs
    "er"  'revert-buffer
+   "eb"  'bookmark-bmenu-list
 
    "ee"  '(:ignore t :wk "Evil")
    "een" '(evil-ex-nohighlight :wk "No Highlighting")
@@ -255,7 +328,9 @@
                (open-line arg)
                (next-line 1)
                (indent-according-to-mode))
-   "C-S-d"  '4lex1v/duplicate-line
+   "M-["    #'(lambda () (interactive) (4l/insert-block nil))
+   "M-{"    #'(lambda () (interactive) (4l/insert-block t))
+   "C-S-d"  '4l/duplicate-line
    "C-w i"  '(clone-indirect-buffer-other-window :wk "Indirect Buffer"))
 
   :init
@@ -265,7 +340,7 @@
         evil-want-C-u-scroll            t
         evil-ex-interactive-search-highlight 'selected-window
         evil-want-keybinding            nil)
-  
+
   ;; #NOTE :: This makes things like `just_an_example' selectable as a single word
   (defun fix-word-def () (modify-syntax-entry ?_ "w"))
   (add-hook #'prog-mode-hook 'fix-word-def)
@@ -362,23 +437,6 @@
         sp-autoskip-closing-pair 'always-end
         sp-hybrid-kill-entire-symbol nil)
   
-  (with-eval-after-load 'hydra
-    (defhydra hydra-smartparens (:color pink :hint nil)
-      
-      "
-^Slurp^         ^Barfs^
---------------------
-_l_: f-slurp    _L_: f-barf
-_h_: b-slurp    _H_: b-barf
---------------------
-"
-      
-      ("l" sp-forward-slurp-sexp)
-      ("h" sp-backward-slurp-sexp)
-      ("L" sp-forward-barf-sexp)
-      ("H" sp-backward-barf-sexp)
-      ("q" nil "cancel")))
-  
   :config
   (use-package smartparens-config :demand t)
   (sp-use-smartparens-bindings)
@@ -388,15 +446,6 @@ _h_: b-slurp    _H_: b-barf
   (sp-pair "\"" "\"" :wrap "C-\"")
   
   (sp-pair "{" "}"   :wrap "C-{"))
-
-(defadvice dired-sort-directories-first
-  (after dired-after-updating-hook first () activate)
-  "Sort dired listings with directories first before adding marks."
-  (save-excursion
-    (let (buffer-read-only)
-      (forward-line 2) ;; beyond dir. header 
-      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-    (set-buffer-modified-p nil)))
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t
@@ -500,44 +549,7 @@ _h_: b-slurp    _H_: b-barf
   
   (helm-autoresize-mode)
 
-  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-
-  ;; #NOTE :: This package doesn't rely on Projectile cause my workflow starts with helm-projectile-switch-project
-  ;; So this package bootstrap the projectile loading
-  (use-package helm-projectile :ensure t
-    :commands helm-projectile-on
-    :general
-    ("pp"  'helm-projectile-switch-project)
-    
-    (:prefix nil
-
-     "C-M-3" 'helm-projectile-switch-to-buffer
-     "M-1"   'helm-projectile-find-file)
-    
-    :config (helm-projectile-on))
-
-  (use-package helm-gtags :ensure t
-    :diminish (helm-gtags-mode . "GT")
-    :after helm
-    
-    :hook (prog-mode . helm-gtags-mode)
-    
-    :general
-    (:prefix nil
-     :states '(normal)
-
-     "C-]"   'helm-gtags-dwim
-     "C-M-]" 'helm-gtags-select)
-
-    ("t"     '(:ignore t :wk "Tags")
-     "tt"    'helm-gtags-dwim
-     "tf"    'helm-gtags-find-tag-other-window)
-    
-    :init
-    (setq helm-gtags-auto-update t
-          helm-gtags-use-input-at-cursor t
-          helm-gtags-pulse-at-cursor t
-          helm-gtags-ignore-case t)))
+  (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
 (use-package projectile :load-path "modules/projectile" :demand t   
   :diminish projectile-mode
@@ -545,12 +557,12 @@ _h_: b-slurp    _H_: b-barf
 
   :general
   (:prefix nil
-           
-   "M-4" 'projectile-switch-project
+   "M-1" 'projectile-find-file
    "M-!" 'projectile-run-shell-command-in-root)      
   
   ;;  Projectile-only bindings
   ("p" '(:ignore t :wk "Projectile")
+   "pp" 'projectile-switch-project
    "pk" 'projectile-kill-buffers
    "pr" 'projectile-replace
    "pi" 'projectile-invalidate-cache
@@ -572,8 +584,8 @@ _h_: b-slurp    _H_: b-barf
   :config
   (projectile-mode))
 
-(use-package magit :defer 2
-  :load-path "modules/magit/lisp"
+(use-package magit :defer 2 :ensure t :pin melpa-stable
+  ;;:load-path "modules/magit/lisp"
   :commands (magit magit-status magit-diff-range magit-clone)
   
   :general 
@@ -610,7 +622,7 @@ _h_: b-slurp    _H_: b-barf
             "RET" 'magit-repolist-status)
   
   :init
-  (use-package ghub :ensure t :after magit)
+  (use-package ghub :ensure t :disabled t :after magit)
   (use-package with-editor :ensure t :after magit
     :general
     (:keymaps 'with-editor-mode-map
@@ -682,38 +694,6 @@ _h_: b-slurp    _H_: b-barf
     :config
     (evil-magit-init)))
 
-(use-package exec-path-from-shell :ensure t :demand t
-  :commands (exec-path-from-shell-getenv
-             exec-path-from-shell-setenv)
-  :init
-  ;; Under certain conditions this can be nicely used withing Windows environment as well...
-  (defun run-shell-command (&rest cmd)
-    (replace-regexp-in-string "\r?\n\\'" ""
-                              (shell-command-to-string
-                               (mapconcat 'identity cmd " ")))) 
-  
-  ;; TODO :: Check if it works on Windows
-  (defun register-path-folders (&rest paths)
-    (declare (indent 1))
-    (let ((path (-reduce-r-from
-                 (lambda (value acc) (format "%s:%s" value acc))
-                 (exec-path-from-shell-getenv "PATH")
-                 paths)))
-      (exec-path-from-shell-setenv "PATH" path)))
-
-  :config
-  (if IS-MAC
-      (progn
-        (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
-        (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
-        (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
-        (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
-        (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin")))
-
-  (if IS-WINDOWS
-      (progn
-        (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
-
 (use-package hydra :load-path "modules/hydra" :demand t 
   :general
   (:prefix nil
@@ -726,6 +706,7 @@ _h_: b-slurp    _H_: b-barf
    "C-e"  'hydra-error/body)
   
   :config
+  (load "~/.emacs.d/hydras.el")
   (defhydra hydra-zoom (:color pink :hint nil)
     "
 ^Zoom^
@@ -739,7 +720,6 @@ _r_: Reset
     ("l" text-scale-decrease)
     ("r" (text-scale-set 0))
     ("q" nil "quit"))
-
   (defhydra hydra-error (:color pink :hint nil)
     "
 ^Errors^       ^Level (cur: %`compilation-skip-threshold)^
@@ -819,8 +799,6 @@ _e_xtra   _f_ile           _t_ryout
   
   :config
   (yas-reload-all))
-
-(use-package abbrev :demand t)
 
 (use-package company :load-path "modules/company" :disabled t
   :commands company-mode
@@ -932,7 +910,7 @@ _e_xtra   _f_ile           _t_ryout
    "eda" #'helm-apropos)
   
   :config
-  (setq-mode-local emacs-lisp-mode comment-note-comment-prefix ";;")
+  
 
   (with-eval-after-load 'evil-collection
     (add-to-list 'evil-collection-mode-list 'elisp-mode))
@@ -971,7 +949,7 @@ _e_xtra   _f_ile           _t_ryout
   :interpreter ("scala" . scala-mode)
   
   :hooks
-  (4lex1v/fix-scala-fonts)
+  (4l/fix-scala-fonts)
   
   :general
   (:keymaps 'scala-mode-map
@@ -990,12 +968,11 @@ _e_xtra   _f_ile           _t_ryout
    "J" '(lambda () (interactive) (scala-indent:join-line t)))
 
   :init
-  (setq scala-indent:use-javadoc-style t
-        scala-mode:debug-messages nil)
+  (setq
+   scala-indent:use-javadoc-style t
+   scala-mode:debug-messages nil)
 
-  (setq-mode-local scala-mode comment-note-comment-prefix "//")
-
-  (defun 4lex1v/fix-scala-fonts ()
+  (defun 4l/fix-scala-fonts ()
     (interactive)
     (mapc
      (lambda (kw)
@@ -1027,7 +1004,7 @@ _e_xtra   _f_ile           _t_ryout
      "c" '((lambda () (interactive) (sbt-command "compile")) :wk "compile")
      "t" '((lambda () (interactive) (sbt-command "test")) :wk "test")
      "r" 'sbt-run-previous-command
-     "i" '4lex1v/open-in-intellij)
+     "i" '4l/open-in-intellij)
 
     :init
     (setq sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*")
@@ -1057,23 +1034,27 @@ _e_xtra   _f_ile           _t_ryout
    ",m"    #'helm-semantic-or-imenu)
   
   :init
-  (setq 
-   c-default-style "stroustrup"
-   c-basic-offset 2
-   org-babel-C-compiler "clang"
-   org-babel-C++-compiler "clang++")
+  (defconst 4l/c-lang-style ;; added later under the label '4l'
+    '((c-basic-offset . 2)
+      ;; add alignment in || and && expressions
+      ;;      b32 result = ((value >= 'A') && (value <= 'Z')) ||
+      ;;                   ((value >= 'a') && (value <= 'z'));
+      ;; instead of
+      ;;         b32 result = ((value >= 'A') && (value <= 'Z')) ||
+      ;;           ((value >= 'a') && (value <= 'z'));
+      (c-offsets-alist . ((innamespace . [0])
+                          (case-label . +)
+                          (substatement-open . 0)))))
 
-  (c-set-offset 'case-label '+) 
-
-  (if IS-WINDOWS
-      (setq
-       win32-system-include-paths '("c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/shared"
-                                    "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/ucrt"
-                                    "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/um"
-                                    "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/winrt")))
+  (setq
+   win32-system-include-paths '("c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/shared"
+                                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/ucrt"
+                                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/um"
+                                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/winrt")
+   c-default-style "4l")
   
   :config
-  (c-toggle-auto-newline t)
+  (c-add-style "4l" 4l/c-lang-style)
   
   (with-eval-after-load 'org
     (add-to-list 'org-babel-load-languages '(C . t)))
@@ -1094,7 +1075,8 @@ _e_xtra   _f_ile           _t_ryout
              (function company-clang)))))
   
   (with-eval-after-load 'smartparens
-    (sp-local-pair 'c++-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
+    (sp-local-pair 'c++-mode "{" nil
+                   :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
   
   (with-eval-after-load 'org
     (add-to-list 'org-babel-load-languages '(C . t)))
@@ -1111,7 +1093,7 @@ _e_xtra   _f_ile           _t_ryout
       (configure-company-backends-for-mode cmake-mode
         '(company-cmake company-files company-dabbrev company-capf)))))
 
-(use-package rust-mode
+(use-package rust-mode :ensure t
   :hooks (cargo-minor-mode)
   
   :init 
@@ -1121,21 +1103,14 @@ _e_xtra   _f_ile           _t_ryout
    rust-toolchain-path (run-shell-command "rustc --print sysroot"))
   
   :config
-  (sp-with-modes 'rust-mode
-    (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
-    (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))
-
-  ;; (configure-company-backends-for-mode rust-mode
-  ;;   '(company-dabbrev
-  ;;     company-keywords
-  ;;     company-yasnippet
-  ;;     company-capf
-  ;;     company-files))
-  
   (use-package smartparens-rust
     :after (rust-mode smartparens-mode)
     :config
-    (add-hook 'rust-mode #'smartparens-rust))
+    (add-hook 'rust-mode #'smartparens-rust)
+    (sp-with-modes 'rust-mode
+      (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
+      (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))))
+  
 
   (use-package cargo :ensure t
     :after rust-mode
@@ -1194,16 +1169,6 @@ _e_xtra   _f_ile           _t_ryout
         (error "No definition found")))
     
     (add-hook 'racer-mode-hook #'eldoc-mode))
-
-  (use-package company-racer :ensure t :demand t :disabled t
-    :after (racer company)
-    
-    :config
-    (with-eval-after-load 'company
-      (configure-company-backends-for-mode rust-mode
-        '(company-dabbrev
-          company-racer
-          company-keywords))))
 
   (use-package toml-mode :ensure t
     :mode ("/\\(Cargo.lock\\|\\.cargo/config\\)\\'" . toml-mode)))
@@ -1282,64 +1247,65 @@ _e_xtra   _f_ile           _t_ryout
    "P" 'org-agenda-show-the-flagging-note)
   
   :init
-  (setq org-log-done                   'time ;; When completing a task, prompt for a closing note...
-        org-log-reschedule             'time
-        org-src-fontify-natively       t
-        org-descriptive-links          t
-        org-startup-with-inline-images t
-        
-        org-list-description-max-indent 0
-        
-        org-enforce-todo-dependencies  t
-        org-enforce-todo-checkbox-dependencies t
-        
-        org-catch-invisible-edits      'error
-        
-        org-clock-persist              t
-        
-        org-hide-leading-stars         nil
-        org-line-spacing               5
-        org-tags-column                0 ;; Have tags next to the title
-        
-        org-babel-load-languages      '((sql . t) (shell . t) (plantuml . t))
-        
-        ;; Templates configuration
-        org-capture-templates '(("t" "Task"  entry (file "~/Sandbox/Library/Org/universe.org") "* TODO %i%?"))
-        
-        ;; Keywords
-        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
-        org-todo-keyword-faces '(("ACTIVE" . "yellow"))
+  (setq
+   org-log-done                  'time ;; When completing a task, prompt for a closing note...
+   org-log-reschedule            'time
+   org-src-fontify-natively       t
+   org-descriptive-links          t
+   org-startup-with-inline-images t
+   
+   org-list-description-max-indent 0
+   
+   org-enforce-todo-dependencies  t
+   org-enforce-todo-checkbox-dependencies t
+   
+   org-catch-invisible-edits      'error
+   
+   org-clock-persist              t
+   
+   org-hide-leading-stars         nil
+   org-line-spacing               5
+   org-tags-column                0 ;; Have tags next to the title
+   
+   ;;org-babel-load-languages      '((sql . t) (shell . t) (plantuml . t))
+   org-babel-C-compiler "clang"
+   org-babel-C++-compiler "clang++"
+   
+   ;; Templates configuration
+   org-capture-templates '(("t" "Task"  entry (file "~/Sandbox/Library/Org/universe.org") "* TODO %i%?"))
+   
+   ;; Keywords
+   org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
+   org-todo-keyword-faces '(("ACTIVE" . "yellow"))
 
-        org-refile-use-outline-path 'file
-        org-refile-targets '((org-agenda-files :maxlevel . 1))
-        org-refile-target-verify-function #'(lambda () (member "project" (org-get-local-tags)))
+   org-refile-use-outline-path 'file
+   org-refile-targets '((org-agenda-files :maxlevel . 1))
+   org-refile-target-verify-function #'(lambda () (member "project" (org-get-local-tags)))
 
-        ;; NEW EXPERIMENTAL SETTINGS
-        org-adapt-indentation nil
-        org-agenda-files (f-files "~/Sandbox/Library/Org" (lambda (path)
-                                                            (and (f-ext? path "org")
-                                                                 (not (s-starts-with-p "_" (f-filename path))))))
-        
-        org-agenda-custom-commands '(("c" . "My Custom Agendas")
-                                     ("cu"  "Unscheduled"
-                                      ((todo ""
-                                             ((org-agenda-overriding-header "\nUnscheduled TODO")
-                                              (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))))
-                                      nil
-                                      nil))
-        
-        org-archive-location "./archives/%s_archive::"
-        org-agenda-archives-mode t
+   ;; NEW EXPERIMENTAL SETTINGS
+   org-adapt-indentation nil
+   org-agenda-files (f-files "~/Sandbox/Library/Org" (lambda (path)
+                                                       (and (f-ext? path "org")
+                                                            (not (s-starts-with-p "_" (f-filename path))))))
+   
+   org-agenda-custom-commands '(("c" . "My Custom Agendas")
+                                ("cu"  "Unscheduled"
+                                 ((todo ""
+                                        ((org-agenda-overriding-header "\nUnscheduled TODO")
+                                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))))
+                                 nil
+                                 nil))
+   
+   org-archive-location "./archives/%s_archive::"
+   org-agenda-archives-mode t
 
-        org-agenda-start-on-weekday 6 ;; Saturday
-        org-agenda-include-diary nil
-        org-agenda-span 'day
-        org-agenda-skip-deadline-if-done t
-        
-        ;; Display agenda in full window
-        org-agenda-window-setup 'current-window)
-  
-  (setq-mode-local org evil-auto-indent nil)
+   org-agenda-start-on-weekday 6 ;; Saturday
+   org-agenda-include-diary nil
+   org-agenda-span 'day
+   org-agenda-skip-deadline-if-done t
+   
+   ;; Display agenda in full window
+   org-agenda-window-setup 'current-window)
   
   (defhydra org-control-panel (:color blue :hint nil)
     "
@@ -1478,6 +1444,11 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
     (eshell-cmpl-initialize)
     (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
     (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
+
+  (defun eshell/clear ()
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (eshell-send-input)))
   
   (with-eval-after-load 'evil-collection
     (add-to-list 'evil-collection-mode-list 'eshell))
