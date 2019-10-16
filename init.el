@@ -1,6 +1,6 @@
 (setq gc-cons-threshold 10000000)
 
-(defconst THEME_TO_LOAD 'paladin)
+(defconst THEME_TO_LOAD 'default)
 
 (defconst IS-MAC               (eq system-type 'darwin))
 (defconst IS-WINDOWS           (eq system-type 'windows-nt))
@@ -109,7 +109,7 @@
         (add-to-list 'load-path "/Users/aleksandrivanov/.emacs.d/themes/sirthias")
         (add-to-list 'load-path "/Users/aleksandrivanov/.emacs.d/themes/paladin"))
       
-      (let ((font-setting "PragmataPro-20:antialias=subpixel"))
+      (let ((font-setting "PragmataPro-16:antialias=subpixel"))
         (add-to-list 'default-frame-alist (cons 'font font-setting))
         (set-frame-font font-setting))
 
@@ -193,7 +193,7 @@
 (use-package f    :ensure t :demand t) ;; Files manipulation library
 (use-package dash :ensure t :demand t) ;; List manipulation library
 
-(when (require 'hideshow nil nil)
+(when (require 'hideshow)
   (add-hook 'text-mode-hook #'hs-minor-mode)
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 
@@ -404,6 +404,35 @@
     ;; bind evil-jump-out-args
     (define-key evil-normal-state-map "K" 'evil-jump-out-args)))
 
+;; Goes before others to correctly load which-key-declare-prefixes
+(use-package which-key :demand t
+  :load-path "modules/which-key"
+  :diminish which-key-mode
+  :init
+  (setq which-key-idle-delay 0.2
+        which-key-sort-order 'which-key-prefix-then-key-order-reverse
+        which-key-show-operator-state-maps t ;; Hack to make this work with Evil
+        which-key-prefix-prefix ""
+        which-key-side-window-max-width 0.5
+
+        which-key-popup-type           'side-window 
+        which-key-side-window-location 'bottom) 
+  
+  :config
+  (which-key-mode)
+  
+  ;; #NOTE :: For some reason it doesn't work as a `use-pacakge' directive
+  (general-define-key
+   :keymaps 'which-key-C-h-map
+   :prefix   nil
+   :states   nil
+   
+   "l" 'which-key-show-next-page-cycle
+   "j" 'which-key-show-previous-page-cycle)
+
+  (with-eval-after-load 'evil-collection
+    (add-to-list 'evil-collection-mode-list 'while-key)))
+
 (use-package smartparens :load-path "modules/smartparens"
   :commands
   (sp-forward-slurp-sexp
@@ -447,34 +476,61 @@
   
   (sp-pair "{" "}"   :wrap "C-{"))
 
-;; Goes before others to correctly load which-key-declare-prefixes
-(use-package which-key :demand t
-  :load-path "modules/which-key"
-  :diminish which-key-mode
-  :init
-  (setq which-key-idle-delay 0.2
-        which-key-sort-order 'which-key-prefix-then-key-order-reverse
-        which-key-show-operator-state-maps t ;; Hack to make this work with Evil
-        which-key-prefix-prefix ""
-        which-key-side-window-max-width 0.5
+(use-package yasnippet :load-path "modules/yasnippet"
+  :diminish (yas-minor-mode . " Y")
 
-        which-key-popup-type           'side-window 
-        which-key-side-window-location 'bottom) 
+  :commands
+  (yas-minor-mode
+   yas-load-directory
+   yas-activate-extra-mode
+   yas-insert-snippet
+   yas-visit-snippet-file
+   yas-new-snippet
+   yas-tryout-snippet
+   yas-describe-tables
+   yas-reload-all)
+  
+  :mode ("\\.yasnippet" . snippet-mode)
+
+  :hook
+  ((prog-mode) . yas-minor-mode)
+  
+  :general
+  ("es" '(hydra-yasnippet/body :wk "Snippets"))
+  
+  :init
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets")
+        yas-wrap-around-region t
+        yas-indent-line 'auto
+        yas-also-auto-indent-first-line t)
+  
+  (add-hook 'after-save-hook
+            (lambda ()
+              (when (eq major-mode 'snippet-mode)
+                (yas-reload-all))))
+  
+  (with-eval-after-load 'hydra
+    (defhydra hydra-yasnippet (:color blue :hint nil)
+    "
+^Modes^    ^Load/Visit^    ^Actions^
+--------------------------------------------
+_m_inor   _d_irectory      _i_nsert
+_e_xtra   _f_ile           _t_ryout
+^ ^       _l_ist           _n_ew
+^ ^       _a_ll
+"
+    ("d" yas-load-directory)
+    ("e" yas-activate-extra-mode)
+    ("i" yas-insert-snippet)
+    ("f" yas-visit-snippet-file)
+    ("n" yas-new-snippet)
+    ("t" yas-tryout-snippet)
+    ("l" yas-describe-tables)
+    ("m" yas-minor-mode)
+    ("a" yas-reload-all)))
   
   :config
-  (which-key-mode)
-  
-  ;; #NOTE :: For some reason it doesn't work as a `use-pacakge' directive
-  (general-define-key
-   :keymaps 'which-key-C-h-map
-   :prefix   nil
-   :states   nil
-   
-   "l" 'which-key-show-next-page-cycle
-   "j" 'which-key-show-previous-page-cycle)
-
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'while-key)))
+  (yas-reload-all))
 
 (use-package helm :load-path "modules/helm" :demand t
   :general
@@ -551,7 +607,7 @@
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
-(use-package projectile :load-path "modules/projectile" :demand t   
+(use-package projectile :load-path "modules/projectile" :demand t :disabled t
   :diminish projectile-mode
   :commands projectile-project-root
 
@@ -584,8 +640,41 @@
   :config
   (projectile-mode))
 
-(use-package magit :defer 2 :ensure t :pin melpa-stable
-  ;;:load-path "modules/magit/lisp"
+(use-package undo-tree :ensure t
+  :diminish undo-tree-mode
+  :commands global-undo-tree-mode
+  :general
+  (:prefix nil
+           :states 'normal
+
+           "M-/" 'undo-tree-visualize)
+  
+  (:prefix   nil
+             :keymaps 'undo-tree-visualizer-mode-map
+             :states  '(motion)
+
+             "j" 'undo-tree-visualize-redo
+             "k" 'undo-tree-visualize-undo
+             "l" 'undo-tree-visualize-switch-branch-right
+             "h" 'undo-tree-visualize-switch-branch-left)
+  
+  :config (global-undo-tree-mode))
+
+(use-package avy :ensure t
+  :general
+  (:keymaps 'global
+   :states 'normal
+
+   "jj" 'avy-goto-char
+   "jl" 'avy-goto-line)
+
+  (:keymaps 'global
+   :prefix nil
+   :states 'normal
+
+   "C-M-j" 'hydra-avy/body))
+
+(use-package magit :ensure t :pin melpa-stable
   :commands (magit magit-status magit-diff-range magit-clone)
   
   :general 
@@ -694,7 +783,7 @@
     :config
     (evil-magit-init)))
 
-(use-package hydra :load-path "modules/hydra" :demand t 
+(use-package hydra :load-path "modules/hydra" :demand t :disabled t
   :general
   (:prefix nil
            
@@ -706,9 +795,13 @@
    "C-e"  'hydra-error/body)
   
   :config
-  (load "~/.emacs.d/hydras.el")
-  (defhydra hydra-zoom (:color pink :hint nil)
-    "
+  (let ((hydras-file-path "~/.emacs.d/hydras.el"))
+    (if (f-exists-p hydras-file-path)
+        (load hydras-file-path)))
+
+  (with-eval-after-load 'hydra
+    (defhydra hydra-zoom (:color pink :hint nil)
+      "
 ^Zoom^
 ----------
 _g_: In
@@ -716,12 +809,12 @@ _l_: Out
 _r_: Reset
 ----------
 "
-    ("g" text-scale-increase)
-    ("l" text-scale-decrease)
-    ("r" (text-scale-set 0))
-    ("q" nil "quit"))
-  (defhydra hydra-error (:color pink :hint nil)
-    "
+      ("g" text-scale-increase)
+      ("l" text-scale-decrease)
+      ("r" (text-scale-set 0))
+      ("q" nil "quit"))
+    (defhydra hydra-error (:color pink :hint nil)
+      "
 ^Errors^       ^Level (cur: %`compilation-skip-threshold)^
 ------------------------------
 _j_: Next      _0_: All
@@ -730,75 +823,20 @@ _h_: First     _2_: Errors
 _l_: Last            
 ------------------------------
 "
-    ("j" next-error)
-    ("k" previous-error)
-    ("h" first-error)
-    ("l" (condition-case err
-             (while t
-               (next-error))
-           (user-error nil)))
-    
-    ;; Messages level support
-    ("0" (compilation-set-skip-threshold 0))
-    ("1" (compilation-set-skip-threshold 1))
-    ("2" (compilation-set-skip-threshold 2))
-    
-    ("q" nil "quit")))
-
-(use-package yasnippet :load-path "modules/yasnippet"
-  :diminish (yas-minor-mode . " Y")
-
-  :commands
-  (yas-minor-mode
-   yas-load-directory
-   yas-activate-extra-mode
-   yas-insert-snippet
-   yas-visit-snippet-file
-   yas-new-snippet
-   yas-tryout-snippet
-   yas-describe-tables
-   yas-reload-all)
-  
-  :mode ("\\.yasnippet" . snippet-mode)
-
-  :hook
-  ((prog-mode) . yas-minor-mode)
-  
-  :general
-  ("es" '(hydra-yasnippet/body :wk "Snippets"))
-  
-  :init
-  (setq yas-snippet-dirs '("~/.emacs.d/snippets")
-        yas-wrap-around-region t
-        yas-indent-line 'auto
-        yas-also-auto-indent-first-line t)
-  
-  (add-hook 'after-save-hook
-            (lambda ()
-              (when (eq major-mode 'snippet-mode)
-                (yas-reload-all))))
-  
-  (defhydra hydra-yasnippet (:color blue :hint nil)
-    "
-^Modes^    ^Load/Visit^    ^Actions^
---------------------------------------------
-_m_inor   _d_irectory      _i_nsert
-_e_xtra   _f_ile           _t_ryout
-^ ^       _l_ist           _n_ew
-^ ^       _a_ll
-"
-    ("d" yas-load-directory)
-    ("e" yas-activate-extra-mode)
-    ("i" yas-insert-snippet)
-    ("f" yas-visit-snippet-file)
-    ("n" yas-new-snippet)
-    ("t" yas-tryout-snippet)
-    ("l" yas-describe-tables)
-    ("m" yas-minor-mode)
-    ("a" yas-reload-all))
-  
-  :config
-  (yas-reload-all))
+      ("j" next-error)
+      ("k" previous-error)
+      ("h" first-error)
+      ("l" (condition-case err
+	       (while t
+		 (next-error))
+	     (user-error nil)))
+      
+      ;; Messages level support
+      ("0" (compilation-set-skip-threshold 0))
+      ("1" (compilation-set-skip-threshold 1))
+      ("2" (compilation-set-skip-threshold 2))
+      
+      ("q" nil "quit"))))
 
 (use-package company :load-path "modules/company" :disabled t
   :commands company-mode
@@ -846,49 +884,6 @@ _e_xtra   _f_ile           _t_ryout
       (lambda ()
         (make-local-variable 'company-backends)
         (setq company-backends (list (remove nil ,backends)))))))
-
-(use-package undo-tree :ensure t
-  :diminish undo-tree-mode
-  :commands global-undo-tree-mode
-  :general
-  (:prefix nil
-           :states 'normal
-
-           "M-/" 'undo-tree-visualize)
-  
-  (:prefix   nil
-             :keymaps 'undo-tree-visualizer-mode-map
-             :states  '(motion)
-
-             "j" 'undo-tree-visualize-redo
-             "k" 'undo-tree-visualize-undo
-             "l" 'undo-tree-visualize-switch-branch-right
-             "h" 'undo-tree-visualize-switch-branch-left)
-  
-  :config (global-undo-tree-mode))
-
-(use-package avy :ensure t
-  :general
-  (:keymaps 'global
-   :states 'normal
-
-   "jj" 'avy-goto-char
-   "jl" 'avy-goto-line)
-
-  (:keymaps 'global
-   :prefix nil
-   :states 'normal
-
-   "C-M-j" 'hydra-avy/body))
-
-;; #TODO(4lex1v, 05/30/19) :: Marked for cleanup
-(use-package string-inflection :ensure t
-  :disabled t
-  :general
-  (:prefix  nil
-            :states '(normal)
-
-            "gu" 'string-inflection-all-cycle))
 
 (use-package elisp-mode
   :interpreter ("emacs" . emacs-lisp-mode)
@@ -1099,8 +1094,7 @@ _e_xtra   _f_ile           _t_ryout
   :init 
   (setq
    rust-indent-offset  2
-   rust-format-on-save nil
-   rust-toolchain-path (run-shell-command "rustc --print sysroot"))
+   rust-format-on-save nil)
   
   :config
   (use-package smartparens-rust
@@ -1140,40 +1134,10 @@ _e_xtra   _f_ile           _t_ryout
     :init
     (setq cargo-process--enable-rust-backtrace t))
 
-  (use-package racer :ensure t
-    :after rust-mode
-    
-    :general
-    (:prefix "" :keymaps 'racer-mode-map
-             "gd" 'racer-find-definition
-             "g." 'racer-find-definition-other-window)
-    
-    :init
-    (setq racer-rust-src-path (concat rust-toolchain-path "/lib/rustlib/src/rust/src"))
-    
-    :config
-    (defun racer-find-definition-other-window ()
-      "Run the racer find-definition command and process the results in other window."
-      (interactive)
-      (-if-let (match (--first (s-starts-with? "MATCH" it)
-                               (racer--call-at-point "find-definition")))
-          (-let [(_name line col file _matchtype _ctx)
-                 (s-split-up-to "," (s-chop-prefix "MATCH " match) 5)]
-            (if (fboundp 'xref-push-marker-stack)
-                (xref-push-marker-stack)
-              (with-no-warnings
-                (ring-insert find-tag-marker-ring (point-marker))))
-            (switch-to-buffer-other-window file)
-            (save-selected-window
-              (racer--find-file file (string-to-number line) (string-to-number col))))
-        (error "No definition found")))
-    
-    (add-hook 'racer-mode-hook #'eldoc-mode))
-
   (use-package toml-mode :ensure t
     :mode ("/\\(Cargo.lock\\|\\.cargo/config\\)\\'" . toml-mode)))
 
-(use-package ssh-agency :if IS-WINDOWS :ensure t
+(use-package ssh-agency :if IS-WINDOWS :ensure t :disabled t
   :after magit
   :commands ssh-agency-ensure
   :init
@@ -1192,7 +1156,7 @@ _e_xtra   _f_ile           _t_ryout
   (setenv "SSH_ASKPASS" "git-gui--askpass")
   (ssh-agency-ensure))
 
-(use-package org :ensure t :pin gnu
+(use-package org 
   :hooks
   (:org-mode-hook yas-minor-mode)
   
@@ -1307,23 +1271,24 @@ _e_xtra   _f_ile           _t_ryout
    ;; Display agenda in full window
    org-agenda-window-setup 'current-window)
   
-  (defhydra org-control-panel (:color blue :hint nil)
-    "
+  (with-eval-after-load 'hydra
+    (defhydra org-control-panel (:color blue :hint nil)
+      "
   General            Agenda         Brain
 -----------------------------------------
   _o_: Org Mode    _a_: Weekly    _b_: Org Brain
   _c_: Capture
  ----------------------------------------
 "
-    ("o" org-mode-control-panel/body)
-    ("c" org-capture)
-    ("a" org-agenda-list)
-    ("b" brain-control-panel/body)
+      ("o" org-mode-control-panel/body)
+      ("c" org-capture)
+      ("a" org-agenda-list)
+      ("b" brain-control-panel/body)
+      
+      ("q" nil "cancel"))
     
-    ("q" nil "cancel"))
-  
-  (defhydra org-mode-control-panel (:color blue :hint nil)
-    "
+    (defhydra org-mode-control-panel (:color blue :hint nil)
+      "
 -------
 | Org |  Brain
 ----------------------------------------
@@ -1334,22 +1299,22 @@ _l_: Store Link    ^ ^            _i_: Clock-in
 _n_: Quick Note    ^ ^            _o_: Clock-out
 ----------------------------------------
 "
-    ("c" org-capture)
-    ("l" org-store-link)
-    ("n" org-make-quick-note)
+      ("c" org-capture)
+      ("l" org-store-link)
+      ("n" org-make-quick-note)
+      
+      ;; Planning
+      ("a" org-agenda)
+      
+      ;; Timings
+      ("t" org-clocks-and-timers/body)
+      ("i" org-clock-in)
+      ("o" org-clock-out)
+      
+      ("q" nil "cancel"))
     
-    ;; Planning
-    ("a" org-agenda)
-    
-    ;; Timings
-    ("t" org-clocks-and-timers/body)
-    ("i" org-clock-in)
-    ("o" org-clock-out)
-    
-    ("q" nil "cancel"))
-  
-  (defhydra org-clocks-and-timers (:color blue :hint nil)
-    "
+    (defhydra org-clocks-and-timers (:color blue :hint nil)
+      "
 ^Clock:^ ^In/out^     ^Edit^   ^Summary^     | ^Timers:^ ^Run^           ^Insert
 -^-^-----^-^----------^-^------^-^-----------|--^-^------^-^-------------^------
 ^ ^      _i_n         _e_dit   _g_oto entry  |  ^ ^      _r_elative      ti_m_e
@@ -1357,26 +1322,26 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
 ^ ^      _o_ut        ^ ^      _r_eport      |  ^ ^      _p_ause toggle
 ^ ^      ^ ^          ^ ^      ^ ^           |  ^ ^      _s_top
 "
-    ("i" org-clock-in)
-    ("c" org-clock-in-last)
-    ("o" org-clock-out)
-    
-    ("e" org-clock-modify-effort-estimate)
-    ("q" org-clock-cancel)
+      ("i" org-clock-in)
+      ("c" org-clock-in-last)
+      ("o" org-clock-out)
+      
+      ("e" org-clock-modify-effort-estimate)
+      ("q" org-clock-cancel)
 
-    ("g" org-clock-goto)
-    ("d" org-clock-display)
-    ("r" org-clock-report)
-    ("x" (org-info "Clocking commands"))
+      ("g" org-clock-goto)
+      ("d" org-clock-display)
+      ("r" org-clock-report)
+      ("x" (org-info "Clocking commands"))
 
-    ("r" org-timer-start)
-    ("n" org-timer-set-timer)
-    ("p" org-timer-pause-or-continue)
-    ("s" org-timer-stop)
+      ("r" org-timer-start)
+      ("n" org-timer-set-timer)
+      ("p" org-timer-pause-or-continue)
+      ("s" org-timer-stop)
 
-    ("m" org-timer)
-    ("t" org-timer-item)
-    ("z" (org-info "Timers")))
+      ("m" org-timer)
+      ("t" org-timer-item)
+      ("z" (org-info "Timers"))))
 
   (with-eval-after-load 'evil-collection
     (add-to-list 'evil-collection-mode-list 'outline))
