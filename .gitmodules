@@ -2,10 +2,6 @@
 	path = themes/sirthias
 	url = git@github.com:4lex1v/sirthias-theme.git
 	branch = master
-[submodule "modules/projectile"]
-	path = modules/projectile
-	url = git@github.com:bbatsov/projectile.git
-	branch = master
 [submodule "modules/magit"]
 	path = modules/magit
 	url = git@github.com:magit/magit.git
@@ -18,13 +14,6 @@
 	path = modules/yasnippet
 	url = git@github.com:capitaomorte/yasnippet.git
 	branch = master
-[submodule "modules/smartparens"]
-	path = modules/smartparens
-	url = git@github.com:Fuco1/smartparens.git
-	branch = master
-[submodule "modules/helm"]
-	path = modules/helm
-	url = git@github.com:emacs-helm/helm.git
 [submodule "modules/which-key"]
 	path = modules/which-key
 	url = git@github.com:justbur/emacs-which-key.git

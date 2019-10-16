@@ -156,33 +156,33 @@
    ls-lisp-dirs-first t
    ls-lisp-use-insert-directory-program nil))
 
-(when (and (>= 24 emacs-major-version) (require 'mode-local))
-  (setq-mode-local scala-mode comment-note-comment-prefix "//")
-  (setq-mode-local org evil-auto-indent nil)
-  (setq-mode-local emacs-lisp-mode comment-note-comment-prefix ";;"))
+(require 'mode-local)
+(setq-mode-local scala-mode comment-note-comment-prefix "//")
+(setq-mode-local org evil-auto-indent nil)
+(setq-mode-local emacs-lisp-mode comment-note-comment-prefix ";;")
 
-(setq package-enable-at-startup nil
-      package--init-file-ensured t
-      package-archives '(("gnu"          . "http://elpa.gnu.org/packages/")
-                         ("marmalade"    . "https://marmalade-repo.org/packages/")
-                         ("melpa-stable" . "http://stable.melpa.org/packages/")))
+ (setq
+ package-enable-at-startup nil
+ package--init-file-ensured t
+ package-archives '(("melpa-stable" . "http://stable.melpa.org/packages/")))
 
 ;; https://www.reddit.com/r/emacs/comments/53zpv9/how_do_i_get_emacs_to_stop_adding_custom_fields/
 (defun package--save-selected-packages (&rest opt) nil)
-(when (require 'package nil 'noerror)
-  (package-initialize))
+(require 'package) 
+(package-initialize)
 
 ;; Use-Package
-(setq use-package-verbose               t
-      use-package-always-defer          t
-      use-package-enable-imenu-support  t
-      use-package-check-before-init     t
-      use-package-minimum-reported-time 0.1)
-
-;; Only when the config is stable
-(setq use-package-expand-minimally t)
-
 (add-to-list 'load-path (expand-file-name "modules/use-package" USER-EMACS-DIRECTORY))
+
+(setq
+ use-package-verbose               t
+ use-package-always-defer          t
+ use-package-enable-imenu-support  t
+ use-package-check-before-init     t
+ use-package-minimum-reported-time 0.1
+
+ ;; Only when the config is stable
+ use-package-expand-minimally t)
 
 (require 'bind-key)
 (require 'use-package)
@@ -433,7 +433,7 @@
   (with-eval-after-load 'evil-collection
     (add-to-list 'evil-collection-mode-list 'while-key)))
 
-(use-package smartparens :load-path "modules/smartparens"
+(use-package smartparens :ensure t :pin melpa-stable
   :commands
   (sp-forward-slurp-sexp
    sp-backward-slurp-sexp
@@ -532,7 +532,7 @@ _e_xtra   _f_ile           _t_ryout
   :config
   (yas-reload-all))
 
-(use-package helm :load-path "modules/helm" :demand t
+(use-package helm :demand t :ensure t :pin melpa-stable
   :general
   (:prefix nil
    :states nil
@@ -607,7 +607,7 @@ _e_xtra   _f_ile           _t_ryout
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
-(use-package projectile :load-path "modules/projectile" :demand t :disabled t
+(use-package projectile :demand t :ensure t :pin melpa-stable 
   :diminish projectile-mode
   :commands projectile-project-root
 
@@ -1137,21 +1137,15 @@ _l_: Last
   (use-package toml-mode :ensure t
     :mode ("/\\(Cargo.lock\\|\\.cargo/config\\)\\'" . toml-mode)))
 
-(use-package ssh-agency :if IS-WINDOWS :ensure t :disabled t
+(use-package ssh-agency :if IS-WINDOWS :ensure t
   :after magit
   :commands ssh-agency-ensure
   :init
-  (let ((sysroot (getenv "SystemRoot")))
-    (setq ssh-agency-keys (list
-                           (expand-file-name "~/.ssh/github_rsa")
-                           (expand-file-name "~/.ssh/bamtech"))
-          
-          ssh-agency-add-executable (expand-file-name
-                                     (format "%s/%s" sysroot "System32\\OpenSSH\\ssh-add.exe"))
-          
-          ssh-agency-agent-executable (expand-file-name
-                                       (format "%s/%s" sysroot "System32\\OpenSSH\\ssh-agent.exe"))))
-  
+  (setq
+   ssh-agency-keys (list (expand-file-name "~/.ssh/github_rsa") (expand-file-name "~/.ssh/bamtech"))
+   ssh-agency-add-executable "c:/WINDOWS/System32/OpenSSH/ssh-add.exe"
+   ssh-agency-agent-executable "c:/WINDOWS/System32/OpenSSH/ssh-agent.exe")  
+
   :config
   (setenv "SSH_ASKPASS" "git-gui--askpass")
   (ssh-agency-ensure))
@@ -1469,4 +1463,5 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
  '(emacs-lisp-mode lua-mode scala-mode c-mode objc-mode c++-mode rust-mode))
 
 (setq gc-cons-threshold 1000000)
+
 
