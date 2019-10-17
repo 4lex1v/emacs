@@ -662,17 +662,9 @@ _e_xtra   _f_ile           _t_ryout
 
 (use-package avy :ensure t
   :general
-  (:keymaps 'global
-   :states 'normal
-
+  (:keymaps 'global :states 'normal
    "jj" 'avy-goto-char
-   "jl" 'avy-goto-line)
-
-  (:keymaps 'global
-   :prefix nil
-   :states 'normal
-
-   "C-M-j" 'hydra-avy/body))
+   "jl" 'avy-goto-line))
 
 (use-package magit :ensure t :pin melpa-stable
   :commands (magit magit-status magit-diff-range magit-clone)
@@ -1364,11 +1356,6 @@ _n_: Quick Note    ^ ^            _o_: Clock-out
                      :action 'find-file)))
   
   :config
-  ;; Since there's a default Org that comes with emacs, adding this dummy check to ensure that
-  ;; whenever I'm using a fresh emacs installation i have the correct package installed
-  (if (and (boundp 'org-version) (not (string= (substring org-version 0 1) "9")))
-      (warn "WARNING :: Old Org-mode version is used (%s), check the configuration" org-version))
-
   (org-indent-mode -1)
   
   ;; Since this config depends on the runtime value, this should be configured in this section
