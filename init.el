@@ -619,6 +619,7 @@ _e_xtra   _f_ile           _t_ryout
   ;;  Projectile-only bindings
   ("p" '(:ignore t :wk "Projectile")
    "pp" 'projectile-switch-project
+   "pc" 'projectile-compile-project
    "pk" 'projectile-kill-buffers
    "pr" 'projectile-replace
    "pi" 'projectile-invalidate-cache
@@ -631,11 +632,12 @@ _e_xtra   _f_ile           _t_ryout
           :wk "Search"))
   
   :init
-  (setq projectile-enable-caching       t
-        projectile-completion-system   'helm
-        projectile-require-project-root t
-        projectile-use-git-grep         nil
-        projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
+  (setq
+   projectile-enable-caching       t
+   projectile-completion-system   'helm
+   projectile-require-project-root t
+   projectile-use-git-grep         nil
+   projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
 
   :config
   (projectile-mode))
