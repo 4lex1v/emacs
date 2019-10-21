@@ -1,6 +1,6 @@
 (setq gc-cons-threshold 10000000)
 
-(defconst THEME_TO_LOAD 'default)
+(defconst THEME_TO_LOAD 'sirthias)
 
 (defconst IS-MAC               (eq system-type 'darwin))
 (defconst IS-WINDOWS           (eq system-type 'windows-nt))
@@ -106,8 +106,8 @@
       (scroll-bar-mode       -1)
 
       (eval-and-compile
-        (add-to-list 'load-path "/Users/aleksandrivanov/.emacs.d/themes/sirthias")
-        (add-to-list 'load-path "/Users/aleksandrivanov/.emacs.d/themes/paladin"))
+        (add-to-list 'load-path (expand-file-name "themes/sirthias" USER-EMACS-DIRECTORY))
+        (add-to-list 'load-path (expand-file-name "themes/paladin" USER-EMACS-DIRECTORY)))
       
       (let ((font-setting "PragmataPro-16:antialias=subpixel"))
         (add-to-list 'default-frame-alist (cons 'font font-setting))
