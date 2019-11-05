@@ -456,9 +456,7 @@
    "M-t"   'sp-transpose-sexp
    
    "C-M-k" 'sp-kill-sexp
-   "C-M-w" 'sp-copy-sexp
-   
-   "C-s" 'hydra-smartparens/body)
+   "C-M-w" 'sp-copy-sexp)
   
   :init
   (setq sp-base-key-bindings nil
@@ -495,9 +493,6 @@
   :hook
   ((prog-mode) . yas-minor-mode)
   
-  :general
-  ("es" '(hydra-yasnippet/body :wk "Snippets"))
-  
   :init
   (setq yas-snippet-dirs '("~/.emacs.d/snippets")
         yas-wrap-around-region t
@@ -508,26 +503,6 @@
             (lambda ()
               (when (eq major-mode 'snippet-mode)
                 (yas-reload-all))))
-  
-  (with-eval-after-load 'hydra
-    (defhydra hydra-yasnippet (:color blue :hint nil)
-    "
-^Modes^    ^Load/Visit^    ^Actions^
---------------------------------------------
-_m_inor   _d_irectory      _i_nsert
-_e_xtra   _f_ile           _t_ryout
-^ ^       _l_ist           _n_ew
-^ ^       _a_ll
-"
-    ("d" yas-load-directory)
-    ("e" yas-activate-extra-mode)
-    ("i" yas-insert-snippet)
-    ("f" yas-visit-snippet-file)
-    ("n" yas-new-snippet)
-    ("t" yas-tryout-snippet)
-    ("l" yas-describe-tables)
-    ("m" yas-minor-mode)
-    ("a" yas-reload-all)))
   
   :config
   (yas-reload-all))
@@ -776,61 +751,6 @@ _e_xtra   _f_ile           _t_ryout
     :commands evil-magit-init
     :config
     (evil-magit-init)))
-
-(use-package hydra :load-path "modules/hydra" :demand t :disabled t
-  :general
-  (:prefix nil
-           
-   "<f2>" 'hydra-zoom/body)
-
-  (:prefix nil
-   :states 'normal
-
-   "C-e"  'hydra-error/body)
-  
-  :config
-  (let ((hydras-file-path "~/.emacs.d/hydras.el"))
-    (if (f-exists-p hydras-file-path)
-        (load hydras-file-path)))
-
-  (with-eval-after-load 'hydra
-    (defhydra hydra-zoom (:color pink :hint nil)
-      "
-^Zoom^
-----------
-_g_: In
-_l_: Out
-_r_: Reset
-----------
-"
-      ("g" text-scale-increase)
-      ("l" text-scale-decrease)
-      ("r" (text-scale-set 0))
-      ("q" nil "quit"))
-    (defhydra hydra-error (:color pink :hint nil)
-      "
-^Errors^       ^Level (cur: %`compilation-skip-threshold)^
-------------------------------
-_j_: Next      _0_: All
-_k_: Previous  _1_: Warnings
-_h_: First     _2_: Errors
-_l_: Last            
-------------------------------
-"
-      ("j" next-error)
-      ("k" previous-error)
-      ("h" first-error)
-      ("l" (condition-case err
-	       (while t
-		 (next-error))
-	     (user-error nil)))
-      
-      ;; Messages level support
-      ("0" (compilation-set-skip-threshold 0))
-      ("1" (compilation-set-skip-threshold 1))
-      ("2" (compilation-set-skip-threshold 2))
-      
-      ("q" nil "quit"))))
 
 (use-package company :load-path "modules/company" :disabled t
   :commands company-mode
@@ -1258,78 +1178,6 @@ _l_: Last
    
    ;; Display agenda in full window
    org-agenda-window-setup 'current-window)
-  
-  (with-eval-after-load 'hydra
-    (defhydra org-control-panel (:color blue :hint nil)
-      "
-  General            Agenda         Brain
------------------------------------------
-  _o_: Org Mode    _a_: Weekly    _b_: Org Brain
-  _c_: Capture
- ----------------------------------------
-"
-      ("o" org-mode-control-panel/body)
-      ("c" org-capture)
-      ("a" org-agenda-list)
-      ("b" brain-control-panel/body)
-      
-      ("q" nil "cancel"))
-    
-    (defhydra org-mode-control-panel (:color blue :hint nil)
-      "
--------
-| Org |  Brain
-----------------------------------------
-^Capturing^        ^Planning^     ^Timing^
-----------------------------------------
-_c_: Capture       _a_: Agenda    _t_: Timings
-_l_: Store Link    ^ ^            _i_: Clock-in
-_n_: Quick Note    ^ ^            _o_: Clock-out
-----------------------------------------
-"
-      ("c" org-capture)
-      ("l" org-store-link)
-      ("n" org-make-quick-note)
-      
-      ;; Planning
-      ("a" org-agenda)
-      
-      ;; Timings
-      ("t" org-clocks-and-timers/body)
-      ("i" org-clock-in)
-      ("o" org-clock-out)
-      
-      ("q" nil "cancel"))
-    
-    (defhydra org-clocks-and-timers (:color blue :hint nil)
-      "
-^Clock:^ ^In/out^     ^Edit^   ^Summary^     | ^Timers:^ ^Run^           ^Insert
--^-^-----^-^----------^-^------^-^-----------|--^-^------^-^-------------^------
-^ ^      _i_n         _e_dit   _g_oto entry  |  ^ ^      _r_elative      ti_m_e
-^ ^      _c_ontinue   _q_uit   _d_isplay     |  ^ ^      cou_n_tdown     i_t_em
-^ ^      _o_ut        ^ ^      _r_eport      |  ^ ^      _p_ause toggle
-^ ^      ^ ^          ^ ^      ^ ^           |  ^ ^      _s_top
-"
-      ("i" org-clock-in)
-      ("c" org-clock-in-last)
-      ("o" org-clock-out)
-      
-      ("e" org-clock-modify-effort-estimate)
-      ("q" org-clock-cancel)
-
-      ("g" org-clock-goto)
-      ("d" org-clock-display)
-      ("r" org-clock-report)
-      ("x" (org-info "Clocking commands"))
-
-      ("r" org-timer-start)
-      ("n" org-timer-set-timer)
-      ("p" org-timer-pause-or-continue)
-      ("s" org-timer-stop)
-
-      ("m" org-timer)
-      ("t" org-timer-item)
-      ("z" (org-info "Timers"))))
 
   (with-eval-after-load 'evil-collection
     (add-to-list 'evil-collection-mode-list 'outline))
