@@ -6,10 +6,6 @@
 	path = modules/magit
 	url = git@github.com:magit/magit.git
 	branch = master
-[submodule "modules/company"]
-	path = modules/company
-	url = git@github.com:company-mode/company-mode.git
-	branch = master
 [submodule "modules/yasnippet"]
 	path = modules/yasnippet
 	url = git@github.com:capitaomorte/yasnippet.git
@@ -26,9 +22,6 @@
 [submodule "modules/general"]
 	path = modules/general
 	url = git@github.com:noctuid/general.el.git
-[submodule "modules/hydra"]
-	path = modules/hydra
-	url = git@github.com:abo-abo/hydra.git
 [submodule "snippets"]
 	path = snippets
 	url = git@github.com:4lex1v/emacs-snippets.git
