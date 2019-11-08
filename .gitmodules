@@ -2,10 +2,6 @@
 	path = themes/sirthias
 	url = git@github.com:4lex1v/sirthias-theme.git
 	branch = master
-[submodule "modules/magit"]
-	path = modules/magit
-	url = git@github.com:magit/magit.git
-	branch = master
 [submodule "modules/yasnippet"]
 	path = modules/yasnippet
 	url = git@github.com:capitaomorte/yasnippet.git
