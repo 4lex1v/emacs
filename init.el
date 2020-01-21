@@ -76,9 +76,12 @@
  jit-lock-defer-time 0
  fast-but-imprecise-scrolling t
 
- default-directory              "~/Sandbox"
+ default-directory              "~/Sandbox/"
  search-upper-case              nil
- safe-local-variable-values (quote ((user-ref-name . aivanov))))
+ safe-local-variable-values (quote ((user-ref-name . aivanov)))
+
+ case-fold-search nil
+ case-replace nil)
 
 (if IS-MAC
     (progn
@@ -97,7 +100,7 @@
 
 (if IS-WINDOWS
     (setq
-     shell-file-name "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))
+     shell-file-name "c:/windows/System32/WindowsPowerShell/v1.0/powershell.exe"))
 
 (if (display-graphic-p)
     (progn
@@ -161,18 +164,19 @@
 (setq-mode-local org evil-auto-indent nil)
 (setq-mode-local emacs-lisp-mode comment-note-comment-prefix ";;")
 
- (setq
+(setq
  package-enable-at-startup nil
+ package-check-signature nil
  package--init-file-ensured t
- package-archives '(("melpa-stable" . "http://stable.melpa.org/packages/")))
+ package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                    ("melpa-stable" . "http://stable.melpa.org/packages/")))
 
 ;; https://www.reddit.com/r/emacs/comments/53zpv9/how_do_i_get_emacs_to_stop_adding_custom_fields/
 (defun package--save-selected-packages (&rest opt) nil)
 (require 'package) 
 (package-initialize)
 
-;; Use-Package
-(add-to-list 'load-path (expand-file-name "modules/use-package" USER-EMACS-DIRECTORY))
+(package-install 'use-package)
 
 (setq
  use-package-verbose               t
@@ -184,17 +188,13 @@
  ;; Only when the config is stable
  use-package-expand-minimally t)
 
-(require 'bind-key)
-(require 'use-package)
-
 (use-package upe-hooks :demand t :load-path "modules/upe-hooks")
-(use-package diminish :ensure t :demand t)
-(use-package s    :ensure t :demand t) ;; Strings manipulation library
-(use-package f    :ensure t :demand t) ;; Files manipulation library
-(use-package dash :ensure t :demand t) ;; List manipulation library
+(use-package diminish :ensure t)
+(use-package s    :ensure :demand t) ;; Strings manipulation library
+(use-package f    :ensure :demand t) ;; Files manipulation library
+(use-package dash :ensure :demand t) ;; List manipulation library
 
 (when (require 'hideshow)
-  (add-hook 'text-mode-hook #'hs-minor-mode)
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 
 (use-package exec-path-from-shell :ensure t :demand t
@@ -237,16 +237,11 @@
   (with-eval-after-load 'evil
     (general-evil-setup t)))
 
-(use-package evil :load-path "modules/evil" :demand t
+(use-package evil :ensure t :pin melpa-stable :demand t
   :after general ;; To enable evil-leader in initial buffers
   
   :defines (evil-hook)
   :functions (prog-mode-hook)
-  
-  :preface
-  (setq 
-   evil-want-integration           nil
-   evil-collection-company-use-tng nil)
   
   :general
   (:prefix nil :states nil :keymaps 'evil-motion-state-map
@@ -334,12 +329,29 @@
    "C-w i"  '(clone-indirect-buffer-other-window :wk "Indirect Buffer"))
 
   :init
+  (use-package undo-tree :load-path "modules/evil/lib" :demand t
+    :diminish undo-tree-mode
+    :commands global-undo-tree-mode
+    :general
+    (:prefix nil :states 'normal
+             "M-/" 'undo-tree-visualize)
+    
+    (:prefix nil :keymaps 'undo-tree-visualizer-mode-map :states  '(motion)
+             "j" 'undo-tree-visualize-redo
+             "k" 'undo-tree-visualize-undo
+             "l" 'undo-tree-visualize-switch-branch-right
+             "h" 'undo-tree-visualize-switch-branch-left)
+    
+    :config (global-undo-tree-mode))
+
   (setq evil-default-cursor             t
         evil-ex-substitute-global       t
         evil-ex-search-vim-style-regexp t
         evil-want-C-u-scroll            t
         evil-ex-interactive-search-highlight 'selected-window
-        evil-want-keybinding            nil)
+        evil-want-keybinding            nil
+        evil-want-integration           nil
+        evil-collection-company-use-tng nil)
 
   ;; #NOTE :: This makes things like `just_an_example' selectable as a single word
   (defun fix-word-def () (modify-syntax-entry ?_ "w"))
@@ -351,10 +363,6 @@
   
   (evil-set-initial-state 'package-menu-mode 'motion)
 
-  ;; Use `§' key to switch between emacs and normal state
-  ;; (evil-global-set-key 'normal "§" #'evil-emacs-state)
-  ;; (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
-
   (evil-ex-define-cmd "e[val]" #'eval-buffer)
   (evil-ex-define-cmd "we" #'(lambda () (interactive) (save-buffer) (eval-buffer)))
   
@@ -365,26 +373,27 @@
     :after evil
     :commands evil-collection-init
     :init
-    (setq evil-collection-setup-minibuffer nil
-          evil-collection-mode-list `(bookmark
-                                      (buff-menu "buff-menu")
-                                      calendar
-                                      comint
-                                      compile
-                                      debbugs
-                                      debug
-                                      diff-mode
-                                      dired
-                                      doc-view
-                                      edebug
-                                      help
-                                      info
-                                      log-view
-                                      man
-                                      simple
-                                      ,@(when evil-collection-setup-minibuffer '(minibuffer))
-                                      (package-menu package)
-                                      (term term ansi-term multi-term)))
+    (setq
+     evil-collection-setup-minibuffer nil
+     evil-collection-mode-list `(bookmark
+                                 (buff-menu "buff-menu")
+                                 calendar
+                                 comint
+                                 compile
+                                 debbugs
+                                 debug
+                                 diff-mode
+                                 dired
+                                 doc-view
+                                 edebug
+                                 help
+                                 info
+                                 log-view
+                                 man
+                                 simple
+                                 ,@(when evil-collection-setup-minibuffer '(minibuffer))
+                                 (package-menu package)
+                                 (term term ansi-term multi-term)))
 
     :config
     (add-hook 'after-init-hook
@@ -405,15 +414,18 @@
     (define-key evil-normal-state-map "K" 'evil-jump-out-args)))
 
 ;; Goes before others to correctly load which-key-declare-prefixes
-(use-package which-key :demand t
-  :load-path "modules/which-key"
+(use-package which-key :demand t :ensure t :pin melpa-stable
   :diminish which-key-mode
   :init
-  (setq which-key-idle-delay 0.2
+  (setq which-key-idle-delay 0.8
         which-key-sort-order 'which-key-prefix-then-key-order-reverse
         which-key-show-operator-state-maps t ;; Hack to make this work with Evil
         which-key-prefix-prefix ""
         which-key-side-window-max-width 0.5
+
+  ;; Use `§' key to switch between emacs and normal state
+  ;; (evil-global-set-key 'normal "§" #'evil-emacs-state)
+  ;; (evil-global-set-key 'emacs  "§" #'evil-exit-emacs-state)
 
         which-key-popup-type           'side-window 
         which-key-side-window-location 'bottom) 
@@ -449,12 +461,8 @@
   ((conf-mode text-mode prog-mode) . smartparens-mode)
   
   :general
-  (:keymaps 'smartparens-mode-map
-   :prefix   nil
-   :states  '(normal insert)
-   
+  (:keymaps 'smartparens-mode-map :prefix nil :states '(normal insert)
    "M-t"   'sp-transpose-sexp
-   
    "C-M-k" 'sp-kill-sexp
    "C-M-w" 'sp-copy-sexp)
   
@@ -465,7 +473,7 @@
         sp-hybrid-kill-entire-symbol nil)
   
   :config
-  (use-package smartparens-config :demand t)
+  (require 'smartparens-config)
   (sp-use-smartparens-bindings)
   
   (sp-pair "(" ")"   :wrap "C-(")
@@ -474,7 +482,7 @@
   
   (sp-pair "{" "}"   :wrap "C-{"))
 
-(use-package yasnippet :load-path "modules/yasnippet"
+(use-package yasnippet :ensure t :pin melpa-stable
   :diminish (yas-minor-mode . " Y")
 
   :commands
@@ -509,9 +517,7 @@
 
 (use-package helm :demand t :ensure t :pin melpa-stable
   :general
-  (:prefix nil
-   :states nil
-           
+  (:prefix nil :states nil
    "C-c h"   'helm-command-prefix
    "M-y"     'helm-show-kill-ring
    "C-x b"   'helm-mini
@@ -519,30 +525,20 @@
    "M-x"     'helm-M-x
    "M-:"     'helm-eval-expression-with-eldoc
    "M-i"     'helm-occur
-
-   ;; Number keys
-   "M-3"      'helm-mini
-   "M-6"      'helm-bookmarks)
+   "M-3"     'helm-mini
+   "M-6"     'helm-bookmarks)
   
-  (:prefix  nil
-   :states '(normal)
-
+  (:prefix  nil :states '(normal)
    "ga" 'helm-apropos)
 
-  (:prefix   nil
-   :keymaps 'helm-find-files-map
-   :states   nil
-
+  (:prefix nil :keymaps 'helm-find-files-map :states nil
    "C-<backspace>"   'backward-kill-word
    "C-d"             '(lambda ()
                         (interactive)
                         (helm-exit-and-execute-action
                          'helm-point-file-in-dired)))
 
-  (:prefix   nil
-   :keymaps 'helm-map
-   :states   nil
-   
+  (:prefix   nil :keymaps 'helm-map :states   nil
    "<tab>" 'helm-execute-persistent-action
    "C-i"   'helm-execute-persistent-action
    "C-z"   'helm-select-action
@@ -558,19 +554,21 @@
    "M-r" 'helm-comint-input-ring)
   
   :init
-  (setq helm-idle-delay                        0.0
-        helm-input-idle-delay                  0.01
-        helm-quick-update                      t
-        helm-split-window-inside-p             t
-        helm-buffers-fuzzy-matching            t
-        helm-ff-fuzzy-matching                 t
-        helm-move-to-line-cycle-in-source      t
-        helm-scroll-amount                     8
-        helm-ff-search-library-in-sexp         t
-        helm-ff-file-name-history-use-recentf  t
-        helm-follow-mode-persistent            t
-        helm-show-completion-display-function  nil
-        helm-grep-ag-command "rg --color=always --smart-case --no-heading --line-number %s %s %s")
+  (setq
+   helm-buffer-max-length                 nil
+   helm-idle-delay                        0.0
+   helm-input-idle-delay                  0.01
+   helm-quick-update                      t
+   helm-split-window-inside-p             t
+   helm-buffers-fuzzy-matching            t
+   helm-ff-fuzzy-matching                 t
+   helm-move-to-line-cycle-in-source      t
+   helm-scroll-amount                     8
+   helm-ff-search-library-in-sexp         t
+   helm-ff-file-name-history-use-recentf  t
+   helm-follow-mode-persistent            t
+   helm-show-completion-display-function  nil
+   helm-grep-ag-command "rg --vimgrep --no-heading --smart-case")
   
   (use-package async :ensure t)
   (use-package helm-config :demand t)
@@ -582,7 +580,7 @@
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
-(use-package projectile :demand t :ensure t :pin melpa-stable 
+(use-package projectile :demand t :ensure t :pin melpa-stable
   :diminish projectile-mode
   :commands projectile-project-root
 
@@ -610,32 +608,12 @@
   (setq
    projectile-enable-caching       t
    projectile-completion-system   'helm
+   projectile-indexing-method     'hybrid
    projectile-require-project-root t
    projectile-use-git-grep         nil
-   projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
+   projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name)))
 
-  :config
-  (projectile-mode))
-
-(use-package undo-tree :ensure t
-  :diminish undo-tree-mode
-  :commands global-undo-tree-mode
-  :general
-  (:prefix nil
-           :states 'normal
-
-           "M-/" 'undo-tree-visualize)
-  
-  (:prefix   nil
-             :keymaps 'undo-tree-visualizer-mode-map
-             :states  '(motion)
-
-             "j" 'undo-tree-visualize-redo
-             "k" 'undo-tree-visualize-undo
-             "l" 'undo-tree-visualize-switch-branch-right
-             "h" 'undo-tree-visualize-switch-branch-left)
-  
-  :config (global-undo-tree-mode))
+   projectile-git-submodule-command "git submodule --quiet foreach 'echo $path' | tr '\\r\\n' '\\0'"))
 
 (use-package avy :ensure t
   :general
@@ -720,6 +698,45 @@
                            (expand-file-name it)
                          (user-error "No file at point"))))
     (magit-diff-visit-file file t))
+
+  (defun 4l/magit-latest-tag ()
+    (car (nreverse
+          (cl-sort (magit-list-tags) #'version<
+                   :key (lambda (tag)
+                          (if (string-prefix-p "v" tag)
+                              (substring tag 1)
+                            tag))))))
+  
+  (defun 4l/magit-create-github-release (tag)
+    (interactive (list (read-string "Create tag: " (4l/magit-latest-tag))))
+
+    ;; Update README file in the repo if it has tag refs
+    (with-temp-file "README.md"
+      (insert-file-contents "README.md")
+      (let ((prev-tag (s-chop-prefix "v" (4l/magit-latest-tag)))
+            (tag-v    (s-chop-prefix "v" tag)))
+        (while (search-forward-regexp prev-tag nil t)
+          (replace-match tag-v nil t))))
+
+    ;; Get a list of change between two tags
+    ;; magit-insert-log
+    ;; (magit-commit-create) ;; Should contain a list of change between two tags
+
+    ;; (magit-git-wash (apply-partially #'magit-log-wash-log 'log)
+      ;; "log"
+      ;; "--pretty=oneline"
+      ;; "--pretty=format:* %s"
+      ;; )
+    )
+
+  (defun 4l/magit-insert-changes-since-rev (tag)
+    (interactive (list (read-string "Last rev: " (4l/magit-latest-tag))))
+
+    (magit-git-wash (apply-partially #'magit-log-wash-log 'log)
+      "log"
+      "--pretty=oneline"
+      "--pretty=format:* %s"
+      (format "HEAD...%s" tag)))
   
   ;; This function was added to speed up my PR review workflow in a way that i can diff current branch
   ;; with master by a single keystroke...
@@ -751,53 +768,6 @@
     :commands evil-magit-init
     :config
     (evil-magit-init)))
-
-(use-package company :load-path "modules/company" :disabled t
-  :commands company-mode
-  
-  :functions (company-clang)
-  
-  :general
-  (:prefix  nil
-            :states '(insert)
-            
-            "C-SPC" 'company-complete)
-  
-  (:prefix   nil
-             :keymaps 'company-active-map
-             :states   nil
-             
-             "C-j" 'company-select-next-or-abort
-             "C-k" 'company-select-previous-or-abort
-             "C-o" 'company-other-backend
-             "C-l" 'company-other-backend
-             "C-d" 'company-show-doc-buffer)
-
-  :hook ((text-mode prog-mode) . company-mode)
-  
-  :init
-  (setq company-dabbrev-ignore-case nil
-        company-dabbrev-downcase nil
-        
-        company-idle-delay 0.3
-        company-minimum-prefix-length 3
-        
-        company-selection-wrap-around t
-        company-tooltip-align-annotations t
-
-        company-transformers '(company-sort-by-occurrence)
-        company-backends '())
-  
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'company))
-
-  (cl-defmacro configure-company-backends-for-mode (mode backends)
-    (declare (indent 1))
-    `(add-hook
-      ',(intern (concat (symbol-name mode) "-hook"))
-      (lambda ()
-        (make-local-variable 'company-backends)
-        (setq company-backends (list (remove nil ,backends)))))))
 
 (use-package elisp-mode
   :interpreter ("emacs" . emacs-lisp-mode)
@@ -1070,7 +1040,9 @@
   
   :general
   ;; Global Org-mode fucntionality
-  ("o" '(org-control-panel/body :wk "Org"))
+  ("o" '(:ignore t :wk "Org")
+   "oa" 'org-agenda-list
+   "ot" 'org-todo-list)
   
   (:keymaps 'org-mode-map
    :states  'normal
@@ -1121,7 +1093,6 @@
   :init
   (setq
    org-log-done                  'time ;; When completing a task, prompt for a closing note...
-   org-log-reschedule            'time
    org-src-fontify-natively       t
    org-descriptive-links          t
    org-startup-with-inline-images t
@@ -1164,7 +1135,7 @@
                                 ("cu"  "Unscheduled"
                                  ((todo ""
                                         ((org-agenda-overriding-header "\nUnscheduled TODO")
-                                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))))
+                                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline)))))
                                  nil
                                  nil))
    
@@ -1172,7 +1143,7 @@
    org-agenda-archives-mode t
 
    org-agenda-start-on-weekday 6 ;; Saturday
-   org-agenda-include-diary nil
+   org-agenda-include-diary t
    org-agenda-span 'day
    org-agenda-skip-deadline-if-done t
    
@@ -1302,3 +1273,19 @@
 (setq gc-cons-threshold 1000000)
 
 
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (yasnippet yaml-mode use-package ssh-agency smartparens scala-mode sbt-mode rust-mode markdown-mode macrostep helm f exec-path-from-shell evil-collection diminish avy))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
