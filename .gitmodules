@@ -2,28 +2,12 @@
 	path = themes/sirthias
 	url = git@github.com:4lex1v/sirthias-theme.git
 	branch = master
-[submodule "modules/yasnippet"]
-	path = modules/yasnippet
-	url = git@github.com:capitaomorte/yasnippet.git
-	branch = master
-[submodule "modules/which-key"]
-	path = modules/which-key
-	url = git@github.com:justbur/emacs-which-key.git
-[submodule "modules/use-package"]
-	path = modules/use-package
-	url = git@github.com:jwiegley/use-package.git
 [submodule "modules/evil"]
 	path = modules/evil
 	url = git@github.com:emacs-evil/evil.git
-[submodule "modules/general"]
-	path = modules/general
-	url = git@github.com:noctuid/general.el.git
 [submodule "snippets"]
 	path = snippets
 	url = git@github.com:4lex1v/emacs-snippets.git
 [submodule "scripted"]
 	path = scripted
 	url = git@github.com:4lex1v/scripted.el.git
-[submodule "modules/evil-org-mode"]
-	path = modules/evil-org-mode
-	url = git@github.com:Somelauw/evil-org-mode.git
