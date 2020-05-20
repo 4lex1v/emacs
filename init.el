@@ -39,7 +39,10 @@
  load-prefer-newer  t
  left-fringe-width  20
  word-wrap t
- line-spacing 2)
+ line-spacing 2
+
+ case-fold-search nil
+ case-replace     nil)
 
 (setq
  inhibit-startup-message        t
@@ -71,9 +74,6 @@
  default-directory              "~/Sandbox/"
  search-upper-case              nil
  safe-local-variable-values    (quote ((user-ref-name . aivanov)))
-
- case-fold-search nil
- case-replace     nil
 
  dabbrev-case-distinction nil)
 
@@ -613,7 +613,11 @@
    projectile-use-git-grep         nil
    projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name)))
 
-   projectile-git-submodule-command "git submodule --quiet foreach 'echo $path' | tr '\\r\\n' '\\0'")
+   projectile-git-submodule-command "git submodule --quiet foreach 'echo $path' | tr '\\r\\n' '\\0'"
+   projectile-project-root-files-functions '(projectile-root-local
+                                             projectile-root-top-down
+                                             projectile-root-bottom-up
+                                             projectile-root-top-down-recurring))
 
   :config
   (projectile-register-project-type 'bloop '(".bloop")
@@ -1095,7 +1099,7 @@
                 (and (f-ext? path "org")
                      (not (s-starts-with-p "_" (f-filename path)))
                      (not (-contains-p block-list (f-filename path))))))))
-  
+
   (defun org-make-quick-note (name)
     (interactive "B")
     (let ((note-path (concat org-quick-note-folder name ".org")))
@@ -1115,7 +1119,8 @@
    org-src-fontify-natively       t
    org-descriptive-links          t
    org-startup-with-inline-images t
-   
+   org-use-tag-inheritance        nil
+
    org-list-description-max-indent 0
    
    org-enforce-todo-dependencies  t
@@ -1138,8 +1143,8 @@
    org-todo-keyword-faces '(("ACTIVE" . "yellow"))
 
    org-refile-use-outline-path 'file
-   org-refile-targets '((org-agenda-files :maxlevel . 1))
-   org-refile-target-verify-function #'(lambda () (member "project" (org-get-local-tags)))
+   org-refile-targets '((org-agenda-files . (:tag . "project")))
+;;   org-refile-target-verify-function #'(lambda () (member "project" (org-get-local-tags)))
 
    org-adapt-indentation nil
 
@@ -1147,9 +1152,10 @@
 
    org-agenda-files '("~/Dropbox/Sandbox/Library/Org/universe.org")
 
-   org-capture-templates '(("n" "New" entry (file "~/Dropbox/Sandbox/Library/Org/inbox.org") "* TODO %?")
-                           ("t" "Today" entry (file "~/Dropbox/Sandbox/Library/Org/universe.org") "* TODO %? \nSCHEDULED: %t")
-                           ("w" "Work" entry (file "~/Dropbox/Sandbox/Library/Org/universe.org") "* TODO %? :work: \nSCHEDULED: %t"))
+   org-capture-templates
+   '(("n" "New" entry (file "~/Dropbox/Sandbox/Library/Org/inbox.org")      "* TODO %? \n:PROPERTIES: \n:created: %U \n:END:")
+     ("t" "Today" entry (file "~/Dropbox/Sandbox/Library/Org/universe.org") "* TODO %? \nSCHEDULED: %t \n:PROPERTIES: \n:created: %U \m:processed: %U \n:END:")
+     ("w" "Work" entry (file "~/Dropbox/Sandbox/Library/Org/universe.org")  "* TODO %? \nSCHEDULED: %t \nSCHEDULED: %t \n:PROPERTIES: \n:created: %U \m:processed: %U \n:END:"))
 
    ;; Stuck project is the one that has no scheduled TODO tasks
    org-stuck-projects '("+project/-DONE-CANCELLED" ("TODO") nil "SCHEDULED:\\|DEADLINE:")
@@ -1166,28 +1172,27 @@
    org-agenda-start-on-weekday 7 ;; Sunday
    org-agenda-include-diary nil
    org-agenda-skip-deadline-if-done t
+   org-agenda-log-mode-items '(closed clock state)
+   org-agenda-prefix-format '((agenda . "  %?-12t ")
+                              (todo   . " %i %-12:c")
+                              (tags   . " %i %-12:c")
+                              (search . " %i %-12:c"))
    
    ;; Display agenda in full window
    org-agenda-window-setup 'current-window)
 
   :config
   (org-indent-mode -1)
-  (org-agenda-archives-mode t)
-
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'outline))
 
   (with-eval-after-load 'evil
     (use-package evil-org :ensure t :demand t
       :config
       (require 'evil-org-agenda)
       (evil-set-initial-state 'org-agenda-mode 'motion)
-      (evil-org-agenda-set-keys)))
-  
-  ;; Since this config depends on the runtime value, this should be configured in this section
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-  
-  (add-to-list 'org-structure-template-alist '("scala" "#+BEGIN_SRC scala \n\t?\n#+END_SRC"))
+      (evil-org-agenda-set-keys))
+
+    (with-eval-after-load 'evil-collection
+      (add-to-list 'evil-collection-mode-list 'outline)))
 
   ;; Configure hooks for clock's persistance
   (org-clock-persistence-insinuate)
