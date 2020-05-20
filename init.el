@@ -228,163 +228,8 @@
       (progn
         (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
 
-(use-package general :demand t :load-path "modules/general"
-  :init
-  (setq general-default-states  'normal
-        general-default-prefix  "<SPC>")
-  :config
-  (with-eval-after-load 'evil
-    (general-evil-setup t)))
-
-(general-define-key
- :keymaps 'prog-mode
- :prefix nil
- :states 'normal
- ",." #'call-last-kbd-macro)
-
-(use-package evil :ensure t :pin melpa-stable :demand t :disabled t
-  :after general ;; To enable evil-leader in initial buffers
-  
-  :defines (evil-hook)
-  :functions (prog-mode-hook)
-  
-  :general
-  (:prefix nil :states nil :keymaps 'evil-motion-state-map
-           "j"   'next-line
-           "k"   'previous-line)
-
-  (:prefix nil
-           "$"   'evil-end-of-visual-line
-           "C-j" 'evil-forward-paragraph
-           "C-k" 'evil-backward-paragraph
-           "g,"  'evil-jump-backward
-           "g."  'find-function-at-point
-
-           "<M-wheel-up>" 'text-scale-increase
-           "<M-wheel-down>" 'text-scale-decrease
-
-           ;; Navigation keys
-           "C-S-o" #'evil-jump-forward)
-
-  (:prefix   nil
-             :states  'normal
-             :keymaps 'global-map 
-
-             "C-q" #'(4l/close-buffer :wk "close-buffer")
-             "M-q" #'(4l/close-other-window :wk "close-other-window"))
-
-  (:prefix   nil
-             :states  '(normal insert)
-             :keymaps 'global-map
-
-             "C-;"    'comment-line
-             "C-x \\" 'align-regexp
-             "C-c r"  'revert-buffer
-             "M-j"    'join-line
-             "M-o"    '(lambda (arg)
-                         (interactive "p")
-                         (end-of-line)
-                         (open-line arg)
-                         (next-line 1)
-                         (indent-according-to-mode))
-             "M-["    #'(lambda () (interactive) (4l/insert-block nil))
-             "M-{"    #'(lambda () (interactive) (4l/insert-block t))
-             "C-S-d"  '4l/duplicate-line
-             "C-w i"  '(clone-indirect-buffer-other-window :wk "Indirect Buffer")
-             "C-w ,"  '(4l/swap-two-windows :wk "Swap Windows"))
-
-  :init
-  (setq-default evil-kill-on-visual-paste nil)
-
-  (setq
-   evil-default-state              'normal
-   evil-default-cursor             t
-   evil-want-C-u-scroll            t
-   evil-want-keybinding            nil
-   evil-want-integration           t
-   evil-ex-substitute-global       t
-   evil-ex-search-vim-style-regexp t
-   evil-ex-interactive-search-highlight 'selected-window
-   evil-collection-company-use-tng nil)
-
-  ;; #NOTE :: This makes things like `just_an_example' selectable as a single word
-  (defun fix-word-def () (modify-syntax-entry ?_ "w"))
-  (add-hook #'prog-mode-hook 'fix-word-def)
-
-  (use-package undo-tree :ensure t :demand t
-    :diminish undo-tree-mode
-    :commands global-undo-tree-mode
-    :general
-    (:prefix nil :states 'normal
-             "M-/" 'undo-tree-visualize)
-    
-    (:prefix nil :keymaps 'undo-tree-visualizer-mode-map :states  '(motion)
-             "j" 'undo-tree-visualize-redo
-             "k" 'undo-tree-visualize-undo
-             "l" 'undo-tree-visualize-switch-branch-right
-             "h" 'undo-tree-visualize-switch-branch-left)
-    
-    :config (global-undo-tree-mode))
-  
-  :config
-  (evil-set-initial-state 'prog-mode        'normal)
-  (evil-set-initial-state 'fundamental-mode 'normal)
-  (evil-set-initial-state 'comint-mode      'normal)
-  (evil-set-initial-state 'org-mode         'normal)
-
-  (evil-set-initial-state 'package-menu-mode 'motion)
-
-  (evil-set-initial-state 'rg 'emacs)
-  
-  (evil-ex-define-cmd "e[val]" #'eval-buffer)
-  (evil-ex-define-cmd "we" #'(lambda () (interactive) (save-buffer) (eval-buffer)))
-  
-  (evil-select-search-module 'evil-search-module 'evil-search)
-  (evil-mode)
-
-  (use-package evil-collection :ensure t :demand t
-    :after evil
-    :commands evil-collection-init
-    :init
-    (setq
-     evil-collection-setup-minibuffer nil
-     evil-collection-mode-list `(bookmark
-                                 (buff-menu "buff-menu")
-                                 calendar
-                                 comint
-                                 compile
-                                 debbugs
-                                 debug
-                                 diff-mode
-                                 dired
-                                 doc-view
-                                 edebug
-                                 help
-                                 info
-                                 log-view
-                                 man
-                                 simple
-                                 ,@(when evil-collection-setup-minibuffer '(minibuffer))
-                                 (package-menu package)
-                                 (term term ansi-term multi-term)))
-
-    :config
-    (add-hook 'after-init-hook
-              (lambda () (evil-collection-init))))
-
-  (use-package evil-args :ensure t :demand t
-    :after evil
-    :config
-    ;; bind evil-args text objects
-    (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-    (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-
-    ;; bind evil-forward/backward-args
-    (define-key evil-normal-state-map "L" 'evil-forward-arg)
-    (define-key evil-normal-state-map "H" 'evil-backward-arg)
-
-    ;; bind evil-jump-out-args
-    (define-key evil-normal-state-map "K" 'evil-jump-out-args)))
+;; #TODO(4lex1v, 05/20/20) :: Any way to install it by default?
+(use-package general :demand t :load-path "modules/general")
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t :ensure t :pin melpa-stable
@@ -403,16 +248,9 @@
   (which-key-mode)
   
   ;; #NOTE :: For some reason it doesn't work as a `use-pacakge' directive
-  (general-define-key
-   :keymaps 'which-key-C-h-map
-   :prefix   nil
-   :states   nil
-   
-   "l" 'which-key-show-next-page-cycle
-   "j" 'which-key-show-previous-page-cycle)
-
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'while-key)))
+  (general-define-key :keymaps 'which-key-C-h-map
+    "l" 'which-key-show-next-page-cycle
+    "j" 'which-key-show-previous-page-cycle))
 
 (use-package smartparens :ensure t :pin melpa-stable
   :commands
@@ -430,19 +268,20 @@
   ((conf-mode text-mode prog-mode) . smartparens-mode)
   
   :general
-  (:keymaps 'smartparens-mode-map :prefix nil :states '(normal insert)
-            "M-t"   'sp-transpose-sexp
-            "C-M-k" 'sp-kill-sexp
-            "C-M-w" 'sp-copy-sexp)
+  (:keymaps 'smartparens-mode-map
+   "M-t"   'sp-transpose-sexp
+   "C-M-k" 'sp-kill-sexp
+   "C-M-w" 'sp-copy-sexp)
 
-  (:prefix nil :keymaps 'smartparens-mode-map :states '(insert)
-           "<C-backspace>" 'sp-backward-kill-word)
+  (:keymaps 'smartparens-mode-map
+   "<C-backspace>" 'sp-backward-kill-word)
   
   :init
-  (setq sp-base-key-bindings nil
-        sp-autoinsert-if-followed-by-word t
-        sp-autoskip-closing-pair 'always-end
-        sp-hybrid-kill-entire-symbol nil)
+  (setq
+   sp-base-key-bindings nil
+   sp-autoinsert-if-followed-by-word t
+   sp-autoskip-closing-pair 'always-end
+   sp-hybrid-kill-entire-symbol nil)
   
   :config
   (require 'smartparens-config)
@@ -451,11 +290,11 @@
   (sp-pair "(" ")"   :wrap "C-(")
   (sp-pair "[" "]"   :wrap "s-[") ;; This one doesn't work as expected
   (sp-pair "\"" "\"" :wrap "C-\"")
-  
   (sp-pair "{" "}"   :wrap "C-{"))
 
 (use-package yasnippet :ensure t :pin melpa-stable
   :diminish (yas-minor-mode . " Y")
+  :mode ("\\.yasnippet" . snippet-mode)
 
   :hook
   ((prog-mode org-mode) . yas-minor-mode)
@@ -470,8 +309,6 @@
    yas-tryout-snippet
    yas-describe-tables
    yas-reload-all)
-  
-  :mode ("\\.yasnippet" . snippet-mode)
   
   :init
   (setq yas-snippet-dirs '("~/.emacs.d/snippets")
@@ -488,70 +325,61 @@
   (yas-reload-all))
 
 (use-package helm :demand t :ensure t :pin melpa-stable
-  :general
-  (:states  'normal
-            :keymaps 'global-map
-
-            "e"   '(:ignore t :wk "Emacs")
-            "eq"  'save-buffers-kill-emacs
-            "er"  'revert-buffer
-            "eb"  'bookmark-bmenu-list
-            
-            "ee"  '(:ignore t :wk "Evil")
-            "een" '(evil-ex-nohighlight :wk "No Highlighting")
-            "et"  '(:ignore t :wk "Toggles")
-            "etl" 'toggle-truncate-lines
-            
-            "f"   '(:ignore t :wk "Files")
-            "fe"  'eshell
-            "fi"  `((lambda () (interactive) (find-file USER-INIT-FILE)) :wk "init.el")
-            "ff"  '(helm-find-files :wk "Files")
-            "fd"  `((lambda () (interactive) (helm-find-files-1 "~/Dropbox/")) :wk "Dropbox")
-            "fs"  `((lambda () (interactive) (helm-find-files-1 "~/Sandbox/")) :wk "Sandbox")
-            "fp"  `((lambda () (interactive) (helm-find-files-1 "~/Sandbox/Projects/")) :wk "Projects")
-            "fw"  `((lambda () (interactive) (helm-find-files-1 "~/Sandbox/Work/")) :wk "Work")
-            
-            "fl"  '(find-library :wk "Find Library")
-            
-            "s"   '(:ignore t :wk "Services"))
-
-  (:prefix nil :states nil
-           "C-c h"   'helm-command-prefix
-           "M-y"     'helm-show-kill-ring
-           "C-x b"   'helm-mini
-           "C-x C-f" 'helm-find-files         
-           "C-x f" 'helm-find-files         
-           "M-x"     'helm-M-x
-           "M-:"     'helm-eval-expression-with-eldoc
-           "M-i"     'helm-occur
-           "M-3"     'helm-mini
-           "M-6"     'helm-bookmarks)
+  ;; :general
+  ;; (:keymaps 'global-map
+  ;;  "e"   '(:ignore t :wk "Emacs")
+  ;;  "eq"  'save-buffers-kill-emacs
+  ;;  "er"  'revert-buffer
+  ;;  "eb"  'bookmark-bmenu-list
   
-  (:prefix  nil :states '(normal)
-            "ga" 'helm-apropos)
-
-  (:prefix nil :keymaps 'helm-find-files-map :states nil
-           "C-<backspace>"   'backward-kill-word
-           "C-d"             '(lambda ()
-                                (interactive)
-                                (helm-exit-and-execute-action
-                                 'helm-point-file-in-dired)))
-
-  (:prefix   nil :keymaps 'helm-map :states   nil
-             "<tab>" 'helm-execute-persistent-action
-             "C-i"   'helm-execute-persistent-action
-             "C-z"   'helm-select-action
-             "C-o"   'helm-next-source
-             "C-j"   'helm-next-line
-             "C-k"   'helm-previous-line
-             "C-f"   'helm-toggle-full-frame)
-
-  (:prefix   nil
-             :keymaps 'comint-mode-map
-             :states  '(normal insert)
-
-             "M-r" 'helm-comint-input-ring)
+  ;;  "ee"  '(:ignore t :wk "Evil")
+  ;;  "et"  '(:ignore t :wk "Toggles")
+  ;;  "etl" 'toggle-truncate-lines
   
+  ;;  "f"   '(:ignore t :wk "Files")
+  ;;  "fe"  'eshell
+  ;;  "fi"  `((lambda () (interactive) (find-file USER-INIT-FILE)) :wk "init.el")
+  ;;  "ff"  '(helm-find-files :wk "Files")
+  ;;  "fd"  `((lambda () (interactive) (helm-find-files-1 "~/Dropbox/")) :wk "Dropbox")
+  ;;  "fs"  `((lambda () (interactive) (helm-find-files-1 "~/Sandbox/")) :wk "Sandbox")
+  ;;  "fp"  `((lambda () (interactive) (helm-find-files-1 "~/Sandbox/Projects/")) :wk "Projects")
+  ;;  "fw"  `((lambda () (interactive) (helm-find-files-1 "~/Sandbox/Work/")) :wk "Work")
+  
+  ;;  "fl"  '(find-library :wk "Find Library")
+  
+  ;;  "s"   '(:ignore t :wk "Services"))
+
+  ;; (:prefix nil :states nil
+  ;;          "C-c h"   'helm-command-prefix
+  ;;          "M-y"     'helm-show-kill-ring
+  ;;          "C-x b"   'helm-mini
+  ;;          "C-x C-f" 'helm-find-files         
+  ;;          "C-x f" 'helm-find-files         
+  ;;          "M-x"     'helm-M-x
+  ;;          "M-:"     'helm-eval-expression-with-eldoc
+  ;;          "M-i"     'helm-occur
+  ;;          "M-3"     'helm-mini
+  ;;          "M-6"     'helm-bookmarks)
+  
+  ;; (:prefix  nil :states '(normal)
+  ;;           "ga" 'helm-apropos)
+
+  (:keymaps 'helm-find-files-map
+   "C-<backspace>"   'backward-kill-word
+   "C-d"             '(lambda ()
+                        (interactive)
+                        (helm-exit-and-execute-action
+                         'helm-point-file-in-dired)))
+
+  (:keymaps 'helm-map
+   "<tab>" 'helm-execute-persistent-action
+   "C-i"   'helm-execute-persistent-action
+   "C-z"   'helm-select-action
+   "C-o"   'helm-next-source
+   "C-j"   'helm-next-line
+   "C-k"   'helm-previous-line
+   "C-f"   'helm-toggle-full-frame)
+
   :init
   (setq
    helm-buffer-max-length                 nil
@@ -597,11 +425,11 @@
    "pi" 'projectile-invalidate-cache
    "pe" 'projectile-run-eshell
    "p&" 'projectile-run-async-shell-command-in-root
-           "pS" 'projectile-save-project-buffers
-           "ps" '((lambda (arg)
-                    (interactive "P")
-                    (helm-grep-ag (projectile-project-root) arg))
-                  :wk "Search"))
+   "pS" 'projectile-save-project-buffers
+   "ps" '((lambda (arg)
+            (interactive "P")
+            (helm-grep-ag (projectile-project-root) arg))
+          :wk "Search"))
   
   :init
   (require 'subr-x)
@@ -632,8 +460,8 @@
 (use-package avy :ensure t
   :general
   (:keymaps 'global :states 'normal
-            "jj" 'avy-goto-char
-            "jl" 'avy-goto-line))
+   "jj" 'avy-goto-char
+   "jl" 'avy-goto-line))
 
 (use-package magit :ensure t :pin melpa-stable :disabled t
   :commands (magit magit-status magit-diff-range magit-clone)
@@ -656,32 +484,28 @@
    "glc" 'magit-log-current)
   
   (:keymaps 'magit-status-mode-map
-            :prefix   nil
+   :prefix   nil
 
-            "j" 'magit-next-line
-            "k" 'magit-previous-line)
+   "j" 'magit-next-line
+   "k" 'magit-previous-line)
   
   (:keymaps 'magit-diff-mode-map
-            :prefix   nil
-            
-            "gf" 'magit-diff-visit-file-other-window)
+   :prefix   nil
+   
+   "gf" 'magit-diff-visit-file-other-window)
 
   (:keymaps 'magit-submodule-list-mode-map
-            :prefix   nil
-            
-            "RET" 'magit-repolist-status)
+   :prefix   nil
+   
+   "RET" 'magit-repolist-status)
   
   :init
   (use-package ghub :ensure t :disabled t :after magit)
   (use-package with-editor :ensure t :after magit
     :general
     (:keymaps 'with-editor-mode-map
-              :prefix "" ;; don't use SPC prefix in this case
-              "RET"    'with-editor-finish
-              [escape] 'with-editor-cancel)
-    :config
-    (with-eval-after-load 'evil
-      (evil-set-initial-state 'with-editor-mode 'insert)))
+     "RET"    'with-editor-finish
+     [escape] 'with-editor-cancel))
 
   (use-package magit-popup :ensure t :after magit)
 
@@ -774,13 +598,7 @@
   (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
 
   (add-hook 'magit-submodule-list-mode-hook
-            (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t))))
-
-  (use-package evil-magit :ensure t :demand t
-    :after (evil magit-mode)
-    :commands evil-magit-init
-    :config
-    (evil-magit-init)))
+            (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t)))))
 
 (use-package elisp-mode
   :interpreter ("emacs" . emacs-lisp-mode)
@@ -791,25 +609,22 @@
   
   :general
   (:prefix nil
-           "M-."     'find-function-at-point
-           "M-,"     'find-variable-at-point
-           "C-c e r" 'eval-region)
+   "M-."     'find-function-at-point
+   "M-,"     'find-variable-at-point
+   "C-c e r" 'eval-region)
   
   (:keymaps 'emacs-lisp-mode-map
-            "e"  '(:ignore t :wk "Emacs")
-            "ev" '(:ignore t :wk "Describe Variable")
-            "ed" '(:ignore t :wk "Docs & Help")
-            "eda" #'helm-apropos)
+   "e"  '(:ignore t :wk "Emacs")
+   "ev" '(:ignore t :wk "Describe Variable")
+   "ed" '(:ignore t :wk "Docs & Help")
+   "eda" #'helm-apropos)
   
   :config
   
 
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'elisp-mode))
+  
 
-  (with-eval-after-load 'company
-    (configure-company-backends-for-mode emacs-lisp-mode
-                                         '(company-elisp company-capf company-files company-yasnippet)))
+  
 
   (with-eval-after-load 'smartparens
     (sp-with-modes 'emacs-lisp-mode
@@ -821,16 +636,11 @@
     
     :general
     (:keymaps 'macrostep-keymap
-              :prefix   nil
-              "q" #'macrostep-collapse-all
-              "e" #'macrostep-expand)
+     "q" #'macrostep-collapse-all
+     "e" #'macrostep-expand)
 
     (:keymaps 'emacs-lisp-mode-map
-              "em" #'macrostep-expand)
-    
-    :config
-    (with-eval-after-load 'evil-collection
-      (add-to-list 'evil-collection-mode-list 'macrostep))))
+     "em" #'macrostep-expand)))
 
 (use-package rye-lang-mode
   :load-path "modules/rye"
@@ -844,19 +654,19 @@
   
   :general
   (:keymaps 'scala-mode-map
-            "s" '(:ignore t :wk "Scala"))
+   "s" '(:ignore t :wk "Scala"))
   
   (:keymaps 'scala-mode-map
-            :states  '(normal insert)
-            :prefix   nil
-            
-            "<C-return>"     #'newline-or-comment)
+   :states  '(normal insert)
+   :prefix   nil
+   
+   "<C-return>"     #'newline-or-comment)
 
   (:keymaps 'scala-mode-map
-            :states  'normal
-            :prefix   nil
-            
-            "J" '(lambda () (interactive) (scala-indent:join-line t)))
+   :states  'normal
+   :prefix   nil
+   
+   "J" '(lambda () (interactive) (scala-indent:join-line t)))
 
   :init
   (setq
@@ -875,18 +685,18 @@
   (use-package sbt-mode :ensure t
     :general
     (:keymaps 'scala-mode-map :prefix "<SPC> sb"
-              ""  '(:ignore t :wk "SBT")
-              "b" '(4lex1v:open-sbt-build-file :wk "build.sbt")
-              "s" 'sbt-start
-              "r" 'sbt-command
-              "c" '((lambda () (interactive) (sbt-command "compile")) :wk "compile")
-              "t" '((lambda () (interactive) (sbt-command "test")) :wk "test"))
+     ""  '(:ignore t :wk "SBT")
+     "b" '(4lex1v:open-sbt-build-file :wk "build.sbt")
+     "s" 'sbt-start
+     "r" 'sbt-command
+     "c" '((lambda () (interactive) (sbt-command "compile")) :wk "compile")
+     "t" '((lambda () (interactive) (sbt-command "test")) :wk "test"))
     
     (:keymaps 'scala-mode-map :prefix ","
-              "c" '((lambda () (interactive) (sbt-command "compile")) :wk "compile")
-              "t" '((lambda () (interactive) (sbt-command "test")) :wk "test")
-              "r" 'sbt-run-previous-command
-              "i" '4l/open-in-intellij)
+     "c" '((lambda () (interactive) (sbt-command "compile")) :wk "compile")
+     "t" '((lambda () (interactive) (sbt-command "test")) :wk "test")
+     "r" 'sbt-run-previous-command
+     "i" '4l/open-in-intellij)
 
     :init
     (setq sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*"
@@ -904,17 +714,17 @@
   
   :general
   (:keymaps 'c-mode-base-map
-            "m"  '(:ignore t :wk "Native")
-            "ma" 'projectile-find-other-file
-            "mA" 'projectile-find-other-file-other-window)
+   "m"  '(:ignore t :wk "Native")
+   "ma" 'projectile-find-other-file
+   "mA" 'projectile-find-other-file-other-window)
   
   ;; #TODO :: Check if this could be defined in the global configuration or it needs to be overriden for these modes?
   (:keymaps 'c-mode-base-map  
-            :prefix nil
-            "C-S-j" #'next-error
-            "C-S-k" #'previous-error
-            ",r"    #'recompile
-            ",m"    #'helm-semantic-or-imenu)
+   :prefix nil
+   "C-S-j" #'next-error
+   "C-S-k" #'previous-error
+   ",r"    #'recompile
+   ",m"    #'helm-semantic-or-imenu)
   
   :init
   (defconst 4l/c-lang-style ;; added later under the label '4l'
@@ -964,17 +774,7 @@
   (with-eval-after-load 'org
     (add-to-list 'org-babel-load-languages '(C . t)))
 
-  (use-package cmake-mode :ensure t :disabled t
-    :after cc-mode
-    
-    :init
-    (with-eval-after-load 'evil-collection
-      (add-to-list 'evil-collection-mode-list 'cmake-mode))
-    
-    :config
-    (with-eval-after-load 'company
-      (configure-company-backends-for-mode cmake-mode
-                                           '(company-cmake company-files company-dabbrev company-capf)))))
+  (use-package cmake-mode :ensure t :disabled t :after cc-mode))
 
 (use-package rust-mode :ensure t
   :hook ((cargo-minor-mode) . rust-mode)
@@ -998,25 +798,25 @@
     
     :general
     (:prefix ","
-             :keymaps 'rust-mode-map
-             
-             "c" '(:ignore t :wk "Cargo")
-             "c." 'cargo-process-repeat
-             "cC" 'cargo-process-clean
-             "cX" 'cargo-process-run-example
-             "cb" 'cargo-process-build
-             "cc" 'cargo-process-check
-             "cd" 'cargo-process-doc
-             "ce" 'cargo-process-bench
-             "cf" 'cargo-process-current-test
-             "cf" 'cargo-process-fmt
-             "ci" 'cargo-process-init
-             "cn" 'cargo-process-new
-             "co" 'cargo-process-current-file-tests
-             "cs" 'cargo-process-search
-             "cu" 'cargo-process-update
-             "cx" 'cargo-process-run
-             "t" 'cargo-process-test)
+     :keymaps 'rust-mode-map
+     
+     "c" '(:ignore t :wk "Cargo")
+     "c." 'cargo-process-repeat
+     "cC" 'cargo-process-clean
+     "cX" 'cargo-process-run-example
+     "cb" 'cargo-process-build
+     "cc" 'cargo-process-check
+     "cd" 'cargo-process-doc
+     "ce" 'cargo-process-bench
+     "cf" 'cargo-process-current-test
+     "cf" 'cargo-process-fmt
+     "ci" 'cargo-process-init
+     "cn" 'cargo-process-new
+     "co" 'cargo-process-current-file-tests
+     "cs" 'cargo-process-search
+     "cu" 'cargo-process-update
+     "cx" 'cargo-process-run
+     "t" 'cargo-process-test)
 
     :init
     (setq cargo-process--enable-rust-backtrace t)))
@@ -1095,10 +895,10 @@
   (defun 4l/get-org-agenda-files ()
     (let ((block-list '("inbox.org")))
       (f-files "~/Dropbox/Sandbox/Library/Org/"
-              (lambda (path)
-                (and (f-ext? path "org")
-                     (not (s-starts-with-p "_" (f-filename path)))
-                     (not (-contains-p block-list (f-filename path))))))))
+               (lambda (path)
+                 (and (f-ext? path "org")
+                      (not (s-starts-with-p "_" (f-filename path)))
+                      (not (-contains-p block-list (f-filename path))))))))
 
   (defun org-make-quick-note (name)
     (interactive "B")
@@ -1144,7 +944,7 @@
 
    org-refile-use-outline-path 'file
    org-refile-targets '((org-agenda-files . (:tag . "project")))
-;;   org-refile-target-verify-function #'(lambda () (member "project" (org-get-local-tags)))
+   ;;   org-refile-target-verify-function #'(lambda () (member "project" (org-get-local-tags)))
 
    org-adapt-indentation nil
 
@@ -1184,16 +984,6 @@
   :config
   (org-indent-mode -1)
 
-  (with-eval-after-load 'evil
-    (use-package evil-org :ensure t :demand t
-      :config
-      (require 'evil-org-agenda)
-      (evil-set-initial-state 'org-agenda-mode 'motion)
-      (evil-org-agenda-set-keys))
-
-    (with-eval-after-load 'evil-collection
-      (add-to-list 'evil-collection-mode-list 'outline)))
-
   ;; Configure hooks for clock's persistance
   (org-clock-persistence-insinuate)
 
@@ -1218,9 +1008,6 @@
       (erase-buffer)
       (eshell-send-input)))
   
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'eshell))
-
   (defun git-prompt-branch-name ()
     "Get current git branch name"
     (let ((args '("symbolic-ref" "HEAD" "--short")))
@@ -1252,15 +1039,7 @@
     :if IS-MAC
     :config
     (eshell/alias "bubu" "brew update && brew upgrade")
-    (eshell/alias "sshs" "ssh-add ~/.ssh/github_rsa"))
-
-  (with-eval-after-load 'company
-    (add-hook 'eshell-mode-hook
-              (lambda nil
-                (make-local-variable 'company-backends)
-                (setq company-backends
-                      (remove nil
-                              '(company-files company-dabbrev)))))))
+    (eshell/alias "sshs" "ssh-add ~/.ssh/github_rsa")))
 
 (mapc
  (lambda (mode)
@@ -1272,3 +1051,74 @@
 
 (if (not (file-exists-p (concat USER-EMACS-DIRECTORY "server/server")))
     (server-start))
+
+(eval-after-load "lisp-mode"
+  '(defun lisp-indent-function (indent-point state)
+     "This function is the normal value of the variable `lisp-indent-function'.
+The function `calculate-lisp-indent' calls this to determine
+if the arguments of a Lisp function call should be indented specially.
+INDENT-POINT is the position at which the line being indented begins.
+Point is located at the point to indent under (for default indentation);
+STATE is the `parse-partial-sexp' state for that position.
+If the current line is in a call to a Lisp function that has a non-nil
+property `lisp-indent-function' (or the deprecated `lisp-indent-hook'),
+it specifies how to indent.  The property value can be:
+* `defun', meaning indent `defun'-style
+  \(this is also the case if there is no property and the function
+  has a name that begins with \"def\", and three or more arguments);
+* an integer N, meaning indent the first N arguments specially
+  (like ordinary function arguments), and then indent any further
+  arguments like a body;
+* a function to call that returns the indentation (or nil).
+  `lisp-indent-function' calls this function with the same two arguments
+  that it itself received.
+This function returns either the indentation to use, or nil if the
+Lisp function does not specify a special indentation."
+     (let ((normal-indent (current-column))
+           (orig-point (point)))
+       (goto-char (1+ (elt state 1)))
+       (parse-partial-sexp (point) calculate-lisp-indent-last-sexp 0 t)
+       (cond
+        ;; car of form doesn't seem to be a symbol, or is a keyword
+        ((and (elt state 2)
+              (or (not (looking-at "\\sw\\|\\s_"))
+                  (looking-at ":")))
+         (if (not (> (save-excursion (forward-line 1) (point))
+                     calculate-lisp-indent-last-sexp))
+             (progn (goto-char calculate-lisp-indent-last-sexp)
+                    (beginning-of-line)
+                    (parse-partial-sexp (point)
+                                        calculate-lisp-indent-last-sexp 0 t)))
+         ;; Indent under the list or under the first sexp on the same
+         ;; line as calculate-lisp-indent-last-sexp.  Note that first
+         ;; thing on that line has to be complete sexp since we are
+         ;; inside the innermost containing sexp.
+         (backward-prefix-chars)
+         (current-column))
+        ((and (save-excursion
+                (goto-char indent-point)
+                (skip-syntax-forward " ")
+                (not (looking-at ":")))
+              (save-excursion
+                (goto-char orig-point)
+                (looking-at ":")))
+         (save-excursion
+           (goto-char (+ 2 (elt state 1)))
+           (current-column)))
+        (t
+         (let ((function (buffer-substring (point)
+                                           (progn (forward-sexp 1) (point))))
+               method)
+           (setq method (or (function-get (intern-soft function)
+                                          'lisp-indent-function)
+                            (get (intern-soft function) 'lisp-indent-hook)))
+           (cond ((or (eq method 'defun)
+                      (and (null method)
+                           (> (length function) 3)
+                           (string-match "\\`def" function)))
+                  (lisp-indent-defform state indent-point))
+                 ((integerp method)
+                  (lisp-indent-specform method state
+                                        indent-point normal-indent))
+                 (method
+                  (funcall method indent-point state)))))))))
