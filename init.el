@@ -10,7 +10,7 @@
 (load-file (concat USER-EMACS-DIRECTORY "fixes.el"))
 
 ;; Frame configuration
-(let ((font-setting "Iosevka SS08 Slab LtEx-14"))
+(let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab LtEx-16" "Iosevka Light-18")))
   ;; TODO: create a window in the middle of th screen 
   (add-to-list 'initial-frame-alist (cons 'font font-setting))
   (setq default-frame-alist initial-frame-alist)
