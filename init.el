@@ -10,7 +10,7 @@
 (load-file (concat USER-EMACS-DIRECTORY "fixes.el"))
 
 ;; Frame configuration
-(let ((font-setting "Iosevka SS08 Slab LtEx-16"))
+(let ((font-setting "Iosevka SS08 Slab LtEx-14"))
   ;; TODO: create a window in the middle of th screen 
   (add-to-list 'initial-frame-alist (cons 'font font-setting))
   (setq default-frame-alist initial-frame-alist)
@@ -92,6 +92,10 @@
        frame-resize-pixelwise       t)
       (global-set-key (kbd "M-`") #'other-frame)))
 
+(if IS-WINDOWS
+    (setq
+     shell-file-name "C:\\Users\\Aleksandr\\scoop\\shims\\pwsh.exe"))
+
 (tooltip-mode          -1)
 (tool-bar-mode         -1)
 (scroll-bar-mode       -1)
@@ -155,6 +159,16 @@
 (define-key global-map (kbd "M-{") (lambda () (interactive) (4l/insert-block t)))
 (define-key global-map (kbd "M-p") 'backward-paragraph)
 (define-key global-map (kbd "M-n") 'forward-paragraph)
+
+(require 'ido)
+(setq
+ ido-everywhere t
+ ido-case-fold t
+ ido-use-filename-at-point 'guess
+ ido-use-url-at-point nil)
+(ido-mode t)
+
+(define-key ido-file-dir-completion-map [(control backspace)] #'ido-delete-backward-word-updir)
 
 (setq
  dabbrev-case-replace t
@@ -231,17 +245,21 @@
       (progn
         (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
 
-;; #TODO(4lex1v, 05/20/20) :: Any way to install it by default?
-(use-package general :demand t :load-path "modules/general")
+
+;; (general-define-key :keymaps 'global-map 
+;;   "M-3" 'ibuffer
+;;   "C-h C-f" 'find-function
+;;   "C-x f" 'ido-find-file
+;;   "M-2" 'ido-switch-buffer)
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t :ensure t :pin melpa-stable
   :diminish which-key-mode
   
-  :general
-  (:keymaps 'which-key-C-h-map
-   "l" 'which-key-show-next-page-cycle
-   "j" 'which-key-show-previous-page-cycle)
+  :bind
+  (:map which-key-C-h-map
+   ("l" . which-key-show-next-page-cycle)
+   ("j" . which-key-show-previous-page-cycle))
   
   :init
   (setq
@@ -260,14 +278,14 @@
 (use-package projectile :demand t :ensure t :pin melpa-stable
   :commands projectile-project-root
 
-  :general
-  ("M-!" 'projectile-run-shell-command-in-root
-   "M-1" 'projectile-find-file
-   "M-4" 'projectile-switch-project
-   "C-c p S" 'projectile-save-project-buffers
-   "C-c p s s" 'projectile-run-shell
-   "C-c p s e" 'projectile-run-eshell
-   "C-c p c" 'projectile-compile-project)
+  :bind
+  (("M-!" . projectile-run-shell-command-in-root)
+   ("M-1" . projectile-find-file)
+   ("M-4" . projectile-switch-project)
+   ("C-c p S" . projectile-save-project-buffers)
+   ("C-c p s s" . projectile-run-shell)
+   ("C-c p s e" . projectile-run-eshell)
+   ("C-c p c" . projectile-compile-project))
     
   :init
   (require 'subr-x)
@@ -310,14 +328,14 @@
   :hook
   ((conf-mode text-mode prog-mode) . smartparens-mode)
   
-  :general
-  (:keymaps 'smartparens-mode-map
-   "M-t"   'sp-transpose-sexp
-   "C-M-k" 'sp-kill-sexp
-   "C-M-w" 'sp-copy-sexp)
+  :bind
+  (:map smartparens-mode-map
+   ("M-t"   . sp-transpose-sexp)
+   ("C-M-k" . sp-kill-sexp)
+   ("C-M-w" . sp-copy-sexp)
 
-  (:keymaps 'smartparens-mode-map
-   "<C-backspace>" 'sp-backward-kill-word)
+   :map smartparens-mode-map
+   ("<C-backspace>" . sp-backward-kill-word))
   
   :init
   (setq
@@ -369,8 +387,8 @@
   (yas-reload-all))
 
 (use-package avy :ensure t
-  :general
-  ("C-;" 'avy-goto-char))
+  :bind
+  (("C-;" . avy-goto-char)))
 
 (use-package elisp-mode
   :interpreter ("emacs" . emacs-lisp-mode)
@@ -397,9 +415,9 @@
   
   :hook ((4l/fix-scala-fonts hs-minor-mode) . scala-mode)
   
-  :general
-  (:keymaps 'scala-mode-map
-   "<C-return>"     #'newline-or-comment)
+  :bind
+  (:map scala-mode-map
+   ("<C-return>" . #'newline-or-comment))
 
   :init
   (setq
@@ -417,8 +435,11 @@
   :config
   (use-package sbt-mode :ensure t
     :init
-    (setq sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*"
-          sbt:prefer-nested-projects t)
+    (setq
+     ;;sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*"
+     sbt:prompt-regexp "^\\(\\(sbt:[^>]+\\)?\\|scala\\)>[ ]+"
+     sbt:prefer-nested-projects t)
+
     :config
     (add-to-list 'sbt:program-options "-Dsbt.supershell=false")))
 
@@ -429,6 +450,9 @@
   
   :commands c-toggle-auto-newline
   :defines (c-mode-common-hook)
+
+  :bind
+  (("C-." . recompile))
       
   :init
   (defconst 4l/c-lang-style ;; added later under the label '4l'
@@ -478,35 +502,7 @@
     (add-hook 'rust-mode #'smartparens-rust)
     (sp-with-modes 'rust-mode
       (sp-local-pair "(" nil :post-handlers '(("||\n[i]" "RET")))
-      (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))))
-
-  (use-package cargo :ensure t
-    :after rust-mode
-    
-    :general
-    (:prefix ","
-     :keymaps 'rust-mode-map
-     
-     "c" '(:ignore t :wk "Cargo")
-     "c." 'cargo-process-repeat
-     "cC" 'cargo-process-clean
-     "cX" 'cargo-process-run-example
-     "cb" 'cargo-process-build
-     "cc" 'cargo-process-check
-     "cd" 'cargo-process-doc
-     "ce" 'cargo-process-bench
-     "cf" 'cargo-process-current-test
-     "cf" 'cargo-process-fmt
-     "ci" 'cargo-process-init
-     "cn" 'cargo-process-new
-     "co" 'cargo-process-current-file-tests
-     "cs" 'cargo-process-search
-     "cu" 'cargo-process-update
-     "cx" 'cargo-process-run
-     "t" 'cargo-process-test)
-
-    :init
-    (setq cargo-process--enable-rust-backtrace t)))
+      (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))))))
 
 (use-package ssh-agency :if IS-WINDOWS :ensure t
   :after magit
@@ -546,6 +542,9 @@
                      :action 'find-file)))
 
   (setq
+   org-directory "~/Sandbox/Library/Org/"
+   org-agenda-files '("~/Dropbox/Sandbox/Library/Org/universe.org")
+
    org-log-done                  'time ;; When completing a task, prompt for a closing note...
    org-src-fontify-natively       t
    org-descriptive-links          t
@@ -580,8 +579,6 @@
    org-adapt-indentation nil
 
    org-archive-location "./archives/%s_archive::"
-
-   org-agenda-files '("~/Dropbox/Sandbox/Library/Org/universe.org")
 
    org-capture-templates
    '(("n" "New" entry (file "~/Dropbox/Sandbox/Library/Org/inbox.org")      "* TODO %? \n:PROPERTIES: \n:created: %U \n:END:")
@@ -679,10 +676,6 @@
     '(("#\\<\\(TODO\\)\\>" 1 '(error :underline t) t)
       ("#\\<\\(NOTE\\)\\>" 1 '(warning :underline t) t))))
  '(emacs-lisp-mode lua-mode scala-mode c-mode objc-mode c++-mode rust-mode))
-
-(general-define-key
- :keymaps 'global-map
-  "M-3" 'ibuffer)
 
 (if (not (file-exists-p (concat USER-EMACS-DIRECTORY "server/server")))
     (progn

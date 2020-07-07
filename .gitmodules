@@ -8,6 +8,3 @@
 [submodule "scripted"]
 	path = scripted
 	url = git@github.com:4lex1v/scripted.el.git
-[submodule ".\\modules\\general"]
-	path = .\\modules\\general
-	url = https://github.com/noctuid/general.el.git
