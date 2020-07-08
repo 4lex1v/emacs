@@ -10,7 +10,7 @@
 (load-file (concat USER-EMACS-DIRECTORY "fixes.el"))
 
 ;; Frame configuration
-(let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab LtEx-16" "Iosevka Light-18")))
+(let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab LtEx-14" "Iosevka Light-18")))
   ;; TODO: create a window in the middle of th screen 
   (add-to-list 'initial-frame-alist (cons 'font font-setting))
   (setq default-frame-alist initial-frame-alist)
@@ -101,7 +101,7 @@
 (scroll-bar-mode       -1)
 (blink-cursor-mode     -1)
 (show-paren-mode       -1)
-(menu-bar-mode          1)
+(menu-bar-mode         -1)
 
 (delete-selection-mode t)
 (global-auto-revert-mode t)
@@ -169,6 +169,8 @@
 (ido-mode t)
 
 (define-key ido-file-dir-completion-map [(control backspace)] #'ido-delete-backward-word-updir)
+(define-key global-map (kbd "M-2") 'ido-switch-buffer)
+(define-key global-map (kbd "C-x f") 'ido-find-file)
 
 (setq
  dabbrev-case-replace t
@@ -244,13 +246,6 @@
   (if IS-WINDOWS
       (progn
         (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
-
-
-;; (general-define-key :keymaps 'global-map 
-;;   "M-3" 'ibuffer
-;;   "C-h C-f" 'find-function
-;;   "C-x f" 'ido-find-file
-;;   "M-2" 'ido-switch-buffer)
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t :ensure t :pin melpa-stable
@@ -385,10 +380,6 @@
   
   :config
   (yas-reload-all))
-
-(use-package avy :ensure t
-  :bind
-  (("C-;" . avy-goto-char)))
 
 (use-package elisp-mode
   :interpreter ("emacs" . emacs-lisp-mode)
