@@ -11,8 +11,7 @@
 (load-file (concat USER-EMACS-DIRECTORY "__private.el"))
 
 ;; Frame configuration
-(let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab Extended-16" "Iosevka Light-18")))
-;;(let ((font-setting (if IS-WINDOWS "JetBrains Mono NL Light-16" "Iosevka Light-18")))
+(let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab Extended-16" "Iosevka Light-20")))
   (add-to-list 'initial-frame-alist (cons 'font font-setting))
   (setq default-frame-alist initial-frame-alist)
   (set-frame-font font-setting))
@@ -40,6 +39,7 @@
 (column-number-mode 1)
 (recentf-mode 1)
 (blink-cursor-mode 0)
+(tool-bar-mode -1)
 
 (setq-default
  auto-window-vscroll nil
