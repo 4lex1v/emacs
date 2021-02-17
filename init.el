@@ -10,7 +10,6 @@
 (load-file (concat USER-EMACS-DIRECTORY "fixes.el"))
 (load-file (concat USER-EMACS-DIRECTORY "__private.el"))
 
-;; Frame configuration
 (let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab Extended-16" "Iosevka Light-20")))
   (add-to-list 'initial-frame-alist (cons 'font font-setting))
   (setq default-frame-alist initial-frame-alist)
@@ -31,7 +30,6 @@
 (put 'narrow-to-page 'disabled nil)
 (fset 'yes-or-no-p   'y-or-n-p)
 
-;; Built-In Modes
 (show-paren-mode       -1)
 (delete-selection-mode t)
 (global-auto-revert-mode t)
@@ -45,13 +43,13 @@
  auto-window-vscroll nil
  truncncate-lines    nil
  initial-major-mode (quote fundamental-mode)
- mode-line-default-help-echo nil ; turn-off tooltips on cursor hover-over
- tab-width           2 ;; Though i'm not using tabs
+ mode-line-default-help-echo nil
+ tab-width           2
  indent-tabs-mode    nil
  cursor-type        'box
  cursor-in-non-selected-windows 'bar
  frame-title-format "%f"
- linum-format       "%3d "  ;; Try dynamic?
+ linum-format       "%3d " 
  load-prefer-newer  t
  left-fringe-width  20
  word-wrap t
@@ -261,14 +259,18 @@
       (progn
         (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
 
-(use-package ace-window :demand t :ensure t :pin melpa-stable
+(use-package el-get :demand t
+  :config
+  (el-get 'sync))
+
+(use-package ace-window :demand t :ensure t
   :bind
   ("M-o" . ace-window)
   :init
   (setq aw-scope 'frame))
 
 ;; Goes before others to correctly load which-key-declare-prefixes
-(use-package which-key :demand t :ensure t :pin melpa-stable
+(use-package which-key :demand t :ensure t
   :diminish which-key-mode
   
   :bind
@@ -290,10 +292,11 @@
   :config
   (which-key-mode))
 
-(use-package helm :demand t :ensure t :pin melpa-stable
+(use-package helm :demand t :ensure t
   :diminish helm-ff-cache-mode
   :bind
   (("C-c h" . helm-command-prefix)
+   ("C-c h a" . helm-apropos)
    ("M-x" . helm-M-x)
    ("C-x f" . helm-find-files)
    ("C-x C-f" . helm-find-files)
@@ -314,63 +317,6 @@
    ("C-o" . helm-next-source)
    ("C-f" . helm-toggle-full-frame))
 
-  ;; :general
-  ;; (:states  'normal :keymaps 'global-map
-  ;;  "e"   '(:ignore t :wk "Emacs")
-  ;;  "eq"  'save-buffers-kill-emacs
-  ;;  "er"  'revert-buffer
-  ;;  "eb"  'bookmark-bmenu-list
-   
-  ;;  "ee"  '(:ignore t :wk "Evil")
-  ;;  "een" '(evil-ex-nohighlight :wk "No Highlighting")
-  ;;  "et"  '(:ignore t :wk "Toggles")
-  ;;  "etl" 'toggle-truncate-lines
-   
-  ;;  "f"   '(:ignore t :wk "Files")
-  ;;  "fe"  'eshell
-  ;;  "fi"  `((lambda () (interactive) (find-file USER-INIT-FILE)) :wk "init.el")
-  ;;  "ff"  '(helm-find-files :wk "Files")
-  ;;  "fd"  `((lambda () (interactive) (helm-find-files-1 "~/Dropbox/")) :wk "Dropbox")
-  ;;  "fs"  `((lambda () (interactive) (helm-find-files-1 "~/Sandbox/")) :wk "Sandbox")
-  ;;  "fp"  `((lambda () (interactive) (helm-find-files-1 "~/Sandbox/Projects/")) :wk "Projects")
-  ;;  "fw"  `((lambda () (interactive) (helm-find-files-1 "~/Sandbox/Work/")) :wk "Work")
-   
-  ;;  "fl"  '(find-library :wk "Find Library")
-   
-  ;;  "s"   '(:ignore t :wk "Services"))
-
-  ;; (:prefix nil :states nil
-  ;;  "C-c h"   'helm-command-prefix
-  ;;  "M-y"     'helm-show-kill-ring
-  ;;  "C-x b"   'helm-mini
-  ;;  "C-x C-f" 'helm-find-files         
-  ;;  "M-x"     'helm-M-x
-  ;;  "M-:"     'helm-eval-expression-with-eldoc
-  ;;  "M-i"     'helm-occur
-  ;;  "M-2"     'helm-mini
-  ;;  "M-4"     'helm-bookmarks)
-  
-  ;; (:prefix  nil :states '(normal) "ga" 'helm-apropos)
-
-  ;; (:prefix nil :keymaps 'helm-find-files-map :states nil
-  ;;          "C-<backspace>"   'backward-kill-word
-  ;;          "C-d"             '(lambda ()
-  ;;                               (interactive)
-  ;;                               (helm-exit-and-execute-action
-  ;;                                'helm-point-file-in-dired)))
-
-  ;; (:prefix nil :keymaps 'helm-map :states   nil
-  ;;  "<tab>" 'helm-execute-persistent-action
-  ;;  "C-i"   'helm-execute-persistent-action
-  ;;  "C-z"   'helm-select-action
-  ;;  "C-o"   'helm-next-source
-  ;;  "C-j"   'helm-next-line
-  ;;  "C-k"   'helm-previous-line
-  ;;  "C-f"   'helm-toggle-full-frame)
-
-  ;; (:prefix nil :keymaps 'comint-mode-map :states '(normal insert)
-  ;;  "M-r" 'helm-comint-input-ring)
-  
   :init
   (setq
    helm-buffer-max-length                 nil
@@ -405,53 +351,32 @@
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
-(use-package projectile :demand t :ensure t :pin melpa-stable :disabled t
-  :diminish projectile-mode
-  :commands projectile-project-root
-
-  ;; :general
-  ;; (:prefix nil :states nil
-  ;;  "M-1" 'projectile-find-file
-  ;;  "M-!" 'projectile-run-shell-command-in-root)      
-  
-  ;;  Projectile-only bindigs for Evil mode
-  ;; (:states 'normal
-  ;;  "p"  '(:ignore t :wk "Projectile")
-  ;;  "pp" 'projectile-switch-project
-  ;;  "pc" 'projectile-compile-project
-  ;;  "pk" 'projectile-kill-buffers
-  ;;  "pr" 'projectile-replace
-  ;;  "pi" 'projectile-invalidate-cache
-  ;;  "pe" 'projectile-run-eshell
-  ;;  "p&" 'projectile-run-async-shell-command-in-root
-  ;;  "pS" 'projectile-save-project-buffers
-  ;;  "ps" '((lambda (arg)
-  ;;           (interactive "P")
-  ;;           (helm-grep-ag (projectile-project-root) arg))
-  ;;         :wk "Search"))
-  
+(use-package magit :ensure t :demand t
+  :bind
   :init
-  (require 'subr-x)
   (setq
-   projectile-enable-caching       t
-   projectile-completion-system   'helm
-   projectile-indexing-method     'hybrid
-   projectile-require-project-root t
-   projectile-use-git-grep         nil
-   projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name)))
-
-   projectile-git-submodule-command "git submodule --quiet foreach 'echo $path' | tr '\\r\\n' '\\0'"
-   projectile-project-root-files-functions '(projectile-root-local projectile-root-top-down projectile-root-bottom-up projectile-root-top-down-recurring))
+   magit-last-seen-setup-instructions "2.11.0"
+   magit-status-show-hashes-in-headers t
+   
+   ;; Magit Diff configs
+   magit-diff-options          '("--stat" "--no-ext-diff" "--word-diff")
+   magit-diff-refine-hunk      'all
+   magit-diff-paint-whitespace 'status)
 
   :config
-  (projectile-register-project-type 'bloop '(".bloop")
-                                    :compile "bloop compile --reporter scalac --no-color root"
-                                    :test "bloop test --propagate --reporter scalac root"
-                                    :src-dir "src/main/"
-                                    :test-dir "src/test/"
-                                    :test-suffix "Spec")
+  (add-to-list 'magit-log-arguments "--color")
+  (add-to-list 'magit-diff-arguments "--ignore-space-change")
 
-  (projectile-mode))
+  (magit-define-popup-action 'magit-submodule-popup   
+                             ?l "List" 'magit-list-submodules)
+  
+  (magit-define-popup-switch 'magit-log-popup
+                             ?f "First Parent" "--first-parent")
+
+  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
+
+  (add-hook 'magit-submodule-list-mode-hook
+            (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t)))))
 
 (use-package elisp-mode
   :interpreter ("emacs" . emacs-lisp-mode)
@@ -498,7 +423,7 @@
 
   (defun 4l/compile-scala ()
     (interactive)
-    (let ((default-directory (vc-root-dir)))
+    (let* ((default-directory (vc-root-dir)))
       (setq compile-command "bloop compile --reporter scalac --no-color root")
       (call-interactively 'compile)))
 
@@ -506,7 +431,6 @@
   (use-package sbt-mode :ensure t
     :init
     (setq
-     ;;sbt:prompt-regexp  "^\\(\\(scala\\|\\[[^\]]*\\] \\)?[>$]\\|[ ]+|\\)[ ]*"
      sbt:prompt-regexp "^\\(\\(sbt:[^>]+\\)?\\|scala\\)>[ ]+"
      sbt:prefer-nested-projects t)
 
@@ -521,9 +445,6 @@
   :commands c-toggle-auto-newline
   :defines (c-mode-common-hook)
 
-  :bind
-  (("C-." . projectile-compile-project))
-      
   :init
   (defconst 4l/c-lang-style ;; added later under the label '4l'
     '((c-basic-offset . 2)
@@ -610,7 +531,7 @@
   (setenv "SSH_ASKPASS" "git-gui--askpass")
   (ssh-agency-ensure))
 
-(use-package org  
+(use-package org :demand t  
   :init
   (setq
    org-directory "~/Sandbox/Org/"
@@ -665,9 +586,11 @@
    org-archive-location "./archives/%s_archive::"
 
    org-capture-templates
-   '(("n" "New" entry (file "~/Sandbox/Org/inbox.org")      "* TODO %? \n")
-     ("t" "Today" entry (file "~/Sandbox/Org/universe.org") "* TODO %? \n")
-     ("w" "Work" entry (file "~/Sandbox/Org/universe.org")  "* TODO %? \n"))
+   '(("n" "New" entry (file "~/Sandbox/Org/inbox.org")         "* TODO %? \n")
+     ("t" "Today" entry (file "~/Sandbox/Org/universe.org")    "* TODO %? \n")
+     ("w" "Work" entry (file "~/Sandbox/Org/universe.org")     "* TODO %? \n")
+     ("r" "Entry" entry (file "~/Sandbox/Org/ruminations.org")
+      "* %?\n:PROPERTIES:\n:ID:      %(org-id-new)\n:CREATED: %T\n:END:"))
 
    ;; Stuck project is the one that has no scheduled TODO tasks
    org-stuck-projects '("+project/-DONE-CANCELLED" ("TODO") nil "SCHEDULED:\\|DEADLINE:")
@@ -709,10 +632,14 @@
 
   :bind
   (("M-3" . org-agenda-list)
+   ("C-c o c" . org-capture)
+   ("C-c o s" . org-store-link)
+   ("C-c o l" . org-insert-link)
    
    :map org-mode-map
    ("C-." . org-mark-ring-goto)
-   ("C-," . org-archive-subtree))
+   ("C-," . org-archive-subtree)
+   ("C-c S" . org-store-link))
 
   :config
   (org-indent-mode -1)
@@ -727,7 +654,7 @@
             (lambda () (remove-text-properties
                         (point-min) (point-max) '(mouse-face t)))))
 
-(use-package org-roam :ensure t
+(use-package org-roam :ensure t :demand t
   :commands (org-roam)
   :init
   (setq
@@ -735,13 +662,21 @@
    org-roam-list-files-commands '(rg)
    org-roam-completion-system 'helm
    org-roam-buffer-window-parameters '((no-other-window . t)
-                                       (mode-line-format . nil)))
+                                       (mode-line-format . nil))
+   org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point
+                                 "%?"
+                                 :file-name "${slug}"
+                                 :head "#+title: ${title}"
+                                 :unnarrowed t)))
   
   :bind
-  ("C-c n l" . org-roam)
-  ("C-c n t" . org-roam-dailies-find-today)
-  ("C-c n f" . org-roam-find-file)
-  ("C-c n i" . org-roam-insert-immediate))
+  (("C-c n l" . org-roam)
+   ("C-c n t" . org-roam-dailies-find-today)
+   ("C-c n f" . org-roam-find-file)
+   ("C-c n i" . org-roam-insert-immediate)
+
+   :map org-roam-mode-map
+   ("C-c l" . org-roam-dailies-map)))
 
 (use-package yaml-mode :ensure t)
 
