@@ -145,7 +145,7 @@
 
 ;; (define-key global-map (kbd "C-,") #'4l/swap-two-windows)
 (define-key global-map (kbd "M-4") #'list-bookmarks)
-(define-key global-map (kbd "M-1") 'project-find-file)
+;;(define-key global-map (kbd "M-1") 'project-find-file)
 (define-key global-map (kbd "C-c h a") 'apropos)
 
 (defun 4l/close-buffer (&optional arg)
@@ -259,10 +259,6 @@
       (progn
         (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
 
-(use-package el-get :demand t
-  :config
-  (el-get 'sync))
-
 (use-package ace-window :demand t :ensure t
   :bind
   ("M-o" . ace-window)
@@ -351,8 +347,32 @@
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
-(use-package magit :ensure t :demand t
+(use-package projectile :demand t :ensure t :pin melpa-stable 
+  :diminish projectile-mode
+  :commands projectile-project-root
+
   :bind
+  ("M-1" . 'projectile-find-file)
+  ("C-c p c" . 'projectile-compile-project)
+  
+  :init
+  (setq
+   projectile-enable-caching       t
+   projectile-completion-system   'helm
+   projectile-require-project-root t
+   projectile-use-git-grep         nil
+   projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
+
+  :config
+  (projectile-mode))
+
+(use-package rg :ensure t
+  :bind
+  ("C-c s" . 'rg-menu)
+  :config
+  (rg-enable-default-bindings))
+
+(use-package magit :ensure t :demand t
   :init
   (setq
    magit-last-seen-setup-instructions "2.11.0"
@@ -367,11 +387,8 @@
   (add-to-list 'magit-log-arguments "--color")
   (add-to-list 'magit-diff-arguments "--ignore-space-change")
 
-  (magit-define-popup-action 'magit-submodule-popup   
-                             ?l "List" 'magit-list-submodules)
-  
-  (magit-define-popup-switch 'magit-log-popup
-                             ?f "First Parent" "--first-parent")
+  (magit-define-popup-action 'magit-submodule-popup ?l "List" 'magit-list-submodules)
+  (magit-define-popup-switch 'magit-log-popup       ?f "First Parent" "--first-parent")
 
   (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
 
@@ -470,7 +487,7 @@
     (let* ((default-directory (vc-root-dir))
            (debug-project (concat default-directory "project.rdbg")))
       (start-process "remedybg" nil "remedybg.exe" debug-project)))
-  
+
   :config
   (c-add-style "4l" 4l/c-lang-style)
   
