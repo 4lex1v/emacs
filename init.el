@@ -10,7 +10,7 @@
 (load-file (concat USER-EMACS-DIRECTORY "fixes.el"))
 (load-file (concat USER-EMACS-DIRECTORY "__private.el"))
 
-(let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab Extended-16" "Iosevka Light-20")))
+(let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab LtEx-16" "Iosevka Light-20")))
   (add-to-list 'initial-frame-alist (cons 'font font-setting))
   (setq default-frame-alist initial-frame-alist)
   (set-frame-font font-setting))
@@ -104,9 +104,9 @@
        frame-resize-pixelwise       t)
       (global-set-key (kbd "M-`") #'other-frame)))
 
-(if IS-WINDOWS
-    (setq
-     shell-file-name "C:\\Users\\Aleksandr\\scoop\\shims\\pwsh.exe"))
+;; (if IS-WINDOWS
+;;     (setq
+;;      shell-file-name "C:\\Users\\Aleksandr\\scoop\\shims\\pwsh.exe"))
 
 ;; To avoid acidental hits on the touchpad
 (dolist (binding '("<mouse-1>" "<C-mouse-1>" "<C-down-mouse-1>"))
@@ -143,11 +143,6 @@
       (set-window-buffer left-window rw-buffer)
       (set-window-buffer right-window lw-buffer))))
 
-;; (define-key global-map (kbd "C-,") #'4l/swap-two-windows)
-(define-key global-map (kbd "M-4") #'list-bookmarks)
-;;(define-key global-map (kbd "M-1") 'project-find-file)
-(define-key global-map (kbd "C-c h a") 'apropos)
-
 (defun 4l/close-buffer (&optional arg)
   (interactive "P")
   (kill-buffer (current-buffer))
@@ -173,6 +168,16 @@
   (previous-line)
   (indent-according-to-mode))
 
+(defun 4l/project-shell ()
+  (interactive)
+  (let ((default-directory (cdr (project-current t))))
+    (call-interactively 'shell)))
+
+(defun 4l/project-build ()
+  (interactive)
+  (let ((default-directory (cdr (project-current t))))
+    (call-interactively 'compile)))
+
 ;; Bindings
 (global-set-key (kbd "M-[") (lambda () (interactive) (4l/insert-block nil)))
 (global-set-key (kbd "M-{") (lambda () (interactive) (4l/insert-block t)))
@@ -184,6 +189,11 @@
 (global-set-key (kbd "C-c r") (lambda () (interactive) (revert-buffer nil t t)))
 (global-set-key (kbd "M-`") 'next-error)
 (global-set-key (kbd "C-,") '4l/close-compilation-window)
+;; (define-key global-map (kbd "C-,") #'4l/swap-two-windows)
+(define-key global-map (kbd "M-4") #'list-bookmarks)
+(define-key global-map (kbd "M-1") 'project-find-file)
+(define-key global-map (kbd "C-c h a") 'apropos)
+(define-key global-map (kbd "C-c p c") #'4l/project-build)
 
 (setq
  dabbrev-case-replace t
@@ -351,10 +361,6 @@
   :diminish projectile-mode
   :commands projectile-project-root
 
-  :bind
-  ("M-1" . 'projectile-find-file)
-  ("C-c p c" . 'projectile-compile-project)
-  
   :init
   (setq
    projectile-enable-caching       t
@@ -370,7 +376,9 @@
   :bind
   ("C-c s" . 'rg-menu)
   :config
-  (rg-enable-default-bindings))
+  (rg-enable-default-bindings)
+
+  (if IS-WINDOWS (defun rg-executable () (executable-find "rg.exe"))))
 
 (use-package magit :ensure t :demand t
   :init
