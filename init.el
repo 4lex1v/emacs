@@ -1,3 +1,5 @@
+(require 'seq)
+
 (setq gc-cons-threshold (* 50 1024 1024))
 
 (defconst USER-EMACS-DIRECTORY (file-name-directory (or load-file-name (buffer-file-name))))
@@ -7,8 +9,12 @@
 (defconst IS-WINDOWS           (eq system-type 'windows-nt))
 (defconst IS-UNIX              (not IS-WINDOWS))
 
-(load-file (concat USER-EMACS-DIRECTORY "fixes.el"))
-(load-file (concat USER-EMACS-DIRECTORY "__private.el"))
+(let ((customs '("fixes.el" "__private.el" "modals.el")))
+  (mapc
+   (lambda (filename)
+     (let ((file-path (concat USER-EMACS-DIRECTORY filename)))
+       (load-file file-path)))
+   customs))
 
 (let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab LtEx-16" "Iosevka Light-20")))
   (add-to-list 'initial-frame-alist (cons 'font font-setting))
@@ -41,7 +47,7 @@
 
 (setq-default
  auto-window-vscroll nil
- truncncate-lines    nil
+ truncate-lines      nil
  initial-major-mode (quote fundamental-mode)
  mode-line-default-help-echo nil
  tab-width           2
@@ -54,8 +60,6 @@
  left-fringe-width  20
  word-wrap t
  line-spacing 2
-
- truncate-lines nil
 
  buffer-file-coding-system 'utf-8-unix
 
@@ -105,8 +109,7 @@
       (global-set-key (kbd "M-`") #'other-frame)))
 
 ;; (if IS-WINDOWS
-;;     (setq
-;;      shell-file-name "C:\\Users\\Aleksandr\\scoop\\shims\\pwsh.exe"))
+;;     (setq shell-file-name "C:\\Users\\Aleksandr\\.universe\\windows\\bin\\pwshproxy.bat"))
 
 ;; To avoid acidental hits on the touchpad
 (dolist (binding '("<mouse-1>" "<C-mouse-1>" "<C-down-mouse-1>"))
@@ -178,6 +181,11 @@
   (let ((default-directory (cdr (project-current t))))
     (call-interactively 'compile)))
 
+(defun 4l/project-rebuild ()
+  (interactive)
+  (let ((default-directory (cdr (project-current t))))
+    (call-interactively 'recompile)))
+
 ;; Bindings
 (global-set-key (kbd "M-[") (lambda () (interactive) (4l/insert-block nil)))
 (global-set-key (kbd "M-{") (lambda () (interactive) (4l/insert-block t)))
@@ -194,6 +202,7 @@
 (define-key global-map (kbd "M-1") 'project-find-file)
 (define-key global-map (kbd "C-c h a") 'apropos)
 (define-key global-map (kbd "C-c p c") #'4l/project-build)
+(define-key global-map (kbd "<f5>") #'4l/project-rebuild)
 
 (setq
  dabbrev-case-replace t
@@ -219,7 +228,8 @@
 (require 'epa-file)
 (epa-file-enable)
 
-(package-install 'use-package)
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
 
 (setq
  use-package-verbose               t
@@ -230,11 +240,6 @@
 
  ;; Only when the config is stable
  use-package-expand-minimally t)
-
-(use-package diminish :ensure t)
-(use-package s        :ensure t :demand t) ;; Strings manipulation library
-(use-package f        :ensure t :demand t) ;; Files manipulation library
-(use-package dash     :ensure t :demand t) ;; List manipulation library
 
 ;; Packages
 
@@ -277,8 +282,6 @@
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t :ensure t
-  :diminish which-key-mode
-  
   :bind
   (:map which-key-C-h-map
    ("l" . which-key-show-next-page-cycle)
@@ -299,29 +302,29 @@
   (which-key-mode))
 
 (use-package helm :demand t :ensure t
-  :diminish helm-ff-cache-mode
   :bind
-  (("C-c h" . helm-command-prefix)
+  (("C-c h"   . helm-command-prefix)
    ("C-c h a" . helm-apropos)
-   ("M-x" . helm-M-x)
-   ("C-x f" . helm-find-files)
+   ("C-c h s" . 4l/helm-git-grep-project-files)
+   ("M-x"     . helm-M-x)
+   ("C-x f"   . helm-find-files)
    ("C-x C-f" . helm-find-files)
-   ("C-x b" . helm-mini)
-   ("M-2" . helm-mini)
-   ("M-4" . helm-bookmarks)
-   ("M-:" . helm-eval-expression-with-eldoc)
-   ("M-i" . helm-occur)
+   ("M-2"     . helm-mini)
+   ("M-4"     . helm-bookmarks)
+   ("M-:"     . helm-eval-expression-with-eldoc)
+   ("M-i"     . helm-occur)
+   ("M-y"     . helm-show-kill-ring)
    
    :map helm-find-files-map
    ("C-<backspace>" . backward-kill-word)
-   ("C-d" . 4l//helm-open-dired)
+   ("C-d"           . 4l/helm-open-dired)
 
    :map helm-map
    ("<tab>" . helm-execute-persistent-action)
-   ("C-i" . helm-execute-persistent-action)
-   ("C-z" . helm-select-action)
-   ("C-o" . helm-next-source)
-   ("C-f" . helm-toggle-full-frame))
+   ("C-i"   . helm-execute-persistent-action)
+   ("C-z"   . helm-select-action)
+   ("C-o"   . helm-next-source)
+   ("C-f"   . helm-toggle-full-frame))
 
   :init
   (setq
@@ -342,10 +345,16 @@
    helm-ff-file-name-history-use-recentf  t
    helm-ff-fuzzy-matching                 t)
 
-  (defun 4l//helm-open-dired ()
+  (defun 4l/helm-open-dired ()
     (interactive)
     (helm-exit-and-execute-action
      'helm-point-file-in-dired))
+
+  (defun 4l/helm-git-grep-project-files (arg)
+    (interactive "P")
+    (require 'helm-files)
+    (let ((project-root (cdr (project-current t))))
+      (helm-grep-git-1 project-root arg)))
 
   (use-package async :ensure t)
   (use-package helm-config :demand t)
@@ -357,21 +366,6 @@
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
-(use-package projectile :demand t :ensure t :pin melpa-stable 
-  :diminish projectile-mode
-  :commands projectile-project-root
-
-  :init
-  (setq
-   projectile-enable-caching       t
-   projectile-completion-system   'helm
-   projectile-require-project-root t
-   projectile-use-git-grep         nil
-   projectile-mode-line            '(:eval (format " {%s}" (projectile-project-name))))
-
-  :config
-  (projectile-mode))
-
 (use-package rg :ensure t
   :bind
   ("C-c s" . 'rg-menu)
@@ -379,29 +373,6 @@
   (rg-enable-default-bindings)
 
   (if IS-WINDOWS (defun rg-executable () (executable-find "rg.exe"))))
-
-(use-package magit :ensure t :demand t
-  :init
-  (setq
-   magit-last-seen-setup-instructions "2.11.0"
-   magit-status-show-hashes-in-headers t
-   
-   ;; Magit Diff configs
-   magit-diff-options          '("--stat" "--no-ext-diff" "--word-diff")
-   magit-diff-refine-hunk      'all
-   magit-diff-paint-whitespace 'status)
-
-  :config
-  (add-to-list 'magit-log-arguments "--color")
-  (add-to-list 'magit-diff-arguments "--ignore-space-change")
-
-  (magit-define-popup-action 'magit-submodule-popup ?l "List" 'magit-list-submodules)
-  (magit-define-popup-switch 'magit-log-popup       ?f "First Parent" "--first-parent")
-
-  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
-
-  (add-hook 'magit-submodule-list-mode-hook
-            (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t)))))
 
 (use-package elisp-mode
   :interpreter ("emacs" . emacs-lisp-mode)
@@ -472,8 +443,8 @@
 
   :init
   (defconst 4l/c-lang-style ;; added later under the label '4l'
-    '((c-basic-offset . 2)
-      ;; add alignment in || and && expressions
+    '((c-basic-offset . 2) 
+     ;; add alignment in || and && expressions
       ;;      b32 result = ((value >= 'A') && (value <= 'Z')) ||
       ;;                   ((value >= 'a') && (value <= 'z'));
       ;; instead of
@@ -560,19 +531,10 @@
   :init
   (setq
    org-directory "~/Sandbox/Org/"
-   org-agenda-files (let ((block-list '("inbox.org")))
-                      (f-files "~/Sandbox/Org/"
-                               (lambda (path)
-                                 (and (f-ext? path "org")
-                                      (not (s-starts-with-p "_" (f-filename path)))
-                                      (not (-contains-p block-list (f-filename path)))))))
-
    org-startup-with-inline-images t
-
-   ;; #NOTE(4lex1v, 07/19/20):
-   ;;   Wrap all notes, if there's a table in the note, then use `add-file-local-variable' to set
-   ;;   a buffer specific value.
    org-startup-truncated nil 
+
+   org-agenda-files '("~/Sandbox/Org/universe.org" "~/Sandbox/Org/dailies.org")
 
    org-log-done                  'time ;; When completing a task, prompt for a closing note...
    org-src-fontify-natively       t
@@ -598,7 +560,6 @@
 
    org-ellipsis " [...]"
    
-   ;; Keywords
    org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
    org-todo-keyword-faces '(("ACTIVE" . "yellow"))
 
@@ -611,11 +572,10 @@
    org-archive-location "./archives/%s_archive::"
 
    org-capture-templates
-   '(("n" "New" entry (file "~/Sandbox/Org/inbox.org")         "* TODO %? \n")
-     ("t" "Today" entry (file "~/Sandbox/Org/universe.org")    "* TODO %? \n")
-     ("w" "Work" entry (file "~/Sandbox/Org/universe.org")     "* TODO %? \n")
-     ("r" "Entry" entry (file "~/Sandbox/Org/ruminations.org")
-      "* %?\n:PROPERTIES:\n:ID:      %(org-id-new)\n:CREATED: %T\n:END:"))
+   '(("n" "Add to Inbox"   entry (file "~/Sandbox/Org/inbox.org")       "* TODO %? \n")
+     ("t" "Task for Today" entry (file "~/Sandbox/Org/universe.org")    "* TODO %? \nSCHEDULED: %t\n")
+     ("r" "Journal Entry"  entry (file "~/Sandbox/Org/ruminations.org") "* %?\n:PROPERTIES:\n:ID:      %(org-id-new)\n:CREATED: %U\n:END:")
+     ("d" "Daily Entry"    entry (file "~/Sandbox/Org/dailies.org")     "* %?\n:PROPERTIES:\n:ID:      %(org-id-new)\n:CREATED: %U\n:END:"))
 
    ;; Stuck project is the one that has no scheduled TODO tasks
    org-stuck-projects '("+project/-DONE-CANCELLED" ("TODO") nil "SCHEDULED:\\|DEADLINE:")
@@ -667,8 +627,6 @@
    ("C-c S" . org-store-link))
 
   :config
-  (org-indent-mode -1)
-
   ;; Force org to open file links in the same window
   (add-to-list 'org-link-frame-setup '(file . find-file))
 
@@ -703,7 +661,39 @@
    :map org-roam-mode-map
    ("C-c l" . org-roam-dailies-map)))
 
-(use-package yaml-mode :ensure t)
+(use-package yasnippet :ensure t :pin melpa-stable
+  :diminish (yas-minor-mode . " Y")
+
+  :hook
+  ((prog-mode org-mode) . yas-minor-mode)
+
+  :commands
+  (yas-minor-mode
+   yas-load-directory
+   yas-activate-extra-mode
+   yas-insert-snippet
+   yas-visit-snippet-file
+   yas-new-snippet
+   yas-tryout-snippet
+   yas-describe-tables
+   yas-reload-all)
+  
+  :mode ("\\.yasnippet" . snippet-mode)
+  
+  :init
+  (setq
+   yas-snippet-dirs '("~/.emacs.d/snippets")
+   yas-wrap-around-region t
+   yas-indent-line 'auto
+   yas-also-auto-indent-first-line t)
+  
+  (add-hook 'after-save-hook
+            (lambda ()
+              (when (eq major-mode 'snippet-mode)
+                (yas-reload-all))))
+  
+  :config
+  (yas-reload-all))
 
 (use-package eshell
   :defines (eshell-visual-commands eshell-mode-hook)
