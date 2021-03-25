@@ -132,7 +132,10 @@
   (forward-sexp)
   (backward-sexp))
 
-(define-key global-map (kbd "C-c p s s") #'4l/open-shell-in-root)
+(defun 4l/build-project ()
+  (interactive)
+  (let* ((default-directory (cdr (project-current t))))
+    (call-interactively 'compile)))
 
 (defun 4l/swap-two-windows ()
   (interactive)
