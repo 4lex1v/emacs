@@ -29,6 +29,11 @@
   (setq god-mode-enabled nil)
   (setq cursor-type 'bar))
 
+(defun 4l/project-rebuild ()
+  (interactive)
+  (let ((default-directory (cdr (project-current t))))
+    (call-interactively 'recompile)))
+
 (let ((font-setting (if IS-WINDOWS "Iosevka SS08 Slab Extended-14" "Iosevka Light-20")))
   (add-to-list 'initial-frame-alist (cons 'font font-setting))
   (setq default-frame-alist initial-frame-alist)
@@ -120,6 +125,12 @@
        ns-use-native-fullscreen     t
        frame-resize-pixelwise       t)))
 
+(if IS-WINDOWS
+    (progn
+      (require 'subr-x)
+      (if-let ((powershell-exe-path (executable-find "pwsh.exe")))
+          (setq shell-file-name powershell-exe-path))))
+
 ;; To avoid acidental hits on the touchpad
 (dolist (binding '("<mouse-1>" "<C-mouse-1>" "<C-down-mouse-1>"))
   (define-key global-map (kbd binding)
@@ -207,3 +218,5 @@
     '(("#\\<\\(TODO\\)\\>" 1 '(error :underline t) t)
       ("#\\<\\(NOTE\\)\\>" 1 '(warning :underline t) t))))
  '(prog-mode))
+
+

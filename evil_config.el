@@ -1,6 +1,7 @@
 
 ;; Goes before others to correctly load which-key-declare-prefixes
 (use-package which-key :demand t :ensure t :pin melpa-stable
+  :diminish which-key
   :init
   (setq
    which-key-idle-delay 0.8
@@ -61,6 +62,8 @@
 
   (evil-set-initial-state 'rg 'emacs)
 
+  (evil-set-initial-state 'eshell 'insert)
+
   (evil-ex-define-cmd "e[val]" #'eval-buffer)
   (evil-ex-define-cmd "we" #'(lambda () (interactive) (save-buffer) (eval-buffer)))
 
@@ -81,13 +84,14 @@
     (kbd "C-S-d")  '4l/duplicate-line)
 
   (evil-define-key nil evil-normal-state-map
-    "$"              'evil-end-of-visual-line
-    (kbd "C-j")      'evil-forward-paragraph
-    (kbd "C-k")      'evil-backward-paragraph
+    "$"                    'evil-end-of-visual-line
+    (kbd "C-j")            'evil-forward-paragraph
+    (kbd "C-k")            'evil-backward-paragraph
     (kbd "<M-wheel-up>")   'text-scale-increase
     (kbd "<M-wheel-down>") 'text-scale-decrease
     (kbd "C-S-o")          'evil-jump-forward
-    "m"              'back-to-indentation)
+    "m"                    'back-to-indentation
+    (kbd "g .")            'xref-find-definitions)
 
   (use-package evil-collection :ensure t :demand t
     :after evil
@@ -113,7 +117,8 @@
                                  simple
                                  ,@(when evil-collection-setup-minibuffer '(minibuffer))
                                  (package-menu package)
-                                 (term term ansi-term multi-term)))
+                                 (term term ansi-term multi-term)
+                                 xref))
 
     :config
     (add-hook 'after-init-hook (lambda () (evil-collection-init))))
@@ -133,8 +138,6 @@
     (define-key evil-normal-state-map "K" 'evil-jump-out-args))
 
   (message "evil loaded"))
-
-
 
 (use-package helm :demand t :ensure t :pin melpa-stable
   :init
@@ -199,6 +202,18 @@
   (helm-autoresize-mode)
   (substitute-key-definition 'find-tag 'helm-etags-select global-map))
 
+(use-package ggtags
+  :hook ((c-mode c++-mode rust-mode) . ggtags-mode))
+
+(use-package rg :ensure t
+  :init
+  (setq rg-custom-type-aliases '())
+  :config
+  (rg-enable-default-bindings)
+  (if IS-WINDOWS (defun rg-executable () (executable-find "rg.exe")))
+  (evil-define-key 'normal 'global
+    (kbd "<leader> ps") 'rg-menu))
+
 (use-package avy :ensure t
   :config
   (evil-define-key 'normal 'global 
@@ -261,6 +276,7 @@
       ;;         b32 result = ((value >= 'A') && (value <= 'Z')) ||
       ;;           ((value >= 'a') && (value <= 'z'));
       (c-offsets-alist . ((innamespace . [0])
+                          (inextern-lang . [0])
                           (case-label . +)
                           (substatement-open . 0)))))
 
@@ -337,8 +353,9 @@
   (defun 4lex1v:eshell-prompt ()
     (let ((branch-name (git-prompt-branch-name)))
       (concat
-       "\n# " (user-login-name) " in " (abbreviate-file-name (eshell/pwd)) "\n"
-       (if branch-name (format "git:(%s) >> " branch-name) ">> ")
+       "\n" (user-login-name) " in " (abbreviate-file-name (eshell/pwd)) 
+       (if branch-name (format " @ %s " branch-name) "") "\n"
+       "$ "
        )))
 
   (setq eshell-prompt-function #'4lex1v:eshell-prompt
@@ -351,6 +368,12 @@
   :config
   (with-eval-after-load 'em-term
     (add-to-list 'eshell-visual-commands "htop")))
+
+(use-package ace-window :demand t :ensure t
+  :init
+  (setq aw-scope 'frame)
+  (evil-define-key 'normal global-map
+    (kbd "C-w o") 'ace-window))
 
 (use-package lsp-mode :ensure t :disabled t
   :commands lsp-mode
@@ -397,15 +420,208 @@
   (use-package helm-lsp :ensure t
     :commands helm-lsp-workspace-symbol))
 
+(use-package magit
+  :init
+  (setq-default
+   magit-submodule-list-columns
+   (quote
+    (("Path" 50 magit-modulelist-column-path nil)
+     ("Version" 35 magit-repolist-column-version nil)
+     ("Branch" 20 magit-repolist-column-branch nil)
+     ("L<U" 3 magit-repolist-column-unpulled-from-upstream
+      ((:right-align t)))
+     ("L>U" 3 magit-repolist-column-unpushed-to-upstream
+      ((:right-align t)))
+     ("L<P" 3 magit-repolist-column-unpulled-from-pushremote
+      ((:right-align t)))
+     ("L>P" 3 magit-repolist-column-unpushed-to-pushremote
+      ((:right-align t))))))
+
+  (setq
+   magit-last-seen-setup-instructions "2.11.0"
+   magit-status-show-hashes-in-headers t
+   
+   ;; Magit Diff configs
+   magit-diff-options          '("--stat" "--no-ext-diff" "--word-diff")
+   magit-diff-refine-hunk      'all
+   magit-diff-paint-whitespace 'status)
+  
+  (defun magit-diff-visit-file-other-window (file)
+    (interactive (list (--if-let (magit-file-at-point)
+                           (expand-file-name it)
+                         (user-error "No file at point"))))
+    (magit-diff-visit-file file t))
+
+  (defun 4l/magit-latest-tag ()
+    (car (nreverse
+          (cl-sort (magit-list-tags) #'version<
+                   :key (lambda (tag)
+                          (if (string-prefix-p "v" tag)
+                              (substring tag 1)
+                            tag))))))
+  
+  ;; This function was added to speed up my PR review workflow in a way that i can diff current branch
+  ;; with master by a single keystroke...
+  (defun 4l/magit-diff-branch-with (branch-name)
+    (interactive)
+    (let* ((args (magit-diff-arguments))
+           (diff-cmd (format "%s...%s" branch-name (magit-get-current-branch))))
+      (magit-diff-range diff-cmd args)))
+  
+  :config
+  (magit-define-popup-action 'magit-submodule-popup   
+                             ?l "List" 'magit-list-submodules)
+  
+  (magit-define-popup-switch 'magit-log-popup
+                             ?f "First Parent" "--first-parent")
+
+  (define-key magit-file-section-map [remap magit-visit-thing] #'magit-diff-visit-file-other-window)
+
+  (add-hook 'magit-submodule-list-mode-hook
+            (lambda () (setq-local tabulated-list-sort-key (cons "L<U" t)))))
+
+(use-package org :demand t  
+  :init
+  (defun 4l/org/make-quick-note (name)
+    (interactive "B")
+    (let ((note-path (concat org-quick-note-folder name ".org")))
+      (unless (not (file-exists-p note-path))
+        (write-region "" nil note-path))
+      (find-file note-path)))
+
+  (defun 4l/org/open-daily-note ()
+    (interactive)
+    (let* ((today-string (format-time-string "%Y-%m-%d"))
+           (dailies-folder (concat org-directory "/dailies/"))
+           (today-file (concat dailies-folder today-string ".org")))
+      (find-file today-file)))
+  
+  (defun 4l/org/list-agenda-files ()
+    (interactive)
+    (helm :sources (helm-build-sync-source "Org-mode Agenda Files:"
+                     :candidates 'org-agenda-files
+                     :fuzzy-match t
+                     :action 'find-file)))
+
+  (defun 4l/org/open-universe ()
+    (interactive)
+    (find-file (concat org-directory "universe.org")))
+  
+  (setq
+   org-directory "~/org/"
+   org-startup-with-inline-images t
+   org-startup-truncated nil 
+
+   org-id-link-to-org-use-id t
+
+   4l/org-dailies-folder-path     "~/org/dailies"
+   org-agenda-files              '("~/org/universe.org") ;; NOTE: Seems like this should be a list
+
+   org-log-done                  'time ;; When completing a task, prompt for a closing note...
+   org-src-fontify-natively       t
+   org-descriptive-links          t
+   org-use-tag-inheritance        nil
+
+   org-list-description-max-indent 0
+   
+   org-enforce-todo-dependencies  t
+   org-enforce-todo-checkbox-dependencies t
+   
+   org-catch-invisible-edits      'error
+   
+   org-clock-persist              t
+   
+   org-hide-leading-stars         nil
+   org-line-spacing               5
+   org-tags-column                0 ;; Have tags next to the title
+   
+   ;;org-babel-load-languages      '((sql . t) (shell . t) (plantuml . t))
+   org-babel-C-compiler   "clang"
+   org-babel-C++-compiler "clang++"
+
+   org-ellipsis " [...]"
+   
+   org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
+   org-todo-keyword-faces '(("ACTIVE" . "yellow"))
+
+   org-refile-use-outline-path 'file
+   org-refile-targets '((org-agenda-files . (:tag . "project")))
+   ;;   org-refile-target-verify-function #'(lambda () (member "project" (org-get-local-tags)))
+
+   org-adapt-indentation nil
+
+   org-archive-location "./archives/%s_archive::"
+
+   org-capture-templates
+   `(("n" "New Task"       entry (file ,(concat org-directory "universe.org"))    "* TODO %? \n")
+     ("t" "Task for Today" entry (file ,(concat org-directory "universe.org"))    "* TODO %? \nSCHEDULED: %t\n")
+     ("r" "Journal Entry"  entry (file ,(concat org-directory "ruminations.org")) "* %?\n:PROPERTIES:\n:ID:      %(org-id-new)\n:CREATED: %U\n:END:")
+     ("d" "Daily Entry"    entry (file ,(concat org-directory "dailies.org"))     "* %?\n:PROPERTIES:\n:ID:      %(org-id-new)\n:CREATED: %U\n:END:"))
+
+   ;; Stuck project is the one that has no scheduled TODO tasks
+   org-stuck-projects '("+project/-DONE-CANCELLED" ("TODO") nil "SCHEDULED:\\|DEADLINE:")
+   
+   org-agenda-custom-commands '(("c" . "My Custom Agendas")
+                                ("cu"  "Unscheduled"
+                                 ((todo ""
+                                        ((org-agenda-overriding-header "\nUnscheduled Tasks")
+                                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline)))))
+                                 nil ;; general settings for the whole set
+                                 nil))
+   
+   org-agenda-span 'day ;; To myself: it's better then a week, trust me.
+   org-agenda-start-on-weekday 7 ;; Sunday
+   org-agenda-include-diary nil
+   org-agenda-skip-deadline-if-done t
+   org-agenda-log-mode-items '(closed clock state)
+   org-agenda-prefix-format '((agenda . "  %?-12t ")
+                              (todo   . " %i %-12:c")
+                              (tags   . " %i %-12:c")
+                              (search . " %i %-12:c"))
+   
+   ;; Display agenda in full window
+   org-agenda-window-setup 'current-window)
+
+  :bind
+  (("M-3"     . org-agenda-list)
+   ("C-c o c" . org-capture)
+   ("C-c o s" . org-store-link)
+   ("C-c o l" . org-insert-link)
+   ("C-c o u" . 4l/org/open-universe)
+   ("C-c o d" . 4l/org/open-daily-note)
+   ("C-c o p" . (lambda () (interactive) (find-file (concat org-directory "the_plan.org"))))
+   
+   :map org-mode-map
+   ("C-."   . org-mark-ring-goto)
+   ("C-,"   . org-archive-subtree)
+   ("C-c S" . org-store-link))
+
+  :config
+  ;; Force org to open file links in the same window
+  (add-to-list 'org-link-frame-setup '(file . find-file))
+
+  ;; Configure hooks for clock's persistance
+  (org-clock-persistence-insinuate)
+
+  (add-hook 'org-agenda-finalize-hook
+            (lambda () (remove-text-properties
+                        (point-min) (point-max) '(mouse-face t)))))
+
 ;; General bindings
 (evil-define-key 'normal global-map
   ;; Project related bindings
   (kbd "<leader> pf") 'project-find-file
-  (kbd "<leader> ps") 'project-search
+  (kbd "<leader> ps") 'rg-project
   (kbd "<leader> pc") '4l/project-compile
 
   ;; Navigation
-  (kbd "<leader> fi")  '(lambda () (interactive) (find-file (concat USER-EMACS-DIRECTORY "init.el"))))
+  (kbd "<leader> fi")  '(lambda () (interactive) (find-file (concat USER-EMACS-DIRECTORY "init.el")))
+
+  ;; Org
+  (kbd "<leader> oc") 'org-capture)
 
 (evil-define-key nil global-map
-  (kbd "C-c r") 'revert-buffer)
+  (kbd "C-c r") #'revert-buffer
+  (kbd "<f7>")  #'4l/project-rebuild
+  (kbd "<f8>")  #'next-error)
+
