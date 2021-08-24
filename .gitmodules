@@ -2,9 +2,3 @@
 	path = themes/sirthias
 	url = git@github.com:4lex1v/sirthias-theme.git
 	branch = master
-[submodule "snippets"]
-	path = snippets
-	url = git@github.com:4lex1v/emacs-snippets.git
-[submodule "scripted"]
-	path = scripted
-	url = git@github.com:4lex1v/scripted.el.git
