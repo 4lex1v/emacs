@@ -209,7 +209,7 @@
 (use-package f        :ensure t :demand t) ;; Files manipulation library
 (use-package dash     :ensure t :demand t) ;; List manipulation library
 
-(use-package sirthias-theme :demand t :disabled t
+(use-package sirthias-theme :demand t
   :load-path "themes/sirthias"
   :init
   (add-hook 'after-make-frame-functions
@@ -218,15 +218,6 @@
               (load-theme 'sirthias t)))
   :config
   (load-theme 'sirthias t))
-
-(use-package gruvbox-theme :ensure t :demand t
-  :init
-  (add-hook 'after-make-frame-functions
-            (lambda (frame)
-              (select-frame frame)
-              (load-theme 'gruvbox-dark-hard t)))
-  :config
-  (load-theme 'gruvbox-dark-hard t))
 
 (use-package exec-path-from-shell :ensure t :demand t
   :commands (exec-path-from-shell-getenv
