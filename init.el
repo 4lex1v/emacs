@@ -73,13 +73,14 @@
   (let ((default-directory (cdr (project-current t))))
     (call-interactively 'recompile)))
 
-(let* ((font-name "Iosevka SS08 Slab Extended")
-       (font-setting (concat font-name "-" "14")))
-  (if (member font-name (font-family-list))
-      (progn
-        (add-to-list 'initial-frame-alist (cons 'font font-setting))
-        (setq default-frame-alist initial-frame-alist)
-        (set-frame-font font-setting))))
+(if-let ((font-setting
+          (pcase system-type
+            ('darwin "Monaco-16")
+            ('windows-nt "Iosevka SS08 Slab Extended-14"))))
+    (progn 
+      (add-to-list 'initial-frame-alist (cons 'font font-setting))
+      (setq default-frame-alist initial-frame-alist)
+      (set-frame-font font-setting)))
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
