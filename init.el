@@ -94,7 +94,10 @@
 (column-number-mode 1)
 (recentf-mode 1)
 (blink-cursor-mode 0)
-(tool-bar-mode -1)
+(tooltip-mode          -1)
+(tool-bar-mode         -1)
+(scroll-bar-mode       -1)
+(menu-bar-mode         -1)
 
 (setq-default
  auto-window-vscroll nil
@@ -144,7 +147,15 @@
  fast-but-imprecise-scrolling t
  search-upper-case              nil
  dabbrev-case-distinction nil
- scroll-step 5) ;; optimal balance between scroll-speed and line flickering
+ scroll-step 5 ;; optimal balance between scroll-speed and line flickering
+ dired-listing-switches "-lah")
+
+(setq display-buffer-alist 
+      `(("\\*compilation\\*" display-buffer-in-side-window
+         (side . bottom)
+         (window-height . 10)
+         (window-parameters . ((no-other-window . t)
+                               (no-delete-other-windows . t))))))
 
 (if IS-MAC
     (progn
@@ -185,8 +196,7 @@
  package-enable-at-startup nil
  package-check-signature nil
  package--init-file-ensured t
- package-archives '(("melpa-stable" . "http://stable.melpa.org/packages/")
-                    ("gnu"          . "http://elpa.gnu.org/packages/")))
+ package-archives '(("melpa" . "https://melpa.org/packages/")))
 
 ;; https://www.reddit.com/r/emacs/comments/53zpv9/how_do_i_get_emacs_to_stop_adding_custom_fields/
 (defun package--save-selected-packages (&rest opt) nil)
@@ -205,20 +215,13 @@
  ;; Only when the config is stable
  use-package-expand-minimally t)
 
-(use-package diminish :ensure t)
-(use-package s        :ensure t :demand t) ;; Strings manipulation library
-(use-package f        :ensure t :demand t) ;; Files manipulation library
-(use-package dash     :ensure t :demand t) ;; List manipulation library
-
-(use-package sirthias-theme :demand t
-  :load-path "themes/sirthias"
-  :init
-  (add-hook 'after-make-frame-functions
+(add-to-list 'load-path (concat USER-EMACS-DIRECTORY "themes/sirthias"))
+(require 'sirthias-theme)
+(add-hook 'after-make-frame-functions
             (lambda (frame)
               (select-frame frame)
               (load-theme 'sirthias t)))
-  :config
-  (load-theme 'sirthias t))
+(load-theme 'sirthias t)
 
 (use-package exec-path-from-shell :ensure t :demand t
   :commands (exec-path-from-shell-getenv
@@ -252,7 +255,7 @@
         (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
 
 ;; Goes before others to correctly load which-key-declare-prefixes
-(use-package which-key :demand t :ensure t :pin melpa-stable
+(use-package which-key :demand t :ensure t
   :diminish which-key
   :init
   (setq
@@ -408,7 +411,7 @@
 (use-package ggtags
   :hook ((c-mode c++-mode rust-mode) . ggtags-mode))
 
-(use-package helm :demand t :ensure t :pin melpa-stable
+(use-package helm :demand t :ensure t
   :init
   (setq
    helm-buffer-max-length                 nil
@@ -438,6 +441,15 @@
   (helm-mode)
   (helm-autoresize-mode)
   (substitute-key-definition 'find-tag 'helm-etags-select global-map))
+
+(use-package rg :ensure t
+  :init
+  (setq rg-custom-type-aliases '())
+  :config
+  (rg-enable-default-bindings)
+  (if IS-WINDOWS
+      (defun rg-executable ()
+        (executable-find "rg.exe"))))
 
 (use-package yaml-mode :ensure t)
 
@@ -493,7 +505,7 @@
    rust-indent-offset  2
    rust-format-on-save nil))
 
-(use-package evil :ensure t :pin melpa-stable :demand t
+(use-package evil :ensure t :demand t
   :init
   (setq-default
    evil-kill-on-visual-paste nil)
@@ -739,6 +751,8 @@
   (kbd "<leader> pc") '4l/project-compile
 
   (kbd "C-w C-w") 'ace-window
+
+  (kbd "M-u") 'universal-argument
   
   ;; Navigation
   (kbd "<leader> fi")  '(lambda () (interactive) (find-file (concat USER-EMACS-DIRECTORY "init.el")))
@@ -752,9 +766,24 @@
 
   (kbd "<leader> ps") 'rg-menu)
 
+(defun 4l/close-compilation-buffer ()
+  (interactive)
+  (if-let ((comp-window (get-buffer-window "*compilation*")))
+      (quit-window nil comp-window)))
+
+(defun 4l/open-compilation-buffer ()
+  (interactive)
+  (if (not (get-buffer-window "*compilation*"))
+      (if (not (get-buffer "*compilation*"))
+          (4l/project-rebuild)
+        (progn
+          (display-buffer "*compilation*")))))
+        
 (evil-define-key nil global-map
   (kbd "C-c r")  #'revert-buffer
   (kbd "<f7>")   #'4l/project-rebuild
+  (kbd "<C-f7>") #'4l/close-compilation-buffer
+  (kbd "<C-M-f7>") #'4l/open-compilation-buffer
   (kbd "<f8>")   #'next-error
 
   (kbd "C-x C-f") 'helm-find-files
