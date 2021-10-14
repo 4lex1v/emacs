@@ -11,6 +11,14 @@
 (defconst IS-WINDOWS           (eq system-type 'windows-nt))
 (defconst IS-UNIX              (not IS-WINDOWS))
 
+(let ((font-setting
+       (pcase system-type
+         ('darwin "Monaco-16")
+         ('windows-nt "Iosevka SS08 Slab LtEx-16"))))
+  (add-to-list 'initial-frame-alist (cons 'font font-setting)) 
+  (setq default-frame-alist initial-frame-alist) 
+  (set-frame-font font-setting))
+
 (defun 4l/swap-two-windows ()
   (interactive)
   (if (not (eq (length (window-list)) 2))
@@ -46,13 +54,34 @@
   (insert (if end-with-semicolon-p "};" "}"))
   (beginning-of-line)
   (indent-according-to-mode)
-  (previous-line)
+  (forward-line -1)
   (indent-according-to-mode))
+
+(defun 4l/close-compilation-buffer ()
+  (interactive)
+  (let ((comp-window (get-buffer-window "*compilation*")))
+    (if comp-window 
+        (quit-window nil comp-window))))
+
+(defun 4l/open-compilation-buffer ()
+  (interactive)
+  (if (not (get-buffer-window "*compilation*"))
+      (if (not (get-buffer "*compilation*"))
+          (4l/project-rebuild)
+        (progn
+          (display-buffer "*compilation*")))))
 
 (defun 4l/project-root ()
   (expand-file-name (cdr (project-current t))))
 
-;; TODO: Added in Emacs 28
+(defun 4l/open-git-bash-shell ()
+  (interactive)
+  "Start a git-bash.exe process on Windows as a shell"
+  (let ((default-directory (4l/project-root))
+        (shell-file-name (executable-find "bash.exe"))
+        (explicit-bash-args '("--login -i")))
+    (call-interactively 'shell)))
+
 (defun 4l/project-compile ()
   "Run `compile' in the project root."
   (declare (interactive-only compile))
@@ -60,27 +89,15 @@
   (let ((default-directory (4l/project-root)))
     (call-interactively #'compile)))
 
-(defun 4l/open-git-bash-shell ()
-  (interactive)
-  "Start a git-bash.exe process on Windows as a shell"
-  (let ((default-directory (4l/project-root))
-        (shell-file-name "C:\\Users\\Aleksandr\\scoop\\apps\\git\\current\\bin\\bash.exe")
-        (explicit-bash-args '("--login -i")))
-    (call-interactively 'shell)))
+;; (add-to-list 'compilation-finish-functions
+;;              (lambda (buffer result)
+;;                (message "Compilation process finished %s" result)
+;;                ))
 
 (defun 4l/project-rebuild ()
   (interactive)
   (let ((default-directory (cdr (project-current t))))
     (call-interactively 'recompile)))
-
-(if-let ((font-setting
-          (pcase system-type
-            ('darwin "Monaco-16")
-            ('windows-nt "Iosevka SS08 Slab Extended-14"))))
-    (progn 
-      (add-to-list 'initial-frame-alist (cons 'font font-setting))
-      (setq default-frame-alist initial-frame-alist)
-      (set-frame-font font-setting)))
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
@@ -124,18 +141,17 @@
  inhibit-startup-message        t
  initial-scratch-message        nil
  initial-buffer-choice          nil
- show-paren-delay               0.0
+ ;;show-paren-delay               0.0
  ring-bell-function            'ignore
- tramp-default-method          "ssh"
+ ;;tramp-default-method          "ssh"
  make-backup-files              nil
  auto-save-default              nil
  kill-do-not-save-duplicates    t
  ad-redefinition-action        'accept
  next-line-add-newlines         nil
  desktop-save-mode              nil
- desktop-save                   nil
+ ;;desktop-save                   nil
  default-directory             "~/"
- user-ref-name                 "4lex1v"
  mouse-wheel-scroll-amount     '(1)
  mouse-wheel-progressive-speed  nil
  history-delete-duplicates      t
@@ -157,34 +173,22 @@
          (window-parameters . ((no-other-window . t)
                                (no-delete-other-windows . t))))))
 
-(if IS-MAC
-    (progn
-      (setq
-       browse-url-browser-function 'browse-url-default-macosx-browser
-       delete-by-moving-to-trash    t
-       mac-command-modifier        'meta
-       mac-option-modifier         'super
-       mac-control-modifier        'control
-       ns-function-modifier        'hyper
-       ns-use-native-fullscreen     t
-       frame-resize-pixelwise       t)))
-
-(if IS-WINDOWS
-    (progn
-      (require 'subr-x)
-      (if-let ((powershell-exe-path (executable-find "pwsh.exe")))
-          (setq shell-file-name powershell-exe-path))))
+(when IS-WINDOWS
+  (let ((powershell-exe-path (executable-find "pwsh.exe")))
+    (if powershell-exe-path
+        (setq shell-file-name powershell-exe-path))))
 
 ;; To avoid acidental hits on the touchpad
 (dolist (binding '("<mouse-1>" "<C-mouse-1>" "<C-down-mouse-1>"))
   (define-key global-map (kbd binding)
     (lambda nil (interactive) nil)))
 
+(require 'dabbrev)
 (setq
  dabbrev-case-replace t
  dabbrev-case-fold-search t
+ dabbrev-case-distinction nil
  dabbrev-upcase-means-case-search t)
-
 (abbrev-mode 1)
 
 (when (and (require 'ls-lisp) (require 'dired))
@@ -197,23 +201,14 @@
  package-check-signature nil
  package--init-file-ensured t
  package-archives '(("melpa" . "https://melpa.org/packages/")))
-
 ;; https://www.reddit.com/r/emacs/comments/53zpv9/how_do_i_get_emacs_to_stop_adding_custom_fields/
 (defun package--save-selected-packages (&rest opt) nil)
 (require 'package) 
 (package-initialize)
 
-(package-install 'use-package)
-
-(setq
- use-package-verbose               t
- use-package-always-defer          t
- use-package-enable-imenu-support  t
- use-package-check-before-init     t
- use-package-minimum-reported-time 0.1
-
- ;; Only when the config is stable
- use-package-expand-minimally t)
+(defmacro ensure-installed (package-symbol)
+  `(unless (locate-library ,(symbol-name package-symbol))
+     (package-install ',package-symbol)))
 
 (add-to-list 'load-path (concat USER-EMACS-DIRECTORY "themes/sirthias"))
 (require 'sirthias-theme)
@@ -223,571 +218,97 @@
               (load-theme 'sirthias t)))
 (load-theme 'sirthias t)
 
-(use-package exec-path-from-shell :ensure t :demand t
-  :commands (exec-path-from-shell-getenv
-             exec-path-from-shell-setenv)
-  :init
-  ;; Under certain conditions this can be nicely used withing Windows environment as well...
-  (defun run-shell-command (&rest cmd)
-    (replace-regexp-in-string "\r?\n\\'" ""
-                              (shell-command-to-string
-                               (mapconcat 'identity cmd " ")))) 
-  
-  (defun register-path-folders (&rest paths)
-    (declare (indent 1))
-    (let ((path (-reduce-r-from
-                 (lambda (value acc) (format "%s:%s" value acc))
-                 (exec-path-from-shell-getenv "PATH")
-                 paths)))
-      (exec-path-from-shell-setenv "PATH" path)))
+(ensure-installed evil)
+(setq-default
+ evil-kill-on-visual-paste nil)
+(setq
+ evil-default-state              'normal
+ evil-default-cursor             t
+ evil-want-C-u-scroll            t
+ evil-want-keybinding            nil
+ evil-want-integration           t
+ evil-ex-substitute-global       t
+ evil-ex-search-vim-style-regexp t
+ evil-ex-interactive-search-highlight 'selected-window)
+(require 'evil)
+
+(evil-set-leader 'normal (kbd "SPC"))
+
+(evil-set-initial-state 'rg 'emacs)
+
+(evil-ex-define-cmd "e[val]" #'eval-buffer)
+(evil-ex-define-cmd "we" #'(lambda () (interactive) (save-buffer) (eval-buffer)))
+
+(evil-select-search-module 'evil-search-module 'evil-search)
+(evil-mode 1)
+
+(evil-define-key nil evil-motion-state-map
+  "j" 'next-line
+  "k" 'previous-line)
+
+(evil-define-key nil evil-insert-state-map
+  (kbd "C-;")    'comment-line
+  (kbd "C-x \\") 'align-regexp
+  (kbd "C-c r")  'revert-buffer
+  (kbd "M-j")   'join-line
+  (kbd "M-[")   '(lambda () (interactive) (4l/insert-block nil))
+  (kbd "M-{")   '(lambda () (interactive) (4l/insert-block t))
+  (kbd "C-S-d")  '4l/duplicate-line)
+
+(evil-define-key nil evil-normal-state-map
+  "$"                    'evil-end-of-visual-line
+  (kbd "C-j")            'evil-forward-paragraph
+  (kbd "C-k")            'evil-backward-paragraph
+  (kbd "<M-wheel-up>")   'text-scale-increase
+  (kbd "<M-wheel-down>") 'text-scale-decrease
+  (kbd "C-S-o")          'evil-jump-forward
+  "m"                    'back-to-indentation
+  (kbd "g .")            'xref-find-definitions)
 
-  :config
-  (if IS-MAC
-      (progn
-        (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
-        (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
-        (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
-        (exec-path-from-shell-setenv "GTAGSLABEL" "ctags")
-        (register-path-folders "/usr/local/opt/llvm/bin" "/usr/local/homebrew/bin" "/usr/local/bin")))
-
-  (if IS-WINDOWS
-      (progn
-        (exec-path-from-shell-setenv "SHELL" "c:/Users/Aleksandr/scoop/apps/pwsh/current/pwsh.exe"))))
-
-;; Goes before others to correctly load which-key-declare-prefixes
-(use-package which-key :demand t :ensure t
-  :diminish which-key
-  :init
-  (setq
-   which-key-idle-delay 0.8
-   which-key-sort-order 'which-key-prefix-then-key-order-reverse
-   which-key-show-operator-state-maps t ;; Hack to make this work with Evil
-   which-key-prefix-prefix ""
-   which-key-side-window-max-width 0.5
-
-   which-key-popup-type           'side-window 
-   which-key-side-window-location 'bottom) 
-  
-  :config
-  (which-key-mode)
-
-  (define-key which-key-C-h-map "l" 'which-key-show-next-page-cycle)
-  (define-key which-key-C-h-map "j" 'which-key-show-previous-page-cycle)
-
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'while-key)))
-
-(use-package org :demand t  
-  :init
-  (defun 4l/org/make-quick-note (name)
-    (interactive "B")
-    (let ((note-path (concat org-quick-note-folder name ".org")))
-      (unless (not (file-exists-p note-path))
-        (write-region "" nil note-path))
-      (find-file note-path)))
-
-  (defun 4l/org/open-daily-note ()
-    (interactive)
-    (let* ((today-string (format-time-string "%Y-%m-%d"))
-           (dailies-folder (concat org-directory "/dailies/"))
-           (today-file (concat dailies-folder today-string ".org")))
-      (find-file today-file)))
-  
-  (defun 4l/org/list-agenda-files ()
-    (interactive)
-    (helm :sources (helm-build-sync-source "Org-mode Agenda Files:"
-                     :candidates 'org-agenda-files
-                     :fuzzy-match t
-                     :action 'find-file)))
-
-  (defun 4l/org/open-universe ()
-    (interactive)
-    (find-file (concat org-directory "universe.org")))
-  
-  (setq
-   org-directory "~/org/"
-   org-startup-with-inline-images t
-   org-startup-truncated nil 
-
-   org-id-link-to-org-use-id t
-
-   4l/org-dailies-folder-path     "~/org/dailies"
-   org-agenda-files              '("~/org/universe.org") ;; NOTE: Seems like this should be a list
-
-   org-log-done                  'time ;; When completing a task, prompt for a closing note...
-   org-src-fontify-natively       t
-   org-descriptive-links          t
-   org-use-tag-inheritance        nil
-
-   org-list-description-max-indent 0
-   
-   org-enforce-todo-dependencies  t
-   org-enforce-todo-checkbox-dependencies t
-   
-   org-catch-invisible-edits      'error
-   
-   org-clock-persist              t
-   
-   org-hide-leading-stars         nil
-   org-line-spacing               5
-   org-tags-column                0 ;; Have tags next to the title
-   
-   ;;org-babel-load-languages      '((sql . t) (shell . t) (plantuml . t))
-   org-babel-C-compiler   "clang"
-   org-babel-C++-compiler "clang++"
-
-   org-ellipsis " [...]"
-   
-   org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
-   org-todo-keyword-faces '(("ACTIVE" . "yellow"))
-
-   org-refile-use-outline-path 'file
-   org-refile-targets '((org-agenda-files . (:tag . "project")))
-   ;;   org-refile-target-verify-function #'(lambda () (member "project" (org-get-local-tags)))
-
-   org-adapt-indentation nil
-
-   org-archive-location "./archives/%s_archive::"
-
-   org-capture-templates
-   `(("n" "New Task"       entry (file ,(concat org-directory "universe.org"))    "* TODO %? \n")
-     ("t" "Task for Today" entry (file ,(concat org-directory "universe.org"))    "* TODO %? \nSCHEDULED: %t\n")
-     ("r" "Journal Entry"  entry (file ,(concat org-directory "ruminations.org")) "* %?\n:PROPERTIES:\n:ID:      %(org-id-new)\n:CREATED: %U\n:END:")
-     ("d" "Daily Entry"    entry (file ,(concat org-directory "dailies.org"))     "* %?\n:PROPERTIES:\n:ID:      %(org-id-new)\n:CREATED: %U\n:END:"))
-
-   ;; Stuck project is the one that has no scheduled TODO tasks
-   org-stuck-projects '("+project/-DONE-CANCELLED" ("TODO") nil "SCHEDULED:\\|DEADLINE:")
-   
-   org-agenda-custom-commands '(("c" . "My Custom Agendas")
-                                ("cu"  "Unscheduled"
-                                 ((todo ""
-                                        ((org-agenda-overriding-header "\nUnscheduled Tasks")
-                                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline)))))
-                                 nil ;; general settings for the whole set
-                                 nil))
-   
-   org-agenda-span 'day ;; To myself: it's better then a week, trust me.
-   org-agenda-start-on-weekday 7 ;; Sunday
-   org-agenda-include-diary nil
-   org-agenda-skip-deadline-if-done t
-   org-agenda-log-mode-items '(closed clock state)
-   org-agenda-prefix-format '((agenda . "  %?-12t ")
-                              (todo   . " %i %-12:c")
-                              (tags   . " %i %-12:c")
-                              (search . " %i %-12:c"))
-   
-   ;; Display agenda in full window
-   org-agenda-window-setup 'current-window)
-
-  :bind
-  (("M-3"     . org-agenda-list)
-   ("C-c o c" . org-capture)
-   ("C-c o s" . org-store-link)
-   ("C-c o l" . org-insert-link)
-   ("C-c o u" . 4l/org/open-universe)
-   ("C-c o d" . 4l/org/open-daily-note)
-   ("C-c o p" . (lambda () (interactive) (find-file (concat org-directory "the_plan.org"))))
-   
-   :map org-mode-map
-   ("C-."   . org-mark-ring-goto)
-   ("C-,"   . org-archive-subtree)
-   ("C-c S" . org-store-link))
-
-  :config
-  ;; Force org to open file links in the same window
-  (add-to-list 'org-link-frame-setup '(file . find-file))
-
-  ;; Configure hooks for clock's persistance
-  (org-clock-persistence-insinuate)
-
-  (add-hook 'org-agenda-finalize-hook
-            (lambda () (remove-text-properties
-                        (point-min) (point-max) '(mouse-face t)))))
-
-(use-package ace-window :demand t :ensure t
-  :init
-  (setq aw-scope 'frame))
-
-(use-package ggtags
-  :hook ((c-mode c++-mode rust-mode) . ggtags-mode))
-
-(use-package helm :demand t :ensure t
-  :init
-  (setq
-   helm-buffer-max-length                 nil
-   helm-idle-delay                        0.0
-   helm-input-idle-delay                  0.01
-   helm-quick-update                      t
-   helm-split-window-inside-p             t
-   helm-buffers-fuzzy-matching            t
-   helm-move-to-line-cycle-in-source      t
-   helm-scroll-amount                     8
-
-   helm-follow-mode-persistent            t
-   helm-show-completion-display-function  nil
-   helm-grep-ag-command                  "rg --vimgrep --no-heading --smart-case"
-
-   helm-ff-search-library-in-sexp         t
-   helm-ff-file-name-history-use-recentf  t
-   helm-ff-fuzzy-matching                 t)
-  
-  (require 'helm-config)
-
-  (defun 4l/helm-open-dired ()
-    (interactive)
-    (helm-exit-and-execute-action 'helm-point-file-in-dired))
-  
-  :config
-  (helm-mode)
-  (helm-autoresize-mode)
-  (substitute-key-definition 'find-tag 'helm-etags-select global-map))
-
-(use-package rg :ensure t
-  :init
-  (setq rg-custom-type-aliases '())
-  :config
-  (rg-enable-default-bindings)
-  (if IS-WINDOWS
-      (defun rg-executable ()
-        (executable-find "rg.exe"))))
-
-(use-package yaml-mode :ensure t)
-
-(use-package eshell
-  :defines (eshell-visual-commands eshell-mode-hook)
-  :functions (eshell/alias eshell/pwd eshell-cmpl-initialize)
-
-  :init
-  (defun 4lex1v:helm-eshell-history ()
-    (eshell-cmpl-initialize)
-    (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-    (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
-
-  (defun eshell/clear ()
-    (let ((inhibit-read-only t))
-      (erase-buffer)
-      (eshell-send-input)))
-
-  (with-eval-after-load 'evil-collection
-    (add-to-list 'evil-collection-mode-list 'eshell))
-
-  (defun git-prompt-branch-name ()
-    "Get current git branch name"
-    (let ((args '("symbolic-ref" "HEAD" "--short")))
-      (with-temp-buffer
-        (apply #'process-file "git" nil (list t nil) nil args)
-        (unless (bobp)
-          (goto-char (point-min))
-          (buffer-substring-no-properties (point) (line-end-position))))))
-
-  (defun 4lex1v:eshell-prompt ()
-    (let ((branch-name (git-prompt-branch-name)))
-      (concat
-       "\n" (user-login-name) " in " (abbreviate-file-name (eshell/pwd)) 
-       (if branch-name (format " @ %s " branch-name) "") "\n"
-       "$ "
-       )))
-
-  (setq eshell-prompt-function #'4lex1v:eshell-prompt
-        eshell-prompt-regexp ".*>>+ ")
-
-  :hook
-  ((4lex1v:helm-eshell-history
-    ansi-color-for-comint-mode-on) . eshell-mode)
-
-  :config
-  (with-eval-after-load 'em-term
-    (add-to-list 'eshell-visual-commands "htop")))
-
-(use-package rust-mode :ensure t
-  :init 
-  (setq
-   rust-indent-offset  2
-   rust-format-on-save nil))
-
-(use-package evil :ensure t :demand t
-  :init
-  (setq-default
-   evil-kill-on-visual-paste nil)
-
-  (setq
-   evil-default-state              'normal
-   evil-default-cursor             t
-   evil-want-C-u-scroll            t
-   evil-want-keybinding            nil
-   evil-want-integration           t
-   evil-ex-substitute-global       t
-   evil-ex-search-vim-style-regexp t
-   evil-ex-interactive-search-highlight 'selected-window
-   evil-collection-company-use-tng nil)
-  
-  ;; #NOTE :: This makes things like `just_an_example' selectable as a single word
-  (defun fix-word-def () (modify-syntax-entry ?_ "w"))
-  (add-hook #'prog-mode-hook 'fix-word-def)
-
-  ;; TODO: Does evil still requires undo-tree?
-  (use-package undo-tree :ensure t :demand t
-    :diminish undo-tree-mode
-    :commands global-undo-tree-mode
-    :config (global-undo-tree-mode))
-
-  :config
-  (evil-set-leader 'normal (kbd "SPC"))
-
-  (evil-set-initial-state 'prog-mode        'normal)
-  (evil-set-initial-state 'fundamental-mode 'normal)
-  (evil-set-initial-state 'comint-mode      'normal)
-  (evil-set-initial-state 'org-mode         'normal)
-
-  (evil-set-initial-state 'package-menu-mode 'motion)
-
-  (evil-set-initial-state 'rg 'emacs)
-
-  (evil-set-initial-state 'eshell 'insert)
-
-  (evil-ex-define-cmd "e[val]" #'eval-buffer)
-  (evil-ex-define-cmd "we" #'(lambda () (interactive) (save-buffer) (eval-buffer)))
-
-  (evil-select-search-module 'evil-search-module 'evil-search)
-  (evil-mode)
-
-  (evil-define-key nil evil-motion-state-map
-    "j" 'next-line
-    "k" 'previous-line)
-
-  (evil-define-key nil evil-insert-state-map
-    (kbd "C-;")    'comment-line
-    (kbd "C-x \\") 'align-regexp
-    (kbd "C-c r")  'revert-buffer
-    (kbd "M-j")   'join-line
-    (kbd "M-[")   '(lambda () (interactive) (4l/insert-block nil))
-    (kbd "M-{")   '(lambda () (interactive) (4l/insert-block t))
-    (kbd "C-S-d")  '4l/duplicate-line)
-
-  (evil-define-key nil evil-normal-state-map
-    "$"                    'evil-end-of-visual-line
-    (kbd "C-j")            'evil-forward-paragraph
-    (kbd "C-k")            'evil-backward-paragraph
-    (kbd "<M-wheel-up>")   'text-scale-increase
-    (kbd "<M-wheel-down>") 'text-scale-decrease
-    (kbd "C-S-o")          'evil-jump-forward
-    "m"                    'back-to-indentation
-    (kbd "g .")            'xref-find-definitions)
-
-  (use-package evil-collection :ensure t :demand t
-    :after evil
-    :commands evil-collection-init
-    :init
-    (setq
-     evil-collection-setup-minibuffer nil
-     evil-collection-mode-list `(bookmark
-                                 (buff-menu "buff-menu")
-                                 calendar
-                                 comint
-                                 compile
-                                 debbugs
-                                 debug
-                                 diff-mode
-                                 dired
-                                 doc-view
-                                 edebug
-                                 help
-                                 info
-                                 log-view
-                                 man
-                                 simple
-                                 ,@(when evil-collection-setup-minibuffer '(minibuffer))
-                                 (package-menu package)
-                                 (term term ansi-term multi-term)
-                                 xref))
-
-    :config
-    (add-hook 'after-init-hook (lambda () (evil-collection-init))))
-
-  (use-package evil-args :ensure t :demand t
-    :after evil
-    :config
-    ;; bind evil-args text objects
-    (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-    (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-
-    ;; bind evil-forward/backward-args
-    (define-key evil-normal-state-map "L" 'evil-forward-arg)
-    (define-key evil-normal-state-map "H" 'evil-backward-arg)
-
-    ;; bind evil-jump-out-args
-    (define-key evil-normal-state-map "K" 'evil-jump-out-args)))
-
-(use-package avy :ensure t
-  :config
-  (evil-define-key 'normal 'global 
-    (kbd "<leader> jj") 'avy-goto-char
-    (kbd "<leader> jl") 'avy-goto-line))
-
-(use-package elisp-mode
-  :interpreter ("emacs" . emacs-lisp-mode)
-  :mode        (("\\.el$" . emacs-lisp-mode)
-                ("Cask"   . emacs-lisp-mode))
-  
-  :init
-  (evil-define-key nil global-map
-    (kbd "M-.")     'find-function-at-point
-    (kbd "M-,")     'find-variable-at-point
-    (kbd "C-c e r") 'eval-region)
-
-  (use-package macrostep :ensure t
-    :commands macrostep-expand
-    :mode ("\\*.el\\'" . emacs-lisp-mode)
-    
-    :init
-    (evil-define-key nil macrostep-keymap
-      "q" #'macrostep-collapse-all
-      "e" #'macrostep-expand)
-
-    (evil-define-key 'normal emacs-lisp-mode-map
-      (kbd "<leader> em") #'macrostep-expand)
-    
-    :config
-    (with-eval-after-load 'evil-collection
-      (add-to-list 'evil-collection-mode-list 'macrostep))))
-
-(use-package cc-mode :demand t
-  :mode (("\\.\\(glsl\\|vert\\|frag\\)\\'" . c-mode)
-         ("\\.mm\\'" . objc-mode))
-  
-  :commands c-toggle-auto-newline
-  :defines (c-mode-common-hook)
-
-  :init
-  (defconst 4l/c-lang-style ;; added later under the label '4l'
-    '((c-basic-offset . 2) 
-      ;; add alignment in || and && expressions
-      ;;      b32 result = ((value >= 'A') && (value <= 'Z')) ||
-      ;;                   ((value >= 'a') && (value <= 'z'));
-      ;; instead of
-      ;;         b32 result = ((value >= 'A') && (value <= 'Z')) ||
-      ;;           ((value >= 'a') && (value <= 'z'));
-      (c-offsets-alist . ((innamespace . [0])
-                          (inextern-lang . [0])
-                          (case-label . +)
-                          (substatement-open . 0)))))
-
-  (setq
-   win32-system-include-paths '("c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/shared"
-                                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/ucrt"
-                                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/um"
-                                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/winrt")
-   c-default-style "4l")
-
-  (defun 4l/start-remedy ()
-    (interactive)
-    (let* ((default-directory (vc-root-dir))
-           (debug-project (concat default-directory "project.rdbg")))
-      (start-process "remedybg" nil "remedybg.exe" debug-project)))
-
-  :config
-  (c-add-style "4l" 4l/c-lang-style)
-  
-  (with-eval-after-load 'org
-    (add-to-list 'org-babel-load-languages '(C . t)))
-  
-  ;; Something helpful in Handmade Hero... Not sure if i'm going to use it in other projects...
-  (font-lock-add-keywords 'c++-mode '(("\\<\\(assert\\|defer\\|internal\\|global_var\\|local_persist\\|nullptr\\)\\>" 1 font-lock-keyword-face)))
-  (font-lock-add-keywords 'objc-mode '(("\\<\\(assert\\|internal\\|global_var\\|local_persist\\)\\>" 1 font-lock-keyword-face)))
-  
-  (with-eval-after-load 'org
-    (add-to-list 'org-babel-load-languages '(C . t))))
-
-(use-package lsp-mode :ensure t :disabled t
-  :commands lsp-mode
-  :hook (((c-mode c++-mode rust-mode) . lsp)
-         (lsp-mode . lsp-enable-which-key-integration))
-
-  :bind
-  (:map lsp-mode-map
-   ("C-c C-d" . lsp-describe-thing-at-point)
-   ([remap xref-find-definitions] . lsp-find-definition)
-   ([remap xref-find-references] . lsp-find-references))
-
-  :custom-face
-  (lsp-face-highlight-textual
-   ((t :underlying (:style line :color ,(face-foreground 'default)))))
-
-  :init
-  (setq
-   lsp-prefer-capf t
-   lsp-auto-guess-root t
-
-   ;; clangd
-   lsp-clients-clangd-args '("--header-insertion=never"))
-
-  :config
-  (evil-define-key 'normal lsp-mode-map
-    (kbd "<leader> l") lsp-command-map)
-  
-  (use-package lsp-ui
-    :init
-    (setq
-     lsp-ui-doc-position 'bottom)
-
-    :hook (lsp-mode . lsp-ui-mode)
-
-    :custom-face
-    (lsp-ui-doc-url
-     ((t :inherit default)))
-
-    :config
-    ;; `C-g'to close doc
-    (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide))
-
-  (use-package helm-lsp :ensure t
-    :commands helm-lsp-workspace-symbol))
-
-;; General bindings
-(evil-define-key 'normal global-map
-  ;; Project related bindings
-  (kbd "<leader> pf") 'project-find-file
-  (kbd "<leader> ps") 'rg-project
-  (kbd "<leader> pc") '4l/project-compile
-
-  (kbd "C-w C-w") 'ace-window
-
-  (kbd "M-u") 'universal-argument
-  
-  ;; Navigation
-  (kbd "<leader> fi")  '(lambda () (interactive) (find-file (concat USER-EMACS-DIRECTORY "init.el")))
-
-  ;; Org
-  (kbd "<leader> oc") 'org-capture
-
-  (kbd "<leader> ff") 'helm-find-files
-  (kbd "<leader> fl") 'find-library
-  (kbd "M-i")         'helm-occur
-
-  (kbd "<leader> ps") 'rg-menu)
-
-(defun 4l/close-compilation-buffer ()
-  (interactive)
-  (if-let ((comp-window (get-buffer-window "*compilation*")))
-      (quit-window nil comp-window)))
-
-(defun 4l/open-compilation-buffer ()
-  (interactive)
-  (if (not (get-buffer-window "*compilation*"))
-      (if (not (get-buffer "*compilation*"))
-          (4l/project-rebuild)
-        (progn
-          (display-buffer "*compilation*")))))
-        
 (evil-define-key nil global-map
-  (kbd "C-c r")  #'revert-buffer
-  (kbd "<f7>")   #'4l/project-rebuild
-  (kbd "<C-f7>") #'4l/close-compilation-buffer
+  (kbd "C-c r")    #'revert-buffer
+  (kbd "<f7>")     #'4l/project-compile
+  (kbd "<C-f7>")   #'4l/close-compilation-buffer
   (kbd "<C-M-f7>") #'4l/open-compilation-buffer
-  (kbd "<f8>")   #'next-error
+  (kbd "<f8>")     #'next-error
+  (kbd "M-2")      #'ibuffer)
 
+(ensure-installed evil-collection)
+(require 'evil-collection)
+(evil-collection-init)
+
+(ensure-installed helm)
+(setq
+ helm-buffer-max-length                 nil
+ helm-idle-delay                        0.0
+ helm-input-idle-delay                  0.01
+ helm-quick-update                      t
+ helm-split-window-inside-p             t
+ helm-buffers-fuzzy-matching            t
+ helm-move-to-line-cycle-in-source      t
+ helm-scroll-amount                     8
+
+ helm-follow-mode-persistent            t
+ helm-show-completion-display-function  nil
+ helm-grep-ag-command                   "rg --vimgrep --no-heading --smart-case"
+
+ helm-ff-search-library-in-sexp         t
+ helm-ff-file-name-history-use-recentf  t
+ helm-ff-fuzzy-matching                 t)
+(require 'helm-config)
+(require 'helm)
+(defun 4l/helm-open-dired ()
+  (interactive)
+  (helm-exit-and-execute-action 'helm-point-file-in-dired))
+
+(helm-mode)
+(helm-autoresize-mode)
+(substitute-key-definition 'find-tag 'helm-etags-select global-map)
+
+(evil-define-key nil global-map
   (kbd "C-x C-f") 'helm-find-files
   (kbd "C-x f")   'helm-find-files
+  (kbd "<leader> ff") 'helm-find-files
   (kbd "C-c h a") 'helm-apropos
   (kbd "C-c h s") '4l/helm-git-grep-project-files
   (kbd "M-x")     'helm-M-x
@@ -811,12 +332,86 @@
   (kbd "C-k")   'helm-previous-line
   (kbd "C-f")   'helm-toggle-full-frame)
 
-(mapc
- (lambda (mode)
-   (font-lock-add-keywords ;;`font-lock-keywords`
-    mode
-    '(("#\\<\\(TODO\\)\\>" 1 '(error :underline t) t)
-      ("#\\<\\(NOTE\\)\\>" 1 '(warning :underline t) t))))
- '(prog-mode))
+;; (ensure-installed exec-path-from-shell)
+;; (require 'exec-path-from-shell)
 
+;; (when IS-MAC
+;;   (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
+;;   (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
+;;   (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
+;;   (exec-path-from-shell-setenv "GTAGSLABEL" "ctags"))
 
+;; (when IS-WINDOWS
+;;   (exec-path-from-shell-setenv "SHELL" (executable-find "pwsh.exe")))
+
+;; ;; Goes before others to correctly load which-key-declare-prefixes
+;; (ensure-installed which-key)
+;; (setq
+;;  which-key-idle-delay 0.8
+;;  which-key-sort-order 'which-key-prefix-then-key-order-reverse
+;;  which-key-show-operator-state-maps t ;; Hack to make this work with Evil
+;;  which-key-prefix-prefix ""
+;;  which-key-side-window-max-width 0.5
+;;  which-key-popup-type             'side-window 
+;;  which-key-side-window-location 'bottom)
+;; (require 'which-key)
+;; (which-key-mode)
+;; (define-key which-key-C-h-map "l" 'which-key-show-next-page-cycle)
+;; (define-key which-key-C-h-map "j" 'which-key-show-previous-page-cycle)
+
+;; (with-eval-after-load 'evil-collection
+;;   (add-to-list 'evil-collection-mode-list 'while-key))
+
+(ensure-installed ggtags)
+(require 'ggtags)
+(dolist (hook '(c-mode-hook c++-mode-hook rust-mode-hook))
+  (add-hook hook #'ggtags-mode))
+
+(ensure-installed rg)
+(setq rg-custom-type-aliases '())
+(require 'rg)
+(rg-enable-default-bindings)
+(if IS-WINDOWS
+    (defun rg-executable ()
+      (executable-find "rg.exe")))
+
+(ensure-installed yaml-mode)
+
+(ensure-installed rust-mode)
+(setq
+ rust-indent-offset  2
+ rust-format-on-save nil)
+
+;; (evil-define-key nil global-map
+;;     (kbd "M-.")     'find-function-at-point
+;;     (kbd "M-,")     'find-variable-at-point
+;;     (kbd "C-c e r") 'eval-region)
+
+(defconst 4l/c-lang-style ;; added later under the label '4l'
+  '((c-basic-offset . 2) 
+    ;; add alignment in || and && expressions
+    ;;      b32 result = ((value >= 'A') && (value <= 'Z')) ||
+    ;;                   ((value >= 'a') && (value <= 'z'));
+    ;; instead of
+    ;;         b32 result = ((value >= 'A') && (value <= 'Z')) ||
+    ;;           ((value >= 'a') && (value <= 'z'));
+    (c-offsets-alist . ((innamespace . [0])
+                        (inextern-lang . [0])
+                        (case-label . +)
+                        (substatement-open . 0)))))
+
+(c-add-style "4l" 4l/c-lang-style)
+(setq c-default-style "4l")
+
+;; ;; General bindings
+;; (evil-define-key 'normal global-map
+;;   ;; Project related bindings
+;;   (kbd "<leader> pf") 'project-find-file
+;;   (kbd "<leader> ps") 'rg-project
+;;   (kbd "<leader> pc") '4l/project-compile
+;;   (kbd "C-w C-w") 'ace-window
+;;   (kbd "M-u") 'universal-argument
+;;   (kbd "<leader> fi")  '(lambda () (interactive) (find-file (concat USER-EMACS-DIRECTORY "init.el")))
+;;   (kbd "<leader> oc") 'org-capture
+;;   (kbd "<leader> fl") 'find-library
+;;   (kbd "<leader> ps") 'rg-menu)
