@@ -1,4 +1,0 @@
-[submodule "themes/sirthias"]
-	path = themes/sirthias
-	url = git@github.com:4lex1v/sirthias-theme.git
-	branch = master
