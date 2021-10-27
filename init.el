@@ -11,6 +11,10 @@
 (defconst IS-WINDOWS           (eq system-type 'windows-nt))
 (defconst IS-UNIX              (not IS-WINDOWS))
 
+;; https://emacs.stackexchange.com/questions/220/how-to-bind-c-i-as-different-from-tab/20290#20290
+(define-key input-decode-map [(control ?i)] [control-i])
+(define-key input-decode-map [(control ?I)] [(shift control-i)])
+
 (let ((font-setting
        (pcase system-type
          ('darwin "Monaco-16")
@@ -210,13 +214,13 @@
   `(unless (locate-library ,(symbol-name package-symbol))
      (package-install ',package-symbol)))
 
-(add-to-list 'load-path (concat USER-EMACS-DIRECTORY "themes/sirthias"))
-(require 'sirthias-theme)
-(add-hook 'after-make-frame-functions
-            (lambda (frame)
-              (select-frame frame)
-              (load-theme 'sirthias t)))
-(load-theme 'sirthias t)
+;; (add-to-list 'load-path (concat USER-EMACS-DIRECTORY "themes/sirthias"))
+;; (require 'sirthias-theme)
+;; (add-hook 'after-make-frame-functions
+;;             (lambda (frame)
+;;               (select-frame frame)
+;;               (load-theme 'sirthias t)))
+;; (load-theme 'sirthias t)
 
 (ensure-installed evil)
 (setq-default
@@ -262,8 +266,7 @@
   (kbd "<M-wheel-up>")   'text-scale-increase
   (kbd "<M-wheel-down>") 'text-scale-decrease
   (kbd "C-S-o")          'evil-jump-forward
-  "m"                    'back-to-indentation
-  (kbd "g .")            'xref-find-definitions)
+  "m"                    'back-to-indentation)
 
 (evil-define-key nil global-map
   (kbd "C-c r")    #'revert-buffer
@@ -276,6 +279,15 @@
 (ensure-installed evil-collection)
 (require 'evil-collection)
 (evil-collection-init)
+
+(ensure-installed evil-args)
+(when (require 'evil-args)
+  (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+  (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+
+  (define-key evil-normal-state-map "L" 'evil-forward-arg)
+  (define-key evil-normal-state-map "H" 'evil-backward-arg)
+  (define-key evil-normal-state-map "K" 'evil-jump-out-args))
 
 (ensure-installed helm)
 (setq
@@ -305,6 +317,8 @@
 (helm-autoresize-mode)
 (substitute-key-definition 'find-tag 'helm-etags-select global-map)
 
+(ensure-installed helm-xref)
+
 (evil-define-key nil global-map
   (kbd "C-x C-f") 'helm-find-files
   (kbd "C-x f")   'helm-find-files
@@ -316,6 +330,7 @@
   (kbd "M-4")     'helm-bookmarks
   (kbd "M-:")     'helm-eval-expression-with-eldoc
   (kbd "M-i")     'helm-occur
+  (kbd "<control-i>")     'helm-imenu
   (kbd "M-y")     'helm-show-kill-ring
   (kbd "M-.")     'helm-etags-select)
 
@@ -332,60 +347,29 @@
   (kbd "C-k")   'helm-previous-line
   (kbd "C-f")   'helm-toggle-full-frame)
 
-;; (ensure-installed exec-path-from-shell)
-;; (require 'exec-path-from-shell)
-
-;; (when IS-MAC
-;;   (exec-path-from-shell-setenv "HOMEBREW_PREFIX" "/usr/local")
-;;   (exec-path-from-shell-setenv "HOMEBREW_CELLAR" "/usr/local/Cellar")
-;;   (exec-path-from-shell-setenv "GTAGSCONF" "/usr/local/share/gtags/gtags.conf")
-;;   (exec-path-from-shell-setenv "GTAGSLABEL" "ctags"))
-
-;; (when IS-WINDOWS
-;;   (exec-path-from-shell-setenv "SHELL" (executable-find "pwsh.exe")))
-
-;; ;; Goes before others to correctly load which-key-declare-prefixes
-;; (ensure-installed which-key)
-;; (setq
-;;  which-key-idle-delay 0.8
-;;  which-key-sort-order 'which-key-prefix-then-key-order-reverse
-;;  which-key-show-operator-state-maps t ;; Hack to make this work with Evil
-;;  which-key-prefix-prefix ""
-;;  which-key-side-window-max-width 0.5
-;;  which-key-popup-type             'side-window 
-;;  which-key-side-window-location 'bottom)
-;; (require 'which-key)
-;; (which-key-mode)
-;; (define-key which-key-C-h-map "l" 'which-key-show-next-page-cycle)
-;; (define-key which-key-C-h-map "j" 'which-key-show-previous-page-cycle)
-
-;; (with-eval-after-load 'evil-collection
-;;   (add-to-list 'evil-collection-mode-list 'while-key))
-
-(ensure-installed ggtags)
-(require 'ggtags)
-(dolist (hook '(c-mode-hook c++-mode-hook rust-mode-hook))
-  (add-hook hook #'ggtags-mode))
+(ensure-installed ace-window)
+(require 'ace-window)
 
 (ensure-installed rg)
 (setq rg-custom-type-aliases '())
-(require 'rg)
-(rg-enable-default-bindings)
-(if IS-WINDOWS
-    (defun rg-executable ()
-      (executable-find "rg.exe")))
+(when (require 'rg)
+  (rg-enable-default-bindings)
+  (if IS-WINDOWS
+      (defun rg-executable ()
+        (executable-find "rg.exe"))))
 
 (ensure-installed yaml-mode)
+(require 'yaml-mode)
 
 (ensure-installed rust-mode)
+(require 'rust-mode)
 (setq
  rust-indent-offset  2
  rust-format-on-save nil)
 
-;; (evil-define-key nil global-map
-;;     (kbd "M-.")     'find-function-at-point
-;;     (kbd "M-,")     'find-variable-at-point
-;;     (kbd "C-c e r") 'eval-region)
+(evil-define-key nil global-map
+  (kbd "M-.")     'find-function-at-point
+  (kbd "C-c e r") 'eval-region)
 
 (defconst 4l/c-lang-style ;; added later under the label '4l'
   '((c-basic-offset . 2) 
@@ -404,14 +388,78 @@
 (setq c-default-style "4l")
 
 ;; ;; General bindings
-;; (evil-define-key 'normal global-map
-;;   ;; Project related bindings
-;;   (kbd "<leader> pf") 'project-find-file
-;;   (kbd "<leader> ps") 'rg-project
-;;   (kbd "<leader> pc") '4l/project-compile
-;;   (kbd "C-w C-w") 'ace-window
-;;   (kbd "M-u") 'universal-argument
-;;   (kbd "<leader> fi")  '(lambda () (interactive) (find-file (concat USER-EMACS-DIRECTORY "init.el")))
-;;   (kbd "<leader> oc") 'org-capture
-;;   (kbd "<leader> fl") 'find-library
-;;   (kbd "<leader> ps") 'rg-menu)
+(evil-define-key 'normal global-map
+  ;; Project related bindings
+  (kbd "<leader> pf") 'project-find-file
+  (kbd "<leader> ps") 'rg-project
+  (kbd "<leader> pc") '4l/project-compile
+  (kbd "C-w C-w") 'ace-window
+  (kbd "M-u") 'universal-argument
+  (kbd "<leader> fi")  '(lambda () (interactive) (find-file (concat USER-EMACS-DIRECTORY "init.el")))
+  (kbd "<leader> oc") 'org-capture
+  (kbd "<leader> fl") 'find-library
+  (kbd "<leader> ps") 'rg-menu)
+
+(let* ((fg1     "#ebc78a") (fg2     "#e1d0b1") (fg3     "#c7b89d") (fg4     "#a89e89")
+       (bg1     "#142732") (bg2     "#101740") (bg3     "#1B3442") (bg4     "#3e5861")
+       (red     "#ea614c") (green   "#a9a931") (gray    "#a0a79e") (orange  "#aaaa22"))
+   (set-face-attribute 'default                             nil :foreground fg1 :background bg1) 
+   (set-face-attribute 'region                              nil :background bg3) 
+   (set-face-attribute 'cursor                              nil :background fg1) 
+   (set-face-attribute 'fringe                              nil :background bg1)
+   (set-face-attribute 'link                                nil :foreground fg1 :underline t :weight 'bold)
+   (set-face-attribute 'link-visited                        nil :foreground fg1 :underline t :weight 'normal)
+   (set-face-attribute 'header-line                         nil :background bg3)
+   (set-face-attribute 'trailing-whitespace                 nil :foreground bg1 :background orange)
+   (set-face-attribute 'lazy-highlight                      nil :foreground fg2 :background bg3)
+   (set-face-attribute 'success                             nil :foreground green)
+   (set-face-attribute 'warning                             nil :foreground orange)
+   (set-face-attribute 'error                               nil :foreground red)
+   (set-face-attribute 'mode-line                           nil :foreground bg1 :background fg1 :box nil)
+   (set-face-attribute 'mode-line-inactive                  nil :foreground bg1 :background gray :box nil)
+   (set-face-attribute 'mode-line-highlight                 nil :foreground fg1 :background bg1)
+   (set-face-attribute 'mode-line-emphasis                  nil :foreground bg1 :background fg1 :box nil)
+   (set-face-attribute 'font-lock-keyword-face              nil :foreground red)
+   (set-face-attribute 'font-lock-builtin-face              nil :foreground red)
+   (set-face-attribute 'font-lock-comment-face              nil :foreground gray)
+   (set-face-attribute 'font-lock-constant-face             nil :foreground fg1)
+   (set-face-attribute 'font-lock-doc-face                  nil :foreground gray)
+   (set-face-attribute 'font-lock-function-name-face        nil :foreground fg1)
+   (set-face-attribute 'font-lock-type-face                 nil :foreground fg1)
+   (set-face-attribute 'font-lock-preprocessor-face         nil :foreground red)
+   (set-face-attribute 'font-lock-negation-char-face        nil :foreground fg1)
+   (set-face-attribute 'font-lock-string-face               nil :foreground green)
+   (set-face-attribute 'font-lock-variable-name-face        nil :foreground fg1)
+   (set-face-attribute 'font-lock-warning-face              nil :foreground orange :underline t)
+   (set-face-attribute 'minibuffer-prompt                   nil :foreground red :bold t)
+   (set-face-attribute 'isearch                             nil :foreground red :background bg3 :underline t)
+   (set-face-attribute 'isearch-fail                        nil :foreground orange :background bg3 :bold t)
+   (set-face-attribute 'dired-directory                     nil :foreground red :underline t)
+   (set-face-attribute 'helm-header                         nil :foreground bg1 :background fg1 :bold t)
+   (set-face-attribute 'helm-source-header                  nil :foreground bg1 :background fg4 :underline nil :bold t)
+   (set-face-attribute 'helm-match                          nil :foreground red :underline t)
+   (set-face-attribute 'helm-visible-mark                   nil :foreground orange :background bg2)
+   (set-face-attribute 'helm-selection                      nil :background bg3)
+   (set-face-attribute 'helm-selection-line                 nil :background bg1)
+   (set-face-attribute 'helm-candidate-number               nil :foreground bg1 :background fg1)
+   (set-face-attribute 'helm-separator                      nil :foreground red)
+   (set-face-attribute 'helm-buffer-not-saved               nil :foreground red)
+   (set-face-attribute 'helm-buffer-process                 nil :foreground fg1)
+   (set-face-attribute 'helm-buffer-saved-out               nil :foreground fg1)
+   (set-face-attribute 'helm-buffer-size                    nil :foreground fg1)
+   (set-face-attribute 'helm-ff-directory                   nil :foreground green :weight 'bold)
+   (set-face-attribute 'helm-ff-file                        nil :foreground fg1 :weight 'normal)
+   (set-face-attribute 'helm-ff-executable                  nil :foreground fg1 :weight 'normal)
+   (set-face-attribute 'helm-ff-invalid-symlink             nil :foreground fg1 :weight 'bold)
+   (set-face-attribute 'helm-ff-symlink                     nil :foreground red :weight 'bold)
+   (set-face-attribute 'helm-ff-prefix                      nil :foreground bg1 :background red :weight 'normal)
+   (set-face-attribute 'helm-ff-file-extension              nil :foreground fg1 :weight 'normal)
+   (set-face-attribute 'helm-grep-cmd-line                  nil :foreground fg1)
+   (set-face-attribute 'helm-grep-file                      nil :foreground fg1)
+   (set-face-attribute 'helm-grep-finish                    nil :foreground fg2)
+   (set-face-attribute 'helm-grep-lineno                    nil :foreground fg1)
+   (set-face-attribute 'helm-grep-match                     nil :foreground red)
+   (set-face-attribute 'helm-moccur-buffer                  nil :foreground fg1)
+   (set-face-attribute 'evil-ex-substitute-matches          nil :foreground red :underline t :strike-through t)
+   (set-face-attribute 'evil-ex-substitute-replacement      nil :foreground green :underline t)
+   (set-face-attribute 'rg-match-face                       nil :foreground red :background nil :underline t :bold t))
