@@ -1,4 +1,5 @@
 (require 'seq)
+(require 'dired)
 
 (setq
  gc-cons-threshold       (* 100 1024 1024)  ;; 100MB
@@ -10,14 +11,6 @@
 (defconst IS-MAC     (eq system-type 'darwin))
 (defconst IS-WINDOWS (eq system-type 'windows-nt))
 (defconst IS-UNIX    (not IS-WINDOWS))
-
-(let ((font-setting
-       (pcase system-type
-         ('darwin "Monaco-16")
-         ('windows-nt "Iosevka SS08 Slab LtEx-18")))) ;; LtEx or Extended
-  (add-to-list 'initial-frame-alist (cons 'font font-setting)) 
-  (setq default-frame-alist initial-frame-alist) 
-  (set-frame-font font-setting))
 
 (defun 4l/swap-two-windows ()
   (interactive)
@@ -45,6 +38,12 @@
         (other-window 1)
         (kill-buffer (current-buffer))
         (delete-window))))
+
+(defun 4l/remedy-open-file ()
+  (interactive)
+  (let ((filepath (buffer-file-name (current-buffer)))
+        (remedy (executable-find "remedybg.exe")))
+    (shell-command (concat remedy " open-file " filepath) nil nil)))
 
 (defun 4l/insert-block (end-with-semicolon-p)
   (interactive "P")
@@ -74,12 +73,24 @@
 (defun 4l/project-root ()
   (expand-file-name (cdr (project-current t))))
 
+(defun 4l/project-shell ()
+  (interactive)
+  (let ((default-directory (4l/project-root)))
+    (shell)))
+
+(defun 4l/rerun-premake ()
+  (interactive)
+  (let ((default-directory (4l/project-root)))
+    (compile "premake5 vs2022")))
+
 (defun 4l/open-git-bash-shell ()
   (interactive)
   "Start a git-bash.exe process on Windows as a shell"
   (let ((default-directory (4l/project-root))
-        (shell-file-name (executable-find "bash.exe"))
+        (shell-file-name (executable-find "git-bash.exe"))
         (explicit-bash-args '("--login -i")))
+    (if (null shell-file-name)
+        (error "Couldn't find bash.exe in the path"))
     (call-interactively 'shell)))
 
 (defun 4l/project-compile ()
@@ -93,6 +104,15 @@
   (interactive)
   (let ((default-directory (cdr (project-current t))))
     (call-interactively 'recompile)))
+
+(let ((font-setting
+       (pcase system-type
+         ('darwin "Monaco-16")
+         ('windows-nt "Iosevka SS08 Slab Extended-16"))))
+         ;;('windows-nt "Iosevka SS08 Slab LtEx-16"))))
+  (add-to-list 'initial-frame-alist (cons 'font font-setting)) 
+  (setq default-frame-alist initial-frame-alist) 
+  (set-frame-font font-setting))
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
@@ -168,7 +188,8 @@
          (side . bottom)
          (window-height . 10)
          (window-parameters . ((no-other-window . t)
-                               (no-delete-other-windows . t))))))
+                               (no-delete-other-windows . t)))
+         (font . "Iosevka SS08 Slab LtEx-12"))))
 
 (when IS-WINDOWS
   (let ((powershell-exe-path (executable-find "pwsh.exe")))
@@ -199,7 +220,7 @@
  package-enable-at-startup nil
  package-check-signature nil
  package--init-file-ensured t
- package-archives '(("melpa" . "https://melpa.org/packages/")))
+ package-archives '(("melpa" . "https://melpa.org/packages/") ("gnu-devel" . "https://elpa.gnu.org/devel/")))
 ;; https://www.reddit.com/r/emacs/comments/53zpv9/how_do_i_get_emacs_to_stop_adding_custom_fields/
 (defun package--save-selected-packages (&rest opt) nil)
 (require 'package) 
@@ -208,6 +229,9 @@
 (defmacro ensure-installed (package-symbol)
   `(unless (locate-library ,(symbol-name package-symbol))
      (package-install ',package-symbol)))
+
+(global-set-key (kbd "M-n") 'forward-paragraph)
+(global-set-key (kbd "M-p") 'backward-paragraph)
 
 (global-set-key (kbd "M-g")            #'goto-line)
 (global-set-key (kbd "<M-wheel-up>")   #'text-scale-increase)
@@ -218,9 +242,23 @@
 (global-set-key (kbd "<C-f7>")   #'4l/close-compilation-buffer)
 (global-set-key (kbd "<C-M-f7>") #'4l/open-compilation-buffer)
 (global-set-key (kbd "<f8>")     #'next-error)
+(global-set-key (kbd "<f5>")     #'rg-quick-project-search)
 
-;;  This is currently replaced with helm-mini, although maybe I should use ibuffer instead?
-;; (global-set-key (kbd "M-2")      #'ibuffer)
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+
+(global-set-key "\M-2" 'ibuffer)
+
+(global-set-key (kbd "M-[") #'(lambda () (interactive) (4l/insert-block nil)))
+(global-set-key (kbd "M-{") #'(lambda () (interactive) (4l/insert-block t)))
+
+(global-set-key (kbd "<home>") #'back-to-indentation)
+
+(require 'xref)
+(global-set-key (kbd "C-,") 'xref-pop-marker-stack)
+(global-set-key (kbd "C-.") 'xref-find-definitions)
+
+(require 'project)
+(global-set-key (kbd "M-1") 'project-find-file)
 
 (ensure-installed evil)
 (setq-default
@@ -248,27 +286,28 @@
 (evil-select-search-module 'evil-search-module 'evil-search)
 (evil-mode 1)
 
-(with-eval-after-load "evil-mode"
-  (evil-define-key nil evil-motion-state-map
-    "j" 'next-line
-    "k" 'previous-line
-    "gD" 'xref-find-definitions-other-window)
+(evil-define-key nil evil-motion-state-map
+  "j" 'next-line
+  "k" 'previous-line
+  "gD" 'xref-find-definitions-other-window)
 
-  (evil-define-key nil evil-insert-state-map
-    (kbd "C-;")    'comment-line
-    (kbd "C-x \\") 'align-regexp
-    (kbd "C-c r")  'revert-buffer
-    (kbd "M-j")   'join-line
-    (kbd "M-[")   '(lambda () (interactive) (4l/insert-block nil))
-    (kbd "M-{")   '(lambda () (interactive) (4l/insert-block t))
-    (kbd "C-S-d")  '4l/duplicate-line)
+(evil-define-key nil evil-insert-state-map
+  (kbd "C-;")    'comment-line
+  (kbd "C-x \\") 'align-regexp
+  (kbd "C-c r")  'revert-buffer
+  (kbd "M-j")   'join-line
+  (kbd "M-[")   '(lambda () (interactive) (4l/insert-block nil))
+  (kbd "M-{")   '(lambda () (interactive) (4l/insert-block t))
+  (kbd "C-S-d")  '4l/duplicate-line)
 
-  (evil-define-key nil evil-normal-state-map
-    "$"                    'evil-end-of-visual-line
-    (kbd "C-j")            'evil-forward-paragraph
-    (kbd "C-k")            'evil-backward-paragraph
-    (kbd "C-S-o")          'evil-jump-forward
-    "m"                    'back-to-indentation))
+(evil-define-key nil evil-normal-state-map
+  "$"           'evil-end-of-visual-line
+  (kbd "C-j")   'evil-forward-paragraph
+  (kbd "C-k")   'evil-backward-paragraph
+  (kbd "C-S-o") 'evil-jump-forward
+  "m"           'back-to-indentation
+  (kbd "C-u")   'evil-scroll-up
+  (kbd "M-u")   'universal-argument)
 
 (ensure-installed evil-collection)
 (require 'evil-collection)
@@ -282,6 +321,11 @@
   (define-key evil-normal-state-map "L" 'evil-forward-arg)
   (define-key evil-normal-state-map "H" 'evil-backward-arg)
   (define-key evil-normal-state-map "K" 'evil-jump-out-args))
+
+(evil-define-key 'normal cc-mode-map
+  (kbd "g o")  'ff-find-other-file)
+
+(global-set-key (kbd "<f6>") '4l/rerun-premake)
 
 (ensure-installed helm)
 (setq
@@ -341,10 +385,11 @@
 (define-key helm-map (kbd "C-k")   'helm-previous-line)
 (define-key helm-map (kbd "C-f")   'helm-toggle-full-frame)
 
+(global-set-key (kbd "C-M-i") 'helm-imenu-in-all-buffers)
+
 (ensure-installed ace-window)
 (require 'ace-window)
-
-;; (global-set-key (kbd "C-w C-w") 'ace-window)
+(global-set-key (kbd "M-o") 'ace-window)
 
 (ensure-installed rg)
 (setq rg-custom-type-aliases '())
@@ -353,6 +398,19 @@
   (if IS-WINDOWS
       (defun rg-executable ()
         (executable-find "rg.exe"))))
+
+(rg-define-search rg-quick-project-search
+  "Quick search of a query in a project"
+  :query ask
+  :format literal
+  :files "all"
+  :flags '("-i")
+  :dir project)
+
+(ensure-installed ggtags)
+(setq ggtags-highlight-tag-delay nil)
+(add-hook 'c-mode-hook   (lambda () (ggtags-mode)))
+(add-hook 'c++-mode-hook (lambda () (ggtags-mode)))
 
 (ensure-installed yaml-mode)
 (require 'yaml-mode)
@@ -386,33 +444,27 @@
   (concat "^" "\\([^(]+\\)" "(\\([0-9]+\\)\\(?:,\\([0-9]+\\)\\)?) ?: " "\\(\\(?:error\\|\\(warning\\)\\) [^ :]+\\)")
   1 2 3 '(5) nil '(4 font-lock-keyword-face)))
 
+(require 'cc-mode)
+
+(define-key c-mode-map (kbd "M-e") 'helm-etags-select)
+
 (c-add-style "4l" 4l/c-lang-style)
 (setq c-default-style "4l")
 
-(evil-define-key 'normal cc-mode-map
-  (kbd "g o") 'ff-find-other-file)
+(add-hook 'c-mode-hook
+          (lambda ()
+            (c-toggle-comment-style nil)))
 
-(font-lock-add-keywords 'c++-mode '(("\\<\\(assert\\|nullptr\\|NULL\\|consteval\\)\\>" 1 font-lock-keyword-face)))
-(font-lock-add-keywords 'c++-mode '(("\\<\\(assert\\|ASSERT\\|NULL\\)\\>" 1 font-lock-keyword-face)))
+(font-lock-add-keywords 'c++-mode '(("\\<\\(assert\\|nullptr\\|defer\\|consteval\\|constinit\\)\\>" 1 font-lock-keyword-face)))
 
-;; For more info on how to write skeletons - http://www.panix.com/~tehom/my-code/skel-recipe.txt
-(define-skeleton cc-mutliline-comment-skeleton
-  "Insert a multi-line comment"
-  > "/*" \n _ \n -1 "*/")
-
-(define-skeleton cc-multiline-todo-comment-skeleton
-  "Insert a mutli-line todo comment"
-  > "/*" \n
-     "TODO(aivanov, " (format-time-string "%Y-%m-%d") "):" \n
-  > "  " _ \n
- -1 "*/")
-
-;; (with-eval-after-load "cc-mode"
-;;   (dolist (table '(c-mode-abbrev-table c++-mode-abbrev-table))
-;;     (define-abbrev table "mcom"
-;;       "" 'cc-mutliline-comment-skeleton)
-;;     (define-abbrev table "mtodo"
-;;       "" 'cc-multiline-todo-comment-skeleton)))
+(setq
+ semantic-default-submodes '(global-semantic-idle-scheduler-mode
+                             global-semanticdb-minor-mode
+                             global-semantic-idle-summary-mode
+                             global-semantic-idle-completions-mode
+                             global-semantic-stickyfunc-mode
+                             global-semantic-idle-local-symbol-highlight-mode))
+(semantic-mode t)
 
 (require 'org)
 (setq
@@ -455,7 +507,7 @@
  org-archive-location "./archives/%s_archive::"
 
  org-capture-templates
- `(("n" "New Task"       entry (file ,(concat org-directory "inbox.org"))    "* TODO %? \n")
+ `(("n" "New Task"       entry (file ,(concat org-directory "plans.org"))    "* TODO %? \n")
    ("t" "Task for Today" entry (file ,(concat org-directory "plans.org"))    "* TODO %? \nSCHEDULED: %t\n"))
 
  ;; Stuck project is the one that has no scheduled TODO tasks
@@ -485,69 +537,86 @@
 ;; Force org to open file links in the same window
 (add-to-list 'org-link-frame-setup '(file . find-file))
 
-(let* ((fg1     "#ebc78a") (fg2     "#e1d0b1") (fg3     "#c7b89d") (fg4     "#a89e89")
-       (bg1     "#142732") (bg2     "#101740") (bg3     "#1B3442") (bg4     "#3e5861")
-       (red     "#ea614c") (green   "#a9a931") (gray    "#a0a79e") (orange  "#aaaa22"))
-  (set-face-attribute 'default                             nil :foreground fg1 :background bg1) 
-  (set-face-attribute 'region                              nil :background bg3) 
-  (set-face-attribute 'cursor                              nil :background fg1) 
-  (set-face-attribute 'fringe                              nil :background bg1)
-  (set-face-attribute 'link                                nil :foreground fg1 :underline t :weight 'bold)
-  (set-face-attribute 'link-visited                        nil :foreground fg1 :underline t :weight 'normal)
-  (set-face-attribute 'header-line                         nil :background bg3)
-  (set-face-attribute 'trailing-whitespace                 nil :foreground bg1 :background orange)
-  (set-face-attribute 'lazy-highlight                      nil :foreground fg2 :background bg3)
-  (set-face-attribute 'success                             nil :foreground green)
-  (set-face-attribute 'warning                             nil :foreground orange)
-  (set-face-attribute 'error                               nil :foreground red)
-  (set-face-attribute 'mode-line                           nil :foreground bg1 :background fg1 :box nil)
-  (set-face-attribute 'mode-line-inactive                  nil :foreground bg1 :background gray :box nil)
-  (set-face-attribute 'mode-line-highlight                 nil :foreground fg1 :background bg1)
-  (set-face-attribute 'mode-line-emphasis                  nil :foreground bg1 :background fg1 :box nil)
-  (set-face-attribute 'font-lock-keyword-face              nil :foreground red)
-  (set-face-attribute 'font-lock-builtin-face              nil :foreground red)
-  (set-face-attribute 'font-lock-comment-face              nil :foreground gray)
-  (set-face-attribute 'font-lock-constant-face             nil :foreground fg1)
-  (set-face-attribute 'font-lock-doc-face                  nil :foreground gray)
-  (set-face-attribute 'font-lock-function-name-face        nil :foreground fg1)
-  (set-face-attribute 'font-lock-type-face                 nil :foreground fg1)
-  (set-face-attribute 'font-lock-preprocessor-face         nil :foreground red)
-  (set-face-attribute 'font-lock-negation-char-face        nil :foreground fg1)
-  (set-face-attribute 'font-lock-string-face               nil :foreground green)
-  (set-face-attribute 'font-lock-variable-name-face        nil :foreground fg1)
-  (set-face-attribute 'font-lock-warning-face              nil :foreground orange :underline t)
-  (set-face-attribute 'minibuffer-prompt                   nil :foreground red :bold t)
-  (set-face-attribute 'isearch                             nil :foreground red :background bg3 :underline t)
-  (set-face-attribute 'isearch-fail                        nil :foreground orange :background bg3 :bold t)
-  (set-face-attribute 'dired-directory                     nil :foreground red :underline t)
-  (set-face-attribute 'helm-header                         nil :foreground bg1 :background fg1 :bold t)
-  (set-face-attribute 'helm-source-header                  nil :foreground bg1 :background fg4 :underline nil :bold t)
-  (set-face-attribute 'helm-match                          nil :foreground red :underline t)
-  (set-face-attribute 'helm-visible-mark                   nil :foreground orange :background bg2)
-  (set-face-attribute 'helm-selection                      nil :background bg3)
-  (set-face-attribute 'helm-selection-line                 nil :background bg1)
-  (set-face-attribute 'helm-candidate-number               nil :foreground bg1 :background fg1)
-  (set-face-attribute 'helm-separator                      nil :foreground red)
-  (set-face-attribute 'helm-buffer-not-saved               nil :foreground red)
-  (set-face-attribute 'helm-buffer-process                 nil :foreground fg1)
-  (set-face-attribute 'helm-buffer-saved-out               nil :foreground fg1)
-  (set-face-attribute 'helm-buffer-size                    nil :foreground fg1)
-  (set-face-attribute 'helm-ff-directory                   nil :foreground green :background bg1 :weight 'bold)
-  (set-face-attribute 'helm-ff-file                        nil :foreground fg1 :weight 'normal)
-  (set-face-attribute 'helm-ff-executable                  nil :foreground fg1 :weight 'normal)
-  (set-face-attribute 'helm-ff-invalid-symlink             nil :foreground fg1 :weight 'bold)
-  (set-face-attribute 'helm-ff-symlink                     nil :foreground red :weight 'bold)
-  (set-face-attribute 'helm-ff-prefix                      nil :foreground bg1 :background red :weight 'normal)
-  (set-face-attribute 'helm-ff-file-extension              nil :foreground fg1 :weight 'normal)
-  (set-face-attribute 'helm-grep-cmd-line                  nil :foreground fg1)
-  (set-face-attribute 'helm-grep-file                      nil :foreground fg1)
-  (set-face-attribute 'helm-grep-finish                    nil :foreground fg2)
-  (set-face-attribute 'helm-grep-lineno                    nil :foreground fg1)
-  (set-face-attribute 'helm-grep-match                     nil :foreground red)
-  (set-face-attribute 'helm-moccur-buffer                  nil :foreground fg1)
-  (set-face-attribute 'evil-ex-substitute-matches          nil :foreground red :underline t :strike-through t)
-  (set-face-attribute 'evil-ex-substitute-replacement      nil :foreground green :underline t)
-  (set-face-attribute 'rg-match-face                       nil :foreground red :background nil :underline t :bold t))
+(ensure-installed evil-org)
+(require 'evil-org)
+(require 'evil-org-agenda)
+(add-hook 'org-mode-hook 'evil-org-mode)
+(evil-org-set-key-theme '(navigation insert textobjects additional calendar))
+(evil-org-agenda-set-keys)
 
+(defun 4l/setup-theme ()
+  (interactive)
+  (let* ((fg1     "#ebc78a") (fg2     "#e1d0b1")
+         (bg1     "#142732") (bg2     "#101740")
+         (red     "#ea614c")
+         (green   "#a9a931")
+         (gray    "#a0a79e")
+         (orange  "#aaaa22"))
+    (set-face-attribute 'default                             nil :foreground fg1 :background bg1) 
+    (set-face-attribute 'region                              nil :background bg2) 
+    (set-face-attribute 'cursor                              nil :background fg1 :foreground bg1) 
+    (set-face-attribute 'fringe                              nil :background bg1)
+    (set-face-attribute 'link                                nil :foreground fg1 :underline t :weight 'bold)
+    (set-face-attribute 'link-visited                        nil :foreground fg1 :underline t :weight 'normal)
+    (set-face-attribute 'header-line                         nil :foreground fg2 :background bg2)
+    (set-face-attribute 'trailing-whitespace                 nil :foreground bg1 :background orange)
+    (set-face-attribute 'lazy-highlight                      nil :foreground fg2 :background bg2)
+    (set-face-attribute 'success                             nil :foreground green)
+    (set-face-attribute 'warning                             nil :foreground orange)
+    (set-face-attribute 'error                               nil :foreground red)
+    (set-face-attribute 'mode-line                           nil :foreground bg1 :background fg1 :box nil)
+    (set-face-attribute 'mode-line-inactive                  nil :foreground bg1 :background gray :box nil)
+    (set-face-attribute 'mode-line-highlight                 nil :foreground fg1 :background bg1)
+    (set-face-attribute 'mode-line-emphasis                  nil :foreground bg1 :background fg1 :box nil)
 
+    (set-face-attribute 'font-lock-keyword-face              nil :foreground red)
+    (set-face-attribute 'font-lock-builtin-face              nil :foreground red)
+    (set-face-attribute 'font-lock-comment-face              nil :foreground gray)
+    (set-face-attribute 'font-lock-constant-face             nil :foreground fg1)
+    (set-face-attribute 'font-lock-doc-face                  nil :foreground gray)
+    (set-face-attribute 'font-lock-function-name-face        nil :foreground fg1)
+    (set-face-attribute 'font-lock-type-face                 nil :foreground fg1)
+    (set-face-attribute 'font-lock-preprocessor-face         nil :foreground red)
+    (set-face-attribute 'font-lock-negation-char-face        nil :foreground fg1)
+    (set-face-attribute 'font-lock-string-face               nil :foreground green)
+    (set-face-attribute 'font-lock-variable-name-face        nil :foreground fg1)
+    (set-face-attribute 'font-lock-warning-face              nil :foreground orange :underline t)
+
+    (set-face-attribute 'minibuffer-prompt                   nil :foreground red :bold t)
+
+    (set-face-attribute 'isearch                             nil :foreground red :background bg2 :underline t)
+    (set-face-attribute 'isearch-fail                        nil :foreground orange :background bg2 :bold t)
+
+    (set-face-attribute 'dired-directory                     nil :foreground red :underline t)
+
+    (set-face-attribute 'helm-header                         nil :foreground bg1 :background fg1 :bold t)
+    (set-face-attribute 'helm-source-header                  nil :foreground bg1 :background fg2 :underline nil :bold t)
+    (set-face-attribute 'helm-match                          nil :foreground red :underline t)
+    (set-face-attribute 'helm-visible-mark                   nil :foreground orange :background bg2)
+    (set-face-attribute 'helm-selection                      nil :background bg2)
+    (set-face-attribute 'helm-selection-line                 nil :background bg1)
+    (set-face-attribute 'helm-candidate-number               nil :foreground bg1 :background fg1)
+    (set-face-attribute 'helm-separator                      nil :foreground red)
+    (set-face-attribute 'helm-buffer-not-saved               nil :foreground red)
+    (set-face-attribute 'helm-buffer-process                 nil :foreground fg1)
+    (set-face-attribute 'helm-buffer-saved-out               nil :foreground fg1)
+    (set-face-attribute 'helm-buffer-size                    nil :foreground fg1)
+    (set-face-attribute 'helm-ff-directory                   nil :foreground green :background bg1 :weight 'bold)
+    (set-face-attribute 'helm-ff-file                        nil :foreground fg1 :weight 'normal)
+    (set-face-attribute 'helm-ff-executable                  nil :foreground fg1 :weight 'normal)
+    (set-face-attribute 'helm-ff-invalid-symlink             nil :foreground fg1 :weight 'bold)
+    (set-face-attribute 'helm-ff-symlink                     nil :foreground red :weight 'bold)
+    (set-face-attribute 'helm-ff-prefix                      nil :foreground bg1 :background red :weight 'normal)
+    (set-face-attribute 'helm-ff-file-extension              nil :foreground fg1 :weight 'normal)
+    (set-face-attribute 'helm-grep-cmd-line                  nil :foreground fg1)
+    (set-face-attribute 'helm-grep-file                      nil :foreground fg1)
+    (set-face-attribute 'helm-grep-finish                    nil :foreground fg2)
+    (set-face-attribute 'helm-grep-lineno                    nil :foreground fg1)
+    (set-face-attribute 'helm-grep-match                     nil :foreground red)
+    (set-face-attribute 'helm-moccur-buffer                  nil :foreground fg1)
+
+    ))
+
+(4l/setup-theme)
+(add-hook 'server-after-make-frame-hook #'4l/setup-theme)
 
