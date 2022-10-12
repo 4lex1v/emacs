@@ -1,5 +1,6 @@
 (require 'seq)
 (require 'dired)
+(require 'cl-lib)
 
 (setq
  gc-cons-threshold       (* 100 1024 1024)  ;; 100MB
@@ -44,6 +45,12 @@
   (let ((filepath (buffer-file-name (current-buffer)))
         (remedy (executable-find "remedybg.exe")))
     (shell-command (concat remedy " open-file " filepath) nil nil)))
+
+(defun 4l/remedy-set-breakpoint-at-position ()
+  (interactive)
+  (let ((filepath (buffer-file-name (current-buffer)))
+        (line     (line-number-at-pos)))
+    (shell-command (concat "remedybg.exe add-breakpoint-at-file " filepath line) nil nil)))
 
 (defun 4l/insert-block (end-with-semicolon-p)
   (interactive "P")
@@ -108,8 +115,9 @@
 (let ((font-setting
        (pcase system-type
          ('darwin "Monaco-16")
-         ('windows-nt "Iosevka SS08 Slab Extended-16"))))
-         ;;('windows-nt "Iosevka SS08 Slab LtEx-16"))))
+         ;;('windows-nt "Iosevka SS08 Slab Extended-16"))))
+         ;;('windows-nt "Iosevka SS08 Slab SmBdEx-18"))))
+         ('windows-nt "Iosevka SS08 Slab LtEx-16"))))
   (add-to-list 'initial-frame-alist (cons 'font font-setting)) 
   (setq default-frame-alist initial-frame-alist) 
   (set-frame-font font-setting))
@@ -307,7 +315,8 @@
   (kbd "C-S-o") 'evil-jump-forward
   "m"           'back-to-indentation
   (kbd "C-u")   'evil-scroll-up
-  (kbd "M-u")   'universal-argument)
+  (kbd "M-u")   'universal-argument
+  (kbd "M-C-o") 'ff-get-other-file)
 
 (ensure-installed evil-collection)
 (require 'evil-collection)
@@ -324,8 +333,6 @@
 
 (evil-define-key 'normal cc-mode-map
   (kbd "g o")  'ff-find-other-file)
-
-(global-set-key (kbd "<f6>") '4l/rerun-premake)
 
 (ensure-installed helm)
 (setq
@@ -466,7 +473,13 @@
                              global-semantic-idle-local-symbol-highlight-mode))
 (semantic-mode t)
 
+(defun 4l/rescan-org-agenda-files ()
+  (interactive)
+  (let ((agenda-files (directory-files org-directory t "org")))
+    (cl-remove-if #'(lambda (value) (string-match-p "inbox.org\\'" value)) agenda-files)))
+
 (require 'org)
+(require 'org-habit)
 (setq
  org-directory "~/Dropbox/org/"
  org-startup-with-inline-images t
@@ -474,7 +487,7 @@
 
  org-id-link-to-org-use-id t
 
- org-agenda-files              '("~/Dropbox/org/plans.org")
+ org-agenda-files              (4l/rescan-org-agenda-files)
 
  org-log-done                  'time ;; When completing a task, prompt for a closing note...
  org-src-fontify-natively       t
@@ -499,25 +512,27 @@
  org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "ACTIVE" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)"))
  org-todo-keyword-faces '(("ACTIVE" . "yellow"))
 
- org-refile-use-outline-path 'file
- org-refile-targets '((org-agenda-files . (:tag . "project")))
+ org-cycle-separator-lines 1 ;; If there's at least 1 empty line in the fold, it will be shown when the tree is folded
+
+ org-refile-use-outline-path t
+ org-refile-targets '((org-agenda-files . (:level . 0)))
 
  org-adapt-indentation nil
 
  org-archive-location "./archives/%s_archive::"
 
  org-capture-templates
- `(("n" "New Task"       entry (file ,(concat org-directory "plans.org"))    "* TODO %? \n")
-   ("t" "Task for Today" entry (file ,(concat org-directory "plans.org"))    "* TODO %? \nSCHEDULED: %t\n"))
+ `(("n" "New Task"       entry (file ,(concat org-directory "inbox.org")) "* TODO %? \n")
+   ("t" "Task for Today" entry (file ,(concat org-directory "plans.org")) "* TODO %? \nSCHEDULED: %t\n"))
 
  ;; Stuck project is the one that has no scheduled TODO tasks
- org-stuck-projects '("+project/-DONE-CANCELLED" ("TODO") nil "SCHEDULED:\\|DEADLINE:")
+ org-stuck-projects '("+project/-DONE-CANCELLED-SOMEDAY" ("TODO") nil "SCHEDULED:")
  
  org-agenda-custom-commands '(("c" . "My Custom Agendas")
                               ("cu"  "Unscheduled"
                                ((todo ""
                                       ((org-agenda-overriding-header "\nUnscheduled Tasks")
-                                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline)))))
+                                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'regexp ":project:")))))
                                nil ;; general settings for the whole set
                                nil))
  
@@ -526,7 +541,7 @@
  org-agenda-include-diary nil
  org-agenda-skip-deadline-if-done t
  org-agenda-log-mode-items '(closed clock state)
- org-agenda-prefix-format '((agenda . "  %?-12t ")
+ org-agenda-prefix-format '((agenda . "%c: ")
                             (todo   . " %i %-12:c")
                             (tags   . " %i %-12:c")
                             (search . " %i %-12:c"))
@@ -534,8 +549,11 @@
  ;; Display agenda in full window
  org-agenda-window-setup 'current-window)
 
-;; Force org to open file links in the same window
-(add-to-list 'org-link-frame-setup '(file . find-file))
+(add-to-list 'org-link-frame-setup '(file . find-file)) ;; Force org to open file links in the same window
+(add-to-list 'org-modules 'org-habit)
+
+(evil-define-key 'normal global-map
+  (kbd "<leader> oa") 'org-agenda)
 
 (ensure-installed evil-org)
 (require 'evil-org)
@@ -615,8 +633,11 @@
     (set-face-attribute 'helm-grep-match                     nil :foreground red)
     (set-face-attribute 'helm-moccur-buffer                  nil :foreground fg1)
 
+    (set-face-attribute 'org-agenda-done                     nil :foreground gray :strike-through t)
+    (set-face-attribute 'org-done                            nil :foreground gray :strike-through t)
     ))
 
 (4l/setup-theme)
 (add-hook 'server-after-make-frame-hook #'4l/setup-theme)
 
+(put 'upcase-region 'disabled nil)
